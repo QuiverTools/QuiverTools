@@ -55,6 +55,10 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 
 * point counts 
 
+# Possible features
+
+- interface with GAP/QPA to compute e.g. dimensions of Hom-spaces for _explicit_ representations (cool idea by the horse Clever Hans)
+
 
 # Quivers that need a constructor
 
@@ -102,12 +106,23 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 * torus-equivariant Chow rings of quiver moduli
   - is https://mathscinet.ams.org/mathscinet-getitem?mr=4155242 algorithmic?
 
+* wall-and-chamber decompositions: how?!
+  - Proposition 8.6 of https://scholar.harvard.edu/files/elanakalashnikov/files/short_version.pdf? Hans thinks not
+    https://faculty.math.illinois.edu/Macaulay2/doc/Macaulay2-1.19.1/share/doc/Macaulay2/ThinSincereQuivers/html/_cone__System.html thinks otherwise
+    or is 8.6 only for quiver
+    https://arxiv.org/abs/1508.00539
+  - example in Remark 2.2 of https://alco.centre-mersenne.org/item/10.5802/alco.152.pdf
+  - is there some abelian-non-abelian correspondence that can be done?
+  - Elena's abelianised quiver is called a covering quiver
+  
+* Python version in https://github.com/marybarker/ThinSincereQuivers/tree/master/python_version
+
 
 # Other things to not (?) consider
 
 * https://arxiv.org/abs/1104.5698 and https://smzg.github.io/msinvar/higgs_bundles.html
 * https://smzg.github.io/msinvar/curve_DT.html and https://arxiv.org/abs/1310.4991
-
+* what's in https://github.com/marybarker/quiver_mutations
 
 # Implementation ideas
 
