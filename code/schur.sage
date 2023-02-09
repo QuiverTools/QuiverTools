@@ -39,3 +39,7 @@ def is_generic_subdimension_vector(e, d):
 assert is_generic_subdimension_vector(vector([1,2]), vector([2,4])) == False
 # the following _is_ a generic subdimension vector by the above reasoning
 assert is_generic_subdimension_vector(vector([1,3]), vector([2,4])) == True
+
+
+def generic_ext_vanishing(a, b):
+    return is_generic_subdimension_vector(a, a+b)
