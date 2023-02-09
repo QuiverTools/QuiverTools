@@ -28,7 +28,10 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 
 * Reineke's criterion for the existence of a semistable representation of given dimension vector
 
-* Schofield's and Derksen--Weyman's algorithm for Kac's canonical decomposition% of a dimension vector
+* Schofield's and Derksen--Weyman's algorithm for Kac's canonical decomposition of a dimension vector
+
+  Derksen--Weyman book, Algorithm 11.9.11
+  Algorithm 8 in their Compositio paper
 
 * Reineke's computation of Betti numbers for arbitrary~$Q$, $\mathbf{d}$ and~$\theta$
   - https://mathscinet.ams.org/mathscinet-getitem?mr=4000572
@@ -123,6 +126,8 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 * https://arxiv.org/abs/1104.5698 and https://smzg.github.io/msinvar/higgs_bundles.html
 * https://smzg.github.io/msinvar/curve_DT.html and https://arxiv.org/abs/1310.4991
 * what's in https://github.com/marybarker/quiver_mutations
+* https://www.math.uni-bielefeld.de/~jgeuenich/string-applet/
+  dimension of kQ
 
 # Implementation ideas
 
