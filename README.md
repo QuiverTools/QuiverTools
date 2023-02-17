@@ -29,6 +29,7 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 * Reineke's criterion for the existence of a semistable representation of given dimension vector
 
 * Schofield's and Derksen--Weyman's algorithm for Kac's canonical decomposition of a dimension vector
+  - Lemma 17 of the Derksen--Weyman Compositio paper has a variation for non-acyclic quivers
 
   Derksen--Weyman book, Algorithm 11.9.11
   Algorithm 8 in their Compositio paper
@@ -57,6 +58,11 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 * window methods for tautological vector bundles using the Kempf--Ness stratification
 
 * point counts 
+
+* computations in Chow ring, à la 
+  - https://www.math.sciences.univ-nantes.fr/~sorger/en/chow/
+  - http://www2.macaulay2.com/Macaulay2/doc/Macaulay2-1.18/share/doc/Macaulay2/Schubert2/html/index.html
+  using https://mathscinet.ams.org/mathscinet-getitem?mr=3318266
 
 # Possible features
 
