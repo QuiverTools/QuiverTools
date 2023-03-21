@@ -64,6 +64,8 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
   - http://www2.macaulay2.com/Macaulay2/doc/Macaulay2-1.18/share/doc/Macaulay2/Schubert2/html/index.html
   using https://mathscinet.ams.org/mathscinet-getitem?mr=3318266
 
+* Corollary 5.3 of https://arxiv.org/pdf/0706.4306.pdf ?
+
 # Possible features
 
 - interface with GAP/QPA to compute e.g. dimensions of Hom-spaces for _explicit_ representations (cool idea by the horse Clever Hans)
@@ -141,3 +143,10 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
   e.g. `Q=Quiver('1-2-3,1-3', prec=[2,2,2]); Q`
 
 - msinvar has some ideas on stability functions? see https://smzg.github.io/msinvar/stability.html
+
+
+# Papers with explicit calculations that ought to be done in QuiverTools
+
+* https://arxiv.org/abs/2303.00503
+  their terminology of anti-attractor stability refers to the anticanonical stability condition
+* https://arxiv.org/pdf/2012.14358.pdf ?
