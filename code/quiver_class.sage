@@ -1,4 +1,4 @@
-class Quiver():
+class Quiver:
 
     """
     A quiver is represented by its adjacency matrix (a_ij) in M_{n x n}(N) where Q_0 = {1,...,n} and a_{ij} is the number of arrows i --> j.
