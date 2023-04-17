@@ -10,8 +10,8 @@ class Quiver:
 
     def __init__(self, adjacencyMatrix, name=None):
         assert (adjacencyMatrix.nrows() == adjacencyMatrix.ncols())
+        assert all([all([(a >= 0) for a in rows]) for rows in [list(rows) for rows in list(adjacencyMatrix)]])
         # Should we raise an exception/error instead?
-        # Should we alse check for the entries being positive integers? I don't know how to do that...
         self._adjacencyMatrix = adjacencyMatrix
         self._name = name
 
