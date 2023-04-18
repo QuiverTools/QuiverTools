@@ -23,6 +23,13 @@ class Quiver_moduli:
         assert (version in ['st','sst'])
         self._version = version
 
+    # I would like something along these lines, but I can't seem to import quiver_class.sage
+    # @classmethod
+    # def canonical_stability(cls, quiver, dimensionVector, stacky=False, version='sst'):
+    #     assert (quiver.number_of_vertices() == dimensionVector.length())
+    #     theta = quiver_class.canonical_stability_parameter()
+    #     return cls(quiver,dimensionVector,theta,stacky=stacky,version=version)
+
     def __repr__(self):
         output = ""
         if (self._version == 'sst'):
