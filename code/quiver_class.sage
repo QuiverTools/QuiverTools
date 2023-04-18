@@ -58,35 +58,39 @@ class Quiver:
     def opposite_quiver(self):
         """The opposite quiver is given by the transpose of the adjacency matrix of the original quiver."""
         A = self.adjacency_matrix().transpose()
-        name = ""
         if (self._name != None):
-            name += "Opposite of "
-        name += self._name
+            name = "Opposite of " + self._name
+        else:
+            name = None
         return Quiver(A, name)
 
     def double_quiver(self):
         """The adjacency matrix of the double of a quiver is the sum of the adjacency matrix of the original quiver and its transpose."""
         A = self.adjacency_matrix() + self.adjacency_matrix().transpose()
-        name = ""
         if (self._name != None):
-            name += "Double of "
-        name += self._name
+            name = "Double of " + self._name
+        else:
+            name = None
         return Quiver(A, name)
 
     """Static methods"""
 
+    @staticmethod
     def generalized_Kronecker_quiver(m):
         """The generalized Kronecker quiver has two vertices 1,2 and m arrows 1 --> 2."""
         return Quiver(matrix([[0,m],[0,0]]), name = str(m)+"-Kronecker quiver")
 
+    @staticmethod
     def three_vertex_quiver(m12,m13,m23):
         """An acyclic quiver with 3 vertices and mij many arrows i --> j for 1 <= i < j <= 3."""
         return Quiver(matrix([[0,m12,m13],[0,0,m23],[0,0,0]]), name = "An acyclic 3-vertex quiver")
 
+    @staticmethod
     def loop_quiver(m):
         """A quiver with one vertex and m arrows."""
         return Quiver(matrix([[m]]), name = str(m)+"-loop quiver")
 
+    @staticmethod
     def subspace_quiver(m):
         """A quiver with m sources 1,...,m and one sink m+1; one arrow from every source to the sink."""
         A = zero_matrix(ZZ,m+1)
