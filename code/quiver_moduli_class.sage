@@ -1,4 +1,6 @@
-# Don't I first have to import quiver_class.sage? That doesn't work for me somehow. The only way I can make it work is load both quiver_class.sage and this file in sage and go from there. There must be a way to import this but I'm too stupid.
+# I imported quver_class.sage by running sage quiver_class.sage and renamed quiver_class.sage.py to quiver_class.py. Then I can import it. That seems like a stupid way of doing this because we have to re-compile it every time we change quiver_class.sage. Should we instead work exclusively with a quiver_class.py file (which includes the import statement of all the sage libraries)? Is there another way? What's best here?
+
+from quiver_class import *
 
 """Defines how permutations are multiplied."""
 Permutations.options(mult='r2l')
@@ -27,11 +29,11 @@ class Quiver_moduli:
         self._version = version
 
     # I would like something along these lines, but I can't seem to import quiver_class.sage
-    # @classmethod
-    # def canonical_stability(cls, quiver, dimensionVector, stacky=False, version='sst'):
-    #     assert (quiver.number_of_vertices() == dimensionVector.length())
-    #     theta = quiver_class.canonical_stability_parameter()
-    #     return cls(quiver,dimensionVector,theta,stacky=stacky,version=version)
+    @classmethod
+    def canonical_stability(cls, quiver, dimensionVector, stacky=False, version='sst'):
+        assert (quiver.number_of_vertices() == dimensionVector.length())
+        theta = quiver.canonical_stability_parameter(d)
+        return cls(quiver,dimensionVector,theta,stacky=stacky,version=version)
 
     def __repr__(self):
         output = ""
