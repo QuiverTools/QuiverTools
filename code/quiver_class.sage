@@ -15,6 +15,31 @@ class Quiver:
         self._adjacencyMatrix = adjacencyMatrix
         self._name = name
 
+    """Class methods"""
+
+    @classmethod
+    def generalized_Kronecker_quiver(cls, m):
+        """The generalized Kronecker quiver has two vertices 1,2 and m arrows 1 --> 2."""
+        return cls(matrix([[0,m],[0,0]]), name = str(m)+"-Kronecker quiver")
+
+    @classmethod
+    def three_vertex_quiver(cls, m12,m13,m23):
+        """An acyclic quiver with 3 vertices and mij many arrows i --> j for 1 <= i < j <= 3."""
+        return cls(matrix([[0,m12,m13],[0,0,m23],[0,0,0]]), name = "An acyclic 3-vertex quiver")
+
+    @classmethod
+    def loop_quiver(cls, m):
+        """A quiver with one vertex and m arrows."""
+        return cls(matrix([[m]]), name = str(m)+"-loop quiver")
+
+    @classmethod
+    def subspace_quiver(cls, m):
+        """A quiver with m sources 1,...,m and one sink m+1; one arrow from every source to the sink."""
+        A = zero_matrix(ZZ,m+1)
+        for i in range(m):
+            A[i,m] = 1
+        return cls(A, name = str(m)+"-subspace quiver")
+
     def __repr__(self):
         output = ""
         if (self._name == None):
@@ -72,28 +97,3 @@ class Quiver:
         else:
             name = None
         return Quiver(A, name)
-
-    """Static methods"""
-
-    @staticmethod
-    def generalized_Kronecker_quiver(m):
-        """The generalized Kronecker quiver has two vertices 1,2 and m arrows 1 --> 2."""
-        return Quiver(matrix([[0,m],[0,0]]), name = str(m)+"-Kronecker quiver")
-
-    @staticmethod
-    def three_vertex_quiver(m12,m13,m23):
-        """An acyclic quiver with 3 vertices and mij many arrows i --> j for 1 <= i < j <= 3."""
-        return Quiver(matrix([[0,m12,m13],[0,0,m23],[0,0,0]]), name = "An acyclic 3-vertex quiver")
-
-    @staticmethod
-    def loop_quiver(m):
-        """A quiver with one vertex and m arrows."""
-        return Quiver(matrix([[m]]), name = str(m)+"-loop quiver")
-
-    @staticmethod
-    def subspace_quiver(m):
-        """A quiver with m sources 1,...,m and one sink m+1; one arrow from every source to the sink."""
-        A = zero_matrix(ZZ,m+1)
-        for i in range(m):
-            A[i,m] = 1
-        return Quiver(A, name = str(m)+"-subspace quiver")
