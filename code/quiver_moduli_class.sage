@@ -84,12 +84,6 @@ class Quiver_moduli:
                     else: # no semi-stables
                         return float('NaN')
 
-        if nonEmpty:
-            return delta - Q.Euler_form(d,d)
-        else:
-            return float('NaN')
-            # That's not so nice ... is there a better way?
-
     def slope(self, e):
         """The slope of e is defined as theta*e/(sum_i e_i). We need to ensure that e is non-negative and at least one entry is positive."""
         assert (e.length() == self._dimensionVector.length())
