@@ -58,6 +58,38 @@ class Quiver_moduli:
     def stability_parameter(self):
         return self._stabilityParameter
 
+    def dimension(self):
+        Q = self.quiver()
+        d = self.dimension_vector()
+        if self._stacky: # we're looking at the moduli stack
+            """dim [R^{(s)st}/G] = dim R^{(s)st} - dim G
+            this is -<d,d> if the (semi-)stable locus is non-empty"""
+            nonEmpty = ((self._version == 'sst') and Q.allows_semi_stable_representations(d)) or  ((self._version == 'st') and Q.allows_stable_representations(d))
+            if nonEmpty:
+                return -Q.Euler_form(d,d)
+            else:
+                return float('NaN')
+        else: # we're dealing with the moduli space
+            if Q.allows_stable_representations(d):
+                """If there are stable representations, then both the stable and the semi-stable moduli space have dimension 1-<d,d>"""
+                return 1 - Q.Euler_form(d,d)
+            else: # no stables
+                if (self.version == 'st'):
+                    """The stable moduli space is empty so we return NaN"""
+                    return float('NaN')
+                else:
+                    if Q.allows_semi_stable_representations(d):
+                        """This is the case which I don't know how to deal with: there are semi-stables but no stables. Then I think the dimension can be determined using the etale local structure. But I don't quite know how (nor how to implement it)."""
+                        return float('NaN')
+                    else: # no semi-stables
+                        return float('NaN')
+
+        if nonEmpty:
+            return delta - Q.Euler_form(d,d)
+        else:
+            return float('NaN')
+            # That's not so nice ... is there a better way?
+
     def slope(self, e):
         """The slope of e is defined as theta*e/(sum_i e_i). We need to ensure that e is non-negative and at least one entry is positive."""
         assert (e.length() == self._dimensionVector.length())
