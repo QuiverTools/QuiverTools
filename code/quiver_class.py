@@ -104,3 +104,13 @@ class Quiver:
             name = None
         return Quiver(A, name)
 
+    def allows_semi_stable_representations(self,d):
+        """Checks if there is a semi-stable representation of dimension vector d."""
+        """Still needs to be implemented!"""
+        return True
+
+    def allows_stable_representations(self,d):
+        """Checks if there is a semi-stable representation of dimension vector d."""
+        """Still needs to be implemented!"""
+        return True
+
