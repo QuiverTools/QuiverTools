@@ -66,6 +66,8 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 
 * Corollary 5.3 of https://arxiv.org/pdf/0706.4306.pdf ?
 
+* check for fundamental set à la Domokos, page 3, https://arxiv.org/abs/2303.08522
+
 # Possible features
 
 - interface with GAP/QPA to compute e.g. dimensions of Hom-spaces for _explicit_ representations (cool idea by the horse Clever Hans)
