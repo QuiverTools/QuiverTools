@@ -4,15 +4,16 @@ class Quiver:
     A quiver is represented by its adjacency matrix (a_ij) in M_{n x n}(N) where Q_0 = {1,...,n} and a_{ij} is the number of arrows i --> j.
 
     Variables:
-    adjacencyMatrix
+    adjacency
     name = None
     """
 
-    def __init__(self, adjacencyMatrix, name=None):
-        assert (adjacencyMatrix.nrows() == adjacencyMatrix.ncols())
-        assert all([all([(a >= 0) for a in rows]) for rows in [list(rows) for rows in list(adjacencyMatrix)]])
-        # Should we raise an exception/error instead?
-        self._adjacencyMatrix = adjacencyMatrix
+    def __init__(self, M, name=None):
+        # TODO should we raise an exception/error instead?
+        assert M.is_square()
+        assert all(a >= 0 for a in M.list())
+
+        self._adjacency = M
         self._name = name
 
     def __repr__(self):
@@ -24,47 +25,58 @@ class Quiver:
             output += "A quiver with "
         else:
             output += str(self._name)+"; "
-        output += "adjacency matrix:\n"+str(self._adjacencyMatrix)
+        output += "adjacency matrix:\n"+str(self._adjacency)
         return output
 
+    """
+    Basic graph-theoretic properties of the quiver
+    """
+
     def adjacency_matrix(self):
-        return self._adjacencyMatrix
+        return self._adjacency
 
     def number_of_vertices(self):
         return self.adjacency_matrix().nrows()
 
-    def thin_dimension_vector(self):
-        return vector([1 for i in range(self.number_of_vertices())])
-
     def number_of_arrows(self):
         thin = self.thin_dimension_vector()
-        return thin*self.adjacency_matrix()*thin
-
-    def Euler_matrix(self):
-        return (matrix.identity(self.number_of_vertices()) - self.adjacency_matrix())
-
-    def Euler_form(self, x, y):
-        assert ((x.length() == self.number_of_vertices()) & (y.length() == self.number_of_vertices()))
-        return x*self.Euler_matrix()*y
-
-    def canonical_stability_parameter(self,d):
-        """The canonical stability parameter is given by <d,_> - <_,d>"""
-        E = self.Euler_matrix()
-        return d*(-E.transpose()+E)
+        return thin * self.adjacency_matrix() * thin
 
     def is_acyclic(self):
-        """A quiver is acyclic iff its adjacency matrix is nilpotent."""
         A = self.adjacency_matrix()
         n = self.number_of_vertices()
-        return (A^n == zero_matrix(ZZ,n))
+
+        # a quiver is acyclic if and only if its adjacency matrix is nilpotent
+        return (A^n == zero_matrix(ZZ, n))
+
+    def is_connected(self):
+        # TODO implement this
+        return True
+
+    """
+    Basic representation-theoretical properties of the quiver
+    """
+
+    def Euler_matrix(self):
+        return matrix.identity(self.number_of_vertices()) - self.adjacency_matrix()
+
+    def Euler_form(self, x, y):
+        assert (x.length() == self.number_of_vertices() and y.length() == self.number_of_vertices())
+        return x * self.Euler_matrix() * y
+
+    """
+    Constructing new quivers out of old
+    """
 
     def opposite_quiver(self):
         """The opposite quiver is given by the transpose of the adjacency matrix of the original quiver."""
         A = self.adjacency_matrix().transpose()
+
         if (self._name != None):
             name = "Opposite of " + self._name
         else:
             name = None
+
         return Quiver(A, name)
 
     def double_quiver(self):
@@ -76,23 +88,38 @@ class Quiver:
             name = None
         return Quiver(A, name)
 
+
+    """
+    Dimension vectors and stability conditions
+    """
+
+    def thin_dimension_vector(self):
+        return vector([1 for i in range(self.number_of_vertices())])
+
+    def canonical_stability_parameter(self,d):
+        """The canonical stability parameter is given by <d,_> - <_,d>"""
+        E = self.Euler_matrix()
+        return d * (-self.Euler_matrix().transpose() + E)
+
     def allows_semi_stable_representations(self,d):
         """Checks if there is a semi-stable representation of dimension vector d."""
-        """Still needs to be implemented!"""
+        # TODO implement this
         return True
 
     def allows_stable_representations(self,d):
         """Checks if there is a semi-stable representation of dimension vector d."""
-        """Still needs to be implemented!"""
+        # TODO implement this
         return True
 
-
-def generalized_Kronecker(m):
-    """The generalized Kronecker quiver has two vertices 1,2 and m arrows 1 --> 2.
+# TODO convention for generator functions is capitalise them?
+def GeneralizedKroneckerQuiver(m):
+    """
+    The generalized Kronecker quiver has two vertices and $m$ arrows from the
+    first to the second.
 
     TESTS::
 
-        sage: Q = generalized_Kronecker(3)
+        sage: Q = GeneralizedKroneckerQuiver(3)
         sage: Q.number_of_vertices()
         2
         sage: Q.number_of_arrows()
@@ -103,24 +130,24 @@ def generalized_Kronecker(m):
     # TODO do Q.rename here
     return Q
 
-def three_vertex_quiver(m12, m13, m23):
+def ThreeVertexQuiver(m12, m13, m23):
     """An acyclic quiver with 3 vertices and mij many arrows i --> j for 1 <= i < j <= 3."""
-    Q = Quiver(matrix([[0,m12,m13],[0,0,m23],[0,0,0]]), name = "An acyclic 3-vertex quiver")
+    Q = Quiver(matrix([[0, m12, m13], [0, 0, m23], [0, 0, 0]]), name = "An acyclic 3-vertex quiver")
     # TODO do Q.rename here
     return Q
 
-def loop_quiver(cls, m):
+def LoopQuiver(cls, m):
     """A quiver with one vertex and m arrows."""
     Q = Quiver(matrix([[m]]), name = str(m)+"-loop quiver")
     # TODO do Q.rename here
     return Q
 
-def Jordan():
+def JordanQuiver():
     Q = loop_quiver(1)
     # TODO do Q.rename here
     return Q
 
-def subspace_quiver(cls, m):
+def SubspaceQuiver(m):
     """A quiver with m sources 1,...,m and one sink m+1; one arrow from every source to the sink."""
     A = zero_matrix(ZZ, m + 1)
     for i in range(m):
@@ -129,3 +156,12 @@ def subspace_quiver(cls, m):
     Q = Quiver(A, name = str(m)+"-subspace quiver")
     # TODO do Q.rename here
     return Q
+
+def GeneralizedSubspaceQuiver(m, k):
+    # TODO implement this
+    return None
+
+def DynkinQuiver():
+    # TODO implement this
+    # use https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/root_system/dynkin_diagram.html
+    return None
