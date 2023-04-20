@@ -61,6 +61,17 @@ class QuiverModuliSpace(QuiverModuli):
             # TODO implement
             raise NotImplementedError()
 
+class QuiverModuliStack(QuiverModuli):
+    def __init__(self, Q, d, theta, condition="stable"):
+        QuiverModuli.__init__(self, Q, d, theta)
+        self._condition = condition # TODO better name than 'condition' or 'version'?
+
+    def dimension(self):
+        """dim [R^{(s)st}/G] = dim R^{(s)st} - dim G
+        this is -<d,d> if the (semi-)stable locus is non-empty"""
+        # TODO implement
+        pass
+
 
 
 class Quiver_moduli:
