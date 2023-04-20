@@ -126,6 +126,7 @@ class Quiver:
     def canonical_decomposition(self, d, algorithm="derksen-weyman"):
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1930979
+        # this is implemented in code/snippets/canonical.sage, so include it here
         if algorithm == "derksen-weyman":
             raise NotImplementedError()
         # TODO implement this
@@ -147,6 +148,10 @@ class Quiver:
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
         raise NotImplementedError()
 
+    def in_fundamental_domain(self, d):
+        # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
+        raise NotImplementedError()
+
     """
     Some things that don't below anywhere else yet?
     """
@@ -155,6 +160,12 @@ class Quiver:
         # https://mathscinet.ams.org/mathscinet-getitem?mr=2394691
         # we don't really know what this means
         raise NotImplementedError()
+
+    def perpendicular_category(self, d):
+        # something from Schofield
+        # see Theorem 11.4.6 in the Derksen--Weyman book
+        raise NotImplementedError()
+
 
 
 # TODO convention for generator functions is capitalise them?
@@ -207,7 +218,21 @@ def GeneralizedSubspaceQuiver(m, k):
     # TODO implement this
     return None
 
-def DynkinQuiver():
+def DynkinQuiver(T):
     # TODO implement this
+    # TODO orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
     # use https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/root_system/dynkin_diagram.html
-    return None
+    raise NotImplementedError()
+
+def ExtendedDynkinQuiver(T):
+    # TODO implement this
+    # TODO orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
+    raise NotImplementedError()
+
+def CyclicQuiver(n):
+    return ExtendedDynkinQuiver(["A", n])
+
+def BipartiteQuiver(m, n):
+    # TODO implement this
+    # m is number of sources, n is number of sinks
+    raise NotImplementedError()

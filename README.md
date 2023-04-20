@@ -42,7 +42,7 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 
 * Engel--Reineke's computation of Betti numbers for smooth models
   - see https://mathscinet.ams.org/mathscinet-getitem?mr=2511752
-
+  it is Corollary 5.3 of https://arxiv.org/pdf/0706.4306.pdf ?
 
 * Reineke's enumeration of the Harder--Narasimhan strata
   (and thus also Kempf--Ness strata)
@@ -64,8 +64,6 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
   - http://www2.macaulay2.com/Macaulay2/doc/Macaulay2-1.18/share/doc/Macaulay2/Schubert2/html/index.html
   using https://mathscinet.ams.org/mathscinet-getitem?mr=3318266
 
-* Corollary 5.3 of https://arxiv.org/pdf/0706.4306.pdf ?
-
 * check for fundamental set à la Domokos, page 3, https://arxiv.org/abs/2303.08522
 
 # Possible features
@@ -83,6 +81,16 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 - bipartite quivers (easier way to describe it: use I for the sources, J for the sinks, then an IxJ matrix suffices)
 - Dynkin quivers
 - cyclic quiver
+
+
+# Window methods
+
+Our rigidity paper gives the formulas for the windows.
+
+What needs to be done is determine the weights for equivariant bundles.
+These are all determined using highest weights of GL(d),
+and thus we need to compute the Kempf--Ness thingie of Dan (or Constantin)
+for a highest weight of GL(d).
 
 
 # Understanding what's in CoulombHiggs
