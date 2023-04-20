@@ -26,6 +26,43 @@ Something like computing Betti numbers is then only implemented for QuiverModuli
 
 """
 
+
+from abc import ABC, abstractmethod
+
+class QuiverModuli(ABC):
+    @abstractmethod
+    def __init__(self, Q, d, theta):
+        # TODO some checks?
+        self._Q = Q
+        self._d = d
+        self._theta = theta
+
+    @abstractmethod
+    def dimension(self):
+        pass
+
+    def quiver(self):
+        return self._Q
+
+    def dimension_vector(self):
+        return self._d
+
+class QuiverModuliSpace(QuiverModuli):
+    def __init__(self, Q, d, theta, condition="stable"):
+        QuiverModuli.__init__(self, Q, d, theta)
+        self._condition = condition # TODO better name than 'condition' or 'version'?
+
+    def dimension(self):
+        if self._Q.allows_stable_representations(d):
+            # if there are stable representations then both the stable and
+            # the semi-stable moduli space have dimension `1-<d,d>`
+            return 1 - self._Q.Euler_form(self._d, self._d)
+        else:
+            # TODO implement
+            raise NotImplementedError()
+
+
+
 class Quiver_moduli:
 
     """
