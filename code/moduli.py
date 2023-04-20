@@ -31,11 +31,12 @@ from abc import ABC, abstractmethod
 
 class QuiverModuli(ABC):
     @abstractmethod
-    def __init__(self, Q, d, theta):
+    def __init__(self, Q, d, theta, condition):
         # TODO some checks?
         self._Q = Q
         self._d = d
         self._theta = theta
+        self._condition = condition
 
     @abstractmethod
     def dimension(self):
@@ -47,9 +48,19 @@ class QuiverModuli(ABC):
     def dimension_vector(self):
         return self._d
 
+    def is_nonempty(self):
+        if self._condition == "stable":
+            return self._Q.has_stable_representation(self._d, self._theta)
+        elif self._condition == "semistable":
+            return self._Q.has_semistable_representation(self._d, self._theta)
+
+    @abstractmethod
+    def is_smooth():
+        pass
+
 class QuiverModuliSpace(QuiverModuli):
     def __init__(self, Q, d, theta, condition="stable"):
-        QuiverModuli.__init__(self, Q, d, theta)
+        QuiverModuli.__init__(self, Q, d, theta, condition)
         self._condition = condition # TODO better name than 'condition' or 'version'?
 
     def dimension(self):
@@ -60,6 +71,16 @@ class QuiverModuliSpace(QuiverModuli):
         else:
             # TODO implement
             raise NotImplementedError()
+
+    def betti_numbers(self):
+        raise NotImplementedError()
+
+    def is_smooth(self):
+        # if theta-coprime then you can shortcut everything
+        # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
+        # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
+        raise NotImplementedError()
+
 
 class QuiverModuliStack(QuiverModuli):
     def __init__(self, Q, d, theta, condition="stable"):
@@ -72,6 +93,17 @@ class QuiverModuliStack(QuiverModuli):
         # TODO implement
         pass
 
+    def is_smooth(self):
+        # TODO think about the empty case, should it be smooth?
+        return True
+
+
+class SmoothModel:
+    def __init__(self):
+        pass
+
+    def betti_numbers(self):
+        raise NotImplementedError()
 
 
 class Quiver_moduli:

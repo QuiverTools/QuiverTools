@@ -103,15 +103,59 @@ class Quiver:
         E = self.Euler_matrix()
         return d * (-self.Euler_matrix().transpose() + E)
 
-    def allows_semi_stable_representations(self,d):
-        """Checks if there is a semi-stable representation of dimension vector d."""
-        # TODO implement this
-        return True
+    def has_semistable_representation(self, d, theta, algorithm="reineke"):
+        """Checks if there is a theta-semistable representation of dimension vector d."""
+        assert algorithm == "reineke"
 
-    def allows_stable_representations(self,d):
-        """Checks if there is a semi-stable representation of dimension vector d."""
         # TODO implement this
-        return True
+        if algorithm == "reineke":
+            raise NotImplementedError()
+
+    def has_stable_representation(self, d, theta, algorithm="king"):
+        """Checks if there is a theta-stable representation of dimension vector d."""
+        # TODO implement this
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
+        if algorithm == "king":
+            raise NotImplementedError()
+        # TODO implement this
+        # al stands for Adriaenssens--Le Bruyn
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1972892
+        if algorithm == "al":
+            raise NotImplementedError()
+
+    def canonical_decomposition(self, d, algorithm="derksen-weyman"):
+        # TODO implement this
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1930979
+        if algorithm == "derksen-weyman":
+            raise NotImplementedError()
+        # TODO implement this
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1162487
+        elif algorithm == "schofield-1":
+            raise NotImplementedError()
+        # TODO implement this
+        # https://arxiv.org/pdf/math/9911014.pdf
+        # in Derksen--Weyman's https://mathscinet.ams.org/mathscinet-getitem?mr=1930979 it is claimed that there is a second Schofield algorithm
+        # (they do cite the wrong Schofield preprint though...)
+        elif algorithm == "schofield-2":
+            raise NotImplementedError()
+
+    def harder_narasimhan_stratification(self, d, theta, denominator=sum):
+        # TODO what to return?
+        # list of the Harder-Narasimhan types?
+        # denominator default being sum is total dimension, there are variations possible
+        # and the strata will be different!
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+        raise NotImplementedError()
+
+    """
+    Some things that don't below anywhere else yet?
+    """
+
+    def is_cofree(self, d):
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=2394691
+        # we don't really know what this means
+        raise NotImplementedError()
+
 
 # TODO convention for generator functions is capitalise them?
 def GeneralizedKroneckerQuiver(m):
