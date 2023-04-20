@@ -1,6 +1,5 @@
-# I imported quver_class.sage by running sage quiver_class.sage and renamed quiver_class.sage.py to quiver_class.py. Then I can import it. That seems like a stupid way of doing this because we have to re-compile it every time we change quiver_class.sage. Should we instead work exclusively with a quiver_class.py file (which includes the import statement of all the sage libraries)? Is there another way? What's best here?
+from quiver import *
 
-from quiver_class import *
 
 """Defines how permutations are multiplied."""
 Permutations.options(mult='r2l')
