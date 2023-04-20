@@ -15,32 +15,10 @@ class Quiver:
         self._adjacencyMatrix = adjacencyMatrix
         self._name = name
 
-    """Class methods"""
-
-    @classmethod
-    def generalized_Kronecker_quiver(cls, m):
-        """The generalized Kronecker quiver has two vertices 1,2 and m arrows 1 --> 2."""
-        return cls(matrix([[0,m],[0,0]]), name = str(m)+"-Kronecker quiver")
-
-    @classmethod
-    def three_vertex_quiver(cls, m12,m13,m23):
-        """An acyclic quiver with 3 vertices and mij many arrows i --> j for 1 <= i < j <= 3."""
-        return cls(matrix([[0,m12,m13],[0,0,m23],[0,0,0]]), name = "An acyclic 3-vertex quiver")
-
-    @classmethod
-    def loop_quiver(cls, m):
-        """A quiver with one vertex and m arrows."""
-        return cls(matrix([[m]]), name = str(m)+"-loop quiver")
-
-    @classmethod
-    def subspace_quiver(cls, m):
-        """A quiver with m sources 1,...,m and one sink m+1; one arrow from every source to the sink."""
-        A = zero_matrix(ZZ,m+1)
-        for i in range(m):
-            A[i,m] = 1
-        return cls(A, name = str(m)+"-subspace quiver")
-
     def __repr__(self):
+        # TODO this should be implemented following Sage's methodology
+        # see https://github.com/pbelmans/hodge-diamond-cutter/issues/14 for suggestion
+        # and https://github.com/pbelmans/hodge-diamond-cutter/commit/59cc6d575babe695c6e1668721e6cd5c4f17dba9 for example
         output = ""
         if (self._name == None):
             output += "A quiver with "
@@ -107,3 +85,47 @@ class Quiver:
         """Checks if there is a semi-stable representation of dimension vector d."""
         """Still needs to be implemented!"""
         return True
+
+
+def generalized_Kronecker(m):
+    """The generalized Kronecker quiver has two vertices 1,2 and m arrows 1 --> 2.
+
+    TESTS::
+
+        sage: Q = generalized_Kronecker(3)
+        sage: Q.number_of_vertices()
+        2
+        sage: Q.number_of_arrows()
+        3
+
+    """
+    Q = Quiver(matrix([[0, m], [0, 0]]), name = str(m)+"-Kronecker quiver")
+    # TODO do Q.rename here
+    return Q
+
+def three_vertex_quiver(m12, m13, m23):
+    """An acyclic quiver with 3 vertices and mij many arrows i --> j for 1 <= i < j <= 3."""
+    Q = Quiver(matrix([[0,m12,m13],[0,0,m23],[0,0,0]]), name = "An acyclic 3-vertex quiver")
+    # TODO do Q.rename here
+    return Q
+
+def loop_quiver(cls, m):
+    """A quiver with one vertex and m arrows."""
+    Q = Quiver(matrix([[m]]), name = str(m)+"-loop quiver")
+    # TODO do Q.rename here
+    return Q
+
+def Jordan():
+    Q = loop_quiver(1)
+    # TODO do Q.rename here
+    return Q
+
+def subspace_quiver(cls, m):
+    """A quiver with m sources 1,...,m and one sink m+1; one arrow from every source to the sink."""
+    A = zero_matrix(ZZ, m + 1)
+    for i in range(m):
+        A[i, m] = 1
+
+    Q = Quiver(A, name = str(m)+"-subspace quiver")
+    # TODO do Q.rename here
+    return Q
