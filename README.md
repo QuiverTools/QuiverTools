@@ -22,6 +22,8 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 
 # List of algorithms to implement
 
+These are now mentioned in the classes, usually as placeholders.
+
 * King's criterion for the existence of a stable representation of given dimension vector
 
 * Adriaenssens--Le Bruyn's method to determine dimension vectors admitting stable representations
@@ -61,6 +63,10 @@ For now we steer clear of quivers with potentials, see https://smzg.github.io/ms
 
 * computations in Chow ring, à la 
   - https://www.math.sciences.univ-nantes.fr/~sorger/en/chow/
+    
+    the source code can be found at https://github.com/sagemath/sagetrac-mirror/tree/u/gh-sorger-c/chow/src/sage/schemes/chow
+
+    don't forget to set the tangent bundle, à la https://www.math.sciences.univ-nantes.fr/~sorger/en/chow/html/chow/sage/schemes/chow/scheme.html
   - http://www2.macaulay2.com/Macaulay2/doc/Macaulay2-1.18/share/doc/Macaulay2/Schubert2/html/index.html
   using https://mathscinet.ams.org/mathscinet-getitem?mr=3318266
 
@@ -91,6 +97,11 @@ What needs to be done is determine the weights for equivariant bundles.
 These are all determined using highest weights of GL(d),
 and thus we need to compute the Kempf--Ness thingie of Dan (or Constantin)
 for a highest weight of GL(d).
+
+
+# More things to think about?
+
+- Implement the reduction steps of https://arxiv.org/pdf/2303.08522.pdf
 
 
 # Understanding what's in CoulombHiggs
