@@ -192,6 +192,13 @@ def Chern_class_of_anticanonical_bundle():
     anticanonicalBundle = -3*y1
     return anticanonicalBundle
 
+def Chern_character(eta):
+    """Computes the Chern character of L(eta).
+    The Chern character of a line bundle L with first Chern class x is given by e^x = 1 + x + x^2/2 + x^3/6 + ..."""
+    n = 6
+    chernClass = -eta[0]*x1-eta[1]*y1
+    return sum([chernClass^i/factorial(i) for i in range(n+1)])
+
 def degree(eta):
     """Computes the degree of the line bundle L(eta)."""
     chernClass = -eta[0]*x1-eta[1]*y1
@@ -207,17 +214,44 @@ def Todd_generating_series(t,n):
     """We call the series
     Q(t) = t/(1-e^{-t}) the Todd generating series. The function computes the terms of this series up to degree n."""
     B = [bernoulli(i) for i in range(n+1)]
-    return sum([(-1)^i*B[i]/factorial(i) for i in range(n+1)])
+    return sum([(-1)^i*B[i]/factorial(i)*t^i for i in range(n+1)])
+
+def truncate(f,n):
+    """Takes an element in a graded ring and discards all homogeneous components of degree > n"""
+    hom = f.homogeneous_components()
+    keyList = [i for i in hom]
+    return sum([hom[i] for i in filter(lambda i: i <= 6, keyList)])
 
 def Todd_class():
+    """The Todd class of X is the Todd class of the tangent bundle. For quiver moduli it computes as
+    td(X) = (prod_{a:i->j in Q_1} prod_{p=1}^{d_j} prod_{q=1}^{d_i} Q(t_{j,q} - t_{i,p}))/(prod_{i in Q_0} prod_{p,q=1}^{d_i}(t_{i,q} - t_{i,p}))
+    """
     n = 6 # Dimension of moduli space
-    """The values numerator and denominator are computed in R, i.e. in the Chow ring of [R/T] and then the inverse image is taken under the inclusion A --> R, where A is the Chow ring of [R/G]"""
-    numerator = inclusion.inverse_image(prod([[Todd_generating_series(q-p,n) for q in [s1,s2,s3]] for p in [t1,t2]]))
-    denominator = inclusion.inverse_image(prod([[Todd_generating_series(q-p,n) for q in [t1,t2]] for p in [t1,t2]])*prod([[Todd_generating_series(q-p,n) for q in [s1,s2,s3]] for p in [s1,s2,s3]]))
+    """First we compute the value of the numerator in R, i.e. in the Chow ring of [R/T]."""
+    simpleNumeratorList = [[Todd_generating_series(q-p,n) for q in [s1,s2,s3]] for p in [t1,t2]]
+    simpleNumeratorUpstairs = prod([x for sublist in simpleNumeratorList for x in sublist])
+    """We truncate at dim X because higher degree terms will vanish in the quotient."""
+    simpleNumeratorTruncated = truncate(simpleNumeratorUpstairs,n)
+    numeratorTruncated = truncate(simpleNumeratorTruncated^3,n)
+    """Same with the two factors of the denominator."""
+    denominatorList1 = [[Todd_generating_series(q-p,n) for q in [t1,t2]] for p in [t1,t2]]
+    denominatorUpstairs1 = prod([x for sublist in denominatorList1 for x in sublist])
+    denominatorTruncated1 = truncate(denominatorUpstairs1,n)
+    denominatorList2 = [[Todd_generating_series(q-p,n) for q in [s1,s2,s3]] for p in [s1,s2,s3]]
+    denominatorUpstairs2 = prod([x for sublist in denominatorList2 for x in sublist])
+    denominatorTruncated2 = truncate(denominatorUpstairs2,n)
+    """Then the inverse image is taken under the inclusion A --> R, where A is the Chow ring of [R/G].
+    Then pull it back along the open embedding X --> [R/G]."""
+    numerator = pi(inclusion.inverse_image(numeratorTruncated))
+    denominator = pi(inclusion.inverse_image(denominatorTruncated1*denominatorTruncated2))
     """The todd class of the tangent bundle is this:"""
     return numerator/denominator
-    
 
+def global_sections_O1():
+    """For a bundle F on X we have chi(F) = int_X ch(F) * td(X).
+    We apply this to F = O(1) = L(theta)"""
+    wedge = Chern_character(theta)*Todd_class()
+    return pi(sect(wedge).homogeneous_components()[6])/point_class()
 
 
 """Other nice methods:"""
