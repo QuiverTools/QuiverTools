@@ -203,6 +203,23 @@ def degree_of_ample_Generator():
 def degree_of_anticanonical_bundle():
     return Chern_class_of_anticanonical_bundle()^6/point_class()
 
+def Todd_generating_series(t,n):
+    """We call the series
+    Q(t) = t/(1-e^{-t}) the Todd generating series. The function computes the terms of this series up to degree n."""
+    B = [bernoulli(i) for i in range(n+1)]
+    return sum([(-1)^i*B[i]/factorial(i) for i in range(n+1)])
+
+def Todd_class():
+    n = 6 # Dimension of moduli space
+    """The values numerator and denominator are computed in R, i.e. in the Chow ring of [R/T] and then the inverse image is taken under the inclusion A --> R, where A is the Chow ring of [R/G]"""
+    numerator = inclusion.inverse_image(prod([[Todd_generating_series(q-p,n) for q in [s1,s2,s3]] for p in [t1,t2]]))
+    denominator = inclusion.inverse_image(prod([[Todd_generating_series(q-p,n) for q in [t1,t2]] for p in [t1,t2]])*prod([[Todd_generating_series(q-p,n) for q in [s1,s2,s3]] for p in [s1,s2,s3]]))
+    """The todd class of the tangent bundle is this:"""
+    return numerator/denominator
+    
+
+
+
 """Other nice methods:"""
 
 def topological_Euler_characteristic():
