@@ -69,6 +69,8 @@ These are now mentioned in the classes, usually as placeholders.
     don't forget to set the tangent bundle, à la https://www.math.sciences.univ-nantes.fr/~sorger/en/chow/html/chow/sage/schemes/chow/scheme.html
   - http://www2.macaulay2.com/Macaulay2/doc/Macaulay2-1.18/share/doc/Macaulay2/Schubert2/html/index.html
   using https://mathscinet.ams.org/mathscinet-getitem?mr=3318266
+  
+  - also: https://github.com/8d1h/IntersectionTheory Julia implementation, could be a good learning opportunity for everyone involved
 
 * check for fundamental set à la Domokos, page 3, https://arxiv.org/abs/2303.08522
 
