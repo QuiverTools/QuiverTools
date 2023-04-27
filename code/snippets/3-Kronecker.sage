@@ -253,6 +253,32 @@ def global_sections_O1():
     wedge = Chern_character(theta)*Todd_class()
     return pi(sect(wedge).homogeneous_components()[6])/point_class()
 
+def hilbert_series():
+    return [pi(sect(Chern_character([i*3, -2*i])*Todd_class()).homogeneous_components()[6])/point_class() for i in range(20)]
+"""
+output:
+[1,
+ 20,
+ 148,
+ 664,
+ 2206,
+ 5999,
+ 14140,
+ 29940,
+ 58323,
+ 106282,
+ 183392,
+ 302380,
+ 479752,
+ 736477,
+ 1098728,
+ 1598680,
+ 2275365,
+ 3175584,
+ 4354876,
+ 5878544]
+"""
+
 
 """Other nice methods:"""
 
