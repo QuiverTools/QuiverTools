@@ -67,10 +67,14 @@ These are now mentioned in the classes, usually as placeholders.
     the source code can be found at https://github.com/sagemath/sagetrac-mirror/tree/u/gh-sorger-c/chow/src/sage/schemes/chow
 
     don't forget to set the tangent bundle, à la https://www.math.sciences.univ-nantes.fr/~sorger/en/chow/html/chow/sage/schemes/chow/scheme.html
+
+    there is also another abandoned Sage implementation at https://github.com/hiepdang/Sage, called Schubert3
   - http://www2.macaulay2.com/Macaulay2/doc/Macaulay2-1.18/share/doc/Macaulay2/Schubert2/html/index.html
   using https://mathscinet.ams.org/mathscinet-getitem?mr=3318266
 
 * check for fundamental set à la Domokos, page 3, https://arxiv.org/abs/2303.08522
+
+* criterion for amply stable in \S4 of https://arxiv.org/pdf/1410.0466.pdf
 
 # Possible features
 

@@ -123,6 +123,13 @@ class Quiver:
         if algorithm == "al":
             raise NotImplementedError()
 
+    # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
+    def is_amply_stable(self, d, theta):
+        """Checks if d is amply stable of theta"""
+        # Section 4 of https://arxiv.org/pdf/1410.0466.pdf
+        raise NotImplementedError()
+
+
     def canonical_decomposition(self, d, algorithm="derksen-weyman"):
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1930979
