@@ -71,6 +71,8 @@ These are now mentioned in the classes, usually as placeholders.
     there is also another abandoned Sage implementation at https://github.com/hiepdang/Sage, called Schubert3
   - http://www2.macaulay2.com/Macaulay2/doc/Macaulay2-1.18/share/doc/Macaulay2/Schubert2/html/index.html
   using https://mathscinet.ams.org/mathscinet-getitem?mr=3318266
+  
+  - also: https://github.com/8d1h/IntersectionTheory Julia implementation, could be a good learning opportunity for everyone involved
 
 * check for fundamental set à la Domokos, page 3, https://arxiv.org/abs/2303.08522
 
