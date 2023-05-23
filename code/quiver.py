@@ -176,6 +176,7 @@ class Quiver:
 
 
 # TODO convention for generator functions is capitalise them?
+
 def GeneralizedKroneckerQuiver(m):
     """
     The generalized Kronecker quiver has two vertices and $m$ arrows from the
@@ -194,22 +195,26 @@ def GeneralizedKroneckerQuiver(m):
     # TODO do Q.rename here
     return Q
 
+
 def ThreeVertexQuiver(m12, m13, m23):
     """An acyclic quiver with 3 vertices and mij many arrows i --> j for 1 <= i < j <= 3."""
     Q = Quiver(matrix([[0, m12, m13], [0, 0, m23], [0, 0, 0]]), name = "An acyclic 3-vertex quiver")
     # TODO do Q.rename here
     return Q
 
-def LoopQuiver(cls, m):
+
+def LoopQuiver( m):
     """A quiver with one vertex and m arrows."""
     Q = Quiver(matrix([[m]]), name = str(m)+"-loop quiver")
     # TODO do Q.rename here
     return Q
 
-def JordanQuiver():
+
+def JordanQuiver(cls):
     Q = loop_quiver(1)
     # TODO do Q.rename here
     return Q
+
 
 def SubspaceQuiver(m):
     """A quiver with m sources 1,...,m and one sink m+1; one arrow from every source to the sink."""
@@ -221,25 +226,30 @@ def SubspaceQuiver(m):
     # TODO do Q.rename here
     return Q
 
-def GeneralizedSubspaceQuiver(m, k):
+
+def GeneralizedSubspaceQuiver( m, k):
     # TODO implement this
     return None
 
-def DynkinQuiver(T):
+
+def DynkinQuiver( T):
     # TODO implement this
     # TODO orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
     # use https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/root_system/dynkin_diagram.html
     raise NotImplementedError()
 
-def ExtendedDynkinQuiver(T):
+
+def ExtendedDynkinQuiver( T):
     # TODO implement this
     # TODO orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
     raise NotImplementedError()
 
-def CyclicQuiver(n):
+
+def CyclicQuiver( n):
     return ExtendedDynkinQuiver(["A", n])
 
-def BipartiteQuiver(m, n):
+
+def BipartiteQuiver( m, n):
     # TODO implement this
     # m is number of sources, n is number of sinks
     raise NotImplementedError()
