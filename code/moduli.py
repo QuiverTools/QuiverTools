@@ -1,4 +1,5 @@
 from quiver import *
+from sage.combinat.permutation import *
 
 
 """Defines how permutations are multiplied."""
