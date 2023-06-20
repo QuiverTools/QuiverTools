@@ -155,6 +155,8 @@ for a highest weight of GL(d).
   
 * Python version in https://github.com/marybarker/ThinSincereQuivers/tree/master/python_version
 
+* various genera (in the sense of Hirzebruch), see https://arxiv.org/abs/2306.06660v1 for inspiration
+
 
 # Other things to not (?) consider
 
@@ -163,6 +165,8 @@ for a highest weight of GL(d).
 * what's in https://github.com/marybarker/quiver_mutations
 * https://www.math.uni-bielefeld.de/~jgeuenich/string-applet/
   dimension of kQ
+* https://arxiv.org/abs/2306.06660v1 is an excellent example of how things should be done!
+  also, we should be able to implement these calculations in complete generality
 
 # Implementation ideas
 
