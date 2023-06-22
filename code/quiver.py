@@ -35,6 +35,10 @@ class Quiver:
     """
 
     def adjacency_matrix(self):
+        r"""Returns the adjacency matrix of the quiver.
+        
+        OUTPUT: A square matrix M whose entry M[i,j] is the number of arrows from the vertex i to the vertex j.
+        """
         return self._adjacency
     
     def underlying_graph(self):
@@ -45,13 +49,26 @@ class Quiver:
         return self.adjacency_matrix() + self.adjacency_matrix().transpose() - diagonal_matrix(self.adjacency_matrix().diagonal())
 
     def number_of_vertices(self):
+        r""""Returns the amount of vertices that the quiver has.
+
+        OUTPUT: The number of vertices as an Int.
+        """
         return self.adjacency_matrix().nrows()
 
     def number_of_arrows(self):
+        r""""Returns the number of arrows that the quiver has.
+
+        OUTPUT: The number of arrows as an Int.
+        
+        """
         thin = self.thin_dimension_vector()
         return thin * self.adjacency_matrix() * thin
 
     def is_acyclic(self):
+        r""""Returns the truth value of wether the quiver is acyclic.
+
+        OUTPUT: Statement truth value as Bool.
+        """
         A = self.adjacency_matrix()
         n = self.number_of_vertices()
 
@@ -61,7 +78,7 @@ class Quiver:
     def is_connected(self): 
         r""""Returns whether the underlying graph of the quiver is connected or not.
 
-        OUTPUT: Boolean
+        OUTPUT: Statement truth value as Bool.
 
         EXAMPLES:
 
@@ -138,9 +155,22 @@ class Quiver:
     """
 
     def Euler_matrix(self):
+        r"""Returns the Euler matrix of the quiver.
+        
+        OUTPUT: Sage matrix.
+        """
         return matrix.identity(self.number_of_vertices()) - self.adjacency_matrix()
 
     def Euler_form(self, x, y):
+        r"""The Euler bilinear form of the quiver.
+        
+        INPUT: 
+        - ``x`` -- vector of integers
+        - ``y`` -- vector of integers
+
+        OUTPUT: the multiplication of ``x * self.adjacency_matrix() * y`` as an  Int.
+        
+        """
         assert (x.length() == self.number_of_vertices() and y.length() == self.number_of_vertices())
         return x * self.Euler_matrix() * y
 
@@ -149,7 +179,10 @@ class Quiver:
     """
 
     def opposite_quiver(self):
-        """The opposite quiver is given by the transpose of the adjacency matrix of the original quiver."""
+        """The opposite quiver is given by the transpose of the adjacency matrix of the original quiver.
+        
+        OUTPUT: a Quiver object the same vertices and an arrow from j to i for every arrow from i to j in the original quiver.
+        """
         A = self.adjacency_matrix().transpose()
 
         if (self._name != None):
