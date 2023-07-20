@@ -249,7 +249,7 @@ class Quiver:
         raise NotImplementedError()
 
     # taken from code/snippets/canonical.sage
-    # still need testing code from there
+    # TODO still need testing code from there
     def is_generic_subdimension_vector(self, e, d):
         # using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
 
