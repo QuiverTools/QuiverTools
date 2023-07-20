@@ -248,6 +248,30 @@ class Quiver:
         # Section 4 of https://arxiv.org/pdf/1410.0466.pdf
         raise NotImplementedError()
 
+    # taken from code/snippets/canonical.sage
+    # still need testing code from there
+    def is_generic_subdimension_vector(self, e, d):
+        # using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
+
+        #possible optimisation?
+        #if e == d: return True
+
+        # list of all dimension vectors e' which are strictly smaller than e
+        subdimensions = cartesian_product([range(ei + 1) for ei in e])
+        subdimensions = map(vector, subdimensions)
+        # for the recursion we ignore e
+        subdimensions = filter(lambda eprime: eprime != e, subdimensions)
+        # check whether they are generic subdimension vectors of e
+        subdimensions = filter(lambda eprime: self.is_generic_subdimension_vector(eprime, e), subdimensions)
+        # add e back into the list
+        subdimensions = list(subdimensions) + [e]
+
+        # apply the numerical criterion
+        return all(map(lambda eprime: self.euler_form(eprime, d - e) >= 0, subdimensions))
+
+    def generic_ext_vanishing(self, a, b):
+        return self.is_generic_subdimension_vector(a, a+b)
+
 
     def canonical_decomposition(self, d, algorithm="derksen-weyman"):
         # TODO implement this
