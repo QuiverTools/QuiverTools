@@ -186,13 +186,13 @@ class Quiver_moduli:
                     else: # no semi-stables
                         return float('NaN')
 
-    def slope(self, e):
-        """The slope of e is defined as theta*e/(sum_i e_i). We need to ensure that e is non-negative and at least one entry is positive."""
-        assert (e.length() == self._dimensionVector.length())
-        assert all([(ei >= 0) for ei in e])
-        assert any([(ei > 0) for ei in e])
-        theta = self.stability_parameter()
-        return (theta*e)/(sum(list(e)))
+    # def slope(self, e):
+    #     """The slope of e is defined as theta*e/(sum_i e_i). We need to ensure that e is non-negative and at least one entry is positive."""
+    #     assert (e.length() == self._dimensionVector.length())
+    #     assert all([(ei >= 0) for ei in e])
+    #     assert any([(ei > 0) for ei in e])
+    #     theta = self.stability_parameter()
+    #     return (theta*e)/(sum(list(e)))
 
     """
     Notation for explanations:
