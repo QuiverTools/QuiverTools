@@ -35,24 +35,119 @@ class Quiver:
     """
 
     def adjacency_matrix(self):
+        r"""Returns the adjacency matrix of the quiver.
+        
+        OUTPUT: A square matrix M whose entry M[i,j] is the number of arrows from the vertex i to the vertex j.
+        """
         return self._adjacency
+    
+    def underlying_graph(self):
+        r""""Returns the (necessarily symmetric) adjacency matrix of the underlying graph of the quiver.
+
+        OUTPUT: A square, symmetric matrix M whose entry M[i,j] = M[j,i] is the number of edges between the vertices i and j.
+        """
+        return self.adjacency_matrix() + self.adjacency_matrix().transpose() - diagonal_matrix(self.adjacency_matrix().diagonal())
 
     def number_of_vertices(self):
+        r""""Returns the amount of vertices that the quiver has.
+
+        OUTPUT: The number of vertices as an Int.
+        """
         return self.adjacency_matrix().nrows()
 
     def number_of_arrows(self):
+        r""""Returns the number of arrows that the quiver has.
+
+        OUTPUT: The number of arrows as an Int.
+        
+        """
         thin = self.thin_dimension_vector()
         return thin * self.adjacency_matrix() * thin
 
     def is_acyclic(self):
+        r""""Returns the truth value of wether the quiver is acyclic.
+
+        OUTPUT: Statement truth value as Bool.
+        """
         A = self.adjacency_matrix()
         n = self.number_of_vertices()
 
         # a quiver is acyclic if and only if its adjacency matrix is nilpotent
         return (A^n == zero_matrix(ZZ, n))
 
-    def is_connected(self):
-        # TODO implement this
+    def is_connected(self): 
+        r""""Returns whether the underlying graph of the quiver is connected or not.
+
+        OUTPUT: Statement truth value as Bool.
+
+        EXAMPLES:
+
+        The 4-Krönecker quiver::
+        
+            sage: load("quiver.py")
+            sage: K = Quiver( matrix(  [[0, 4],
+            ....:                       [0, 0]]))
+            sage: K.is_connected()
+            True
+
+        The doubled 1-Krönecker quiver::
+        
+            sage: load("quiver.py")
+            sage: C1 = Quiver(matrix(  [[0,1],
+            ....:                       [1,0]]))
+            sage: C1.is_connected()
+            True 
+
+        The 3-loop point quiver::
+
+            sage: load("quiver.py")
+            sage: L = Quiver(matrix([[3]]))
+            sage: L.is_connected()
+            True
+
+        The A_10 quiver::
+
+            sage: load("quiver.py")
+            sage: A10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            ....:                           [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+            ....:                           [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            ....:                           [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            ....:                           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+            ....:                           [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+            ....:                           [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+            ....:                           [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+            ....:                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            ....:                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]))
+            sage: A10.is_connected()
+            True
+        
+        The A_10 quiver without one arrow::
+
+        sage: load("quiver.py")
+        sage: discA10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        ....:                               [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        ....:                               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        ....:                               [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        ....:                               [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ....:                               [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]))
+        sage: discA10.is_connected()
+        False
+        """
+        # inefficient but functioning method. To improve?
+        # more efficient algorithm: scan the graph in depth and list all reachable vertices. 
+        paths = self.underlying_graph()
+        for i in range(2,self.number_of_vertices()): # -1 ?
+            # add all paths of length i
+            paths += paths*self.underlying_graph()
+        # if every couple of vertices is connected (ij \neq 0 or ji \neq 0) then true, otherwise false.
+        for i in range(self.number_of_vertices()):
+            for j in range(self.number_of_vertices()):
+                if i != j and paths[i,j] == 0 and paths[j,i] == 0:
+                    return False
         return True
 
     """
@@ -60,9 +155,22 @@ class Quiver:
     """
 
     def Euler_matrix(self):
+        r"""Returns the Euler matrix of the quiver.
+        
+        OUTPUT: Sage matrix.
+        """
         return matrix.identity(self.number_of_vertices()) - self.adjacency_matrix()
 
     def Euler_form(self, x, y):
+        r"""The Euler bilinear form of the quiver.
+        
+        INPUT: 
+        - ``x`` -- vector of integers
+        - ``y`` -- vector of integers
+
+        OUTPUT: the multiplication of ``x * self.adjacency_matrix() * y`` as an  Int.
+        
+        """
         assert (x.length() == self.number_of_vertices() and y.length() == self.number_of_vertices())
         return x * self.Euler_matrix() * y
 
@@ -71,7 +179,10 @@ class Quiver:
     """
 
     def opposite_quiver(self):
-        """The opposite quiver is given by the transpose of the adjacency matrix of the original quiver."""
+        """The opposite quiver is given by the transpose of the adjacency matrix of the original quiver.
+        
+        OUTPUT: a Quiver object the same vertices and an arrow from j to i for every arrow from i to j in the original quiver.
+        """
         A = self.adjacency_matrix().transpose()
 
         if (self._name != None):
