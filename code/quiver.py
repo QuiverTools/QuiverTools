@@ -214,14 +214,6 @@ class Quiver:
         E = self.Euler_matrix()
         return d * (-self.Euler_matrix().transpose() + E)
 
-    @staticmethod
-    def slope(theta, d):
-        """The slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that d is non-negative and at least one entry is positive."""
-        assert (d.length() == theta.length())
-        assert all([(di >= 0) for di in d])
-        assert any([(di > 0) for di in d])
-        return (theta*d)/(sum(list(d)))
-
     def has_semistable_representation(self, d, theta, algorithm="reineke"):
         """Checks if there is a theta-semistable representation of dimension vector d."""
         assert algorithm == "reineke"
@@ -319,7 +311,16 @@ class Quiver:
         # see Theorem 11.4.6 in the Derksen--Weyman book
         raise NotImplementedError()
 
+"""Auxiliary methods"""
 
+def slope(theta, d):
+    """The slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that d is non-negative and at least one entry is positive."""
+    assert (d.length() == theta.length())
+    assert all([(di >= 0) for di in d])
+    assert any([(di > 0) for di in d])
+    return (theta*d)/(sum(list(d)))
+
+"""Special quivers"""
 
 # TODO convention for generator functions is capitalise them?
 
