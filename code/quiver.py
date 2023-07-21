@@ -320,6 +320,10 @@ def slope(theta, d):
     assert any([(di > 0) for di in d])
     return (theta*d)/(sum(list(d)))
 
+def all_subdimension_vectors(d):
+    """Returns the list of all subdimension vectors of d."""
+    return map(vector, cartesian_product([range(di + 1) for di in d]))
+
 """Special quivers"""
 
 # TODO convention for generator functions is capitalise them?
