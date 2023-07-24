@@ -223,6 +223,7 @@ class Quiver:
         if algorithm == "reineke":
             raise NotImplementedError()
 
+        """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d."""
         if algorithm == "schofield":
             genericSubdimensions = self.all_generic_subdimension_vectors(d)
             genericSubdimensions = list(filter(lambda e: e != 0 and e != d, genericSubdimensions))
@@ -239,6 +240,9 @@ class Quiver:
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1972892
         if algorithm == "al":
             raise NotImplementedError()
+
+        """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d."""
+
 
     # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
     def is_amply_stable(self, d, theta):
