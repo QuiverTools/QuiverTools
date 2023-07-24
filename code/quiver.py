@@ -399,12 +399,11 @@ class Quiver:
 
 """Auxiliary methods"""
 
-def slope(d, theta):
-    """The slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that d is non-negative and at least one entry is positive."""
+def slope(d, theta, denominator=sum):
+    """For denominator = sum, the slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that sum(d) is positive."""
     assert (d.length() == theta.length())
-    assert all([(di >= 0) for di in d])
-    assert any([(di > 0) for di in d])
-    return (theta*d)/(sum(list(d)))
+    assert (denominator(d) > 0)
+    return (theta*d)/(denominator(d))
 
 def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
