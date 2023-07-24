@@ -235,6 +235,7 @@ class Quiver:
         """Checks if there is a theta-stable representation of dimension vector d."""
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
+        """Question: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper."""
         if algorithm == "king":
             raise NotImplementedError()
         # TODO implement this
