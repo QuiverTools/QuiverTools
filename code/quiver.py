@@ -258,7 +258,7 @@ class Quiver:
         False
 
         """
-        
+
         if algorithm == "schofield":
             n = self.number_of_vertices()
             zeroVector = vector([0 for i in range(n)])
@@ -280,6 +280,33 @@ class Quiver:
             raise NotImplementedError()
 
         """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d."""
+
+        """
+        EXAMPLES:
+
+        The A2 quiver:
+        sage: load("quiver.py")
+        sage: A2 = GeneralizedKroneckerQuiver(1)
+        sage: theta = vector([1,-1])
+        sage: d = vector([1,1])
+        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
+        True
+        sage: d = vector([2,2])
+        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
+        False
+        sage: d = vector([0,0])
+        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
+        False
+
+        The 3-Kronecker quiver:
+        sage: load("quiver.py")
+        sage: K3 = GeneralizedKroneckerQuiver(3)
+        sage: theta = vector([3,-2])
+        sage: d = vector([2,3])
+        sage: K3.has_stable_representation(d,theta,algorithm="schofield")
+        True
+
+        """
         if algorithm == "schofield":
             n = self.number_of_vertices()
             zeroVector = vector([0 for i in range(n)])
