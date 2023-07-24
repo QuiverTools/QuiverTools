@@ -266,7 +266,7 @@ class Quiver:
             genericSubdimensions = list(filter(lambda e: e != zeroVector and e != d, genericSubdimensions))
             return all([(slope(e,theta) <= slope(d,theta)) for e in genericSubdimensions])
 
-    def has_stable_representation(self, d, theta, algorithm="king"):
+    def has_stable_representation(self, d, theta, algorithm="schofield"):
         """Checks if there is a theta-stable representation of dimension vector d."""
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
@@ -313,6 +313,27 @@ class Quiver:
             genericSubdimensions = self.all_generic_subdimension_vectors(d)
             genericSubdimensions = list(filter(lambda e: e != zeroVector and e != d, genericSubdimensions))
             return ((d != zeroVector) and all([(slope(e,theta) < slope(d,theta)) for e in genericSubdimensions]))
+
+
+    def is_schur_root(self,d):
+        """Checks if d is a Schur root for the given quiver, i.e. a dimension vector which admits a Schurian representation."""
+
+        """By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
+
+        """
+        EXAMPLES:
+
+        The 3-Kronecker quiver:
+        sage: load("quiver.py")
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: Q.is_schur_root(d)
+        True
+
+        """
+
+        theta = self.canonical_stability_parameter(d)
+        return self.has_stable_representation(d,theta)
 
 
     # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
