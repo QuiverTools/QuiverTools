@@ -217,11 +217,16 @@ class Quiver:
 
     def has_semistable_representation(self, d, theta, algorithm="reineke"):
         """Checks if there is a theta-semistable representation of dimension vector d."""
-        assert algorithm == "reineke"
+        #assert algorithm == "reineke"
 
         # TODO implement this
         if algorithm == "reineke":
             raise NotImplementedError()
+
+        if algorithm == "schofield":
+            genericSubdimensions = self.all_generic_subdimension_vectors(d)
+            genericSubdimensions = list(filter(lambda e: e != 0 and e != d, genericSubdimensions))
+            return all([(slope(theta,e) <= slope(theta,d)) for e in genericSubdimensions])
 
     def has_stable_representation(self, d, theta, algorithm="king"):
         """Checks if there is a theta-stable representation of dimension vector d."""
