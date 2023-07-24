@@ -74,7 +74,7 @@ class Quiver:
         n = self.number_of_vertices()
 
         # a quiver is acyclic if and only if its adjacency matrix is nilpotent
-        return (A^n == zero_matrix(ZZ, n))
+        return (A**n == zero_matrix(ZZ, n))
 
     def is_connected(self):
         r""""Returns whether the underlying graph of the quiver is connected or not.
