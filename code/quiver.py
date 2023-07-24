@@ -225,8 +225,10 @@ class Quiver:
 
         """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d."""
         if algorithm == "schofield":
+            n = self.number_of_vertices()
+            zeroVector = vector([0 for i in range(n)])
             genericSubdimensions = self.all_generic_subdimension_vectors(d)
-            genericSubdimensions = list(filter(lambda e: e != 0 and e != d, genericSubdimensions))
+            genericSubdimensions = list(filter(lambda e: e != zeroVector and e != d, genericSubdimensions))
             return all([(slope(theta,e) <= slope(theta,d)) for e in genericSubdimensions])
 
     def has_stable_representation(self, d, theta, algorithm="king"):
@@ -242,6 +244,12 @@ class Quiver:
             raise NotImplementedError()
 
         """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d."""
+        if algorithm == "schofield":
+            n = self.number_of_vertices()
+            zeroVector = vector([0 for i in range(n)])
+            genericSubdimensions = self.all_generic_subdimension_vectors(d)
+            genericSubdimensions = list(filter(lambda e: e != zeroVector and e != d, genericSubdimensions))
+            return ((d != zeroVector) and all([(slope(theta,e) < slope(theta,d)) for e in genericSubdimensions]))
 
 
     # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
