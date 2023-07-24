@@ -406,7 +406,17 @@ class Quiver:
         * d^1 + ... + d^s = d
         * mu_theta(d^1) > ... > mu_theta(d^s)
         * Every d^k is theta-semi-stable."""
-        raise NotImplementedError()
+
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])
+        if (d == zeroVector):
+            # This is a convention that makes it easier to program the algorithm
+            return [[]]
+        else:
+            subdimensions = all_subdimension_vectors(d)
+            # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
+            subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta,algorithm="schofield"), subdimensions))
+            return [[e]+fstar for e in subdimensions for fstar in self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)]
 
     def in_fundamental_domain(self, d):
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
