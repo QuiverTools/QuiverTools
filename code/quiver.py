@@ -380,8 +380,16 @@ def SubspaceQuiver(m):
 
 
 def GeneralizedSubspaceQuiver( m, k):
-    # TODO implement this
-    return None
+    """A quiver with m sources 1,...,m and one sink m+1; k_i many arrows from source i to the sink."""
+    assert (k.length() == m)
+    A = zero_matrix(ZZ, m + 1)
+    # I'm sure you can do this without a for loop 
+    for i in range(m):
+        A[i, m] = k[i]
+
+    Q = Quiver(A, name = "A generalized "+str(m)+"-subspace quiver")
+    # TODO do Q.rename here
+    return Q
 
 
 def DynkinQuiver( T):
