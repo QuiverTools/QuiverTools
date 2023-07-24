@@ -1,4 +1,5 @@
-from sage.matrix.constructor import matrix
+# from sage.matrix.constructor import matrix
+from sage.all import *
 
 class Quiver:
 
@@ -322,7 +323,7 @@ def slope(theta, d):
 
 def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
-    return map(vector, cartesian_product([range(di + 1) for di in d]))
+    return list(map(vector, cartesian_product([range(di + 1) for di in d])))
 
 """Special quivers"""
 
