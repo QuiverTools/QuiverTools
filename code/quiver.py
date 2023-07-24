@@ -407,6 +407,29 @@ class Quiver:
         * mu_theta(d^1) > ... > mu_theta(d^s)
         * Every d^k is theta-semi-stable."""
 
+        """
+        EXAMPLES
+
+        The 3-Kronecker quiver:
+        sage: load("quiver.py")
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: theta = vector([3,-2])
+        sage: d = vector([2,3])
+        sage: Q.all_harder_narasimhan_types(d,theta)
+        [[(2, 3)],
+         [(1, 1), (1, 2)],
+         [(2, 2), (0, 1)],
+         [(2, 1), (0, 2)],
+         [(1, 0), (1, 3)],
+         [(1, 0), (1, 2), (0, 1)],
+         [(1, 0), (1, 1), (0, 2)],
+         [(2, 0), (0, 3)]]
+        sage: Q.all_harder_narasimhan_types(d,-theta)
+        [[(0, 3), (2, 0)]]
+
+
+        """
+
         n = self.number_of_vertices()
         zeroVector = vector([0 for i in range(n)])
         if (d == zeroVector):
@@ -416,11 +439,13 @@ class Quiver:
             # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
             # Note that we also eliminate d by the following
             subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta,algorithm="schofield"), subdimensions))
+            # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+            subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
             # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
             allHNtypes =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta) > slope(fstar[0],theta) ,self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)))]
-            # Possibly add d again
+            # Possibly add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
             if self.has_semistable_representation(d,theta,algorithm="schofield"):
-                allHNtypes = allHNtypes + [[d]]
+                allHNtypes = [[d]] + allHNtypes
             return allHNtypes
 
     def in_fundamental_domain(self, d):
