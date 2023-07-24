@@ -218,11 +218,11 @@ class Quiver:
     def has_semistable_representation(self, d, theta, algorithm="reineke"):
         """Checks if there is a theta-semistable representation of dimension vector d."""
 
+        #assert algorithm == "reineke"
+
         # TODO implement this
         if algorithm == "reineke":
-            allProperSlopeDecreasingSequences = list(filter(lambda dstar: dstar != [d], all_slope_decreasing_sequences(d,theta,denominator=denominator)))
-            properHNSequences = list(filter(lambda dstar: self.is_harder_narasimhan_type(dstar,theta,denominator=denominator,algorithm="reineke"), allProperSlopeDecreasingSequences))
-            return (sum([self.euler_form(e,f) for dstar in properHNSequences for r in range(len(dstar)-1) for s in range(r,len(dstar))]) < 0)
+            raise NotImplementedError()
 
         """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d."""
 
@@ -403,11 +403,11 @@ class Quiver:
         if (d == zeroVector):
             return (dstar == [zeroVector])
         else:
-            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
+            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(dstar.lenght()-1)])
             semistable = all([self.has_semistable_representation(d,theta,algorithm=algorithm) for e in dstar])
             return (slopeDecreasing and semistable)
 
-    def all_harder_narasimhan_types(self, d, theta, denominator=sum, algorithm="reineke"):
+    def all_harder_narasimhan_types(self, d, theta, denominator=sum):
         # TODO what to return?
         # list of the Harder-Narasimhan types?
         # denominator default being sum is total dimension, there are variations possible
@@ -428,7 +428,7 @@ class Quiver:
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: theta = vector([3,-2])
         sage: d = vector([2,3])
-        sage: Q.all_harder_narasimhan_types(d,theta,algorithm="reineke-schofield")
+        sage: Q.all_harder_narasimhan_types(d,theta)
         [[(2, 3)],
          [(1, 1), (1, 2)],
          [(2, 2), (0, 1)],
@@ -437,7 +437,7 @@ class Quiver:
          [(1, 0), (1, 2), (0, 1)],
          [(1, 0), (1, 1), (0, 2)],
          [(2, 0), (0, 3)]]
-        sage: Q.all_harder_narasimhan_types(d,-theta,algorithm="reineke-schofield")
+        sage: Q.all_harder_narasimhan_types(d,-theta)
         [[(0, 3), (2, 0)]]
 
 
@@ -448,27 +448,18 @@ class Quiver:
         if (d == zeroVector):
             return [[zeroVector]]
         else:
-
-            if (algorithm == "reineke-schofield"):
-                """Here we check if the d^r admit semistable representations using Schofields algorithm."""
-                # As this doesn't depend on the HN types, we can make the list of subdimension vectors which occur in a HN type smaller. This might speed up the computation.
-                subdimensions = all_subdimension_vectors(d)
-                # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
-                # Note that we also eliminate d by the following
-                subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta,algorithm="schofield"), subdimensions))
-                # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
-                subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
-                # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
-                allHNtypes =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta) > slope(fstar[0],theta) ,self.all_harder_narasimhan_types(d-e,theta,denominator=denominator,algorithm="reineke-schofield")))]
-                # Possibly add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
-                if self.has_semistable_representation(d,theta,algorithm="schofield"):
-                    allHNtypes = [[d]] + allHNtypes
-                return allHNtypes
-
-            if (algorithm == "reineke"):
-                allSlopeDecreasingSequences = all_slope_decreasing_sequences(d,theta,denominator=denominator)
-                return list(filter(lambda dstar: self.is_harder_narasimhan_type(dstar,theta,denominator=denominator,algorithm="reineke") ,allSlopeDecreasingSequences))
-
+            subdimensions = all_subdimension_vectors(d)
+            # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
+            # Note that we also eliminate d by the following
+            subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta,algorithm="schofield"), subdimensions))
+            # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+            subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
+            # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+            allHNtypes =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta) > slope(fstar[0],theta) ,self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)))]
+            # Possibly add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
+            if self.has_semistable_representation(d,theta,algorithm="schofield"):
+                allHNtypes = [[d]] + allHNtypes
+            return allHNtypes
 
     def in_fundamental_domain(self, d):
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
@@ -499,20 +490,6 @@ def slope(d, theta, denominator=sum):
 def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
     return list(map(vector, cartesian_product([range(di + 1) for di in d])))
-
-def all_slope_decreasing_sequences(d,theta,denominator=sum):
-    """Gives all sequences d^* = (d^1,...,d^s) such that mu_theta(d_1) > ... > mu_theta(d^s) and d^1 + ... + d^s = d."""
-
-    n = d.length()
-    zeroVector = vector([0 for i in range(n)])
-    subdimensions = all_subdimension_vectors(d)
-    # We consider just those subdimension vectors which are not zero and whose slope is bigger than the slope of d
-    # Note that we also eliminate d by the following
-    subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)), subdimensions))
-    # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
-    subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
-    return [[d]] + [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta) > slope(fstar[0],theta) ,all_slope_decreasing_sequences(d-e,theta,denominator=denominator)))]
-
 
 """Special quivers"""
 
