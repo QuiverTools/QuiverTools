@@ -394,12 +394,18 @@ class Quiver:
         elif algorithm == "schofield-2":
             raise NotImplementedError()
 
-    def harder_narasimhan_stratification(self, d, theta, denominator=sum):
+    def all_harder_narasimhan_types(self, d, theta, denominator=sum):
         # TODO what to return?
         # list of the Harder-Narasimhan types?
         # denominator default being sum is total dimension, there are variations possible
         # and the strata will be different!
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+        """Returns the list of all HN types."""
+
+        """A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
+        * d^1 + ... + d^s = d
+        * mu_theta(d^1) > ... > mu_theta(d^s)
+        * Every d^k is theta-semi-stable."""
         raise NotImplementedError()
 
     def in_fundamental_domain(self, d):
