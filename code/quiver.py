@@ -394,6 +394,19 @@ class Quiver:
         elif algorithm == "schofield-2":
             raise NotImplementedError()
 
+    def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="reineke"):
+        """Checks if dstar is a HN type. Peforms the check of semistability according to algorithm"""
+
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])
+        d = sum(dstar)
+        if (d == zeroVector):
+            return (dstar == [zeroVector])
+        else:
+            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(dstar.lenght()-1)])
+            semistable = all([self.has_semistable_representation(d,theta,algorithm=algorithm) for e in dstar])
+            return (slopeDecreasing and semistable)
+
     def all_harder_narasimhan_types(self, d, theta, denominator=sum):
         # TODO what to return?
         # list of the Harder-Narasimhan types?
