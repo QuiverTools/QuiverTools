@@ -155,14 +155,14 @@ class Quiver:
     Basic representation-theoretical properties of the quiver
     """
 
-    def Euler_matrix(self):
+    def euler_matrix(self):
         r"""Returns the Euler matrix of the quiver.
 
         OUTPUT: Sage matrix.
         """
         return matrix.identity(self.number_of_vertices()) - self.adjacency_matrix()
 
-    def Euler_form(self, x, y):
+    def euler_form(self, x, y):
         r"""The Euler bilinear form of the quiver.
 
         INPUT:
@@ -173,7 +173,7 @@ class Quiver:
 
         """
         assert (x.length() == self.number_of_vertices() and y.length() == self.number_of_vertices())
-        return x * self.Euler_matrix() * y
+        return x * self.euler_matrix() * y
 
     """
     Constructing new quivers out of old
@@ -212,8 +212,8 @@ class Quiver:
 
     def canonical_stability_parameter(self,d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
-        E = self.Euler_matrix()
-        return d * (-self.Euler_matrix().transpose() + E)
+        E = self.euler_matrix()
+        return d * (-self.euler_matrix().transpose() + E)
 
     def has_semistable_representation(self, d, theta, algorithm="reineke"):
         """Checks if there is a theta-semistable representation of dimension vector d."""
@@ -264,6 +264,11 @@ class Quiver:
 
         # apply the numerical criterion
         return all(map(lambda eprime: self.euler_form(eprime, d - e) >= 0, subdimensions))
+
+    def all_generic_subdimension_vectors(self, d):
+        """Returns the list of all generic subdimension vectors of d."""
+        genericSubdimensions = all_subdimension_vectors(d)
+        return list(filter(lambda e: self.is_generic_subdimension_vector(e,d), genericSubdimensions))
 
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a+b)
@@ -383,7 +388,7 @@ def GeneralizedSubspaceQuiver( m, k):
     """A quiver with m sources 1,...,m and one sink m+1; k_i many arrows from source i to the sink."""
     assert (k.length() == m)
     A = zero_matrix(ZZ, m + 1)
-    # I'm sure you can do this without a for loop 
+    # I'm sure you can do this without a for loop
     for i in range(m):
         A[i, m] = k[i]
 
