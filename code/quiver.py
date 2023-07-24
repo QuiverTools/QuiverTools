@@ -264,7 +264,7 @@ class Quiver:
             zeroVector = vector([0 for i in range(n)])
             genericSubdimensions = self.all_generic_subdimension_vectors(d)
             genericSubdimensions = list(filter(lambda e: e != zeroVector and e != d, genericSubdimensions))
-            return all([(slope(theta,e) <= slope(theta,d)) for e in genericSubdimensions])
+            return all([(slope(e,theta) <= slope(d,theta)) for e in genericSubdimensions])
 
     def has_stable_representation(self, d, theta, algorithm="king"):
         """Checks if there is a theta-stable representation of dimension vector d."""
@@ -312,7 +312,7 @@ class Quiver:
             zeroVector = vector([0 for i in range(n)])
             genericSubdimensions = self.all_generic_subdimension_vectors(d)
             genericSubdimensions = list(filter(lambda e: e != zeroVector and e != d, genericSubdimensions))
-            return ((d != zeroVector) and all([(slope(theta,e) < slope(theta,d)) for e in genericSubdimensions]))
+            return ((d != zeroVector) and all([(slope(e,theta) < slope(d,theta)) for e in genericSubdimensions]))
 
 
     # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
@@ -399,7 +399,7 @@ class Quiver:
 
 """Auxiliary methods"""
 
-def slope(theta, d):
+def slope(d, theta):
     """The slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that d is non-negative and at least one entry is positive."""
     assert (d.length() == theta.length())
     assert all([(di >= 0) for di in d])
