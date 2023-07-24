@@ -410,13 +410,18 @@ class Quiver:
         n = self.number_of_vertices()
         zeroVector = vector([0 for i in range(n)])
         if (d == zeroVector):
-            # This is a convention that makes it easier to program the algorithm
-            return [[]]
+            return [[zeroVector]]
         else:
             subdimensions = all_subdimension_vectors(d)
             # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
+            # Note that we also eliminate d by the following
             subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta,algorithm="schofield"), subdimensions))
-            return [[e]+fstar for e in subdimensions for fstar in self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)]
+            # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+            allHNtypes =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta) > slope(fstar[0],theta) ,self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)))]
+            # Possibly add d again
+            if self.has_semistable_representation(d,theta,algorithm="schofield"):
+                allHNtypes = allHNtypes + [[d]]
+            return allHNtypes
 
     def in_fundamental_domain(self, d):
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
