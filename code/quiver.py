@@ -338,8 +338,10 @@ class Quiver:
 
     # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
     def is_amply_stable(self, d, theta):
-        """Checks if d is amply stable of theta"""
-        # Section 4 of https://arxiv.org/pdf/1410.0466.pdf
+        """Checks if d is amply stable of theta, which by definition means that the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
+
+        # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
+        # But can we find a necessary and sufficient condition?
         raise NotImplementedError()
 
     # taken from code/snippets/canonical.sage
