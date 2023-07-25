@@ -215,7 +215,7 @@ class Quiver:
         E = self.euler_matrix()
         return d * (-self.euler_matrix().transpose() + E)
 
-    def has_semistable_representation(self, d, theta, algorithm="reineke"):
+    def has_semistable_representation(self, d, theta, algorithm="schofield"):
         """Checks if there is a theta-semistable representation of dimension vector d."""
 
         #assert algorithm == "reineke"
@@ -394,7 +394,7 @@ class Quiver:
         elif algorithm == "schofield-2":
             raise NotImplementedError()
 
-    def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="reineke"):
+    def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="schofield"):
         """Checks if dstar is a HN type. Peforms the check of semistability according to algorithm"""
 
         n = self.number_of_vertices()
