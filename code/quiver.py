@@ -461,6 +461,19 @@ class Quiver:
                 allHNtypes = [[d]] + allHNtypes
             return allHNtypes
 
+    def is_luna_type(self, tau, theta):
+        """Checks if tau is a Luna type for theta."""
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])
+        d = sum([sum(dn[1])*dn[0] for dn in tau])
+        if (d == zeroVector):
+            return (tau == [tuple([zeroVector,[1]])])
+        else:
+            dstar = [dn[0] for dn in tau]
+            equalSlope = all([slope(e,theta,denominator=sum) == slope(d,theta,denominator=sum) for e in dstar])
+            semistable = all([self.has_stable_representation(d,theta,algorithm="schofield") for e in dstar])
+            return (equalSlope and semistable)
+
     def all_luna_types(self, d, theta):
         """Returns the unordered list of all Luna types of d for theta."""
 
@@ -542,7 +555,7 @@ class Quiver:
             return partialLunaTypes
 
         if (d == zeroVector):
-            return [{[zeroVector,1]}]
+            return [tuple([zeroVector,[1]])]
         else:
             partialLunaTypes = partial_luna_types(d)
             allLunaTypes = []
