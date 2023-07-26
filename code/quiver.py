@@ -461,7 +461,7 @@ class Quiver:
                 allHNtypes = [[d]] + allHNtypes
             return allHNtypes
 
-    def all_Luna_types(self, d, theta, denominator=sum):
+    def all_luna_types(self, d, theta, denominator=sum):
         """Returns the unordered list of all Luna types of d for theta."""
 
         """A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
@@ -491,10 +491,26 @@ class Quiver:
         [(e,[1,1,1])]
         """
 
+        """
+        EXAMPLES
+
+        The 3-Kronecker quiver:
+        sage: load("quiver.py")
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([3,3])
+        sage: theta = vector([1,-1])
+        sage: Q.all_luna_types(d,theta)
+        [[[(1, 1), [3]]],
+         [[(1, 1), [2, 1]]],
+         [[(1, 1), [1, 1, 1]]],
+         [[(1, 1), [1]], [(2, 2), [1]]],
+         [[(3, 3), [1]]]]
+        """
+
         n = self.number_of_vertices()
         zeroVector = vector([0 for i in range(n)])
 
-        def partial_Luna_types(d):
+        def partial_luna_types(d):
             """Returns the list of sets of the form {(d^1,n_1),...,(d^s,n_s)} such that all d^k are distinct."""
             subdimensions = all_subdimension_vectors(d)
             # We consider just those subdimension vectors which are not zero or d, whose slope equals the slope of d and which admit a stable representation
@@ -502,7 +518,7 @@ class Quiver:
             # Create all partial Luna types
             partialLunaTypes = []
             for e in subdimensions:
-                smallerPartialLunaTypes = partial_Luna_types(d-e)
+                smallerPartialLunaTypes = partial_luna_types(d-e)
                 for tau in smallerPartialLunaTypes:
                     # Check if e occurs as a dimension vector in tau.
                     # If so, say of the form (e,n) then remove this occurrence and add (e,n+1)
@@ -528,7 +544,7 @@ class Quiver:
         if (d == zeroVector):
             return [{[zeroVector,1]}]
         else:
-            partialLunaTypes = partial_Luna_types(d)
+            partialLunaTypes = partial_luna_types(d)
             allLunaTypes = []
             for tau in partialLunaTypes:
                 listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
