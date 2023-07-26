@@ -478,17 +478,17 @@ class Quiver:
         ((e,1),(e,1),(e,1))
         """
 
-        """Therefore we implement it as follows. A Luna type for us is a set {(d^1,p^1),...,(d^s,p^s)} of dimension vectors d^k and (non-empty) partitions p^k such that
+        """Therefore we implement it as follows. A Luna type for us is a list [(d^1,p^1),...,(d^s,p^s)] (actually it should be unordered, but that's difficult because vectors are mutable) of dimension vectors d^k and (non-empty) partitions p^k such that
         * |p^1|d^1 + ... + |p^s|d^s = d
         * same
         * same """
 
         """So in the above example, the Luna types are
-        {(3e,[1])}
-        {(2e,[1]),(e,[1])}
-        {(e,[3])}
-        {(e,[2,1])}
-        {(e,[1,1,1])}
+        [(3e,[1])]
+        [(2e,[1]),(e,[1])]
+        [(e,[3])]
+        [(e,[2,1])]
+        [(e,[1,1,1])]
         """
 
         n = self.number_of_vertices()
@@ -504,19 +504,25 @@ class Quiver:
             for e in subdimensions:
                 smallerPartialLunaTypes = partial_Luna_types(d-e)
                 for tau in smallerPartialLunaTypes:
-                    # Check if d occurs as a dimension vector in tau.
-                    # If so, say of the form (d,n) then remove this occurrence and add (d,n+1)
-                    # If not, then add (d,1)
+                    # Check if e occurs as a dimension vector in tau.
+                    # If so, say of the form (e,n) then remove this occurrence and add (e,n+1)
+                    # If not, then add (e,1)
                     occurs = False
-                    for dn in list(tau):
-                        if (dn[0] == d):
-                            # ^ is the symmetric difference
-                            xi = tau ^ {dn,[d,dn[1]+1]}
+                    for dn in tau:
+                        if (dn[0] == e):
+                            # We remove dn from tau and add the tuple (e,dn[1]+1) instead
+                            tau.remove(dn)
+                            tau.append(tuple([e,dn[1]+1]))
                             occurs = True
-                    if !occurs:
-                        xi = tau | {[d,1]}
-                    # Now xi is a Luna type of the desired form
-                    partialLunaTypes = partialLunaTypes + [xi]
+                    if (not occurs):
+                        tau.append(tuple([e,1]))
+                    # Now tau is a Luna type of d the desired form
+                    # We sort it, because it's supposed to be unordered
+                    tau = sorted(tau)
+                    if tau not in partialLunaTypes:
+                        partialLunaTypes = partialLunaTypes + [tau]
+            if self.has_stable_representation(d,theta,algorithm="schofield"):
+                partialLunaTypes = partialLunaTypes + [[tuple([d,1])]]
             return partialLunaTypes
 
         if (d == zeroVector):
@@ -525,10 +531,9 @@ class Quiver:
             partialLunaTypes = partial_Luna_types(d)
             allLunaTypes = []
             for tau in partialLunaTypes:
-                tauAsList = list(tau)
-                listOfPartitions = [Partitions(dn[1]).list() for dn in tauAsList]
+                listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
                 Prod = cartesian_product(listOfPartitions).list()
-                allLunaTypes = allLunaTypes + [set([[tauAsList[i][0],p[i]] for i in len(tauAsList)]) for p in Prod]
+                allLunaTypes = allLunaTypes + [[[tau[i][0],p[i]] for i in range(len(tau))] for p in Prod]
             return allLunaTypes
 
 
