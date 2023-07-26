@@ -461,6 +461,77 @@ class Quiver:
                 allHNtypes = [[d]] + allHNtypes
             return allHNtypes
 
+    def all_Luna_types(self, d, theta, denominator=sum):
+        """Returns the unordered list of all Luna types of d for theta."""
+
+        """A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
+        * m_1d^1 + ... + m_sd^s = d
+        * mu_theta(d^k) = mu_theta(d)
+        * All d^k admit a theta-stable representation
+        """
+
+        """Example: Suppose that d = 3e and e, 2e, d = 3e are the only stable subdimension vectors. Then the Luna types are:
+        ((3e,1))
+        ((2e,1),(e,1))
+        ((e,3))
+        ((e,2),(e,1))
+        ((e,1),(e,1),(e,1))
+        """
+
+        """Therefore we implement it as follows. A Luna type for us is a set {(d^1,p^1),...,(d^s,p^s)} of dimension vectors d^k and (non-empty) partitions p^k such that
+        * |p^1|d^1 + ... + |p^s|d^s = d
+        * same
+        * same """
+
+        """So in the above example, the Luna types are
+        {(3e,[1])}
+        {(2e,[1]),(e,[1])}
+        {(e,[3])}
+        {(e,[2,1])}
+        {(e,[1,1,1])}
+        """
+
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])
+
+        def partial_Luna_types(d):
+            """Returns the list of sets of the form {(d^1,n_1),...,(d^s,n_s)} such that all d^k are distinct."""
+            subdimensions = all_subdimension_vectors(d)
+            # We consider just those subdimension vectors which are not zero or d, whose slope equals the slope of d and which admit a stable representation
+            subdimensions = list(filter(lambda e: (e != zeroVector) and (e != d) and (slope(e,theta,denominator=denominator) == slope(d,theta,denominator=denominator)) and self.has_stable_representation(e,theta,algorithm="schofield"), subdimensions))
+            # Create all partial Luna types
+            partialLunaTypes = []
+            for e in subdimensions:
+                smallerPartialLunaTypes = partial_Luna_types(d-e)
+                for tau in smallerPartialLunaTypes:
+                    # Check if d occurs as a dimension vector in tau.
+                    # If so, say of the form (d,n) then remove this occurrence and add (d,n+1)
+                    # If not, then add (d,1)
+                    occurs = False
+                    for dn in list(tau):
+                        if (dn[0] == d):
+                            # ^ is the symmetric difference
+                            xi = tau ^ {dn,[d,dn[1]+1]}
+                            occurs = True
+                    if !occurs:
+                        xi = tau | {[d,1]}
+                    # Now xi is a Luna type of the desired form
+                    partialLunaTypes = partialLunaTypes + [xi]
+            return partialLunaTypes
+
+        if (d == zeroVector):
+            return [{[zeroVector,1]}]
+        else:
+            partialLunaTypes = partial_Luna_types(d)
+            allLunaTypes = []
+            for tau in partialLunaTypes:
+                tauAsList = list(tau)
+                listOfPartitions = [Partitions(dn[1]).list() for dn in tauAsList]
+                Prod = cartesian_product(listOfPartitions).list()
+                allLunaTypes = allLunaTypes + [set([[tauAsList[i][0],p[i]] for i in len(tauAsList)]) for p in Prod]
+            return allLunaTypes
+
+
     def in_fundamental_domain(self, d):
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
         raise NotImplementedError()
