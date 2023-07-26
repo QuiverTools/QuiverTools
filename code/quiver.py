@@ -573,9 +573,9 @@ class Quiver:
 
         # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
         if is_coprime_for_stability_parameter(d,theta):
-            # This is probably the fastes way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation might be a bit slower
             return True
         else:
+            # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation might be a bit slower
             if not self.has_semistable_representation(d,theta,algorithm=algorithm):
                 return True
             else:
