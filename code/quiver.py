@@ -500,11 +500,11 @@ class Quiver:
         sage: d = vector([3,3])
         sage: theta = vector([1,-1])
         sage: Q.all_luna_types(d,theta)
-        [[[(1, 1), [3]]],
-         [[(1, 1), [2, 1]]],
-         [[(1, 1), [1, 1, 1]]],
-         [[(1, 1), [1]], [(2, 2), [1]]],
-         [[(3, 3), [1]]]]
+        [[((1, 1), [3])],
+         [((1, 1), [2, 1])],
+         [((1, 1), [1, 1, 1])],
+         [((1, 1), [1]), ((2, 2), [1])],
+         [((3, 3), [1])]]
         """
 
         n = self.number_of_vertices()
@@ -549,13 +549,41 @@ class Quiver:
             for tau in partialLunaTypes:
                 listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
                 Prod = cartesian_product(listOfPartitions).list()
-                allLunaTypes = allLunaTypes + [[[tau[i][0],p[i]] for i in range(len(tau))] for p in Prod]
+                allLunaTypes = allLunaTypes + [[tuple([tau[i][0],p[i]]) for i in range(len(tau))] for p in Prod]
             return allLunaTypes
 
-    def semistable_equals_stable(self, d, theta):
+    def semistable_equals_stable(self, d, theta, algorithm="schofield"):
         """Checks if every theta-semistable representation of dimension vector d is theta-stable"""
-        # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
 
+        """
+        EXAMPLES
+        The 3-Kronecker quiver:
+        sage: load("quiver.py")
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([3,3])
+        sage: theta = vector([1,-1])
+        sage: Q.semistable_equals_stable(d,theta)
+        False
+        sage: d = vector([2,3])
+        sage: Q.semistable_equals_stable(d,theta)
+        True
+        """
+
+        """Every theta-semistable representation is theta-stable if and only if there are no Luna types other than (possibly) (d,[1])."""
+
+        # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
+        if is_coprime_for_stability_parameter(d,theta):
+            # This is probably the fastes way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation might be a bit slower
+            return True
+        else:
+            if not self.has_semistable_representation(d,theta,algorithm=algorithm):
+                return True
+            else:
+                allLunaTypes = self.all_luna_types(d,theta,denominator=sum)
+                genericType = tuple([d,[1]])
+                if genericType in allLunaTypes:
+                    allLunaTypes.remove(genericType)
+                return (not allLunaTypes)
 
     def in_fundamental_domain(self, d):
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
