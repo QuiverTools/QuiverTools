@@ -552,6 +552,10 @@ class Quiver:
                 allLunaTypes = allLunaTypes + [[[tau[i][0],p[i]] for i in range(len(tau))] for p in Prod]
             return allLunaTypes
 
+    def semistable_equals_stable(self, d, theta):
+        """Checks if every theta-semistable representation of dimension vector d is theta-stable"""
+        # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
+
 
     def in_fundamental_domain(self, d):
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
@@ -582,6 +586,33 @@ def slope(d, theta, denominator=sum):
 def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
     return list(map(vector, cartesian_product([range(di + 1) for di in d])))
+
+def is_coprime_for_stability_parameter(d,theta):
+    """Checks if d is theta-coprime."""
+
+    """A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d."""
+
+    """
+    EXAMPLES
+    sage: load("quiver.py")
+    sage: d = vector([2,3])
+    sage: theta = vector([3,-2])
+    sage: is_coprime_for_stability_parameter(d,theta)
+    True
+    sage: d = vector([3,3])
+    sage: theta = vector([1,-1])
+    sage: is_coprime_for_stability_parameter(d,theta)
+    False
+    """
+
+    assert (d.length() == theta.length())
+    zeroVector = vector([0 for i in range(d.length())])
+    properSubdimensions = list(filter(lambda e: e != d and e != zeroVector, all_subdimension_vectors(d)))
+    return all([slope(d,theta) != slope(e,theta) for e in properSubdimensions])
+
+def is_indivisible(d):
+    """Checks if the gcd of all entries is 1 or not."""
+    return (gcd(d) == 1)
 
 """Special quivers"""
 
