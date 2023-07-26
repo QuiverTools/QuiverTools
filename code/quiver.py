@@ -461,7 +461,7 @@ class Quiver:
                 allHNtypes = [[d]] + allHNtypes
             return allHNtypes
 
-    def all_luna_types(self, d, theta, denominator=sum):
+    def all_luna_types(self, d, theta):
         """Returns the unordered list of all Luna types of d for theta."""
 
         """A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
@@ -514,7 +514,7 @@ class Quiver:
             """Returns the list of sets of the form {(d^1,n_1),...,(d^s,n_s)} such that all d^k are distinct."""
             subdimensions = all_subdimension_vectors(d)
             # We consider just those subdimension vectors which are not zero or d, whose slope equals the slope of d and which admit a stable representation
-            subdimensions = list(filter(lambda e: (e != zeroVector) and (e != d) and (slope(e,theta,denominator=denominator) == slope(d,theta,denominator=denominator)) and self.has_stable_representation(e,theta,algorithm="schofield"), subdimensions))
+            subdimensions = list(filter(lambda e: (e != zeroVector) and (e != d) and (slope(e,theta,denominator=sum) == slope(d,theta,denominator=sum)) and self.has_stable_representation(e,theta,algorithm="schofield"), subdimensions))
             # Create all partial Luna types
             partialLunaTypes = []
             for e in subdimensions:
