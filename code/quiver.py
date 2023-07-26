@@ -471,7 +471,7 @@ class Quiver:
         else:
             dstar = [dn[0] for dn in tau]
             equalSlope = all([slope(e,theta,denominator=sum) == slope(d,theta,denominator=sum) for e in dstar])
-            semistable = all([self.has_stable_representation(d,theta,algorithm="schofield") for e in dstar])
+            semistable = all([self.has_stable_representation(e,theta,algorithm="schofield") for e in dstar])
             return (equalSlope and semistable)
 
     def all_luna_types(self, d, theta):
