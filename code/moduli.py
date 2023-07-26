@@ -33,7 +33,8 @@ from abc import ABC, abstractmethod
 class QuiverModuli(ABC):
     @abstractmethod
     def __init__(self, Q, d, theta, condition):
-        # TODO some checks?
+        assert (Q.number_of_vertices() == d.length() & Q.number_of_vertices() == theta.length())
+        assert (condition in ["semistable", "stable"])
         self._Q = Q
         self._d = d
         self._theta = theta
@@ -66,16 +67,41 @@ class QuiverModuliSpace(QuiverModuli):
         self._condition = condition # TODO better name than 'condition' or 'version'?
 
     def __repr__(self):
-        return = "A "+condition+" quiver moduli space with:\n"+ "Q = "+str(self._quiver)"\n"+ "d = "+str(self._dimensionVector)+"\n"+ "theta = "+str(self._stabilityParameter)
+        return "A "+self._condition+" quiver moduli space with:\n"+ "Q = "+str(self._Q)+"\n"+ "d = "+str(self._d)+"\n"+ "theta = "+str(self._theta)
 
     def dimension(self):
-        if self._Q.has_stable_representations(d):
+        if self._Q.has_stable_representation(self._d, self._theta):
             # if there are stable representations then both the stable and
             # the semi-stable moduli space have dimension `1-<d,d>`
-            return 1 - self._Q.Euler_form(self._d, self._d)
+            return 1 - self._Q.euler_form(self._d, self._d)
         else:
-            # TODO implement
-            raise NotImplementedError()
+            # Stable locus is empty
+            if self._condition == "semistable":
+                if self._Q.has_semistable_representation(self._d, self._theta):
+                    # In this case the dimension is given by the maximum of the dimensions of the Luna strata
+                    raise NotImplementedError()
+                else:
+                    # I somehow like the convention that the dimension of the empty set is -Infinity
+                    return -oo
+            else:
+                # self._condition == "stable"
+                return -oo
+
+    def codimension_of_harder_narasimhan_stratum_in_representation_space(self,dstar,denominator=sum):
+        """Computes the codimension of the HN stratum R_{d^*}^HN inside R_d."""
+        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+        # This check takes a long time. Shall we do it nonetheless?
+        assert self._Q.is_harder_narasimhan_type(dstar,self._theta,denominator=denominator)
+        s = len(dstar)
+        return -sum([self._Q.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
+
+    def dimension_of_luna_stratum(self,tau,denominator=sum):
+        """Computes the dimension of the Luna stratum S_tau."""
+        """The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is s - sum_k <d^k,d^k>"""
+        # This check takes a long time. Shall we do it nonetheless?
+        assert self._Q.is_luna_type(tau,self._theta)
+        dimensionVectors = [dn[0] for dn in tau]
+        return len(tau) - sum([self._Q.euler_form(e,e) for e in dimensionVectors])
 
     def betti_numbers(self):
         raise NotImplementedError()
@@ -94,7 +120,7 @@ class QuiverModuliStack(QuiverModuli):
         self._condition = condition # TODO better name than 'condition' or 'version'?
 
     def __repr__(self):
-        return = "A "+condition+" quiver moduli stack with:\n"+ "Q = "+str(self._quiver)"\n"+ "d = "+str(self._dimensionVector)+"\n"+ "theta = "+str(self._stabilityParameter)
+        return "A "+self._condition+" quiver moduli stack with:\n"+ "Q = "+str(self._Q)+"\n"+ "d = "+str(self._d)+"\n"+ "theta = "+str(self._theta)
 
     def dimension(self):
         """dim [R^{(s)st}/G] = dim R^{(s)st} - dim G
