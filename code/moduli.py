@@ -70,6 +70,79 @@ class QuiverModuliSpace(QuiverModuli):
         return "A "+self._condition+" quiver moduli space with:\n"+ "Q = "+str(self._Q)+"\n"+ "d = "+str(self._d)+"\n"+ "theta = "+str(self._theta)
 
     def dimension(self):
+        """Computes the dimension of the moduli space M^{theta-(s)st}(Q,d)."""
+
+        """This involves several cases:
+        * if there are theta-stable representations then dim M^{theta-sst}(Q,d) = M^{theta-st}(Q,d) = 1 - <d,d>
+        * if there are no theta-stable representations then dim M^{theta-st}(Q,d) = -Infinity (by convention) and dim M^{theta-sst} = max_tau dim S_tau, the maximum of the dimension of all Luna strata."""
+
+        """
+        EXAMPLES
+
+        The A2-quiver:
+        sage: load("quiver.py")
+        sage: load("moduli.py")
+        sage: Q = GeneralizedKroneckerQuiver(1)
+        sage: theta = vector([1,-1])
+        sage: d = vector([1,1])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+        sage: X.dimension()
+        0
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: X.dimension()
+        0
+        sage: d = vector([2,2])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+        sage: X.dimension()
+        -Infinity
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: X.dimension()
+        0
+
+        The Kronecker quiver:
+        sage: load("quiver.py")
+        sage: load("moduli.py")
+        sage: Q = GeneralizedKroneckerQuiver(2)
+        sage: theta = vector([1,-1])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+        sage: X.dimension()
+        1
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: X.dimension()
+        1
+        sage: d = vector([2,2])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+        sage: X.dimension()
+        -Infinity
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: X.dimension()
+        2
+
+        The 3-Kronecker quiver:
+        sage: load("quiver.py")
+        sage: load("moduli.py")
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: X.dimension()
+        6
+        sage: d = vector([3,3])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: X.dimension()
+        10
+        sage: d = vector([1,3])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+        sage: X.dimension()
+        0
+        sage: d = vector([1,4])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+        sage: X.dimension()
+        -Infinity
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: X.dimension()
+        -Infinity
+        """
+        
         if self._Q.has_stable_representation(self._d, self._theta):
             # if there are stable representations then both the stable and
             # the semi-stable moduli space have dimension `1-<d,d>`
@@ -79,7 +152,8 @@ class QuiverModuliSpace(QuiverModuli):
             if self._condition == "semistable":
                 if self._Q.has_semistable_representation(self._d, self._theta):
                     # In this case the dimension is given by the maximum of the dimensions of the Luna strata
-                    raise NotImplementedError()
+                    allLunaTypes = self._Q.all_luna_types(self._d,self._theta)
+                    return max([self.dimension_of_luna_stratum(tau) for tau in allLunaTypes])
                 else:
                     # I somehow like the convention that the dimension of the empty set is -Infinity
                     return -oo
@@ -95,13 +169,28 @@ class QuiverModuliSpace(QuiverModuli):
         s = len(dstar)
         return -sum([self._Q.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
 
-    def dimension_of_luna_stratum(self,tau,denominator=sum):
+    def dimension_of_luna_stratum(self,tau):
         """Computes the dimension of the Luna stratum S_tau."""
-        """The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is s - sum_k <d^k,d^k>"""
+        """The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is sum_k l(p^k)(1 - <d^k,d^k>) where for a partition p = (n_1,...,n_l), the length l(p) is l, i.e. the number of rows."""
+
+        """
+        EXAMPLES
+        The Kronecker quiver:
+        sage: load("quiver.py")
+        sage: load("moduli.py")
+        sage: Q = GeneralizedKroneckerQuiver(2)
+        sage: d = vector([2,2])
+        sage: theta = vector([1,-1])
+        sage: L = Q.all_luna_types(d,theta)
+        sage: L
+        [[((1, 1), [2])], [((1, 1), [1, 1])]]
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: [X.dimension_of_luna_stratum(tau) for tau in L]
+        [1, 2]
+        """
         # This check takes a long time. Shall we do it nonetheless?
         assert self._Q.is_luna_type(tau,self._theta)
-        dimensionVectors = [dn[0] for dn in tau]
-        return len(tau) - sum([self._Q.euler_form(e,e) for e in dimensionVectors])
+        return sum([len(dn[1])*(1-self._Q.euler_form(dn[0],dn[0])) for dn in tau])
 
     def betti_numbers(self):
         raise NotImplementedError()
