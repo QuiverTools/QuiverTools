@@ -403,7 +403,7 @@ class Quiver:
         if (d == zeroVector):
             return (dstar == [zeroVector])
         else:
-            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(dstar.lenght()-1)])
+            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
             semistable = all([self.has_semistable_representation(d,theta,algorithm=algorithm) for e in dstar])
             return (slopeDecreasing and semistable)
 
