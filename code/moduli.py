@@ -142,7 +142,7 @@ class QuiverModuliSpace(QuiverModuli):
         sage: X.dimension()
         -Infinity
         """
-        
+
         if self._Q.has_stable_representation(self._d, self._theta):
             # if there are stable representations then both the stable and
             # the semi-stable moduli space have dimension `1-<d,d>`
@@ -214,8 +214,10 @@ class QuiverModuliStack(QuiverModuli):
     def dimension(self):
         """dim [R^{(s)st}/G] = dim R^{(s)st} - dim G
         this is -<d,d> if the (semi-)stable locus is non-empty"""
-        # TODO implement
-        pass
+        if (self._condition == "stable" and self._Q.has_stable_representation(self._d, self._theta)) or (self._condition == "semistable" and self._Q.has_semistable_representation(self._d, self._theta)):
+            return -self._Q.euler_form(self._d,self._d)
+        else:
+            return -oo
 
     def is_smooth(self):
         # TODO think about the empty case, should it be smooth?
