@@ -194,6 +194,8 @@ class QuiverModuliSpace(QuiverModuli):
         sage: [X.dimension_of_luna_stratum(tau) for tau in L]
         [1, 2]
         """
+        # The Luna stratification is a stratification of the semistable moduli space
+        assert self._condition == "semistable"
         # This check takes a long time. Shall we do it nonetheless?
         assert self._Q.is_luna_type(tau,self._theta)
         return sum([len(dn[1])*(1-self._Q.euler_form(dn[0],dn[0])) for dn in tau])
