@@ -40,21 +40,24 @@ class QuiverModuli(ABC):
         self._theta = theta
         self._condition = condition
 
-    @abstractmethod
-    def dimension(self):
-        pass
-
     def quiver(self):
         return self._Q
 
     def dimension_vector(self):
         return self._d
 
+    def stability_parameter(self):
+        return self._theta
+
     def is_nonempty(self):
         if self._condition == "stable":
             return self._Q.has_stable_representation(self._d, self._theta)
         elif self._condition == "semistable":
             return self._Q.has_semistable_representation(self._d, self._theta)
+
+    @abstractmethod
+    def dimension(self):
+        pass
 
     @abstractmethod
     def is_smooth():
