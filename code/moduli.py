@@ -167,6 +167,9 @@ class QuiverModuliSpace(QuiverModuli):
     def codimension_of_harder_narasimhan_stratum_in_representation_space(self,dstar,denominator=sum):
         """Computes the codimension of the HN stratum R_{d^*}^HN inside R_d."""
         """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+
+        """I'm not sure if this belongs here. The HN stratification is a stratification of R(Q,d) and not of the semistable moduli space. Should it instead go into quiver.py?"""
+
         # This check takes a long time. Shall we do it nonetheless?
         assert self._Q.is_harder_narasimhan_type(dstar,self._theta,denominator=denominator)
         s = len(dstar)
