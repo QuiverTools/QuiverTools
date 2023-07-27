@@ -225,6 +225,7 @@ class QuiverModuliStack(QuiverModuli):
 
 
 class SmoothModel:
+    """How about this: instead of a separate class SmoothModel, we could define a method framed_moduli_space(self,n) inside the class QuiverModuliSpace which returns another quiver moduli space. After all, it is itself a quiver moduli space."""
     def __init__(self):
         pass
 
