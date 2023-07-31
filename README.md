@@ -1,3 +1,6 @@
+[![tests](https://github.com/quiver-tools/quiver.tools/actions/workflows/tests.yml/badge.svg)](https://github.com/quiver-tools/quiver.tools/actions)
+
+
 # Instructions
 
 You can install it using
