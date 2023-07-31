@@ -80,8 +80,7 @@ class QuiverModuliSpace(QuiverModuli):
         EXAMPLES
 
         The A2-quiver:
-        sage: load("quiver.py")
-        sage: load("moduli.py")
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(1)
         sage: theta = vector([1,-1])
         sage: d = vector([1,1])
@@ -100,8 +99,7 @@ class QuiverModuliSpace(QuiverModuli):
         0
 
         The Kronecker quiver:
-        sage: load("quiver.py")
-        sage: load("moduli.py")
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(2)
         sage: theta = vector([1,-1])
         sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
@@ -119,8 +117,7 @@ class QuiverModuliSpace(QuiverModuli):
         2
 
         The 3-Kronecker quiver:
-        sage: load("quiver.py")
-        sage: load("moduli.py")
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: d = vector([2,3])
         sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
@@ -176,8 +173,7 @@ class QuiverModuliSpace(QuiverModuli):
         """
         EXAMPLES
         The Kronecker quiver:
-        sage: load("quiver.py")
-        sage: load("moduli.py")
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(2)
         sage: d = vector([2,2])
         sage: theta = vector([1,-1])
