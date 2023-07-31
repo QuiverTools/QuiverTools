@@ -1,3 +1,12 @@
+# Instructions
+
+You can install it using
+
+``sage --pip install -e .``
+
+and then you can just do `from quiver import *` to get started.
+
+
 # Summary
 
 The goal is to implement algorithms related to
