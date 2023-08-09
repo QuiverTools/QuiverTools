@@ -810,7 +810,7 @@ def disjoint_union(Q1,Q2):
     else:
         name = None
 
-    return Quiver(block_diagonal_matrix(Q1._adjacency,Q1._adjacency), name=name)
+    return Quiver(block_diagonal_matrix(Q1._adjacency,Q2._adjacency), name=name)
 
 """Special quivers"""
 
