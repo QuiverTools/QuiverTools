@@ -199,11 +199,33 @@ class Quiver:
     def is_source(self,i):
         """Checks if i is a source of the quiver, i.e. if there are no incoming arrows into i."""
 
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: Q.is_source(1)
+        True
+        sage: Q.is_source(2)
+        False
+        """
+
         assert (i > 0) and (i <= self.number_of_vertices())
         return (self.indegree(i) == 0)
 
     def is_sink(self,j):
         """Checks if j is a sink of the quiver, i.e. if there are no outgoing arrows out of j."""
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: Q.is_sink(1)
+        False
+        sage: Q.is_sink(2)
+        True
+        """
 
         assert (j > 0) and (j <= self.number_of_vertices())
         return (self.outdegree(j) == 0)
