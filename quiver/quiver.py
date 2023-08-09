@@ -878,8 +878,19 @@ class Quiver:
 
         """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
 
-        forbidden = all_forbidden_subdimension_vectors(d)
-        return list(filter(lambda e: not any([partial_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: Q.all_minimal_forbidden_subdimension_vectors(d,theta)
+        [(1, 1), (2, 2)]
+        """
+
+        forbidden = all_forbidden_subdimension_vectors(d,theta)
+        return list(filter(lambda e: not any([self.partial_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
 
 
     """
