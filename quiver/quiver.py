@@ -873,12 +873,12 @@ class Quiver:
 
         return less
 
-    def all_minimal_forbidden_subdimension_vectors(d,theta):
+    def all_minimal_forbidden_subdimension_vectors(self,d,theta):
         """Returns the list of all minimal forbidden subdimension vectors of d."""
 
         """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
 
-        forbidden = all_forbidden_subdimension_vectors(d,theta)
+        forbidden = all_forbidden_subdimension_vectors(d)
         return list(filter(lambda e: not any([partial_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
 
 
