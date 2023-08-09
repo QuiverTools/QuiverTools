@@ -1,8 +1,11 @@
+from auxiliary import *
+
 """We compute the class of the diagonal inside the Chow ring A^*(X x X) where X is the moduli space of the 3-Kronecker quiver with d = [2,3] and theta = [3,-2]."""
 
 """t1,t2 are the Chern roots of the bundle p_1^*U_1 and s1,s2,s3 are the Chern roots of the bundle p_1^*U_2 while tt1,tt2 and ss1,ss2,ss3 are the Chern roots of the bundles p_2^*U_1 and p_2^*U_2. They generate the Chow ring of the quotient stack [R/T] x [R/T]."""
 R.<t1,t2,s1,s2,s3,tt1,tt2,ss1,ss2,ss3> = PolynomialRing(QQ)
-Delta = (t2-t1)*(s2-s1)*(s3-s1)*(s3-s2)*(tt2-tt1)*(ss2-ss1)*(ss3-ss1)*(ss3-ss2)
+Delta = (t2-t1)*(s2-s1)*(s3-s1)*(s3-s2)
+DDelta = (tt2-tt1)*(ss2-ss1)*(ss3-ss1)*(ss3-ss2)
 t = [t1,t2]
 s = [s1,s2,s3]
 tt = [tt1,tt2]
@@ -19,3 +22,23 @@ A.<x1,x2,y1,y2,y3,xx1,xx2,yy1,yy2,yy3> = PolynomialRing(QQ, order=TermOrder('wde
 
 """Now we define the homomorphism A --> R which sends x_r to e_r, y_s to d_s, xx_r to ee_r and yy_s to dd_s."""
 inclusion = A.hom([e1,e2,d1,d2,d3,ee1,ee2,dd1,dd2,dd3],R)
+
+"""A^*([R/T] x [R/T]) is free as an A^*([R/G] x [R/G])-module. A basis is given by products of all Demazure operators applied to the following elements X and XX."""
+X = t1*s1^2*s2
+XX = tt1*ss1^2*ss2
+
+"""W is the Weyl group of T inside G."""
+S2 = Permutations(2).list()
+S3 = Permutations(3).list()
+W = cartesian_product([S2,S3])
+w0 = (Permutation([2,1]), Permutation([3,2,1]))
+
+"""Now to the 'forbidden' polynomials. They live in A^*([R/T]).
+They should be defined as a function of the forbidden subdimension vector
+in the general implementation. The general formula is
+prod_{a in Q_1} prod_{r=1}^{d'_{s(a)}} prod_{s=d'_{t(a)}+1}^{d_{t(a)}} (t_{t(a),s} - t_{s(a),r}).
+The forbidden subdimension vectors are (1,1) and (2,2)."""
+f11 = (s2-t1)^3*(s3-t1)^3
+f22 = (s3-t1)^3*(s3-t2)^3
+ff11 = (ss2-tt1)^3*(ss3-tt1)^3
+ff22 = (ss3-tt1)^3*(ss3-tt2)^3
