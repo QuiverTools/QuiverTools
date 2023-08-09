@@ -72,3 +72,33 @@ def Schubert(w,ww):
     u = (w0[0]*w[0].inverse(), w0[1]*w[1].inverse())
     uu = (w0[0]*ww[0].inverse(), w0[1]*ww[1].inverse())
     return Demazure_operator(u,uu,X*XX)
+
+def left_Weyl_group_action_on_polynomial(w,ww,f):
+    """Computes the left action of Weyl group element (w,ww) in W x W on f(t_1,t_2,s_1,s_2,s_3,tt_1,tt_2,ss_1,ss_2,ss_3)"""
+
+    # First let w act on {t_1,t_2} and {s_1,s_2,s_3} from the left
+    # Same for ww on {tt_1,tt_2} and {ss_1,ss_2,ss_3}
+    wAppliedTot = left_permutation_action_on_list(w[0],t)
+    wAppliedTos = left_permutation_action_on_list(w[1],s)
+    wwAppliedTott = left_permutation_action_on_list(ww[0],tt)
+    wwAppliedToss = left_permutation_action_on_list(ww[1],ss)
+    # Make dicts {t_i:t_w(i)} and similarly for s
+    d = dict(zip(t,wAppliedTot))
+    d.update(dict(zip(s,wAppliedTos)))
+    d.update(dict(zip(tt,wwAppliedTott)))
+    d.update(dict(zip(ss,wwAppliedToss)))
+
+    # substitute t_i = t_w(i), s_j = s_w(j) and so on in f
+    return f.subs(d)
+
+def sign(w):
+    """Sign of Weyl group element w"""
+    return Permutation(w[0]).sign()*Permutation(w[1]).sign()
+
+
+def antisymmetrization(f):
+    """Computes sum_{w in W} sign(w)*(fw)"""
+    return sum(list(map(lambda w, ww: sign(w)*sign(ww)*left_Weyl_group_action_on_polynomial(w,ww,f), W, W)))
+
+def symmetrization(f):
+    return antisymmetrization(f)/(Delta*DDelta)
