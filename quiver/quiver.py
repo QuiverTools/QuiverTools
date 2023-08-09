@@ -83,17 +83,17 @@ class Quiver:
 
         EXAMPLES:
 
-        The 4-Krönecker quiver::
+        The 4-Kronecker quiver::
 
-            sage: load("quiver.py")
+            sage: from quiver import *
             sage: K = Quiver( matrix(  [[0, 4],
             ....:                       [0, 0]]))
             sage: K.is_connected()
             True
 
-        The doubled 1-Krönecker quiver::
+        The doubled 1-Kronecker quiver::
 
-            sage: load("quiver.py")
+            sage: from quiver import *
             sage: C1 = Quiver(matrix(  [[0,1],
             ....:                       [1,0]]))
             sage: C1.is_connected()
@@ -101,14 +101,14 @@ class Quiver:
 
         The 3-loop point quiver::
 
-            sage: load("quiver.py")
+            sage: from quiver import *
             sage: L = Quiver(matrix([[3]]))
             sage: L.is_connected()
             True
 
         The A_10 quiver::
 
-            sage: load("quiver.py")
+            sage: from quiver import *
             sage: A10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
             ....:                           [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
             ....:                           [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
@@ -124,7 +124,7 @@ class Quiver:
 
         The A_10 quiver without one arrow::
 
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: discA10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
         ....:                               [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
         ....:                               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
@@ -230,7 +230,7 @@ class Quiver:
         EXAMPLES:
 
         The A_2 quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: A2 = GeneralizedKroneckerQuiver(1)
         sage: theta = vector([1,-1])
         sage: d = vector([1,1])
@@ -247,7 +247,7 @@ class Quiver:
         True
 
         The 3-Kronecker quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: K3 = GeneralizedKroneckerQuiver(3)
         sage: theta = vector([3,-2])
         sage: d = vector([2,3])
@@ -284,7 +284,7 @@ class Quiver:
         EXAMPLES:
 
         The A2 quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: A2 = GeneralizedKroneckerQuiver(1)
         sage: theta = vector([1,-1])
         sage: d = vector([1,1])
@@ -298,7 +298,7 @@ class Quiver:
         False
 
         The 3-Kronecker quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: K3 = GeneralizedKroneckerQuiver(3)
         sage: theta = vector([3,-2])
         sage: d = vector([2,3])
@@ -322,7 +322,7 @@ class Quiver:
         EXAMPLES:
 
         The 3-Kronecker quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: d = vector([2,3])
         sage: Q.is_schur_root(d)
@@ -422,7 +422,7 @@ class Quiver:
         EXAMPLES
 
         The 3-Kronecker quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: theta = vector([3,-2])
         sage: d = vector([2,3])
@@ -439,7 +439,7 @@ class Quiver:
         [[(0, 3), (2, 0)]]
 
         The 5-subspace quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: Q = SubspaceQuiver(5)
         sage: d = vector([1,1,1,1,1,2])
         sage: theta = vector([2,2,2,2,2,-5])
@@ -634,7 +634,7 @@ class Quiver:
         EXAMPLES
 
         The 3-Kronecker quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: d = vector([3,3])
         sage: theta = vector([1,-1])
@@ -646,7 +646,7 @@ class Quiver:
          [((3, 3), [1])]]
 
         The 6-subspace quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: Q = SubspaceQuiver(6)
         sage: d = vector([1,1,1,1,1,1,2])
         sage: theta = vector([1,1,1,1,1,1,-3])
@@ -716,7 +716,7 @@ class Quiver:
         """
         EXAMPLES
         The 3-Kronecker quiver:
-        sage: load("quiver.py")
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: d = vector([3,3])
         sage: theta = vector([1,-1])
@@ -780,7 +780,7 @@ def is_coprime_for_stability_parameter(d,theta):
 
     """
     EXAMPLES
-    sage: load("quiver.py")
+    sage: from quiver import *
     sage: d = vector([2,3])
     sage: theta = vector([3,-2])
     sage: is_coprime_for_stability_parameter(d,theta)
@@ -811,6 +811,7 @@ def GeneralizedKroneckerQuiver(m):
 
     TESTS::
 
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: Q.number_of_vertices()
         2

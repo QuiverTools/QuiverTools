@@ -1,3 +1,15 @@
+[![tests](https://github.com/quiver-tools/quiver.tools/actions/workflows/tests.yml/badge.svg)](https://github.com/quiver-tools/quiver.tools/actions)
+
+
+# Instructions
+
+You can install it using
+
+``sage --pip install -e .``
+
+and then you can just do `from quiver import *` to get started.
+
+
 # Summary
 
 The goal is to implement algorithms related to
