@@ -827,6 +827,18 @@ class Quiver:
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
         raise NotImplementedError()
 
+    def partial_order(self,d,e):
+        """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
+
+        n = self.number_of_vertices()
+        assert (d.length() == n) and (e.length() == n)
+        less = all([d[i-1] <= e[i-1] for i in list(filter(lambda i: self.is_source(i), range(1,n+1)))])
+        less == less and all([d[j-1] >= e[j-1] for j in list(filter(lambda j: self.is_sink(j), range(1,n+1)))])
+        less = less and all([d[k-1] >= e[k-1] for k in list(filter(lambda k: (not self.is_source(k)) and (not is_sink(k)), range(1,n+1)))])
+
+        return less
+
+
     """
     Some things that don't below anywhere else yet?
     """
