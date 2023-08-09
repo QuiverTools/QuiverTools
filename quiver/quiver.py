@@ -175,6 +175,40 @@ class Quiver:
         assert (j > 0) and (j <= self.number_of_vertices())
         return sum(self._adjacency.column(j-1))
 
+
+    def outdegree(self,i):
+        """The indegree of i is the number of incoming arrows into i."""
+
+        """indeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix."""
+        # Question: Should we number the vertices 1,...,n or 0,...,n-1?
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: Q.outdegree(1)
+        3
+        sage: Q.outdegree(2)
+        0
+        """
+
+        assert (i > 0) and (i <= self.number_of_vertices())
+        return sum(self._adjacency.row(i-1))
+
+    def is_source(self,i):
+        """Checks if i is a source of the quiver, i.e. if there are no incoming arrows into i."""
+
+        assert (i > 0) and (i <= self.number_of_vertices())
+        return (self.indegree(i) == 0)
+
+    def is_sink(self,j):
+        """Checks if j is a sink of the quiver, i.e. if there are no outgoing arrows out of j."""
+
+        assert (j > 0) and (j <= self.number_of_vertices())
+        return (self.outdegree(j) == 0)
+
+
     """
     Basic representation-theoretical properties of the quiver
     """
