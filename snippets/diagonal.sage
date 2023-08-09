@@ -65,3 +65,10 @@ def Demazure_operator(w,ww,f):
         f = divided_difference(j,f,[ss1,ss2,ss3])
 
     return f
+
+def Schubert(w,ww):
+    """The Schubert polynomial S_{w,ww} is in this context defined as S_{w,ww} = d_{w_0w^{-1}}X*d_{w0ww^{-1}}XX, where d is the Demazure operator and w_0 is the longest Weyl group element."""
+
+    u = (w0[0]*w[0].inverse(), w0[1]*w[1].inverse())
+    uu = (w0[0]*ww[0].inverse(), w0[1]*ww[1].inverse())
+    return Demazure_operator(u,uu,X*XX)
