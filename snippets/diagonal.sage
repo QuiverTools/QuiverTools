@@ -102,3 +102,17 @@ def antisymmetrization(f):
 
 def symmetrization(f):
     return antisymmetrization(f)/(Delta*DDelta)
+
+def schubert_basis():
+    """Consists of all Schubert polynomials."""
+    return list(map(Schubert,W,W))
+
+def tautological():
+
+    def tautological_upstairs():
+        """Auxiliary method. These are the tautological relations already, but they
+        live in the wrong ring."""
+        indexSet = cartesian_product([schubert_basis(),[f11,f22]])
+        return list(map(lambda  pairOfPolys: symmetrization(pairOfPolys[0]*pairOfPolys[1]), indexSet))
+
+    return list(map(inclusion.inverse_image,tautological_upstairs()))
