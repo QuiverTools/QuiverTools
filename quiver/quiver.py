@@ -773,6 +773,19 @@ def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
     return list(map(vector, cartesian_product([range(di + 1) for di in d])))
 
+def all_forbidden_subdimension_vectors(d,theta):
+    """Returns the list of all subdimension vectors d' of d for which mu_theta(d') > mu_theta(d)."""
+    return list(filter(lambda e: slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
+
+def all_minimal_forbidden_subdimension_vectors(d,theta):
+    """Returns the list of all minimal forbidden subdimension vectors of d."""
+
+    """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
+
+    #TODO: Implement this!
+    raise NotImplementedError
+
+
 def is_coprime_for_stability_parameter(d,theta):
     """Checks if d is theta-coprime."""
 
