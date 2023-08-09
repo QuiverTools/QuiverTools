@@ -873,6 +873,14 @@ class Quiver:
 
         return less
 
+        def all_minimal_forbidden_subdimension_vectors(d,theta):
+            """Returns the list of all minimal forbidden subdimension vectors of d."""
+
+            """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
+
+            #TODO: Implement this!
+            raise NotImplementedError
+
 
     """
     Some things that don't below anywhere else yet?
@@ -912,18 +920,10 @@ def all_forbidden_subdimension_vectors(d,theta):
     sage: all_forbidden_subdimension_vectors(d,theta)
     [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2)]
     """
-    
+
     zeroVector = vector([0 for i in range(d.length())])
     properSubdimensions = list(filter(lambda e: e != d and e != zeroVector, all_subdimension_vectors(d)))
     return list(filter(lambda e: slope(e,theta) > slope(d,theta), properSubdimensions))
-
-def all_minimal_forbidden_subdimension_vectors(d,theta):
-    """Returns the list of all minimal forbidden subdimension vectors of d."""
-
-    """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
-
-    #TODO: Implement this!
-    raise NotImplementedError
 
 
 def is_coprime_for_stability_parameter(d,theta):
