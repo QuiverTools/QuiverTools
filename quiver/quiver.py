@@ -902,7 +902,20 @@ def all_subdimension_vectors(d):
 
 def all_forbidden_subdimension_vectors(d,theta):
     """Returns the list of all subdimension vectors d' of d for which mu_theta(d') > mu_theta(d)."""
-    return list(filter(lambda e: slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
+
+    """
+    EXAMPLES
+
+    sage: from quiver import *
+    sage: d = vector([2,3])
+    sage: theta = vector([3,-2])
+    sage: all_forbidden_subdimension_vectors(d,theta)
+    [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2)]
+    """
+    
+    zeroVector = vector([0 for i in range(d.length())])
+    properSubdimensions = list(filter(lambda e: e != d and e != zeroVector, all_subdimension_vectors(d)))
+    return list(filter(lambda e: slope(e,theta) > slope(d,theta), properSubdimensions))
 
 def all_minimal_forbidden_subdimension_vectors(d,theta):
     """Returns the list of all minimal forbidden subdimension vectors of d."""
