@@ -42,3 +42,26 @@ f11 = (s2-t1)^3*(s3-t1)^3
 f22 = (s3-t1)^3*(s3-t2)^3
 ff11 = (ss2-tt1)^3*(ss3-tt1)^3
 ff22 = (ss3-tt1)^3*(ss3-tt2)^3
+
+def Demazure_operator(w,ww,f):
+    """Iterated application of the divided difference operators"""
+
+    reducedt = w[0].reduced_word()
+    reducedt.reverse()
+    reduceds = w[1].reduced_word()
+    reduceds.reverse()
+    for i in reducedt:
+        f = divided_difference(i,f,[t1,t2])
+    for j in reduceds:
+        f = divided_difference(j,f,[s1,s2,s3])
+    # Now same for tt's and ss's with ww
+    reducedtt = ww[0].reduced_word()
+    reducedtt.reverse()
+    reducedss = ww[1].reduced_word()
+    reducedss.reverse()
+    for i in reducedtt:
+        f = divided_difference(i,f,[tt1,tt2])
+    for j in reducedss:
+        f = divided_difference(j,f,[ss1,ss2,ss3])
+
+    return f
