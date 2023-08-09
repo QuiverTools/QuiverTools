@@ -152,6 +152,30 @@ class Quiver:
         return True
 
     """
+    Some graph-theoretic properties of the quiver
+    """
+
+    def indegree(self,j):
+        """The indegree of j is the number of incoming arrows into j."""
+
+        """indeg(j) = sum_i a_{ij} where (a_{ij}) is the adjacency matrix."""
+        # Question: Should we number the vertices 1,...,n or 0,...,n-1?
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: Q.indegree(1)
+        0
+        sage: Q.indegree(2)
+        3
+        """
+
+        assert (j > 0) and (j <= self.number_of_vertices())
+        return sum(self._adjacency.column(j-1))
+
+    """
     Basic representation-theoretical properties of the quiver
     """
 
