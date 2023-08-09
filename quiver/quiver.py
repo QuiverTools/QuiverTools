@@ -800,6 +800,18 @@ def is_indivisible(d):
     """Checks if the gcd of all entries is 1 or not."""
     return (gcd(d) == 1)
 
+"""Class methods"""
+
+def disjoint_union(Q1,Q2):
+    """Returns the disjoint union of two quivers Q1 and Q2."""
+
+    if (Q1._name != None) and (Q2._name != None):
+        name = "Disjoint union of " + Q1._name + "and" + Q2._name
+    else:
+        name = None
+
+    return Quiver(block_diagonal_matrix(Q1._adjacency,Q1._adjacency), name=name)
+
 """Special quivers"""
 
 # TODO convention for generator functions is capitalise them?
