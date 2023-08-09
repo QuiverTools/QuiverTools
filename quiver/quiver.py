@@ -830,11 +830,46 @@ class Quiver:
     def partial_order(self,d,e):
         """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
 
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([1,1])
+        sage: e = vector([2,1])
+        sage: f = vector([2,2])
+        sage: Q.partial_order(d,e)
+        True
+        sage: Q.partial_order(e,d)
+        False
+        sage: Q.partial_order(d,f)
+        False
+        sage: Q.partial_order(f,d)
+        False
+        sage: Q.partial_order(e,f)
+        False
+        sage: Q.partial_order(f,e)
+        True
+
+        sage: Q = ThreeVertexQuiver(2,2,2)
+        sage: Q
+        An acyclic 3-vertex quiver; adjacency matrix:
+        [0 2 2]
+        [0 0 2]
+        [0 0 0]
+        sage: d = vector([1,1,1])
+        sage: e = vector([1,2,1])
+        sage: Q.partial_order(d,e)
+        False
+        sage: Q.partial_order(e,d)
+        False
+        """
+
         n = self.number_of_vertices()
         assert (d.length() == n) and (e.length() == n)
         less = all([d[i-1] <= e[i-1] for i in list(filter(lambda i: self.is_source(i), range(1,n+1)))])
-        less == less and all([d[j-1] >= e[j-1] for j in list(filter(lambda j: self.is_sink(j), range(1,n+1)))])
-        less = less and all([d[k-1] >= e[k-1] for k in list(filter(lambda k: (not self.is_source(k)) and (not is_sink(k)), range(1,n+1)))])
+        less = less and all([d[j-1] >= e[j-1] for j in list(filter(lambda j: self.is_sink(j), range(1,n+1)))])
+        less = less and all([d[k-1] == e[k-1] for k in list(filter(lambda k: (not self.is_source(k)) and (not self.is_sink(k)), range(1,n+1)))])
 
         return less
 
