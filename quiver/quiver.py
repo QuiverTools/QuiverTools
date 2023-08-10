@@ -820,7 +820,7 @@ class Quiver:
             if not self.has_semistable_representation(d,theta,algorithm=algorithm):
                 return True
             else:
-                allLunaTypes = self.all_luna_types(d,theta,denominator=sum)
+                allLunaTypes = self.all_luna_types(d,theta)
                 genericType = tuple([d,[1]])
                 if genericType in allLunaTypes:
                     allLunaTypes.remove(genericType)
