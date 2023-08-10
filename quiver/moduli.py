@@ -105,6 +105,7 @@ class QuiverModuliSpace(QuiverModuli):
         sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(2)
         sage: theta = vector([1,-1])
+        sage: d = vector([1,1])
         sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
         sage: X.dimension()
         1
