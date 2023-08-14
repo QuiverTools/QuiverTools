@@ -208,13 +208,34 @@ class QuiverModuliSpace(QuiverModuli):
 
     def chow_ring(self,linearRelation):
         """Returns the Chow ring of the moduli space in terms of generators and relations."""
-        
+
+        """
+        Notation for explanations:
+        G = G_d = prod_{i in Q_0} GL_{d_i}
+        T = maximal torus of diagonal matrices
+        PG = G/G_m
+        PT = T/G_m maximal torus of PT
+        W = Weyl group of T in G = Weyl group of PT in PG
+          = prod_{i in Q_0} S_{d_i}
+        R = bigoplus_{a in Q_1} Hom(k^{d_{s(a)}},k^{d_{t(a)}})
+        R^{sst}, R^{st} semi-stable/stable locus
+        """
+
         d, theta = self._d, self._theta
         # The Chow group has a ring structure only if the space is smooth.
         # Our algorithm works only in the case that sst=st.
         assert is_coprime_for_stability_parameter(d,theta)
         n = self._Q.number_of_vertices()
-        A = self._Q.adjacency_matrix()
+        a = self._Q.adjacency_matrix()
+
+        """This is the Chow ring of the quotient stack [R/T]. The generators ti_r denote the Chern roots of the universal bundles U_i."""
+        R = PolynomialRing(QQ,['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)])
+
+        def genR(i,r):
+            """Returns ti_r."""
+            return R.gen(r+i*d[i-1])
+
+        delta = prod([prod([genR(i,l) - genR(i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
 
 
 class QuiverModuliStack(QuiverModuli):
