@@ -244,6 +244,15 @@ class QuiverModuliSpace(QuiverModuli):
             longest = longest + list(reversed(range(1,d[i]+1)))
         W = Permutations(bruhat_smaller=longest)
 
+        def antisymmetrization(f):
+            """The antisymmetrization of f is the symmetrization divided by the discriminant."""
+            # I don't want to define W and delta here but globally because then we need to
+            # define it just once. That's probably a bit faster.
+            def permute(f, w):
+                return f.subs({R.gen(i): R.gen(w[i] - 1) for i in range(R.ngens())})
+
+            return sum(w.sign() * permute(f, w) for w in W) // delta
+
 
 class QuiverModuliStack(QuiverModuli):
 
