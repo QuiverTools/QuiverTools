@@ -235,9 +235,14 @@ class QuiverModuliSpace(QuiverModuli):
             """Returns ti_r."""
             return R.gen(r+i*d[i-1])
 
+        """delta is the discriminant"""
         delta = prod([prod([genR(i,l) - genR(i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
 
-        return delta
+        """longest is the longest Weyl group element when regarding W as a subgroup of S_{sum d_i}"""
+        longest = []
+        for i in range(n):
+            longest = longest + list(reversed(range(1,d[i]+1)))
+        W = Permutations(bruhat_smaller=longest)
 
 
 class QuiverModuliStack(QuiverModuli):
