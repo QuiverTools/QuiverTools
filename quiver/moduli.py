@@ -206,6 +206,16 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
         raise NotImplementedError()
 
+    def chow_ring(self,linearRelation):
+        """Returns the Chow ring of the moduli space in terms of generators and relations."""
+        
+        d, theta = self._d, self._theta
+        # The Chow group has a ring structure only if the space is smooth.
+        # Our algorithm works only in the case that sst=st.
+        assert is_coprime_for_stability_parameter(d,theta)
+        n = self._Q.number_of_vertices()
+        A = self._Q.adjacency_matrix()
+
 
 class QuiverModuliStack(QuiverModuli):
 
