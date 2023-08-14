@@ -237,6 +237,8 @@ class QuiverModuliSpace(QuiverModuli):
 
         delta = prod([prod([genR(i,l) - genR(i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
 
+        return delta
+
 
 class QuiverModuliStack(QuiverModuli):
 
