@@ -232,7 +232,7 @@ class QuiverModuliSpace(QuiverModuli):
         R = PolynomialRing(QQ,['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)])
 
         def genR(i,r):
-            """Returns ti_r."""
+            """Returns gen(i,r) = t{i+1}_{r+1}."""
             return R.gen(r+sum([d[j] for j in range(i)]))
 
         """delta is the discriminant"""
@@ -258,8 +258,9 @@ class QuiverModuliSpace(QuiverModuli):
         """Schubert basis of A^*([R/T]) over A^*([R/G])"""
         X = SchubertPolynomialRing(ZZ)
         B = [[X(p).expand() for p in Permutations(d[i])] for i in range(n)]
-        Bprime = cartesian_product([[f.parent().hom([genR(i,r) for r in range(d[i])], R)(f) for f in B[i]] for i in range(n)])
+        Bprime = cartesian_product([[f.parent().hom([genR(i,r) for r in range(f.parent().ngens())], R)(f) for f in B[i]] for i in range(n)])
         schubert = [prod([bi for bi in b]) for b in Bprime]
+        
 
 
 class QuiverModuliStack(QuiverModuli):
