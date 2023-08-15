@@ -287,7 +287,7 @@ class QuiverModuliSpace(QuiverModuli):
         linear = A.ideal(sum([chi[i]*generator(A,i,0) for i in range(n)]))
         I = linear + tautological
 
-        return A.quotient(I)
+        return I
 
 
 class QuiverModuliStack(QuiverModuli):
