@@ -206,7 +206,7 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
         raise NotImplementedError()
 
-    def chow_ring(self,linearRelation):
+    def chow_ring(self,chi):
         """Returns the Chow ring of the moduli space in terms of generators and relations."""
 
         """
@@ -231,12 +231,12 @@ class QuiverModuliSpace(QuiverModuli):
         """This is the Chow ring of the quotient stack [R/T]. The generators ti_r denote the Chern roots of the universal bundles U_i."""
         R = PolynomialRing(QQ,['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)])
 
-        def genR(i,r):
-            """Returns gen(i,r) = t{i+1}_{r+1}."""
+        def generator(R,i,r):
+            """Returns generator(R,i,r) = t{i+1}_{r+1}."""
             return R.gen(r+sum([d[j] for j in range(i)]))
 
         """delta is the discriminant"""
-        delta = prod([prod([genR(i,l) - genR(i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
+        delta = prod([prod([generator(R,i,l) - generator(R,i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
 
         """longest is the longest Weyl group element when regarding W as a subgroup of S_{sum d_i}"""
         longest = []
@@ -258,13 +258,13 @@ class QuiverModuliSpace(QuiverModuli):
         """Schubert basis of A^*([R/T]) over A^*([R/G])"""
         X = SchubertPolynomialRing(ZZ)
         B = [[X(p).expand() for p in Permutations(d[i])] for i in range(n)]
-        Bprime = cartesian_product([[f.parent().hom([genR(i,r) for r in range(f.parent().ngens())], R)(f) for f in B[i]] for i in range(n)])
+        Bprime = cartesian_product([[f.parent().hom([generator(R,i,r) for r in range(f.parent().ngens())], R)(f) for f in B[i]] for i in range(n)])
         schubert = [prod([bi for bi in b]) for b in Bprime]
 
         """Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T])."""
         minimalForbiddenSubdimensionVectors = Q.all_minimal_forbidden_subdimension_vectors(d,theta)
         """For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
-        forbiddenPolynomials = [prod([prod([(genR(j,s) - genR(i,r))**a[i,j]  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in minimalForbiddenSubdimensionVectors]
+        forbiddenPolynomials = [prod([prod([(generator(R,j,s) - generator(R,i,r))**a[i,j]  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in minimalForbiddenSubdimensionVectors]
 
         """Define A = A*([R/G])."""
         degrees = []
@@ -276,7 +276,7 @@ class QuiverModuliSpace(QuiverModuli):
         """The Chern classes of U_i are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
         chernClasses = []
         for i in range(n):
-            chernClasses = chernClasses + [E([k]).expand(d[i], alphabet=[genR(i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
+            chernClasses = chernClasses + [E([k]).expand(d[i], alphabet=[generator(R,i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
         """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
         inclusion = A.hom(chernClasses, R)
 
@@ -284,9 +284,10 @@ class QuiverModuliSpace(QuiverModuli):
         tautological = [antisymmetrization(b * f) for b in schubert for f in forbiddenPolynomials]
         tautological = A.ideal([inclusion.inverse_image(g) for g in tautological])
 
-        return tautological
+        linear = A.ideal(sum([chi[i]*generator(A,i,0) for i in range(n)]))
+        I = linear + tautological
 
-
+        return A.quotient(I)
 
 
 class QuiverModuliStack(QuiverModuli):
