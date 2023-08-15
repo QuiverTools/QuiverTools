@@ -240,8 +240,10 @@ class QuiverModuliSpace(QuiverModuli):
 
         """longest is the longest Weyl group element when regarding W as a subgroup of S_{sum d_i}"""
         longest = []
+        r = 0
         for i in range(n):
-            longest = longest + list(reversed(range(1,d[i]+1)))
+            longest = longest + list(reversed(range(r+1,r+d[i]+1)))
+            r += d[i]
         W = Permutations(bruhat_smaller=longest)
 
         def antisymmetrization(f):
