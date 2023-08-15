@@ -272,7 +272,19 @@ class QuiverModuliSpace(QuiverModuli):
             degrees = degrees+list(range(1,d[i]+1))
         A = PolynomialRing(QQ, ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)], order=TermOrder('wdegrevlex', degrees))
 
-        
+        E = SymmetricFunctions(ZZ).e()
+        """The Chern classes of U_i are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
+        chernClasses = []
+        for i in range(n):
+            chernClasses = chernClasses + [E([k]).expand(d[i], alphabet=[genR(i,r) for r in range(d[i])])]
+        """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
+        inclusion = A.hom(chernClasses, R)
+
+        """Definition of the tautological ideal."""
+        tautological = [rho(b * f) for b in schubert for f in forbidden]
+        tautological = A.ideal([inclusion.inverse_image(g) for g in tautological])
+
+
 
 
 class QuiverModuliStack(QuiverModuli):
