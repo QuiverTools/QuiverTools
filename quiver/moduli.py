@@ -221,12 +221,12 @@ class QuiverModuliSpace(QuiverModuli):
         R^{sst}, R^{st} semi-stable/stable locus
         """
 
-        d, theta = self._d, self._theta
+        Q, d, theta = self._Q, self._d, self._theta
         # The Chow group has a ring structure only if the space is smooth.
         # Our algorithm works only in the case that sst=st.
         assert is_coprime_for_stability_parameter(d,theta)
-        n = self._Q.number_of_vertices()
-        a = self._Q.adjacency_matrix()
+        n = Q.number_of_vertices()
+        a = Q.adjacency_matrix()
 
         """This is the Chow ring of the quotient stack [R/T]. The generators ti_r denote the Chern roots of the universal bundles U_i."""
         R = PolynomialRing(QQ,['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)])
@@ -260,7 +260,12 @@ class QuiverModuliSpace(QuiverModuli):
         B = [[X(p).expand() for p in Permutations(d[i])] for i in range(n)]
         Bprime = cartesian_product([[f.parent().hom([genR(i,r) for r in range(f.parent().ngens())], R)(f) for f in B[i]] for i in range(n)])
         schubert = [prod([bi for bi in b]) for b in Bprime]
-        
+
+        """Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T])."""
+        minimalForbiddenSubdimensionVectors = Q.all_minimal_forbidden_subdimension_vectors(d,theta)
+        """For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
+        forbiddenPolynomials = [prod([prod([(genR(j,s) - genR(i,r))  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in minimalForbiddenSubdimensionVectors]
+
 
 
 class QuiverModuliStack(QuiverModuli):
