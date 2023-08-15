@@ -233,7 +233,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         def genR(i,r):
             """Returns ti_r."""
-            return R.gen(r+i*d[i-1])
+            return R.gen(r+sum([d[j] for j in range(i)]))
 
         """delta is the discriminant"""
         delta = prod([prod([genR(i,l) - genR(i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
@@ -247,11 +247,17 @@ class QuiverModuliSpace(QuiverModuli):
         def antisymmetrization(f):
             """The antisymmetrization of f is the symmetrization divided by the discriminant."""
             # I don't want to define W and delta here but globally because then we need to
-            # define it just once. That's probably a bit faster.
+            # compute it just once. That's probably a bit faster.
             def permute(f, w):
                 return f.subs({R.gen(i): R.gen(w[i] - 1) for i in range(R.ngens())})
 
             return sum(w.sign() * permute(f, w) for w in W) // delta
+
+        """Schubert basis of A^*([R/T]) over A^*([R/G])"""
+        X = SchubertPolynomialRing(ZZ)
+        B = [[X(p).expand() for p in Permutations(d[i])] for i in range(n)]
+        Bprime = cartesian_product([[f.parent().hom([genR(i,r) for r in range(d[i])], R)(f) for f in B[i]] for i in range(n)])
+        schubert = [prod([bi for bi in b]) for b in Bprime]
 
 
 class QuiverModuliStack(QuiverModuli):
