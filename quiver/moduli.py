@@ -266,6 +266,11 @@ class QuiverModuliSpace(QuiverModuli):
         """For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
         forbiddenPolynomials = [prod([prod([(genR(j,s) - genR(i,r))**a[i,j]  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in minimalForbiddenSubdimensionVectors]
 
+        """Define A = A*([R/G])."""
+        degrees = []
+        for i in range(n):
+            degrees = degrees+range(1,d[i]+1)
+        A = PolynomialRing(QQ, ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)], order=TermOrder('wdegrevlex', degrees))
         
 
 class QuiverModuliStack(QuiverModuli):
