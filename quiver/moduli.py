@@ -269,9 +269,11 @@ class QuiverModuliSpace(QuiverModuli):
         """Define A = A*([R/G])."""
         degrees = []
         for i in range(n):
-            degrees = degrees+range(1,d[i]+1)
+            degrees = degrees+list(range(1,d[i]+1))
         A = PolynomialRing(QQ, ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)], order=TermOrder('wdegrevlex', degrees))
+
         
+
 
 class QuiverModuliStack(QuiverModuli):
 
