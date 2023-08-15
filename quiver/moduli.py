@@ -276,13 +276,15 @@ class QuiverModuliSpace(QuiverModuli):
         """The Chern classes of U_i are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
         chernClasses = []
         for i in range(n):
-            chernClasses = chernClasses + [E([k]).expand(d[i], alphabet=[genR(i,r) for r in range(d[i])])]
+            chernClasses = chernClasses + [E([k]).expand(d[i], alphabet=[genR(i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
         """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
         inclusion = A.hom(chernClasses, R)
 
         """Definition of the tautological ideal."""
-        tautological = [rho(b * f) for b in schubert for f in forbidden]
+        tautological = [antisymmetrization(b * f) for b in schubert for f in forbiddenPolynomials]
         tautological = A.ideal([inclusion.inverse_image(g) for g in tautological])
+
+        return tautological
 
 
 
