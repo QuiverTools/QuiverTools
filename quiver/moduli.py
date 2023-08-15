@@ -264,9 +264,9 @@ class QuiverModuliSpace(QuiverModuli):
         """Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T])."""
         minimalForbiddenSubdimensionVectors = Q.all_minimal_forbidden_subdimension_vectors(d,theta)
         """For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
-        forbiddenPolynomials = [prod([prod([(genR(j,s) - genR(i,r))  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in minimalForbiddenSubdimensionVectors]
+        forbiddenPolynomials = [prod([prod([(genR(j,s) - genR(i,r))**a[i,j]  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in minimalForbiddenSubdimensionVectors]
 
-
+        
 
 class QuiverModuliStack(QuiverModuli):
 
