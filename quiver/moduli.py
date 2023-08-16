@@ -208,6 +208,8 @@ class QuiverModuliSpace(QuiverModuli):
 
     def tautological_presentation(self, chi=None, chernClasses=None):
         """Returns the Chow ring of the moduli space in terms of generators and relations."""
+
+        """chi is a character of weight one, i.e. it provides a retraction of the inclusion X*(PG) --> X*(G). For this chi*d = 1 must hold. This requires d to be indivisible. If chi=None is given the chi is computed by the extended Euclidean algorithm."""
         """chernClasses is a list of alphanumeric strings that denote the Chern classes of the universal bundles U_i(chi) in the Chow ring. If None is given then they are of the form xi_r."""
 
         """
