@@ -394,6 +394,25 @@ class SmoothModel:
     def betti_numbers(self):
         raise NotImplementedError()
 
+"""Auxiliary methods:"""
+
+def extended_gcd(x):
+    """Computes the gcd and the Bezout coefficients of a list of integers."""
+    # This exists for two integers but there seems to be no implementation for more than one.
+    # That's astonishing.
+
+    n = len(x)
+    if n == 1:
+        return [x,[1]]
+    if n == 2:
+        (g,a,b) = xgcd(x[0],x[1])
+        return [g,[a,b]]
+    if n > 2:
+        (g,a,b) = xgcd(x[0],x[1])
+        y = [g]+[x[i] for i in range(2,n)]
+        [d,c] = extended_gcd(y)
+        m = [c[0]*a,c[0]*b]+[c[i] for i in range(1,n-1)]
+        return [d,m]
 
 
 # class Quiver_moduli:
