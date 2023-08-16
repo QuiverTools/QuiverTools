@@ -390,6 +390,15 @@ class QuiverModuliSpace(QuiverModuli):
         di = self.tautological_presentation(chi=chi, chernClasses=chernClasses)
         return di["ChowRing"]
 
+    def chern_class_line_bundle(self, eta, chernClasses=None):
+        """Returns the first Chern class of the line bundle L(eta) = bigotimes_{i in Q_0} det(U_i)^{-eta_i} where eta is a character of PG_d."""
+
+        A = self.chow_ring(chi=None, chernClasses=chernClasses)
+        n = self._Q.number_of_vertices()
+        d = self._d
+
+        return -sum([eta[i]*A.gen(sum([d[j] for j in range(i)])) for i in range(n)])
+
 
 class QuiverModuliStack(QuiverModuli):
 
