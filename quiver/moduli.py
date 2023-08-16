@@ -418,6 +418,32 @@ class QuiverModuliSpace(QuiverModuli):
         return 1 + sum([A.gen(r + sum([d[j] for j in range(i-1)])) for r in range(d[i-1])])
 
 
+    def point_class(self, chi=None, chernClasses=None):
+        """Returns the point class as an expression in Chern classes of the U_i(chi)."""
+
+        """The point class is given as the homogeneous component of degree dim X of the expression prod_{a in Q_1} c(U_{t(a)})^{d_{s(a)}} / (prod_{i in Q_0} c(U_i)^{d_i})"""
+
+        Q, d = self._Q, self._d
+        n = Q.number_of_vertices()
+        a = Q.adjacency_matrix()
+        N = self.dimension()
+
+        A = self.chow_ring(chi=chi, chernClasses=chernClasses)        
+        pi = A.cover() # The quotient map
+        sect = A.lifting_map() # A choice of a section of pi
+
+        if chi == None:
+            [g,m] = extended_gcd(d.list())
+            chi = vector(m)
+
+        numerator = prod([self.total_chern_class_universal(j, chi, chernClasses=chernClasses)**(d*a.column(j)) for j in range(n)])
+        denominator = prod([self.total_chern_class_universal(i, chi, chernClasses=chernClasses)**d[i] for i in range(n)])
+
+        quotient = numerator/denominator
+
+        return pi(sect(quot).homogeneous_components()[N])
+
+
 class QuiverModuliStack(QuiverModuli):
 
     def __init__(self, Q, d, theta, condition="stable"):
