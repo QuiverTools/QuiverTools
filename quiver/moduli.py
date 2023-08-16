@@ -366,6 +366,27 @@ class QuiverModuliSpace(QuiverModuli):
 
     def chow_ring(self, chi=None, chernClasses=None):
         """Returns the Chow ring of the moduli space."""
+
+        """
+        EXAMPLES
+
+        The Kronecker quiver:
+        sage: from quiver import *
+        sage: from moduli import *
+        sage: Q = KroneckerQuiver()
+        sage: d = vector([1,1])
+        sage: theta = vector([1,-1])
+        sage: chi = vector([1,0])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: A = X.chow_ring(chi=chi,chernClasses=['o','h'])
+        sage: A.inject_variables()
+        Defining o, h
+        sage: o
+        0
+        sage: h
+        h
+        """
+
         di = self.tautological_presentation(chi=chi, chernClasses=chernClasses)
         return di["ChowRing"]
 
