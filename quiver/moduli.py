@@ -222,6 +222,48 @@ class QuiverModuliSpace(QuiverModuli):
         EXAMPLES
 
         The Kronecker quiver:
+        sage: from quiver import *
+        sage: from moduli import *
+        sage: Q = KroneckerQuiver()
+        sage: d = vector([1,1])
+        sage: theta = vector([1,-1])
+        sage: chi = vector([1,0])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: di = X.tautological_presentation(chi)
+        sage: I = di["Relations"]
+        sage: N = X.dimension()
+        sage: [I.normal_basis(i) for i in range(N+1)]
+        [[1], [x2_1]]
+
+        The 3-Kronecker quiver:
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: chi = vector([-1,1])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: di = X.tautological_presentation(chi)
+        sage: I = di["Relations"]
+        sage: N = X.dimension()
+        sage: [I.normal_basis(i) for i in range(N+1)]
+        [[1],
+         [x2_1],
+         [x1_2, x2_1^2, x2_2],
+         [x2_1^3, x2_1*x2_2, x2_3],
+         [x2_1^2*x2_2, x2_2^2, x2_1*x2_3],
+         [x2_2*x2_3],
+         [x2_3^2]]
+
+        The 5-subspaces quiver:
+        sage: Q = SubspaceQuiver(5)
+        sage: d = vector([1,1,1,1,1,2])
+        sage: theta = vector([2,2,2,2,2,-5])
+        sage: chi = vector([-1,-1,-1,-1,-1,3])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: di = X.tautological_presentation(chi)
+        sage: I = di["Relations"]
+        sage: N = X.dimension()
+        sage: [I.normal_basis(i) for i in range(N+1)]
+        [[1], [x2_1, x3_1, x4_1, x5_1, x6_1], [x6_2]]
 
         """
 
