@@ -301,6 +301,11 @@ class QuiverModuliSpace(QuiverModuli):
         "Relations" : I
         }
 
+    def chow_ring(self, chi):
+        """Returns the Chow ring of the moduli space."""
+        di = self.tautological_presentation(chi)
+        return di["ChowRing"]
+
 
 class QuiverModuliStack(QuiverModuli):
 
