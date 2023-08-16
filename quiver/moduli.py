@@ -399,6 +399,16 @@ class QuiverModuliSpace(QuiverModuli):
 
         return -sum([eta[i]*A.gen(sum([d[j] for j in range(i)])) for i in range(n)])
 
+    def chern_character_line_bundle(self, eta, chernClasses=None):
+        """Computes the Chern character of L(eta).
+        The Chern character of a line bundle L with first Chern class x is given by e^x = 1 + x + x^2/2 + x^3/6 + ..."""
+
+        A = self.chow_ring(chi=None, chernClasses=chernClasses)
+        N = self.dimension()
+        x = self.chern_class_line_bundle(eta, chernClasses=chernClasses)
+        return sum([x**i/factorial(i) for i in range(N+1)])
+
+
     def total_chern_class_universal(self, i, chi, chernClasses=None):
         """Gives the total Chern class of the universal bundle U_i(chi)."""
 
