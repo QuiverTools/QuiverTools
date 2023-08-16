@@ -219,6 +219,13 @@ class QuiverModuliSpace(QuiverModuli):
         """
 
         """
+        EXAMPLES
+
+        The Kronecker quiver:
+
+        """
+
+        """
         Notation for explanations:
         G = G_d = prod_{i in Q_0} GL_{d_i}
         T = maximal torus of diagonal matrices
@@ -236,6 +243,10 @@ class QuiverModuliSpace(QuiverModuli):
         assert is_coprime_for_stability_parameter(d,theta)
         n = Q.number_of_vertices()
         a = Q.adjacency_matrix()
+
+        # TODO assert that chi has integer entries.
+        """Make sure that chi has weight one, i.e. provides a retraction for X*(PG) --> X*(G)."""
+        assert chi*d == 1
 
         """This is the Chow ring of the quotient stack [R/T]. The generators ti_r denote the Chern roots of the universal bundles U_i."""
         R = PolynomialRing(QQ,['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)])
