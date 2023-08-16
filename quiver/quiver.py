@@ -1000,8 +1000,7 @@ def disjoint_union(Q1,Q2):
 
 def GeneralizedKroneckerQuiver(m):
     """
-    The generalized Kronecker quiver has two vertices and $m$ arrows from the
-    first to the second.
+    The generalized Kronecker quiver has two vertices and $m$ arrows from the first to the second.
 
     TESTS::
 
@@ -1016,6 +1015,10 @@ def GeneralizedKroneckerQuiver(m):
     Q = Quiver(matrix([[0, m], [0, 0]]), name = str(m)+"-Kronecker quiver")
     # TODO do Q.rename here
     return Q
+
+def KroneckerQuiver():
+    """The Kronecker quiver has two vertices and 2 arrows from the first vertex to the second."""
+    return GeneralizedKroneckerQuiver(2)
 
 
 def ThreeVertexQuiver(m12, m13, m23):
