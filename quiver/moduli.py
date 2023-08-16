@@ -399,6 +399,14 @@ class QuiverModuliSpace(QuiverModuli):
 
         return -sum([eta[i]*A.gen(sum([d[j] for j in range(i)])) for i in range(n)])
 
+    def total_chern_class_universal(self, i, chi, chernClasses=None):
+        """Gives the total Chern class of the universal bundle U_i(chi)."""
+
+        A = self.chow_ring(chi, chernClasses=chernClasses)
+        d = self._d
+
+        return 1 + sum([A.gen(r + sum([d[j] for j in range(i-1)])) for r in range(d[i-1])])
+
 
 class QuiverModuliStack(QuiverModuli):
 
