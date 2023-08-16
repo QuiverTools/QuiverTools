@@ -206,8 +206,9 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
         raise NotImplementedError()
 
-    def tautological_presentation(self,chi):
+    def tautological_presentation(self, chi, chernClasses=None):
         """Returns the Chow ring of the moduli space in terms of generators and relations."""
+        """chernClasses is a list of alphanumeric strings that denote the Chern classes of the universal bundles U_i(chi) in the Chow ring. If None is given then they are of the form xi_r."""
 
         """
         OUTPUT
@@ -286,6 +287,9 @@ class QuiverModuliSpace(QuiverModuli):
         n = Q.number_of_vertices()
         a = Q.adjacency_matrix()
 
+        if chernClasses == None:
+            chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+
         # TODO assert that chi has integer entries.
         """Make sure that chi has weight one, i.e. provides a retraction for X*(PG) --> X*(G)."""
         assert chi*d == 1
@@ -332,15 +336,15 @@ class QuiverModuliSpace(QuiverModuli):
         degrees = []
         for i in range(n):
             degrees = degrees+list(range(1,d[i]+1))
-        A = PolynomialRing(QQ, ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)], order=TermOrder('wdegrevlex', degrees))
+        A = PolynomialRing(QQ, ['c%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)], order=TermOrder('wdegrevlex', degrees))
 
         E = SymmetricFunctions(ZZ).e()
-        """The Chern classes of U_i are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
-        chernClasses = []
+        """The Chern classes of U_i on [R/G] are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
+        elementarySymmetric = []
         for i in range(n):
-            chernClasses = chernClasses + [E([k]).expand(d[i], alphabet=[generator(R,i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
+            elementarySymmetric = elementarySymmetric + [E([k]).expand(d[i], alphabet=[generator(R,i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
         """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
-        inclusion = A.hom(chernClasses, R)
+        inclusion = A.hom(elementarySymmetric, R)
 
         """Definition of the tautological ideal."""
         tautological = [antisymmetrization(b * f) for b in schubert for f in forbiddenPolynomials]
@@ -349,14 +353,14 @@ class QuiverModuliSpace(QuiverModuli):
         linear = A.ideal(sum([chi[i]*generator(A,i,0) for i in range(n)]))
         I = linear + tautological
 
-        return { "ChowRing" : QuotientRing(A,I),
+        return { "ChowRing" : QuotientRing(A,I,names=chernClasses),
         "Generators" : A,
         "Relations" : I
         }
 
-    def chow_ring(self, chi):
+    def chow_ring(self, chi, chernClasses=None):
         """Returns the Chow ring of the moduli space."""
-        di = self.tautological_presentation(chi)
+        di = self.tautological_presentation(chi, chernClasses=chernClasses)
         return di["ChowRing"]
 
 
