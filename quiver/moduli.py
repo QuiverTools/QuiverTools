@@ -206,8 +206,17 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
         raise NotImplementedError()
 
-    def chow_ring(self,chi):
+    def tautological_presentation(self,chi):
         """Returns the Chow ring of the moduli space in terms of generators and relations."""
+
+        """
+        OUTPUT
+
+        A dict
+        { "ChowRing" : The Chow ring of the moduli space
+        "Generators" : The Chow ring of [R/G],
+        "Relations"  : The tautological ideal}
+        """
 
         """
         Notation for explanations:
@@ -287,7 +296,10 @@ class QuiverModuliSpace(QuiverModuli):
         linear = A.ideal(sum([chi[i]*generator(A,i,0) for i in range(n)]))
         I = linear + tautological
 
-        return I
+        return { "ChowRing" : QuotientRing(A,I),
+        "Generators" : A,
+        "Relations" : I
+        }
 
 
 class QuiverModuliStack(QuiverModuli):
