@@ -206,7 +206,7 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
         raise NotImplementedError()
 
-    def tautological_presentation(self, chi, chernClasses=None):
+    def tautological_presentation(self, chi=None, chernClasses=None):
         """Returns the Chow ring of the moduli space in terms of generators and relations."""
         """chernClasses is a list of alphanumeric strings that denote the Chern classes of the universal bundles U_i(chi) in the Chow ring. If None is given then they are of the form xi_r."""
 
@@ -234,7 +234,7 @@ class QuiverModuliSpace(QuiverModuli):
         sage: I = di["Relations"]
         sage: N = X.dimension()
         sage: [I.normal_basis(i) for i in range(N+1)]
-        [[1], [x2_1]]
+        [[1], [c2_1]]
 
         The 3-Kronecker quiver:
         sage: Q = GeneralizedKroneckerQuiver(3)
@@ -247,12 +247,12 @@ class QuiverModuliSpace(QuiverModuli):
         sage: N = X.dimension()
         sage: [I.normal_basis(i) for i in range(N+1)]
         [[1],
-         [x2_1],
-         [x1_2, x2_1^2, x2_2],
-         [x2_1^3, x2_1*x2_2, x2_3],
-         [x2_1^2*x2_2, x2_2^2, x2_1*x2_3],
-         [x2_2*x2_3],
-         [x2_3^2]]
+         [c2_1],
+         [c1_2, c2_1^2, c2_2],
+         [c2_1^3, c2_1*c2_2, c2_3],
+         [c2_1^2*c2_2, c2_2^2, c2_1*c2_3],
+         [c2_2*c2_3],
+         [c2_3^2]]
 
         The 5-subspaces quiver:
         sage: Q = SubspaceQuiver(5)
@@ -264,7 +264,7 @@ class QuiverModuliSpace(QuiverModuli):
         sage: I = di["Relations"]
         sage: N = X.dimension()
         sage: [I.normal_basis(i) for i in range(N+1)]
-        [[1], [x2_1, x3_1, x4_1, x5_1, x6_1], [x6_2]]
+        [[1], [c2_1, c3_1, c4_1, c5_1, c6_1], [c6_2]]
 
         """
 
@@ -286,6 +286,10 @@ class QuiverModuliSpace(QuiverModuli):
         assert is_coprime_for_stability_parameter(d,theta)
         n = Q.number_of_vertices()
         a = Q.adjacency_matrix()
+
+        if chi == None:
+            [g,m] = extended_gcd(d.list())
+            chi = vector(m)
 
         # TODO assert that chi has integer entries.
         """Make sure that chi has weight one, i.e. provides a retraction for X*(PG) --> X*(G)."""
@@ -358,9 +362,9 @@ class QuiverModuliSpace(QuiverModuli):
         "Relations" : I
         }
 
-    def chow_ring(self, chi, chernClasses=None):
+    def chow_ring(self, chi=None, chernClasses=None):
         """Returns the Chow ring of the moduli space."""
-        di = self.tautological_presentation(chi, chernClasses=chernClasses)
+        di = self.tautological_presentation(chi=chi, chernClasses=chernClasses)
         return di["ChowRing"]
 
 
