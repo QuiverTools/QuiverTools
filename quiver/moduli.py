@@ -226,7 +226,6 @@ class QuiverModuliSpace(QuiverModuli):
 
         The Kronecker quiver:
         sage: from quiver import *
-        sage: from moduli import *
         sage: Q = KroneckerQuiver()
         sage: d = vector([1,1])
         sage: theta = vector([1,-1])
@@ -372,7 +371,6 @@ class QuiverModuliSpace(QuiverModuli):
 
         The Kronecker quiver:
         sage: from quiver import *
-        sage: from moduli import *
         sage: Q = KroneckerQuiver()
         sage: d = vector([1,1])
         sage: theta = vector([1,-1])
@@ -428,7 +426,6 @@ class QuiverModuliSpace(QuiverModuli):
 
         P^7 as a quiver moduli space of a generalized Kronecker quiver:
         sage: from quiver import *
-        sage: from moduli import *
         sage: Q = GeneralizedKroneckerQuiver(8)
         sage: d = vector([1,1])
         sage: theta = vector([1,-1])
@@ -439,7 +436,6 @@ class QuiverModuliSpace(QuiverModuli):
 
         Our favorite 6-fold:
         sage: from quiver import *
-        sage: from moduli import *
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: d = vector([2,3])
         sage: theta = vector([3,-2])
@@ -450,7 +446,6 @@ class QuiverModuliSpace(QuiverModuli):
 
         A moduli space of the 5-subspaces quiver; it agrees with the blow-up of P^2 in 4 points in general position:
         sage: from quiver import *
-        sage: from moduli import *
         sage: Q = SubspaceQuiver(5)
         sage: d = vector([1,1,1,1,1,2])
         sage: theta = vector([2,2,2,2,2,-5])
