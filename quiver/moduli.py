@@ -476,6 +476,24 @@ class QuiverModuliSpace(QuiverModuli):
 
         return pi(sect(quotient).homogeneous_components()[N])
 
+    def todd_class():
+        """The Todd class of X is the Todd class of the tangent bundle. For quiver moduli it computes as
+        td(X) = (prod_{a:i->j in Q_1} prod_{p=1}^{d_j} prod_{q=1}^{d_i} Q(t_{j,q} - t_{i,p}))/(prod_{i in Q_0} prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))
+        """
+
+        def todd_generating_series(t,n):
+            """We call the series Q(t) = t/(1-e^{-t}) the Todd generating series. The function computes the terms of this series up to degree n."""
+            B = [bernoulli(i) for i in range(n+1)]
+            return sum([(-1)^i*B[i]/factorial(i)*t^i for i in range(n+1)])
+
+        def truncate(f,n):
+            """Takes an element in a graded ring and discards all homogeneous components of degree > n"""
+            hom = f.homogeneous_components()
+            keyList = [i for i in hom]
+            return sum([hom[i] for i in filter(lambda i: i <= 6, keyList)])
+
+        raise NotImplementedError
+
 
 class QuiverModuliStack(QuiverModuli):
 
