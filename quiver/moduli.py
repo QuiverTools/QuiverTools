@@ -495,6 +495,15 @@ class QuiverModuliSpace(QuiverModuli):
         raise NotImplementedError
 
     def diagonal(self, chi=None):
+        """Computes the class of the diagonal in the Chow ring of X x X where X is the quiver moduli space."""
+
+        Q, d, theta = self._Q, self._d, self._theta
+        n = Q.number_of_vertices()
+        N = self.dimension()
+
+        QuQ = disjoint_union(Q,Q)
+        dud = vector(d.list()+d.list())
+        thetautheta = vector(theta.list()+theta.list())
 
         raise NotImplementedError
 
