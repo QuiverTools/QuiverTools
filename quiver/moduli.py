@@ -428,7 +428,7 @@ class QuiverModuliSpace(QuiverModuli):
         a = Q.adjacency_matrix()
         N = self.dimension()
 
-        A = self.chow_ring(chi=chi, chernClasses=chernClasses)        
+        A = self.chow_ring(chi=chi, chernClasses=chernClasses)
         pi = A.cover() # The quotient map
         sect = A.lifting_map() # A choice of a section of pi
 
@@ -436,12 +436,12 @@ class QuiverModuliSpace(QuiverModuli):
             [g,m] = extended_gcd(d.list())
             chi = vector(m)
 
-        numerator = prod([self.total_chern_class_universal(j, chi, chernClasses=chernClasses)**(d*a.column(j)) for j in range(n)])
-        denominator = prod([self.total_chern_class_universal(i, chi, chernClasses=chernClasses)**d[i] for i in range(n)])
+        numerator = prod([self.total_chern_class_universal(j+1, chi, chernClasses=chernClasses)**(d*a.column(j)) for j in range(n)])
+        denominator = prod([self.total_chern_class_universal(i+1, chi, chernClasses=chernClasses)**d[i] for i in range(n)])
 
         quotient = numerator/denominator
 
-        return pi(sect(quot).homogeneous_components()[N])
+        return pi(sect(quotient).homogeneous_components()[N])
 
 
 class QuiverModuliStack(QuiverModuli):
