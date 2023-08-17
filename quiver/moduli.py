@@ -423,6 +423,44 @@ class QuiverModuliSpace(QuiverModuli):
 
         """The point class is given as the homogeneous component of degree dim X of the expression prod_{a in Q_1} c(U_{t(a)})^{d_{s(a)}} / (prod_{i in Q_0} c(U_i)^{d_i})"""
 
+        """
+        EXAMPLES
+
+        P^7 as a quiver moduli space of a generalized Kronecker quiver:
+        sage: from quiver import *
+        sage: from moduli import *
+        sage: Q = GeneralizedKroneckerQuiver(8)
+        sage: d = vector([1,1])
+        sage: theta = vector([1,-1])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: chi = vector([1,0])
+        sage: X.point_class(chi,chernClasses=['o','h'])
+        h^7
+
+        Our favorite 6-fold:
+        sage: from quiver import *
+        sage: from moduli import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: chi = vector([-1,1])
+        sage: X.point_class(chi,chernClasses=['x1','x2','y1','y2','y3'])
+        y3^2
+
+        A moduli space of the 5-subspaces quiver; it agrees with the blow-up of P^2 in 4 points in general position:
+        sage: from quiver import *
+        sage: from moduli import *
+        sage: Q = SubspaceQuiver(5)
+        sage: d = vector([1,1,1,1,1,2])
+        sage: theta = vector([2,2,2,2,2,-5])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: chi = vector([-1,-1,-1,-1,-1,3])
+        sage: X.point_class(chi,chernClasses=['x1','x2','x3','x4','x5','y','z'])
+        1/2*z
+
+        """
+
         Q, d = self._Q, self._d
         n = Q.number_of_vertices()
         a = Q.adjacency_matrix()
