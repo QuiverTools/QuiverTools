@@ -425,6 +425,33 @@ class Quiver:
         # But can we find a necessary and sufficient condition?
         raise NotImplementedError()
 
+    # TODO
+    def real_roots(self):
+        """
+        Returns the list of real roots of the quiver.
+        """
+        # Derksen--Weyman's book explains the following algorithm to generate the full list of real roots of the quiver:
+            #
+            #  1. define simple dimension vectors e_x
+            # 2. define reflections on the hyperplanes given by the Cartan form
+            # 3. construct the Weil group (must be finite, as it is a subset of S_{\#Q_0})
+            # 4. let W act on the e_x.
+            # The disjoint union $W \cdot e_x$ over $x \in Q_0$ is the list of real roots.
+
+            # Maybe we should implement the Weil group in a separate way. How does Sage handle abstract groups with generators? Matrix groups?
+        raise NotImplementedError()
+
+    def real_schur_roots(self):
+        """
+        Returns the list of real Schur roots of the quiver.
+        """
+
+        return filter(lambda x: self.is_schur_root(x), self.real_roots())
+
+
+
+
+
     # taken from code/snippets/canonical.sage
     # TODO still need testing code from there
     def is_generic_subdimension_vector(self, e, d):
