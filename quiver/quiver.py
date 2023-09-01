@@ -425,33 +425,6 @@ class Quiver:
         # But can we find a necessary and sufficient condition?
         raise NotImplementedError()
 
-    # TODO
-    def real_roots(self):
-        """
-        Returns the list of real roots of the quiver.
-        """
-        # Derksen--Weyman's book explains the following algorithm to generate the full list of real roots of the quiver:
-            #
-            #  1. define simple dimension vectors e_x
-            # 2. define reflections on the hyperplanes given by the Cartan form
-            # 3. construct the Weil group (must be finite, as it is a subset of S_{\#Q_0})
-            # 4. let W act on the e_x.
-            # The disjoint union $W \cdot e_x$ over $x \in Q_0$ is the list of real roots.
-
-            # Maybe we should implement the Weil group in a separate way. How does Sage handle abstract groups with generators? Matrix groups?
-        raise NotImplementedError()
-
-    def real_schur_roots(self):
-        """
-        Returns the list of real Schur roots of the quiver.
-        """
-
-        return filter(lambda x: self.is_schur_root(x), self.real_roots())
-
-
-
-
-
     # taken from code/snippets/canonical.sage
     # TODO still need testing code from there
     def is_generic_subdimension_vector(self, e, d):
@@ -1113,3 +1086,71 @@ def BipartiteQuiver( m, n):
     # TODO implement this
     # m is number of sources, n is number of sinks
     raise NotImplementedError()
+
+
+# Sampling and testing methods
+
+def RandomQuiver(vertices,arrow_bound=10,acyclic=False,connected=True):
+    """Returns a random Quiver object.
+
+    Input: 
+        - vertices: the number of vertices of the desired quiver;
+        - acyclic: If True, the quiver will not have cycles. If false, it might but it is not guaranteed. Defaults to True; and
+        - arrow_bound: the maximum amount of arrows between any two vertices. Defaults to 10.
+        - connected: If True, the adjacency matrix is invertible, so that the underlying graph of the quiver is connected. Defaults to True.
+    """
+        # This while loop just samples candidate quivers until a connected one is found.
+        # There has to be a better way to do this!
+        # what other features should such a function have?
+
+
+    if connected:
+        acceptable = False
+
+        while not acceptable:
+            adjacency = random_matrix(ZZ,vertices,vertices, x=0,y=arrow_bound)
+
+            if acyclic:
+                # upper triangular matrix
+                for i in range(vertices):
+                    for j in range(i,vertices):
+                        adjacency[j,i]=0
+
+            admissible = Quiver(adjacency).is_connected() # unnecessary overhead in defining Quiver object
+    elif not connected:
+        adjacency = random_matrix(ZZ,vertices,vertices, x=0,y=arrow_bound)
+        
+        if acyclic:
+            # upper triangular matrix
+            for i in range(vertices):
+                for j in range(i,vertices):
+                    adjacency[j,i]=0
+
+    return Quiver(adjacency)
+
+def RandomRoot(quiver,positive=True,upper_bound=10):
+    """Returns a random root, or dimension vector, for the given quiver.
+        Inputs: 
+            - quiver: a Quiver object;
+            - positive: if True, the root will not have zero entries. Defaults to False; and
+            - upper_bound: an upper bound on the entries. Defaults to 10.
+    """ 
+    # what other features should such a function have?
+    # if given a stability condition theta, an option to generate theta-coprime roots;
+    # an option to generate indivisible roots;
+    # ?
+    lower_bound = 0
+    if positive:
+        lower_bound += 1
+    return vector([randint(lower_bound,upper_bound) for i in range(quiver.number_of_vertices())])
+    
+def RandomStability(quiver,bound=10):
+    """Returns a random stability condition for the given quiver.
+        Inputs: 
+            - quiver: a Quiver object;
+            - bound: upper and lower bound on the entries. Defaults to 10.
+    """
+    # what other features should this have?
+
+    return vector([randint(-bound//2,bound) for i in range(quiver.number_of_vertices())])
+
