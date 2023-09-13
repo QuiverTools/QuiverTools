@@ -498,6 +498,20 @@ class QuiverModuliSpace(QuiverModuli):
         """Computes the class of the diagonal in the Chow ring of X x X where X is the quiver moduli space."""
         """It is given by the homogeneous component of degree dim X = 1 - <d,d> of the expression c(F)/C(E), where E = bigoplus_{i in Q_0} U_i^vee boxtimes U_i and F = bigoplus_{a in Q_1} U_{s(a)}^vee boxtimes U_{t(a)} = bigoplus_{i,j in Q_0} (U_i^vee boxtimes U_j)^{a_ij}."""
 
+        """
+        EXAMPLES
+
+        P^2 as a quiver moduli space:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([1,1])
+        sage: theta = vector([1,-1])
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: X.diagonal()
+        x1_1^2 + x1_1*y1_1 + y1_1^2
+
+        """
+
         Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
         N = self.dimension()
@@ -547,7 +561,7 @@ class QuiverModuliSpace(QuiverModuli):
             c = prod([(1-generatorRxR1(i,r)+generatorRxR2(j,s)) for r in range(d[i]) for s in range(d[j])])
             return pi(inclusion.inverse_image(c))
 
-        numerator = prod([total_chern_class_boxproduct(i,j)**a[i,j] for i,j in range(n)])
+        numerator = prod([total_chern_class_boxproduct(i,j)**a[i,j] for i in range(n) for j in range(n)])
         denominator = prod([total_chern_class_boxproduct(i,i) for i in range(n)])
         quotient = numerator/denominator
 
