@@ -177,11 +177,10 @@ class Quiver:
 
 
     def outdegree(self,i):
-        """The indegree of i is the number of incoming arrows into i."""
+        """The outdegree of i is the number of incoming arrows into i."""
 
-        """indeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix."""
-        # Question: Should we number the vertices 1,...,n or 0,...,n-1?
-
+        """outdeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix."""
+        
         """
         EXAMPLES
 
