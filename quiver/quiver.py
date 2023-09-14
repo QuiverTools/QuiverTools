@@ -422,6 +422,7 @@ class Quiver:
 
         # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
         # But can we find a necessary and sufficient condition?
+        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every HN stratum having codimension at least 2. The codimension of a HN stratum can be computed
         raise NotImplementedError()
 
     # taken from code/snippets/canonical.sage
@@ -486,6 +487,16 @@ class Quiver:
             slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
             semistable = all([self.has_semistable_representation(d,theta,algorithm=algorithm) for e in dstar])
             return (slopeDecreasing and semistable)
+
+    def codimension_of_harder_narasimhan_stratum(self,dstar,denominator=sum):
+        """Computes the codimension of the HN stratum R_{d^*}^HN inside R_d."""
+        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+
+        # This check takes a long time. Shall we do it nonetheless?
+        assert self.is_harder_narasimhan_type(dstar,self._theta,denominator=denominator)
+        s = len(dstar)
+        return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
+
 
     def all_harder_narasimhan_types(self, d, theta, denominator=sum):
         # TODO what to return?
