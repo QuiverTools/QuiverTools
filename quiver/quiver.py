@@ -424,6 +424,19 @@ class Quiver:
         # But can we find a necessary and sufficient condition?
         # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2. 
 
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: Q.is_amply_stable(d,theta)
+        True
+        sage: Q.is_amply_stable(d,-theta)
+        False
+        """
+        
         if self.semistable_equals_stable(d,theta):
             hn = self.all_harder_narasimhan_types(d,theta)
             if [d] in hn:
