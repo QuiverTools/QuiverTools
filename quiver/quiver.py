@@ -426,7 +426,8 @@ class Quiver:
 
         if self.semistable_equals_stable(d,theta):
             hn = self.all_harder_narasimhan_types(d,theta)
-            hn.pop(0)
+            if [d] in hn:
+                hn.remove([d])
             return all([self.codimension_of_harder_narasimhan_stratum(dstar) >= 2 for dstar in hn])
         else:
             raise NotImplementedError()
