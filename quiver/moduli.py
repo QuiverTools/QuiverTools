@@ -162,17 +162,6 @@ class QuiverModuliSpace(QuiverModuli):
                 # self._condition == "stable"
                 return -oo
 
-    def codimension_of_harder_narasimhan_stratum_in_representation_space(self,dstar,denominator=sum):
-        """Computes the codimension of the HN stratum R_{d^*}^HN inside R_d."""
-        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
-
-        """I'm not sure if this belongs here. The HN stratification is a stratification of R(Q,d) and not of the semistable moduli space. Should it instead go into quiver.py?"""
-
-        # This check takes a long time. Shall we do it nonetheless?
-        assert self._Q.is_harder_narasimhan_type(dstar,self._theta,denominator=denominator)
-        s = len(dstar)
-        return -sum([self._Q.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
-
     def dimension_of_luna_stratum(self,tau):
         """Computes the dimension of the Luna stratum S_tau."""
         """The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is sum_k l(p^k)(1 - <d^k,d^k>) where for a partition p = (n_1,...,n_l), the length l(p) is l, i.e. the number of rows."""
