@@ -418,12 +418,18 @@ class Quiver:
 
     # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
     def is_amply_stable(self, d, theta):
-        """Checks if d is amply stable of theta, which by definition means that the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
+        """Checks if d is amply stable for theta, which by definition means that the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
 
         # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
         # But can we find a necessary and sufficient condition?
-        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every HN stratum having codimension at least 2. The codimension of a HN stratum can be computed
-        raise NotImplementedError()
+        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2. 
+
+        if self.semistable_equals_stable(d,theta):
+            hn = self.all_harder_narasimhan_types(d,theta)
+            hn.pop(0)
+            return all([self.codimension_of_harder_narasimhan_stratum(dstar) >= 2 for dstar in hn])
+        else:
+            raise NotImplementedError()
 
     # taken from code/snippets/canonical.sage
     # TODO still need testing code from there
