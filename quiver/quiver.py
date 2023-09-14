@@ -436,7 +436,7 @@ class Quiver:
         sage: Q.is_amply_stable(d,-theta)
         False
         """
-        
+
         if self.semistable_equals_stable(d,theta):
             hn = self.all_harder_narasimhan_types(d,theta)
             if [d] in hn:
@@ -444,6 +444,18 @@ class Quiver:
             return all([self.codimension_of_harder_narasimhan_stratum(dstar) >= 2 for dstar in hn])
         else:
             raise NotImplementedError()
+
+    def is_strongly_amply_stable(self, d, theta):
+        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which admit a theta-semistable representation and which satisfy slope(e) > slope(d)."""
+
+        # All subdimension vectors of d which have a semistable representation
+        es = list(filter(lambda e: self.has_semistable_representation(e,theta), all_subdimension_vectors(d)))
+        # Remove (0,...,0)
+        zeroVector = vector([0 for i in range(d.length())])
+        es.remove(zeroVector)
+        # All of them which have bigger slope
+        es = list(filter(lambda e: slope(e,theta) > slope(d,theta), es))
+        return all([self.euler_form(e,d-e) <= -2 for e in es])
 
     # taken from code/snippets/canonical.sage
     # TODO still need testing code from there
