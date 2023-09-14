@@ -139,6 +139,7 @@ for a highest weight of GL(d).
   - what's up with https://arxiv.org/abs/2207.09839 ?
   - see https://arxiv.org/abs/math/0608321 for more algorithmic approach?
     implemented in msinvar (in a opaque way)
+  - see https://github.com/hennlu/kac-polynomials for some application?
 
 * torus localisation (see email of Hans from February 8 2023)
   - see also torus-equivariant Chow rings
