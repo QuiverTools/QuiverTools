@@ -488,12 +488,31 @@ class Quiver:
             semistable = all([self.has_semistable_representation(d,theta,algorithm=algorithm) for e in dstar])
             return (slopeDecreasing and semistable)
 
-    def codimension_of_harder_narasimhan_stratum(self,dstar,denominator=sum):
+    def codimension_of_harder_narasimhan_stratum(self,dstar):
         """Computes the codimension of the HN stratum R_{d^*}^HN inside R_d."""
         """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
 
-        # This check takes a long time. Shall we do it nonetheless?
-        assert self.is_harder_narasimhan_type(dstar,self._theta,denominator=denominator)
+        """
+        EXAMPLES
+
+        The 3-Kronecker quiver
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: hn = Q.all_harder_narasimhan_types(d,theta)
+        sage: hn
+        [[(2, 3)],
+        [(1, 1), (1, 2)],
+        [(2, 2), (0, 1)],
+        [(2, 1), (0, 2)],
+        [(1, 0), (1, 3)],
+        [(1, 0), (1, 2), (0, 1)],
+        [(1, 0), (1, 1), (0, 2)],
+        [(2, 0), (0, 3)]]
+        sage: [Q.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn]
+        [0, 3, 4, 10, 8, 9, 12, 18]
+        """
+
         s = len(dstar)
         return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
 
