@@ -465,21 +465,18 @@ class Quiver:
         """A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
         By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if <e',d-e> is non-negative for all generic subdimension vectors e' of e."""
 
-        #possible optimisation?
-        #if e == d: return True
+        # Optimization: Check first if numerical condition is violated and then if any of the e' which does violate it is a generic subdimension vector.
+        
+        if e == d: 
+            return True
+        else:
+            # list of all dimension vectors e' which are strictly smaller than e
+            subdimensions = all_subdimension_vectors(e)
+            # only those which violate the numerical condition
+            subdimensions = filter(lambda eprime: self.euler_form(eprime, d-e) < 0, subdimensions)
 
-        # list of all dimension vectors e' which are strictly smaller than e
-        subdimensions = cartesian_product([range(ei + 1) for ei in e])
-        subdimensions = map(vector, subdimensions)
-        # for the recursion we ignore e
-        subdimensions = filter(lambda eprime: eprime != e, subdimensions)
-        # check whether they are generic subdimension vectors of e
-        subdimensions = filter(lambda eprime: self.is_generic_subdimension_vector(eprime, e), subdimensions)
-        # add e back into the list
-        subdimensions = list(subdimensions) + [e]
-
-        # apply the numerical criterion
-        return all(map(lambda eprime: self.euler_form(eprime, d - e) >= 0, subdimensions))
+            # check if the list contains no generic subdimension vector of e
+            return not any([self.is_generic_subdimension_vector(eprime,e) for eprime in subdimensions])
 
     def all_generic_subdimension_vectors(self, d):
         """Returns the list of all generic subdimension vectors of d."""
