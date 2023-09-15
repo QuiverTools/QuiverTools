@@ -29,7 +29,7 @@ jobs:
       - name: Create artifact
         run: |
           mkdir github-artifacts
-          mv _build ./github-artifacts
+          mv _build/html ./github-artifacts
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -51,8 +51,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./github-deploy
-          publish_branch: build
+          publish_branch: docs
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
-          # remove this option if you want to have all builds preserved in the build directory
           force_orphan: true
