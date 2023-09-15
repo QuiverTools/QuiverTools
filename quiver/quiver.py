@@ -446,10 +446,10 @@ class Quiver:
             raise NotImplementedError()
 
     def is_strongly_amply_stable(self, d, theta):
-        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which admit a theta-semistable representation and which satisfy slope(e) > slope(d)."""
+        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) > slope(d)."""
 
-        # All subdimension vectors of d which have a semistable representation
-        es = list(filter(lambda e: self.has_semistable_representation(e,theta), all_subdimension_vectors(d)))
+        # All subdimension vectors of d
+        es = all_subdimension_vectors(d)
         # Remove (0,...,0)
         zeroVector = vector([0 for i in range(d.length())])
         es.remove(zeroVector)
