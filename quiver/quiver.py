@@ -43,7 +43,7 @@ class Quiver:
         return self._adjacency
 
     def underlying_graph(self):
-        r""""Returns the (necessarily symmetric) adjacency matrix of the underlying graph of the quiver.
+        r"""Returns the (necessarily symmetric) adjacency matrix of the underlying graph of the quiver.
 
         OUTPUT: A square, symmetric matrix M whose entry M[i,j] = M[j,i] is the number of edges between the vertices i and j.
         """
@@ -124,19 +124,19 @@ class Quiver:
 
         The A_10 quiver without one arrow::
 
-        sage: from quiver import *
-        sage: discA10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-        ....:                               [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-        ....:                               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-        ....:                               [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-        ....:                               [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-        ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ....:                               [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-        ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-        ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]))
-        sage: discA10.is_connected()
-        False
+            sage: from quiver import *
+            sage: discA10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            ....:                               [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+            ....:                               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            ....:                               [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            ....:                               [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+            ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            ....:                               [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+            ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+            ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]))
+            sage: discA10.is_connected()
+            False
         """
         # inefficient but functioning method. To improve?
         # more efficient algorithm: scan the graph in depth and list all reachable vertices.
