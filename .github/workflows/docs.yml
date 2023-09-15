@@ -18,7 +18,7 @@ jobs:
         run: sage --pip install .
       - name: Run Sphinx
         run: |
-          sage -sh -c "make html"
+          make html
       - name: Create artifact
         run: |
           mkdir github-artifacts
