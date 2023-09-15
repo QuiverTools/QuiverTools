@@ -1,0 +1,51 @@
+name: Documentation
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: sagemath/sagemath:latest
+      options: --user root
+    steps:
+      - name: Checkout QuiverTools
+        uses: actions/checkout@v3
+      - name: Install QuiverTools
+        run: sage --pip install .
+      - name: Run Sphinx
+        run: |
+          sage -sh -c "make html"
+      - name: Create artifact
+        run: |
+          mkdir github-artifacts
+          mv _build ./github-artifacts
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: ./github-artifacts
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          path: github-artifacts
+      - name: Move docs
+        run: mkdir -p github-deploy && mv github-artifacts/*/* github-deploy
+      - name: Deploy on orphan branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./github-deploy
+          publish_branch: build
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          # remove this option if you want to have all builds preserved in the build directory
+          force_orphan: true
