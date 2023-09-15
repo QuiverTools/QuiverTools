@@ -528,6 +528,7 @@ class Quiver:
         EXAMPLES
 
         The 3-Kronecker quiver
+        sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: d = vector([2,3])
         sage: theta = vector([3,-2])
