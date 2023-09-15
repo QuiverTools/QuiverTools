@@ -12,6 +12,10 @@ jobs:
       image: sagemath/sagemath:latest
       options: --user root
     steps:
+      - name: Install make and Sphinx
+        run: |
+          sudo apt-get install -y make
+          sudo apt-get install -y python3-sphinx
       - name: Checkout QuiverTools
         uses: actions/checkout@v3
       - name: Install QuiverTools
