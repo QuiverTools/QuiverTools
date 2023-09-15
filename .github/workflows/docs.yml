@@ -12,10 +12,11 @@ jobs:
       image: sagemath/sagemath:latest
       options: --user root
     steps:
-      - name: Install make and Sphinx
+      - name: Install make, TeX Live and Sphinx
         run: |
           sudo apt-get update
           sudo apt-get install -y make
+          sudo apt-get install -y texlive
           # install this separately to avoid user interaction in install
           sudo apt-get install -y tzdata
           sudo apt-get install -y python3-sphinx
@@ -26,10 +27,13 @@ jobs:
       - name: Run Sphinx
         run: |
           make html
+          make latexpdf
       - name: Create artifact
         run: |
-          mkdir github-artifacts
-          mv _build/html ./github-artifacts
+          mkdir -p github-artifacts/docs
+          mv _build/latex/quivertools.pdf ./github-artifacts/documentation.pdf
+          # useless for now because GitHub pages doesn't work for private repositories
+          mv _build/html ./github-artifacts/docs
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
