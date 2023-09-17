@@ -294,6 +294,20 @@ class Quiver:
         E = self.euler_matrix()
         return d * (-self.euler_matrix().transpose() + E)
 
+    def all_slope_decreasing_sequences(d, theta, denominator="sum"):
+        """Returns the list of all sequences (d^1,...,d^l) which sum to d such that slope(d^1) > ... > slope(d^l)"""
+
+        subdimensions = all_subdimension_vectors(d)
+        subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)), subdimensions))
+        # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+        subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
+        # The slope decreasing sequences which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+        allSlopeDecreasing =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta) > slope(fstar[0],theta) ,self.all_slope_decreasing_sequences(d-e,theta,denominator=denominator)))]
+        # Add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
+        allSlopeDecreasing = [[d]] + allSlopeDecreasing
+        return allSlopeDecreasing
+
+
     def has_semistable_representation(self, d, theta, algorithm="schofield"):
         """Checks if there is a theta-semistable representation of dimension vector d."""
 
@@ -337,12 +351,18 @@ class Quiver:
         False
 
         """
+        
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])    
 
         if algorithm == "schofield":
-            n = self.number_of_vertices()
-            zeroVector = vector([0 for i in range(n)])
             subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
+        
+        if algorithm == "experimental":
+            return NotImplementedError()
+            
+
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
         """Checks if there is a theta-stable representation of dimension vector d."""
