@@ -294,9 +294,29 @@ class Quiver:
         E = self.euler_matrix()
         return d * (-self.euler_matrix().transpose() + E)
 
-    def all_slope_decreasing_sequences(d, theta, denominator="sum"):
+    def all_slope_decreasing_sequences(self, d, theta, denominator=sum):
         """Returns the list of all sequences (d^1,...,d^l) which sum to d such that slope(d^1) > ... > slope(d^l)"""
 
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: Q.all_slope_decreasing_sequences(d,theta)
+        [[(2, 3)],
+        [(1, 1), (1, 2)],
+        [(2, 2), (0, 1)],
+        [(2, 1), (0, 2)],
+        [(1, 0), (1, 3)],
+        [(1, 0), (1, 2), (0, 1)],
+        [(1, 0), (1, 1), (0, 2)],
+        [(2, 0), (0, 3)]]
+        """
+
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])    
         # List all subdimension vectors e of bigger slope than d.
         subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)), all_subdimension_vectors(d)))
         # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
@@ -351,11 +371,11 @@ class Quiver:
         False
 
         """
-        
-        n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])    
 
-        if algorithm == "schofield":
+
+        if algorithm == "schofield":        
+            n = self.number_of_vertices()
+            zeroVector = vector([0 for i in range(n)])    
             subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
         
