@@ -379,6 +379,56 @@ class Quiver:
             subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
         
+        """An experimental implementation which should be a lot faster. I think I've shown that it's equivalent."""
+        # TODO: Write up the theory behind it
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: theta = vector([1,0])
+        sage: ds = [vector([i,j]) for i in range(6) for j in range(6)]
+        sage: [Q.has_semistable_representation(d,theta) ^ Q.has_semistable_representation(d,theta,algorithm="experimental") for d in ds]
+        [1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1]
+
+        """
+        
         if algorithm == "experimental":
             allSlopeDecreasing = self.all_slope_decreasing_sequences(d,theta)
             allSlopeDecreasing.remove([d])
