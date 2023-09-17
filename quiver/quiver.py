@@ -380,7 +380,9 @@ class Quiver:
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
         
         if algorithm == "experimental":
-            return NotImplementedError()
+            allSlopeDecreasing = self.all_slope_decreasing_sequences(d,theta)
+            allSlopeDecreasing.remove([d])
+            return all([sum([sum([self.euler_form(dstar[r],dstar[s]) for r in range(s)]) for s in range(1,len(dstar))]) < 0 for dstar in allSlopeDecreasing])
             
 
 
