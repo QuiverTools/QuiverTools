@@ -1,0 +1,40 @@
+\usepackage{hyperref}
+\hypersetup{hypertexnames = false, bookmarksdepth = 2, bookmarksopen = true, colorlinks, linkcolor = black, citecolor = black, urlcolor = black, pdfstartview={XYZ null null 1}}
+
+\usepackage{amsfonts}
+\usepackage[fleqn, leqno]{amsmath}
+\usepackage{amsthm}
+
+\usepackage[capitalise]{cleveref}
+
+% as per https://tex.stackexchange.com/questions/306908/switching-from-amsrefs-to-biblatex
+\begin{filecontents*}{mrnumber.dbx}
+\DeclareDatamodelFields[type=field,datatype=verbatim]{mrnumber}
+\DeclareDatamodelEntryfields{mrnumber}
+\end{filecontents*}
+\usepackage[backend=biber, maxbibnames=99, datamodel=mrnumber, sortcites]{biblatex}
+
+\usepackage{booktabs}
+\usepackage{colonequals}
+\usepackage{diagbox}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{parskip}
+\usepackage{thmtools}
+\usepackage{tikz-cd}
+\usepackage[colorinlistoftodos, textsize = footnotesize]{todonotes}
+\usepackage{xparse}
+\usepackage{xspace}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{libertine}
+\usepackage[libertine]{newtxmath}
+\usepackage[scaled=0.83]{beramono}
+%\usepackage[charter]{mathdesign}
+%\usepackage[scaled]{beramono,berasans}
+\usepackage{eucal}
+\usepackage{microtype}
+\frenchspacing
+
+\usepackage{gitinfo2}
