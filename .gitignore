@@ -4,10 +4,10 @@ __pycache__
 quiver/Test.sage
 _build
 *quiver.egg-info*
-*.dbx
-*.aux
-*.bcf
-*.log
-*.out
+theory/*.dbx
+theory/*.aux
+theory/*.bcf
+theory/*.log
+theory/*.out
 theory/*.pdf
-*.run.xml
+theory/*.run.xml
