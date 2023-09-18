@@ -37,7 +37,19 @@ for every dimension vector $\mathbf{e} \neq 0$.
     \[
         0 = F_i^0 \subseteq F_i^1 \subseteq \ldots \subseteq F_i^l = M_i     
     \]
-    such that the subquotients $F_i^r/F_i^{r-1}$ have dimension $d_i^r$ for all $i \in Q_0$ and $r = 1,\ldots,\ell$.
+    such that the subquotients $F_i^r/F_i^{r-1}$ have dimension $d_i^r$ for all $i \in Q_0$ and $r = 1,\ldots,\ell$. Inside $X$ we define the quiver flag variety $\Fl_\mathbf{e}(M)$ as the closed subset of all tuples of flags such that 
+    \[
+        M_a(F_{\source(a)}^r) \subseteq F_{\target(a)}^r     
+    \]
+    for all $a \in Q_1$ and for all $r=1,\ldots,\ell-1$. This subset has a natural structure of a closed subscheme of $X$ as follows. On $X$, we consider the universal bundles $\mathcal{F}_i^r$ for $i \in Q_0$ and $r=1,\ldots,\ell$; the fiber of $\mathcal{F}_j^s$ in a point $x = (F_i^r)$ is the vector space $F_j^s$. Let $a \in Q_1$. Consider the morphism
+    \[
+        \mathcal{F}_{\source(a)}^r \to \mathcal{O}_X \otimes M_{\source(a)} \to \mathcal{O}_X \otimes M_{\target(a)} \to (\mathcal{O}_X \otimes M_{\target(a)})/\mathcal{F}_{\target(a)}^r     
+    \]
+    given by the composition of the inclusion, the linear map $M_a$ and the projection. We obtain a global section $s_M$  of 
+    \[
+        \bigoplus_{a \in Q_1} \bigoplus_{r=1}^{\ell-1} \mathcal{F}_{\source(a)}^r \otimes (\mathcal{O}_X \otimes M_{\target(a)})/\mathcal{F}_{\target(a)}^r
+    \]
+    whose zero locus is $\Fl_\mathbf{e}(M)$. The scheme structure of $\Fl_\mathbf{e}(M)$ is by definition the scheme structure of $Z(s_M)$. It may be non-reduced, whence the term ``quiver flag variety'' is maybe not great, but it is standard terminology.
 \end{proof}
 
 \gitfootnote{commit: \texttt{\gitAbbrevHash}\hfil date: \texttt{\gitAuthorIsoDate}\hfil \texttt{\gitReferences}}
