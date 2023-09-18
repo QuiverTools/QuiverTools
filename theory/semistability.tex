@@ -11,7 +11,22 @@
 \begin{document}
 \maketitle
 
-We work over an algebraically closed field. Let $Q$ be a quiver, $\mathbf{d}$ a dimension vector and $\theta \in \Z^{Q_0}$
+We work over an algebraically closed field. Let $Q$ be a quiver, $\mathbf{d}$ a dimension vector and $\theta \in \Z^{Q_0}$ a stability parameter. The slope function $\mu = \mu_\theta$ is defined by
+\[
+    \mu(\mathbf{e}) = \frac{\theta\cdot \mathbf{e}}{\sum_i e_i}    
+\]
+for every dimension vector $\mathbf{e} \neq 0$.
+
+\begin{proposition}
+    The following are equivalent:
+    \begin{enumerate}
+        \item There exists a $\theta$-semistable representation of dimension vector $\mathbf{d}$.
+        \item For all sequences $d^* = (d^1,\ldots,d^\ell)$ of length $\ell > 1$ with $\mu(d^1) > \ldots > \mu(d^\ell)$ holds
+        \[
+            \sum_{1 \leq r < s \leq \ell} \langle d^r, d^s \rangle < 0.    
+        \]
+    \end{enumerate}
+\end{proposition}
 
 \gitfootnote{commit: \texttt{\gitAbbrevHash}\hfil date: \texttt{\gitAuthorIsoDate}\hfil \texttt{\gitReferences}}
 
