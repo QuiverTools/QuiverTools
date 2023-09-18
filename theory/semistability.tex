@@ -21,12 +21,24 @@ for every dimension vector $\mathbf{e} \neq 0$.
     The following are equivalent:
     \begin{enumerate}
         \item There exists a $\theta$-semistable representation of dimension vector $\mathbf{d}$.
-        \item For all sequences $d^* = (d^1,\ldots,d^\ell)$ of length $\ell > 1$ with $\mu(d^1) > \ldots > \mu(d^\ell)$ holds
+        \item For all sequences $\mathbf{d}^* = (\mathbf{d}^1,\ldots,\mathbf{d}^\ell)$ of length $\ell > 1$ with $\mu(\mathbf{d}^1) > \ldots > \mu(\mathbf{d}^\ell)$ holds
         \[
-            \sum_{1 \leq r < s \leq \ell} \langle d^r, d^s \rangle < 0.    
+            \sum_{1 \leq r < s \leq \ell} \langle \mathbf{d}^r, \mathbf{d}^s \rangle < 0.    
         \]
     \end{enumerate}
 \end{proposition}
+
+\begin{proof}
+    We prove (1) implies (2). Let $M$ be a $\theta$-semistable representation of dimension vector $\mathbf{d}$. Assume that there exists a sequence $\mathbf{d}^*$ of length $\ell > 1$ such that the slopes are strictly decreasing and such that $\sum_{r < s} \langle \mathbf{d}^r,\mathbf{d}^s \rangle \geq 0$. Consider the variety
+    \[
+        X = \prod_{i \in Q_0} \Fl_{d_i^*}(M_i)    
+    \]
+    of tuples $(F_i^r)$ of flags
+    \[
+        0 = F_i^0 \subseteq F_i^1 \subseteq \ldots \subseteq F_i^l = M_i     
+    \]
+    such that the subquotients $F_i^r/F_i^{r-1}$ have dimension $d_i^r$ for all $i \in Q_0$ and $r = 1,\ldots,\ell$.
+\end{proof}
 
 \gitfootnote{commit: \texttt{\gitAbbrevHash}\hfil date: \texttt{\gitAuthorIsoDate}\hfil \texttt{\gitReferences}}
 
