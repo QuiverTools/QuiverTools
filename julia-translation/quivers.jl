@@ -1,9 +1,15 @@
-# This code is a translation of the Sage code in quivers.py. It is not meant to be published, but rather to help with high-performance hypothesis testing and profiling.
+# This code is a translation of the Sage code in quivers.py. It is not necessarily meant to be published, but rather to help with high-performance hypothesis testing and profiling.
 
 using LinearAlgebra, IterTools
 
 
+"""
+A quiver is represented by its adjacency matrix (a_ij) in M_{n x n}(N) where Q_0 = {1,...,n} and a_{ij} is the number of arrows i --> j.
 
+Variables:
+adjacency::Matrix{Int64} is the adjacency matrix of the quiver
+name = None
+"""
 mutable struct Quiver
     adjacency::Matrix{Int64}
     name::String
@@ -29,20 +35,94 @@ mutable struct Quiver
     end
 end
 
+"""
+Returns the adjacency matrix of the quiver.
+
+OUTPUT: A square matrix M whose entry M[i,j] is the number of arrows from the vertex i to the vertex j.
+"""
 function adjacency_matrix(Q::Quiver)
     return Q.adjacency
 end
 
+"""
+Returns the (necessarily symmetric) adjacency matrix of the underlying graph of the quiver.
+
+OUTPUT: A square, symmetric matrix M whose entry M[i,j] = M[j,i] is the number of edges between the vertices i and j.
+"""
 function underlying_graph(Q::Quiver)
     return Matrix{Int64}(Q.adjacency + transpose(Q.adjacency) - diagm(diag(Q.adjacency)))
 end
-
+"""
+Returns the number of vertices of the quiver.
+"""
 number_of_vertices(Q::Quiver) = size(Q.adjacency)[1]
 
+"""
+Returns the number of arrows of the quiver.
+"""
 number_of_arrows(Q::Quiver) = sum(Q.adjacency)
 
+"""
+Returns true if the quiver is acyclic, false otherwise.
+"""
 is_acyclic(Q::Quiver) = (Q.adjacency^number_of_vertices(Q) == zeros(Int64, number_of_vertices(Q), number_of_vertices(Q)))
 
+"""
+Returns true if the quiver is connected, false otherwise.
+
+Examples:
+    julia> Q = Quiver([0 1 0; 0 0 1; 1 0 0])
+    julia> is_connected(Q)
+    true
+
+    julia> Q = Quiver([0 1 0; 1 0 0; 0 0 2])
+    false
+
+    The 4-Kronecker quiver:
+    julia> Q = GeneralizedKroneckerQuiver(4)
+    julia> is_connected(Q)
+    true
+
+    The 4-loop quiver:
+    julia> Q = LoopQuiver(4)
+    julia> is_connected(Q)
+    true
+
+    The 4-subspace quiver:
+    julia> Q = SubspaceQuiver(4)
+    julia> is_connected(Q)
+    true
+
+    The A10 quiver:
+
+    julia> A10 = Quiver(   [0 1 0 0 0 0 0 0 0 0;
+                            0 0 1 0 0 0 0 0 0 0;
+                            0 0 0 1 0 0 0 0 0 0;
+                            0 0 0 0 1 0 0 0 0 0;
+                            0 0 0 0 0 1 0 0 0 0;
+                            0 0 0 0 0 0 1 0 0 0;
+                            0 0 0 0 0 0 0 1 0 0;
+                            0 0 0 0 0 0 0 0 1 0;
+                            0 0 0 0 0 0 0 0 0 1;
+                            0 0 0 0 0 0 0 0 0 0] )
+    julia> is_connected(A10)
+    true
+
+    The A10 quiver without one arrow:
+    julia> A10 = Quiver(   [0 1 0 0 0 0 0 0 0 0;
+                            0 0 1 0 0 0 0 0 0 0;
+                            0 0 0 1 0 0 0 0 0 0;
+                            0 0 0 0 1 0 0 0 0 0;
+                            0 0 0 0 0 1 0 0 0 0;
+                            0 0 0 0 0 0 0 0 0 0;
+                            0 0 0 0 0 0 0 1 0 0;
+                            0 0 0 0 0 0 0 0 1 0;
+                            0 0 0 0 0 0 0 0 0 1;
+                            0 0 0 0 0 0 0 0 0 0] )
+    julia> is_connected(A10)
+    false
+    
+"""
 function is_connected(Q::Quiver)
     paths = underlying_graph(Q)
     for i in 2:number_of_vertices(Q) - 1
@@ -56,20 +136,80 @@ function is_connected(Q::Quiver)
     return true
 end
 
+# the docstrings on these functions are from the file quiver.py
+
+"""
+Returns the number of incoming arrows to the vertex j.
+
+Examples:
+
+julia> Q = GeneralizedKroneckerQuiver(4)
+julia> indegree(Q, 1)
+0
+julia> indegree(Q, 2)
+4
+"""
 indegree(Q::Quiver, j::Int64) = (1 <= j & j<= number_of_vertices(Q)) ? sum(adjacency_matrix(Q)[:,j]) : throw(DomainError(j, "vertex index out of bounds"))
 
+"""
+Returns the number of outgoing arrows from the vertex i.
+
+Examples:
+
+julia> Q = GeneralizedKroneckerQuiver(4)
+julia> outdegree(Q, 1)
+4
+julia> outdegree(Q, 2)
+0
+"""
 outdegree(Q::Quiver, i::Int64) = (1 <= i & i<= number_of_vertices(Q)) ? sum(adjacency_matrix(Q)[i,:]) : throw(DomainError(i, "vertex index out of bounds"))
 
+"""
+Returns true if the vertex i is a source, i.e. there are no incoming arrows into i, false otherwise.
+
+Examples:
+
+julia> Q = GeneralizedKroneckerQuiver(4)
+julia> is_source(Q, 1)
+true
+julia> is_source(Q, 2)
+false
+"""
 is_source(Q::Quiver, i::Int64) = (1 <= i & i<= number_of_vertices(Q)) ? indegree(Q, i) == 0 : throw(DomainError(i, "vertex index out of bounds"))
 
+"""
+Returns true if the vertex j is a sink, i.e. there are no outgoing arrows from j, false otherwise.
+
+Examples:
+
+julia> Q = GeneralizedKroneckerQuiver(4)
+julia> is_sink(Q, 1)
+false
+julia> is_sink(Q, 2)
+true
+"""
 is_sink(Q::Quiver, j::Int64) = (1 <= j & j<= number_of_vertices(Q)) ? outdegree(Q, j) == 0 : throw(DomainError(j, "vertex index out of bounds"))
 
+"""
+Returns the Euler matrix of the quiver.
+"""
 euler_matrix(Q::Quiver) = Matrix{Int64}(I, number_of_vertices(Q), number_of_vertices(Q)) - adjacency_matrix(Q)
 
+"""
+Returns the value of the Euler bilinear form of the quiver computed on the vectors x and y.
+"""
 euler_form(Q::Quiver, x::Vector{Int64}, y::Vector{Int64}) = (length(x) == number_of_vertices(Q) & length(y) == number_of_vertices(Q)) ? x'*euler_matrix(Q)*y : throw(DomainError("dimension vectors must have length equal to number of vertices"))
 
+"""
+The opposite quiver is given by the transpose of the adjacency matrix of the original quiver.
+
+Returns a Quiver object with the same vertices and an arrow from j to i for every arrow from i to j in the original quiver.
+"""
 opposite_quiver(Q::Quiver) = Quiver(Matrix{Int64}(transpose(adjacency_matrix(Q))), "Opposite of "*Q.name)
 
+"""
+The adjacency matrix of the double of a quiver is the sum of the adjacency matrix of the original quiver and its transpose.
+"""
 double_quiver(Q::Quiver) = Quiver(adjacency_matrix(Q) + Matrix{Int64}(transpose(adjacency_matrix(Q))), "Double of "*Q.name)
 
 
@@ -77,14 +217,94 @@ double_quiver(Q::Quiver) = Quiver(adjacency_matrix(Q) + Matrix{Int64}(transpose(
 
 thin_dimension_vectors(Q::Quiver) = [1 for i in 1:number_of_vertices(Q)]
 
+"""
+The canonical stability parameter is given by <d,_> - <_,d>
+"""
 canonical_stability_parameter(Q::Quiver, d::Vector{Int64}) = d*(-transpose(euler_matrix(Q)) + euler_matrix(Q))
 
+
+"""
+Returns the list of all sequences (d^1,...,d^l) which sum to d such that slope(d^1) > ... > slope(d^l)
+
+Examples:
+
+julia> Q = GeneralizedKroneckerQuiver(3)
+julia> d = [2,3]
+julia> theta = [3,-2]
+julia> all_slope_decreasing_sequences(Q, d, theta)
+8-element Array{Array{Vector}}:
+    [[[2, 3]],
+    [[1, 1], [1, 2]],
+    [[2, 2], [0, 1]],
+    [[2, 1], [0, 2]],
+    [[1, 0], [1, 3]],
+    [[1, 0], [1, 2], [0, 1]],
+    [[1, 0], [1, 1], [0, 2]],
+    [[2, 0], [0, 3]]]
+    """
+function all_slope_decreasing_sequences(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64}, denominator::Function = sum)
+
+    # List all subdimension vectors e of bigger slope than d.
+    subdimensions = filter(e -> (e != ZeroVector(number_of_vertices(Q))) && (slope(e,theta,denominator) > slope(d,theta,denominator)), all_subdimension_vectors(d))
+
+    # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+    subdimensions = sort(subdimensions, by = e -> slope(e,theta,denominator))
+    # The slope decreasing sequences which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+
+    # I will rewrite this as functional programming later
+    allSlopeDecreasing = []
+    for e in subdimensions
+        for fstar in filter(fstar -> slope(e,theta) > slope(fstar[1],theta), all_slope_decreasing_sequences(Q, d-e, theta, denominator))
+        push!(allSlopeDecreasing, [e, fstar...])
+        end
+    end
+    # Add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
+    return [[d], allSlopeDecreasing...]
+end
+
+
+"""Checks if there is a theta-semistable representation of dimension vector d.
+
+Examples:
+
+
+julia> A2 = GeneralizedKroneckerQuiver(1)
+julia> theta = [1,-1]
+julia> d = [1,1]
+julia> has_semistable_representation(A2, d, theta)
+true
+
+julia> d = [2,2]
+julia> has_semistable_representation(A2, d, theta)
+true
+
+julia> d = [1,2]
+julia> has_semistable_representation(A2, d, theta)
+false
+
+julia> d = [0,0]
+julia> has_semistable_representation(A2, d, theta)
+true
+
+The 3-Kronecker quiver:
+julia> K3 = GeneralizedKroneckerQuiver(3)
+julia> theta = [3,-2]
+julia> d = [2,3]
+julia> has_semistable_representation(K3, d, theta)
+true
+
+julia> d = [1,4]
+julia> has_semistable_representation(K3, d, theta)
+false
+"""
 function has_semistable_representation(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64}, algorithm::String = "schofield") 
     if algorithm == "reineke"
         throw(ArgumentError("reineke algorithm not implemented"))
-    elseif algorithm == "schofield"
 
+    elseif algorithm == "schofield"
+        # collect the list of all subdimension vectors e of bigger slope than d
         subdimensionsBiggerSlope = filter(e -> e != ZeroVector(number_of_vertices(Q)) && e != d && slope(e, theta) > slope(d, theta), all_subdimension_vectors(d))
+        # to have semistable representations, none of the vectors above must be generic subdimension vectors.
         return !any(e -> is_generic_subdimension_vector(Q, e, d), subdimensionsBiggerSlope)
     else
         throw(ArgumentError("algorithm not recognized"))

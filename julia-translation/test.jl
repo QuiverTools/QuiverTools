@@ -3,6 +3,7 @@
 using LinearAlgebra, Test
 include("Quivers.jl")
 
+@testset "All tests" begin
 
 @testset "Testing basic methods" begin
     K = GeneralizedKroneckerQuiver(4)
@@ -20,6 +21,20 @@ include("Quivers.jl")
     @test double_quiver(K).adjacency == K.adjacency + transpose(K.adjacency)
 end;
 
+@testset "Testing all_slope_decreasing_sequences" begin
+    Q = GeneralizedKroneckerQuiver(3)
+    d = [2,3]
+    theta = [3,-2]
+    @test all_slope_decreasing_sequences(Q, d, theta) == [[[2, 3]],
+    [[1, 1], [1, 2]],
+    [[2, 2], [0, 1]],
+    [[2, 1], [0, 2]],
+    [[1, 0], [1, 3]],
+    [[1, 0], [1, 2], [0, 1]],
+    [[1, 0], [1, 1], [0, 2]],
+    [[2, 0], [0, 3]]]
+end;
+
 @testset "Testing has_semistable_representation" begin
     Q = GeneralizedKroneckerQuiver(17)
     @test has_semistable_representation(Q,[1,13], [13,-1]) == true
@@ -28,5 +43,29 @@ end;
     K = GeneralizedKroneckerQuiver(4)
     @test has_semistable_representation(K,[1,5], [5,-1]) == false
     @test has_semistable_representation(K,[1,5], [-5,1]) == false
+
+    A2 = GeneralizedKroneckerQuiver(1)
+    theta = [1,-1]
+    d = [1,1]
+    @test has_semistable_representation(A2, d, theta) == true
+
+    d = [2,2]
+    @test has_semistable_representation(A2, d, theta) == true
+
+    d = [1,2]
+    @test has_semistable_representation(A2, d, theta) == false
+
+    d = [0,0]
+    @test has_semistable_representation(A2, d, theta) == true
+
+
+    K3 = GeneralizedKroneckerQuiver(3)
+    theta = [3,-2]
+    d = [2,3]
+    @test has_semistable_representation(K3, d, theta) == true
+
+    d = [1,4]
+    @test has_semistable_representation(K3, d, theta) == false
+end;
 
 end;
