@@ -242,19 +242,19 @@ julia> all_slope_decreasing_sequences(Q, d, theta)
     [[1, 0], [1, 1], [0, 2]],
     [[2, 0], [0, 3]]]
     """
-function all_slope_decreasing_sequences(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64}, denominator::Function = sum)
+function all_slope_decreasing_sequences(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64}; denominator::Function = sum)
 
     # List all subdimension vectors e of bigger slope than d.
-    subdimensions = filter(e -> (e != ZeroVector(number_of_vertices(Q))) && (slope(e,theta,denominator) > slope(d,theta,denominator)), all_subdimension_vectors(d))
+    subdimensions = filter(e -> (e != ZeroVector(number_of_vertices(Q))) && (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)), all_subdimension_vectors(d))
 
     # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
-    subdimensions = sort(subdimensions, by = e -> slope(e,theta,denominator))
+    subdimensions = sort(subdimensions, by = e -> slope(e,theta,denominator=denominator))
     # The slope decreasing sequences which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
 
     # I will rewrite this as functional programming later
     allSlopeDecreasing = []
     for e in subdimensions
-        for fstar in filter(fstar -> slope(e,theta) > slope(fstar[1],theta), all_slope_decreasing_sequences(Q, d-e, theta, denominator))
+        for fstar in filter(fstar -> slope(e,theta,denominator=denominator) > slope(fstar[1],theta, denominator=denominator), all_slope_decreasing_sequences(Q, d-e, theta, denominator=denominator))
         push!(allSlopeDecreasing, [e, fstar...])
         end
     end
@@ -297,13 +297,13 @@ julia> d = [1,4]
 julia> has_semistable_representation(K3, d, theta)
 false
 """
-function has_semistable_representation(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64}, algorithm::String = "schofield") 
+function has_semistable_representation(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64}; denominator::Function =  sum, algorithm::String = "schofield") 
     if algorithm == "reineke"
         throw(ArgumentError("reineke algorithm not implemented"))
 
     elseif algorithm == "schofield"
         # collect the list of all subdimension vectors e of bigger slope than d
-        subdimensionsBiggerSlope = filter(e -> e != ZeroVector(number_of_vertices(Q)) && e != d && slope(e, theta) > slope(d, theta), all_subdimension_vectors(d))
+        subdimensionsBiggerSlope = filter(e -> e != ZeroVector(number_of_vertices(Q)) && e != d && slope(e, theta, denominator=denominator) > slope(d, theta, denominator=denominator), all_subdimension_vectors(d))
         # to have semistable representations, none of the vectors above must be generic subdimension vectors.
         return !any(e -> is_generic_subdimension_vector(Q, e, d), subdimensionsBiggerSlope)
     else
@@ -311,7 +311,7 @@ function has_semistable_representation(Q::Quiver, d::Vector{Int64}, theta::Vecto
     end
 end
 
-function has_stable_representation(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64}, algorithm::String = "schofield")
+function has_stable_representation(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64}; denominator::Function = sum, algorithm::String = "schofield")
 
     if algorithm == "al"
         throw(ArgumentError("al algorithm not implemented"))
@@ -319,7 +319,7 @@ function has_stable_representation(Q::Quiver, d::Vector{Int64}, theta::Vector{In
         if d == ZeroVector(number_of_vertices(Q))
             return false
         else
-            subdimensionsSlopeNoLess = filter(e -> e != zeroVector && e != d && slope(e, theta) >= slope(d, theta), all_subdimension_vectors(d))
+            subdimensionsSlopeNoLess = filter(e -> e != zeroVector && e != d && slope(e, theta, denominator=denominator) >= slope(d, theta, denominator=denominator), all_subdimension_vectors(d))
             return !any(e -> is_generic_subdimension_vector(Q, e, d), subdimensionsSlopeNoLess)
         end
     else
@@ -361,24 +361,216 @@ function canonical_decomposition(Q::Quiver, d::Vector{Int64}, algorithm::String 
     end
 end
 
-
-function is_harder_narasimhan_type(Q::Quiver, dstar::Vector{Vector{Int64}}, theta::Vector{Int64})
+"""
+Checks wether dstar is a Harder--Narasimhan type of Q, with dimension vector d, with respect to the slope function theta/denominator
+"""
+function is_harder_narasimhan_type(Q::Quiver, dstar::Vector{Vector{Int64}}, theta::Vector{Int64}; denominator::Function = sum)
 
     if length(dstar) == 1
         return has_semistable_representation(Q, dstar[1], theta)
     else
         for i in 1:length(dstar)-1
-            if slope(dstar[i]) <= slope(dstar[i+1])
+            if slope(dstar[i],theta, denominator=denominator) <= slope(dstar[i+1],theta, denominator=denominator)
                 return false
             end
         end
-        return all(e -> has_semistable_representation(Q, e, theta), dstar)
+        return all(e -> has_semistable_representation(Q, e, theta, denominator=denominator), dstar)
     end    
 end
 
-function all_harder_narasimhan_types(Q::Quiver, d::Vector{Int64}, theta::Vector{Int64})
-    throw(ArgumentError("not implemented"))
+
+# """Returns the list of all HN types."""
+
+# """A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
+# * d^1 + ... + d^s = d
+# * mu_theta(d^1) > ... > mu_theta(d^s)
+# * Every d^k is theta-semi-stable."""
+
+# """
+# EXAMPLES
+
+# The 3-Kronecker quiver:
+# sage: from quiver import *
+# sage: Q = GeneralizedKroneckerQuiver(3)
+# sage: theta = vector([3,-2])
+# sage: d = vector([2,3])
+# sage: Q.all_harder_narasimhan_types(d,theta)
+# [[(2, 3)],
+#  [(1, 1), (1, 2)],
+#  [(2, 2), (0, 1)],
+#  [(2, 1), (0, 2)],
+#  [(1, 0), (1, 3)],
+#  [(1, 0), (1, 2), (0, 1)],
+#  [(1, 0), (1, 1), (0, 2)],
+#  [(2, 0), (0, 3)]]
+# sage: Q.all_harder_narasimhan_types(d,-theta)
+# [[(0, 3), (2, 0)]]
+
+# The 5-subspace quiver:
+# sage: from quiver import *
+# sage: Q = SubspaceQuiver(5)
+# sage: d = vector([1,1,1,1,1,2])
+# sage: theta = vector([2,2,2,2,2,-5])
+# sage: Q.all_harder_narasimhan_types(d,theta)
+# [[(1, 1, 1, 1, 1, 2)],
+#  [(0, 0, 1, 1, 1, 1), (1, 1, 0, 0, 0, 1)],
+#  [(0, 1, 0, 1, 1, 1), (1, 0, 1, 0, 0, 1)],
+#  [(0, 1, 1, 0, 1, 1), (1, 0, 0, 1, 0, 1)],
+#  [(0, 1, 1, 1, 0, 1), (1, 0, 0, 0, 1, 1)],
+#  [(1, 0, 0, 1, 1, 1), (0, 1, 1, 0, 0, 1)],
+#  [(1, 0, 1, 0, 1, 1), (0, 1, 0, 1, 0, 1)],
+#  [(1, 0, 1, 1, 0, 1), (0, 1, 0, 0, 1, 1)],
+#  [(1, 1, 0, 0, 1, 1), (0, 0, 1, 1, 0, 1)],
+#  [(1, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 1)],
+#  [(1, 1, 1, 0, 0, 1), (0, 0, 0, 1, 1, 1)],
+#  [(0, 1, 1, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
+#  [(1, 0, 1, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
+#  [(1, 1, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
+#  [(1, 1, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+#  [(1, 1, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(1, 1, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 0, 0, 0, 1, 0), (1, 1, 1, 1, 0, 2)],
+#  [(0, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 0, 0, 0, 1, 0), (1, 0, 1, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
+#  [(0, 0, 0, 0, 1, 0), (1, 1, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
+#  [(0, 0, 0, 0, 1, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
+#  [(0, 0, 0, 0, 1, 0), (1, 1, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 1, 2)],
+#  [(0, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 0, 0, 1, 0, 0), (1, 0, 1, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
+#  [(0, 0, 0, 1, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
+#  [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 0, 0, 1, 1, 0), (1, 1, 1, 0, 0, 2)],
+#  [(0, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 0, 0, 1, 1, 0), (1, 0, 1, 0, 0, 1), (0, 1, 0, 0, 0, 1)],
+#  [(0, 0, 0, 1, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 1, 0, 0, 1)],
+#  [(0, 0, 0, 1, 1, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 1, 2)],
+#  [(0, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 0, 1, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
+#  [(0, 0, 1, 0, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+#  [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 0, 1, 0, 1, 0), (1, 1, 0, 1, 0, 2)],
+#  [(0, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 0, 1, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
+#  [(0, 0, 1, 0, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
+#  [(0, 0, 1, 0, 1, 0), (1, 1, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 1, 2)],
+#  [(0, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 0, 1, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
+#  [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 0, 1, 1, 1, 0), (1, 1, 0, 0, 0, 2)],
+#  [(0, 0, 1, 1, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 1, 2)],
+#  [(0, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 1, 0, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
+#  [(0, 1, 0, 0, 0, 0), (1, 0, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+#  [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 1, 0, 0, 1, 0), (1, 0, 1, 1, 0, 2)],
+#  [(0, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 1, 0, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
+#  [(0, 1, 0, 0, 1, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
+#  [(0, 1, 0, 0, 1, 0), (1, 0, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 1, 2)],
+#  [(0, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 1, 0, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
+#  [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 1, 0, 1, 1, 0), (1, 0, 1, 0, 0, 2)],
+#  [(0, 1, 0, 1, 1, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 1, 2)],
+#  [(0, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
+#  [(0, 1, 1, 0, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+#  [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 1, 1, 0, 1, 0), (1, 0, 0, 1, 0, 2)],
+#  [(0, 1, 1, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 1, 1, 1, 0, 0), (1, 0, 0, 0, 1, 2)],
+#  [(0, 1, 1, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(0, 1, 1, 1, 1, 0), (1, 0, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 1, 2)],
+#  [(1, 0, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
+#  [(1, 0, 0, 0, 0, 0), (0, 1, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
+#  [(1, 0, 0, 0, 0, 0), (0, 1, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+#  [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 2)],
+#  [(1, 0, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
+#  [(1, 0, 0, 0, 1, 0), (0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
+#  [(1, 0, 0, 0, 1, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
+#  [(1, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 2)],
+#  [(1, 0, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
+#  [(1, 0, 0, 1, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
+#  [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 2)],
+#  [(1, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 2)],
+#  [(1, 0, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
+#  [(1, 0, 1, 0, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+#  [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 2)],
+#  [(1, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 2)],
+#  [(1, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 0, 1, 1, 1, 0), (0, 1, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 2)],
+#  [(1, 1, 0, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
+#  [(1, 1, 0, 0, 0, 0), (0, 0, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+#  [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+#  [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 2)],
+#  [(1, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 2)],
+#  [(1, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 1, 0, 1, 1, 0), (0, 0, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 2)],
+#  [(1, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 1, 1, 0, 1, 0), (0, 0, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 1, 1, 1, 0, 0), (0, 0, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+#  [(1, 1, 1, 1, 1, 0), (0, 0, 0, 0, 0, 2)]]
+# """
+function all_harder_narasimhan_types(Q::Quiver,d::Vector{Int64},theta::Vector{Int64}; denominator::Function = sum)
+
+    if d == ZeroVector(number_of_vertices(Q))
+        return [[ZeroVector(number_of_vertices(Q))]]
+    else
+
+        # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
+        # Note that we also eliminate d by the following
+        subdimensions = filter(e -> (e != ZeroVector(number_of_vertices(Q))) && (slope(e, theta, denominator=denominator) > slope(d,theta,denominator=denominator)) && has_semistable_representation(Q, e, theta, denominator=denominator, algorithm="schofield"), all_subdimension_vectors(d))
+        # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+        subdimensions = sort(subdimensions, by = e -> slope(e,theta,denominator=denominator))
+        # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+
+        allHNtypes = []
+        for e in subdimensions
+            for fstar in filter(fstar -> slope(e,theta, denominator=denominator) > slope(fstar[1],theta, denominator=denominator) ,all_harder_narasimhan_types(Q, d-e, theta, denominator=denominator))
+                push!(allHNtypes, [e, fstar...])
+            end
+        end
+        
+        # Possibly add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
+        if has_semistable_representation(Q, d, theta, denominator=denominator, algorithm="schofield")
+            pushfirst!(allHNtypes, [d])
+        end
+        return allHNtypes
+    end
 end
+
+
+
+
+
+
+
+
 
 function is_luna_type(Q::Quiver, tau::Vector{Tuple{Vector{Int64},Int64}}, theta::Vector{Int64})
     n = number_of_vertices(Q)
@@ -402,7 +594,7 @@ function semistable_equals_stable(Q::Quiver, d::Vector{Int64}, theta::Vector{Int
     throw(ArgumentError("not implemented"))
 end
 
-slope(d::Vector{Int64}, theta::Vector{Int64}, denominator::Function = sum) = (length(d) == length(theta) && denominator(d)>0) ? (theta'*d)/denominator(d) : throw(DomainError("dimension vector and stability parameter must have same length"))
+slope(d::Vector{Int64}, theta::Vector{Int64}; denominator::Function = sum) = (length(d) == length(theta) && denominator(d)>0) ? (theta'*d)/denominator(d) : throw(DomainError("dimension vector and stability parameter must have same length"))
 
 
 function all_forbidden_subdimension_vectors(d::Vector{Int64}, theta::Vector{Int64})
@@ -446,5 +638,4 @@ BipartiteQuiver(m::Int64, n::Int64) = throw(ArgumentError("not implemented"))
 
 ZeroVector(n::Int64) = Vector{Int64}(zeros(Int64, n))
 
-
-all_subdimension_vectors(d::Vector{Int64}) = collect(collect.(product((0:di for di in d)...)))
+all_subdimension_vectors(d::Vector{Int64}) = collect(collect.(IterTools.product((0:di for di in d)...)))
