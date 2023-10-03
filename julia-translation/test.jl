@@ -86,4 +86,12 @@ end;
     @test all_harder_narasimhan_types(Q, d, theta) == [[[0,3],[2,0]]]
 end;
 
+@testset "Testing is_amply_stable" begin
+    Q = GeneralizedKroneckerQuiver(3)
+    d = [2,3]
+
+    @test is_amply_stable(Q, d, [3,-2]) == true
+    @test is_amply_stable(Q, d, [-3,2]) == false
+end;
+
 end;
