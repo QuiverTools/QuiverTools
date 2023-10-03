@@ -828,10 +828,10 @@ class Quiver:
         """
 
         #This is only relevant on the unstable locus
-        HN = self.all_harder_narasimhan_types(d,theta,denominator=denominator)
+        HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
 
-        out = list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
-        return out
+        return list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
+        
 
     def does_rigidity_inequality_hold(self,d,theta,denominator=sum):
         """
@@ -839,13 +839,13 @@ class Quiver:
         """
 
         #This is only relevant on the unstable locus
-        HN = self.all_harder_narasimhan_types(d,theta,denominator=denominator)
-        # Poor way of removing [d] but it works
-        del HN[0]
+        HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
+        
         # We compute the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type
         weights = list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
+        
         # We compute the maximum weight of the tensors of the universal bundles U_i^\vee \otimes U_j
-        tensorWeights = list(map(lambda hntype: max(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))),HN ))
+        tensorWeights = list(map(lambda hntype: slope(hntype[0],theta,denominator=denominator) - slope(hntype[-1],theta,denominator=denominator), HN))
 
         return all([weights[i] > tensorWeights[i] for i in range(len(HN))])
 
