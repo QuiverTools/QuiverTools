@@ -821,6 +821,38 @@ class Quiver:
                 allHNtypes = [[d]] + allHNtypes
             return allHNtypes
 
+    def all_weight_bounds(self, d, theta,denominator=sum):
+        """
+        Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
+        For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight. Teleman quantization gives a numerical condition involving these weights to compute cohmology on the quotient.
+        """
+
+        #This is only relevant on the unstable locus
+        HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
+
+        return list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
+        
+
+    def does_rigidity_inequality_hold(self,d,theta,denominator=sum):
+        """
+        Returns True if the rigidity inequality holds for d and theta, i.e. if the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type are all strictly larger than the weights of the tensors of the universal bundles U_i^\vee \otimes U_j.
+        """
+
+        #This is only relevant on the unstable locus
+        HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
+        
+        # We compute the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type
+        weights = list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
+        
+        # We compute the maximum weight of the tensors of the universal bundles U_i^\vee \otimes U_j
+        tensorWeights = list(map(lambda hntype: slope(hntype[0],theta,denominator=denominator) - slope(hntype[-1],theta,denominator=denominator), HN))
+
+        return all([weights[i] > tensorWeights[i] for i in range(len(HN))])
+
+
+
+
+
     def is_luna_type(self, tau, theta):
         """Checks if tau is a Luna type for theta."""
         n = self.number_of_vertices()

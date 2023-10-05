@@ -11,3 +11,4 @@ theory/*.log
 theory/*.out
 theory/*.pdf
 theory/*.run.xml
+.DS_Store
