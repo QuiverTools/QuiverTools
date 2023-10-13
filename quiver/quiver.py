@@ -1248,11 +1248,41 @@ def GeneralizedSubspaceQuiver( m, k):
     return Q
 
 
-def DynkinQuiver( T):
-    # TODO implement this
-    # TODO orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
+def DynkinQuiver(Tn):
+    r"""Returns the Dynkin quiver of type Tn."""
+    # orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
     # use https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/root_system/dynkin_diagram.html
-    raise NotImplementedError()
+    
+    #parse the string Tn
+    T = Tn[:-1]
+    n = int(Tn[-1])
+
+    if T == "A":
+        assert n >= 1
+        if n == 1:
+            return Quiver(matrix([[1]]), name = "Dynkin quiver of type A1")
+        else:
+            M = zero_matrix(ZZ, n)
+            for i in range(n-1):
+                M[i, i+1] = 1
+            return Quiver(matrix(M), name = "Dynkin quiver of type A"+str(n))
+    elif T == "D":
+        assert n >= 3
+        M = zero_matrix(ZZ, n)
+        for i in range(n-2):
+            M[i, i+1] = 1
+        M[n-3,n-1] = 1
+        return Quiver(matrix(M), name = "Dynkin quiver of type D"+str(n))
+    elif T == "E":
+        assert n in [6,7,8]
+        if n == 6:
+            return Quiver(matrix([[0,1,0,0,0,0,0],[0,0,1,0,0,0,0],[0,0,0,1,1,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,1,0],[0,0,0,0,0,0,1],[0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E6")
+        elif n == 7:
+            return Quiver(matrix([[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,1,1,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1],[0,0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E7")
+        elif n == 8:
+            return Quiver(matrix([[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0],[0,0,0,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,0],[0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,0,1],[0,0,0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E7")
+    else:
+        raise NotImplementedError()
 
 
 def ExtendedDynkinQuiver( T):
