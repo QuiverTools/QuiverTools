@@ -194,6 +194,26 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
         raise NotImplementedError()
+    
+    def picard_rank(self):
+        """Computes the Picard rank of the moduli space for known cases."""
+        # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
+        if self._theta == self._Q.canonical_stability_parameter(self._d) & is_coprime_for_stability_parameter(self._d,self._theta) & self._Q.is_amply_stable(self._Q,self._d,self._theta):
+            return self._Q.number_of_vertices() - 1
+        else:
+            raise NotImplementedError()
+        
+    def index(self):
+        """Computes the index of the moduli space for known cases, i.e., the largest integer dividing the canonical divisor in Pic."""
+        # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
+        if self._theta == self._Q.canonical_stability_parameter(self._d) & is_coprime_for_stability_parameter(self._d,self._theta) & self._Q.is_amply_stable(self._Q,self._d,self._theta):
+            return gcd(self._theta.list())
+        else:
+            raise NotImplementedError()
+
+    def mukai_inequality_holds(self):
+        # TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.
+        return 1 - self._Q.euler_form(self._d, self._d) >= self.picard_rank() * (self.index() - 1)
 
     def tautological_presentation(self, chi=None, chernClasses=None):
         """Returns the Chow ring of the moduli space in terms of generators and relations."""

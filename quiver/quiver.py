@@ -826,6 +826,7 @@ class Quiver:
         Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
         For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight. Teleman quantization gives a numerical condition involving these weights to compute cohmology on the quotient.
         """
+        # TODO return the Hn type as well?
 
         #This is only relevant on the unstable locus
         HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
@@ -1011,7 +1012,13 @@ class Quiver:
 
     def in_fundamental_domain(self, d):
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
-        raise NotImplementedError()
+
+        # there has to be a more elegant way to do this
+        # oh well
+        simples = [ZeroVector(self.number_of_vertices()) for i in range(self.number_of_vertices())]
+        for i in range(self.number_of_vertices()):
+            simples[i][i] = 1
+        return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
 
     def partial_order(self,d,e):
         """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
@@ -1248,11 +1255,41 @@ def GeneralizedSubspaceQuiver( m, k):
     return Q
 
 
-def DynkinQuiver( T):
-    # TODO implement this
-    # TODO orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
+def DynkinQuiver(Tn):
+    r"""Returns the Dynkin quiver of type Tn."""
+    # orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
     # use https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/root_system/dynkin_diagram.html
-    raise NotImplementedError()
+    
+    #parse the string Tn
+    T = Tn[:-1]
+    n = int(Tn[-1])
+
+    if T == "A":
+        assert n >= 1
+        if n == 1:
+            return Quiver(matrix([[1]]), name = "Dynkin quiver of type A1")
+        else:
+            M = zero_matrix(ZZ, n)
+            for i in range(n-1):
+                M[i, i+1] = 1
+            return Quiver(matrix(M), name = "Dynkin quiver of type A"+str(n))
+    elif T == "D":
+        assert n >= 3
+        M = zero_matrix(ZZ, n)
+        for i in range(n-2):
+            M[i, i+1] = 1
+        M[n-3,n-1] = 1
+        return Quiver(matrix(M), name = "Dynkin quiver of type D"+str(n))
+    elif T == "E":
+        assert n in [6,7,8]
+        if n == 6:
+            return Quiver(matrix([[0,1,0,0,0,0,0],[0,0,1,0,0,0,0],[0,0,0,1,1,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,1,0],[0,0,0,0,0,0,1],[0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E6")
+        elif n == 7:
+            return Quiver(matrix([[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,1,1,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1],[0,0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E7")
+        elif n == 8:
+            return Quiver(matrix([[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0],[0,0,0,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,0],[0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,0,1],[0,0,0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E7")
+    else:
+        raise NotImplementedError()
 
 
 def ExtendedDynkinQuiver( T):
@@ -1337,3 +1374,6 @@ def RandomStability(quiver,bound=10):
 
     return vector([randint(-bound//2,bound) for i in range(quiver.number_of_vertices())])
 
+def ZeroVector(dimension):
+    """Returns a zero vector of the given dimension."""
+    return vector([0 for i in range(dimension)])
