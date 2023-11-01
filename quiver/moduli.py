@@ -465,7 +465,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         return pi(sect(quotient).homogeneous_components()[N])
 
-    def todd_class(sefl):
+    def todd_class(self):
         """The Todd class of X is the Todd class of the tangent bundle. For quiver moduli it computes as
         td(X) = (prod_{a:i->j in Q_1} prod_{p=1}^{d_j} prod_{q=1}^{d_i} Q(t_{j,q} - t_{i,p}))/(prod_{i in Q_0} prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))
         """
