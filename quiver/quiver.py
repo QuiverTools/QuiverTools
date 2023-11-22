@@ -590,7 +590,7 @@ class Quiver:
         elif algorithm == "schofield-1":
             raise NotImplementedError()
         # TODO implement this
-        # https://arxiv.org/pdf/math/9911014.pdf
+        # https://arxiv.org/pdf/math/9911014.pdf (see Section 5)
         # in Derksen--Weyman's https://mathscinet.ams.org/mathscinet-getitem?mr=1930979 it is claimed that there is a second Schofield algorithm
         # (they do cite the wrong Schofield preprint though...)
         elif algorithm == "schofield-2":
