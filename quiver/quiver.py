@@ -590,7 +590,7 @@ class Quiver:
         elif algorithm == "schofield-1":
             raise NotImplementedError()
         # TODO implement this
-        # https://arxiv.org/pdf/math/9911014.pdf
+        # https://arxiv.org/pdf/math/9911014.pdf (see Section 5, and also Section 3 of https://mathscinet.ams.org/mathscinet/article?mr=1789222)
         # in Derksen--Weyman's https://mathscinet.ams.org/mathscinet-getitem?mr=1930979 it is claimed that there is a second Schofield algorithm
         # (they do cite the wrong Schofield preprint though...)
         elif algorithm == "schofield-2":
@@ -1256,40 +1256,15 @@ def GeneralizedSubspaceQuiver( m, k):
 
 
 def DynkinQuiver(Tn):
-    r"""Returns the Dynkin quiver of type Tn."""
-    # orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
+    r"""Returns the Dynkin quiver of type Tn. Uses the standard Sagemath implementation of Dynkin diagrams."""
     # use https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/root_system/dynkin_diagram.html
+    # TODO: this constructor calls the adjacency_matrix() method many times. Should we call it once and remove lower triangular entries?
     
     #parse the string Tn
     T = Tn[:-1]
     n = int(Tn[-1])
 
-    if T == "A":
-        assert n >= 1
-        if n == 1:
-            return Quiver(matrix([[1]]), name = "Dynkin quiver of type A1")
-        else:
-            M = zero_matrix(ZZ, n)
-            for i in range(n-1):
-                M[i, i+1] = 1
-            return Quiver(matrix(M), name = "Dynkin quiver of type A"+str(n))
-    elif T == "D":
-        assert n >= 3
-        M = zero_matrix(ZZ, n)
-        for i in range(n-2):
-            M[i, i+1] = 1
-        M[n-3,n-1] = 1
-        return Quiver(matrix(M), name = "Dynkin quiver of type D"+str(n))
-    elif T == "E":
-        assert n in [6,7,8]
-        if n == 6:
-            return Quiver(matrix([[0,1,0,0,0,0,0],[0,0,1,0,0,0,0],[0,0,0,1,1,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,1,0],[0,0,0,0,0,0,1],[0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E6")
-        elif n == 7:
-            return Quiver(matrix([[0,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0],[0,0,0,1,1,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,1],[0,0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E7")
-        elif n == 8:
-            return Quiver(matrix([[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0],[0,0,0,1,1,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,0],[0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,0,1],[0,0,0,0,0,0,0,0,0]]), name = "Dynkin quiver of type E7")
-    else:
-        raise NotImplementedError()
+    return Quiver(matrix(n, n, lambda i, j: DynkinDiagram(Tn).adjacency_matrix()[i,j] if i < j else 0), "Dynkin quiver of type "+Tn)
 
 
 def ExtendedDynkinQuiver( T):
