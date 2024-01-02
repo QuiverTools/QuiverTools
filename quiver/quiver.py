@@ -292,6 +292,7 @@ class Quiver:
     def simple_root(self, i):
         """Returns the simple root e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i."""
         n = self.number_of_vertices()
+        # Our convention is that vertices are numbered 1,...,n
         assert (i >= 1 and i <= n)
         ei = vector([0 for i in range(n)])
         ei[i-1] = 1
