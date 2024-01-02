@@ -288,6 +288,14 @@ class Quiver:
 
     def thin_dimension_vector(self):
         return vector([1 for i in range(self.number_of_vertices())])
+    
+    def simple_root(self, i):
+        """Returns the simple root e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i."""
+        n = self.number_of_vertices()
+        assert (i >= 1 and i <= n)
+        ei = vector([0 for i in range(n)])
+        ei[i-1] = 1
+        return ei
 
     def canonical_stability_parameter(self,d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
