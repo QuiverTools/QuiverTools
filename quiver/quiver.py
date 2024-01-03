@@ -300,6 +300,28 @@ class Quiver:
     
     def support(self, d):
         """Returns the full subquiver supported on {i in Q_0 | d_i > 0}."""
+        """
+        EXAMPLES
+        
+        sage: from quiver import *
+        Q = ThreeVertexQuiver(2,0,4)
+        sage: d = vector([1,1,1])
+        sage: Q.support(d)
+        A quiver with adjacency matrix:
+        [0 2 0]
+        [0 0 4]
+        [0 0 0]
+        sage: d = vector([1,0,1])
+        sage: Q.support(d)
+        A quiver with adjacency matrix:
+        [0 0]
+        [0 0]
+        sage: d = vector([1,1,0])
+        sage: Q.support(d)
+        A quiver with adjacency matrix:
+        [0 2]
+        [0 0]
+        """
         n = self.number_of_vertices()
         A = self.adjacency_matrix()
         support = list(filter(lambda i: d[i] > 0, range(n)))
