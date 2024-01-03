@@ -297,6 +297,15 @@ class Quiver:
         ei = vector([0 for i in range(n)])
         ei[i-1] = 1
         return ei
+    
+    def support(self, d):
+        """Returns the full subquiver supported on {i in Q_0 | d_i > 0}."""
+        n = self.number_of_vertices()
+        A = self.adjacency_matrix()
+        support = list(filter(lambda i: d[i] > 0, range(n)))
+        # Submatrix (A_ij)_{i,j in supp(d)} is the adjacency matrix of the sought quiver
+        ASupp = matrix([[A[i,j] for j in support] for i in support])
+        return Quiver(ASupp)
 
     def in_fundamental_domain(self, d):
         """
@@ -307,15 +316,8 @@ class Quiver:
         n = self.number_of_vertices()
         # This is the condition <d,e_i> + <e_i,d> <= 0 for all i in Q_0
         eulerFormCondition = all([(self.euler_form(d,self.simple_root(i+1)) + self.euler_form(self.simple_root(i+1),d) <= 0) for i in range(n)])
-
         # Check if the support is connected
-        support = list(filter(lambda i: d[i] > 0, range(n)))
-        A = self.adjacency_matrix()
-        # Submatrix (A_ij)_{i,j in supp(d)}
-        ASupp = matrix([[A[i,j] for j in support] for i in support])
-        QSupp = Quiver(ASupp)
-        connected = QSupp.is_connected()
-
+        connected = self.support(d).is_connected()
         return eulerFormCondition and connected
 
     def canonical_stability_parameter(self,d):
