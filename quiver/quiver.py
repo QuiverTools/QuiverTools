@@ -298,6 +298,15 @@ class Quiver:
         ei[i-1] = 1
         return ei
 
+    def in_fundamental_domain(self, d):
+        """
+        Checks if the dimension vector d is in the fundamental domain.
+        
+        The fundamental domain of Q is the set of dimension vectors d such that supp(d) = Q_0 and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
+        """
+        n = self.number_of_vertices()
+        eulerFormCondition = all([(self.euler_form(d,self.simple_root(i+1)) + self.euler_form(self.simple_root(i+1),d) <= 0) for i in range(n)])
+
     def canonical_stability_parameter(self,d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
         E = self.euler_matrix()
