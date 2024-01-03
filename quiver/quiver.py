@@ -302,10 +302,21 @@ class Quiver:
         """
         Checks if the dimension vector d is in the fundamental domain.
         
-        The fundamental domain of Q is the set of dimension vectors d such that supp(d) = Q_0 and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
+        The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
         """
         n = self.number_of_vertices()
+        # This is the condition <d,e_i> + <e_i,d> <= 0 for all i in Q_0
         eulerFormCondition = all([(self.euler_form(d,self.simple_root(i+1)) + self.euler_form(self.simple_root(i+1),d) <= 0) for i in range(n)])
+
+        # Check if the support is connected
+        support = list(filter(lambda i: d[i] > 0, range(n)))
+        A = self.adjacency_matrix()
+        # Submatrix (A_ij)_{i,j in supp(d)}
+        ASupp = matrix([[A[i,j] for j in support] for i in support])
+        QSupp = Quiver(ASupp)
+        connected = QSupp.is_connected()
+
+        return eulerFormCondition and connected
 
     def canonical_stability_parameter(self,d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
