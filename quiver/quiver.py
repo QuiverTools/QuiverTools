@@ -1325,7 +1325,7 @@ def RandomQuiver(vertices,arrow_bound=10,acyclic=False,connected=True):
                     for j in range(i,vertices):
                         adjacency[j,i]=0
 
-            adjacency = Quiver(adjacency).is_connected() # unnecessary overhead in defining Quiver object
+            acceptable = Quiver(adjacency).is_connected() # unnecessary overhead in defining Quiver object
     elif not connected:
         adjacency = random_matrix(ZZ,vertices,vertices, x=0,y=arrow_bound)
         
