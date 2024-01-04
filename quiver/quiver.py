@@ -330,13 +330,28 @@ class Quiver:
         return Quiver(ASupp)
 
     def in_fundamental_domain(self, d):
-        """
-        Checks if the dimension vector d is in the fundamental domain.
+        """Checks if the dimension vector d is in the fundamental domain."""
         
-        The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
+        """The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
         Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain. 
-        If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter.
+        If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter."""
+
         """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([1,1])
+        sage: Q.in_fundamental_domain(d)
+        True
+        sage: d = vector([1,2])
+        sage: Q.in_fundamental_domain(d)
+        False
+        sage: d = vector([2,3])
+        sage: Q.in_fundamental_domain(d)
+        True
+        """
+
         n = self.number_of_vertices()
         # This is the condition <d,e_i> + <e_i,d> <= 0 for all i in Q_0
         eulerFormCondition = all([(self.euler_form(d,self.simple_root(i+1)) + self.euler_form(self.simple_root(i+1),d) <= 0) for i in range(n)])
