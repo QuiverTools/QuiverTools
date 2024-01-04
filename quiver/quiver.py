@@ -334,6 +334,8 @@ class Quiver:
         Checks if the dimension vector d is in the fundamental domain.
         
         The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
+        Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain. 
+        If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter.
         """
         n = self.number_of_vertices()
         # This is the condition <d,e_i> + <e_i,d> <= 0 for all i in Q_0
