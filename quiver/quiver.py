@@ -1337,7 +1337,7 @@ def RandomQuiver(vertices,arrow_bound=10,acyclic=False,connected=True):
 
     return Quiver(adjacency)
 
-def RandomDimensionVector(quiver,positive=True,upper_bound=10):
+def RandomDimensionVector(quiver,positive=False,upper_bound=10):
     """Returns a random dimension vector for the given quiver.
         Inputs: 
             - quiver: a Quiver object;
