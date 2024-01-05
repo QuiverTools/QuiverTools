@@ -18,14 +18,29 @@ print("Sample size: ")
 sampleSize = int(input())
 stronglyAmplyStableCount = 0
 
+failures = []
+
 for i in range(sampleSize):
     Q, d = random_test_data(vertices, arrowBound, dimBound)
     theta = Q.canonical_stability_parameter(d)
     if Q.is_strongly_amply_stable(d, theta):
         stronglyAmplyStableCount += 1
+    else:
+        failures.append([Q, d])
     
 print("\nNumber of vertices: "+str(vertices))
 print("Upper bound for number of arrows between two vertices: "+str(arrowBound))
 print("Upper bound for entries of d: "+str(dimBound)+"\n")
 print("Sample size: "+str(sampleSize))
 print("Strongly amply stable count: "+str(stronglyAmplyStableCount))
+
+f = open("failures.txt", "x")
+f.write("Failing examples for strong ample stability:\n")
+f.write("Quiver\tDimension vector\tCoprime for theta^can?\n")
+for i in len(failures):
+    [Q, d] = failures[i]
+    theta = Q.canonical_stability_parameter(d)
+    f.write(str(Q.adjacency_matrix())+"\t")
+    f.write(str(d)+"\t")
+    f.write(str(Q.is_coprime_for_stability_parameter(d, theta))+"\n")
+f.close()
