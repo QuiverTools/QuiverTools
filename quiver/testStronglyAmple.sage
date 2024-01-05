@@ -8,11 +8,11 @@ def random_test_data(vertices, arrowBound, dimBound):
         inFundamentalDomain = Q.in_fundamental_domain(d)
     return Q, d
 
-vertices = 3
+vertices = 6
 arrowBound = 10
 dimBound = 10
 
-sampleSize = 1000
+sampleSize = 100
 stronglyAmplyStableCount = 0
 
 for i in range(sampleSize):
@@ -21,6 +21,9 @@ for i in range(sampleSize):
     if Q.is_strongly_amply_stable(d, theta):
         stronglyAmplyStableCount += 1
     
-print("Test random quivers with "+str(vertices)+" vertices and random dimension vectors for strong ample stability.")
+print("Test random Q and d for strong ample stability, where d is in fundamental domain.")
+print("Number of vertices: "+str(vertices))
+print("Upper bound for number of arrows between two vertices: "+str(arrowBound))
+print("Upper bound for entries of d: "+str(dimBound)+"\n")
 print("Sample size: "+str(sampleSize))
 print("Strongly amply stable count: "+str(stronglyAmplyStableCount))
