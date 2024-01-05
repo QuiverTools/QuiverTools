@@ -552,7 +552,7 @@ class Quiver:
             raise NotImplementedError()
 
     def is_strongly_amply_stable(self, d, theta):
-        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) > slope(d)."""
+        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
 
         # All subdimension vectors of d
         es = all_subdimension_vectors(d)
@@ -560,7 +560,7 @@ class Quiver:
         zeroVector = vector([0 for i in range(d.length())])
         es.remove(zeroVector)
         # All of them which have bigger slope
-        es = list(filter(lambda e: slope(e,theta) > slope(d,theta), es))
+        es = list(filter(lambda e: slope(e,theta) >= slope(d,theta), es))
         return all([self.euler_form(e,d-e) <= -2 for e in es])
 
     # taken from code/snippets/canonical.sage
