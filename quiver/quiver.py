@@ -288,6 +288,76 @@ class Quiver:
 
     def thin_dimension_vector(self):
         return vector([1 for i in range(self.number_of_vertices())])
+    
+    def simple_root(self, i):
+        """Returns the simple root e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i."""
+        n = self.number_of_vertices()
+        # Our convention is that vertices are numbered 1,...,n
+        assert (i >= 1 and i <= n)
+        ei = vector([0 for i in range(n)])
+        ei[i-1] = 1
+        return ei
+    
+    def support(self, d):
+        """Returns the full subquiver supported on {i in Q_0 | d_i > 0}."""
+        """
+        EXAMPLES
+        
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(2,0,4)
+        sage: d = vector([1,1,1])
+        sage: Q.support(d)
+        A quiver with adjacency matrix:
+        [0 2 0]
+        [0 0 4]
+        [0 0 0]
+        sage: d = vector([1,0,1])
+        sage: Q.support(d)
+        A quiver with adjacency matrix:
+        [0 0]
+        [0 0]
+        sage: d = vector([1,1,0])
+        sage: Q.support(d)
+        A quiver with adjacency matrix:
+        [0 2]
+        [0 0]
+        """
+        n = self.number_of_vertices()
+        A = self.adjacency_matrix()
+        support = list(filter(lambda i: d[i] > 0, range(n)))
+        # Submatrix (A_ij)_{i,j in supp(d)} is the adjacency matrix of the sought quiver
+        ASupp = matrix([[A[i,j] for j in support] for i in support])
+        return Quiver(ASupp)
+
+    def in_fundamental_domain(self, d):
+        """Checks if the dimension vector d is in the fundamental domain."""
+        
+        """The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
+        Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain. 
+        If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter."""
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([1,1])
+        sage: Q.in_fundamental_domain(d)
+        True
+        sage: d = vector([1,2])
+        sage: Q.in_fundamental_domain(d)
+        False
+        sage: d = vector([2,3])
+        sage: Q.in_fundamental_domain(d)
+        True
+        """
+
+        n = self.number_of_vertices()
+        # This is the condition <d,e_i> + <e_i,d> <= 0 for all i in Q_0
+        eulerFormCondition = all([(self.euler_form(d,self.simple_root(i+1)) + self.euler_form(self.simple_root(i+1),d) <= 0) for i in range(n)])
+        # Check if the support is connected
+        connected = self.support(d).is_connected()
+        return eulerFormCondition and connected
 
     def canonical_stability_parameter(self,d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
@@ -378,62 +448,6 @@ class Quiver:
             zeroVector = vector([0 for i in range(n)])    
             subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
-        
-        """An experimental implementation which should be a lot faster. I think I've shown that it's equivalent."""
-        # TODO: Write up the theory behind it
-
-        """
-        EXAMPLES
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: theta = vector([1,0])
-        sage: ds = [vector([i,j]) for i in range(6) for j in range(6)]
-        sage: [Q.has_semistable_representation(d,theta) ^ Q.has_semistable_representation(d,theta,algorithm="experimental") for d in ds]
-        [1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1]
-
-        """
-        
-        if algorithm == "experimental":
-            allSlopeDecreasing = self.all_slope_decreasing_sequences(d,theta)
-            allSlopeDecreasing.remove([d])
-            return all([sum([sum([self.euler_form(dstar[r],dstar[s]) for r in range(s)]) for s in range(1,len(dstar))]) < 0 for dstar in allSlopeDecreasing])
-            
 
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
@@ -538,15 +552,16 @@ class Quiver:
             raise NotImplementedError()
 
     def is_strongly_amply_stable(self, d, theta):
-        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) > slope(d)."""
+        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
 
         # All subdimension vectors of d
         es = all_subdimension_vectors(d)
         # Remove (0,...,0)
         zeroVector = vector([0 for i in range(d.length())])
         es.remove(zeroVector)
+        es.remove(d)
         # All of them which have bigger slope
-        es = list(filter(lambda e: slope(e,theta) > slope(d,theta), es))
+        es = list(filter(lambda e: slope(e,theta) >= slope(d,theta), es))
         return all([self.euler_form(e,d-e) <= -2 for e in es])
 
     # taken from code/snippets/canonical.sage
@@ -590,7 +605,7 @@ class Quiver:
         elif algorithm == "schofield-1":
             raise NotImplementedError()
         # TODO implement this
-        # https://arxiv.org/pdf/math/9911014.pdf
+        # https://arxiv.org/pdf/math/9911014.pdf (see Section 5, and also Section 3 of https://mathscinet.ams.org/mathscinet/article?mr=1789222)
         # in Derksen--Weyman's https://mathscinet.ams.org/mathscinet-getitem?mr=1930979 it is claimed that there is a second Schofield algorithm
         # (they do cite the wrong Schofield preprint though...)
         elif algorithm == "schofield-2":
@@ -1311,7 +1326,7 @@ def RandomQuiver(vertices,arrow_bound=10,acyclic=False,connected=True):
                     for j in range(i,vertices):
                         adjacency[j,i]=0
 
-            admissible = Quiver(adjacency).is_connected() # unnecessary overhead in defining Quiver object
+            acceptable = Quiver(adjacency).is_connected() # unnecessary overhead in defining Quiver object
     elif not connected:
         adjacency = random_matrix(ZZ,vertices,vertices, x=0,y=arrow_bound)
         
@@ -1323,8 +1338,8 @@ def RandomQuiver(vertices,arrow_bound=10,acyclic=False,connected=True):
 
     return Quiver(adjacency)
 
-def RandomRoot(quiver,positive=True,upper_bound=10):
-    """Returns a random root, or dimension vector, for the given quiver.
+def RandomDimensionVector(quiver,positive=False,upper_bound=10):
+    """Returns a random dimension vector for the given quiver.
         Inputs: 
             - quiver: a Quiver object;
             - positive: if True, the root will not have zero entries. Defaults to False; and
