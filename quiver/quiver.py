@@ -1349,6 +1349,9 @@ def RandomStability(quiver,bound=10):
 
     return vector([randint(-bound//2,bound) for i in range(quiver.number_of_vertices())])
 
+# TODO I (= Pieter) would not write this function:
+# it should be possible to give dimension vectors as tuples (coerce whenever needed)
+# and [0]*dimension is then perfectly good shorthand for ZeroVector(dimension)
 def ZeroVector(dimension):
     """Returns a zero vector of the given dimension."""
     return vector([0 for i in range(dimension)])
