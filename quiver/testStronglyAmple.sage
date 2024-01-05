@@ -37,7 +37,7 @@ print("Strongly amply stable count: "+str(stronglyAmplyStableCount))
 f = open("failures.txt", "x")
 f.write("Failing examples for strong ample stability:\n")
 f.write("Quiver\tDimension vector\tCoprime for theta^can?\n")
-for i in len(failures):
+for i in range(len(failures)):
     [Q, d] = failures[i]
     theta = Q.canonical_stability_parameter(d)
     f.write(str(Q.adjacency_matrix())+"\t")
