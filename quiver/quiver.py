@@ -304,7 +304,7 @@ class Quiver:
         EXAMPLES
         
         sage: from quiver import *
-        Q = ThreeVertexQuiver(2,0,4)
+        sage: Q = ThreeVertexQuiver(2,0,4)
         sage: d = vector([1,1,1])
         sage: Q.support(d)
         A quiver with adjacency matrix:
