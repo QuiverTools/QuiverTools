@@ -559,6 +559,7 @@ class Quiver:
         # Remove (0,...,0)
         zeroVector = vector([0 for i in range(d.length())])
         es.remove(zeroVector)
+        es.remove(d)
         # All of them which have bigger slope
         es = list(filter(lambda e: slope(e,theta) >= slope(d,theta), es))
         return all([self.euler_form(e,d-e) <= -2 for e in es])
