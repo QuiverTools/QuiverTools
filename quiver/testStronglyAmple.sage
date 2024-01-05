@@ -42,5 +42,5 @@ for i in range(len(failures)):
     theta = Q.canonical_stability_parameter(d)
     f.write(str(Q.adjacency_matrix())+"\t")
     f.write(str(d)+"\t")
-    f.write(str(Q.is_coprime_for_stability_parameter(d, theta))+"\n")
+    f.write(str(is_coprime_for_stability_parameter(d, theta))+"\n")
 f.close()
