@@ -8,11 +8,13 @@ def random_test_data(vertices, arrowBound, dimBound):
         inFundamentalDomain = Q.in_fundamental_domain(d)
     return Q, d
 
-vertices = 3
+print("Number of vertices: ")
+vertices = int(input())
 arrowBound = 10
 dimBound = 10
 
-sampleSize = 100
+print("Number of arrows: ")
+sampleSize = int(input())
 stronglyAmplyStableCount = 0
 
 for i in range(sampleSize):
