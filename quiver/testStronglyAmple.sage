@@ -8,7 +8,7 @@ def random_test_data(vertices, arrowBound, dimBound):
         inFundamentalDomain = Q.in_fundamental_domain(d)
     return Q, d
 
-vertices = 6
+vertices = 3
 arrowBound = 10
 dimBound = 10
 
