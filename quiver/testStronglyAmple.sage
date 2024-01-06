@@ -1,4 +1,5 @@
 from quiver import *
+import uuid
 
 def random_test_data(vertices, arrowBound, dimBound):
     inFundamentalDomain = False
@@ -34,7 +35,8 @@ print("Upper bound for entries of d: "+str(dimBound)+"\n")
 print("Sample size: "+str(sampleSize))
 print("Strongly amply stable count: "+str(stronglyAmplyStableCount))
 
-f = open("failures.txt", "x")
+filename = "failures_"+str(uuid.uuid4().hex)
+f = open("./output/"+filename+".txt", "x")
 f.write("Failing examples for strong ample stability:\n")
 f.write("Quiver\tDimension vector\tCoprime for theta^can?\n")
 for i in range(len(failures)):
