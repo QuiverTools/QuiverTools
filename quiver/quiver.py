@@ -184,10 +184,18 @@ class Quiver:
         return sum(self._adjacency.column(j-1))
 
 
-    def outdegree(self,i):
-        """The outdegree of i is the number of incoming arrows into i."""
+    def outdegree(self, i):
+        r"""Returns the outdegree of a vertex.
+        
+        INPUT:
+        ``i`` -- An Int between 1 and self.number_of_vertices()
 
-        """outdeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix."""
+        OUTPUT:
+        The outdegree as an Int
+        """
+
+        """The outdegree of i is the number of outgoing arrows from i.
+        outdeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix."""
         
         """
         EXAMPLES
