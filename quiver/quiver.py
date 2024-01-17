@@ -155,10 +155,18 @@ class Quiver:
     Some graph-theoretic properties of the quiver
     """
 
-    def indegree(self,j):
-        """The indegree of j is the number of incoming arrows into j."""
+    def indegree(self, j):
+        r"""Returns the indegree of a vertex.
+        
+        INPUT:
+        ``j`` -- An Int between 1 and self.number_of_vertices()
 
-        """indeg(j) = sum_i a_{ij} where (a_{ij}) is the adjacency matrix."""
+        OUTPUT:
+        The indegree as an Int
+        """
+
+        """The indegree of j is the number of incoming arrows into j.
+        indeg(j) = sum_i a_{ij} where (a_{ij}) is the adjacency matrix."""
         # Question: Should we number the vertices 1,...,n or 0,...,n-1?
 
         """
