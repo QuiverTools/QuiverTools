@@ -83,12 +83,12 @@ def QuiverModuli:
     # TODO can / should we abbreviate to HN? or hn?
     def harder_narasimhan_types(self)
     # TODO should this be a public method?
-    def is_HN_type(self)
+    def is_HN_type(self, dstar)
     def HN_codimension(self, dstar)
 
     def luna_types(self)
     # TODO should this be a public method?
-    def is_luna_type(self)
+    def is_luna_type(self, tau)
 
     def semistable_equals_stable(self, algorithm="")
 
