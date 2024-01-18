@@ -67,6 +67,8 @@ def QuiverModuli:
     TODO it should really be possible to initialize this without a theta, defaulting to canonical stability condition?
     also, zero stability should be easy to use
     """
+    # Do we want to have denominator as a variable of the class? It doesn't change the moduli space/stack. 
+    # Also we might want to compute the HN strata for different denominators without having to change the moduli space.
 
     # TODO should this be a public method?
     def all_slope_decreasing_sequences(self)
