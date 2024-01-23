@@ -60,7 +60,7 @@ class Quiver:
     # TODO figure out the different algorithms
 
 
-def QuiverModuli:
+class QuiverModuli:
 
     def __init__(self, d, theta, denominator=sum)
     """
