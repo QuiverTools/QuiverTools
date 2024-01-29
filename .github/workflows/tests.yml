@@ -15,7 +15,7 @@ jobs:
       options: --user root
     steps:
       - name: Checkout QuiverTools
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install QuiverTools
         run: sage --pip install .
       - name: Run the tests
