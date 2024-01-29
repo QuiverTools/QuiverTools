@@ -882,11 +882,36 @@ class Quiver:
         return all([weights[i] > tensorWeights[i] for i in range(len(HN))])
 
     def first_hochschild_cohomology(self):
+        """
+        Compute the dimension of the first Hochschild cohomology
+
+        This uses the formula of Happel from Proposition 1.6 in [MR1035222].
+
+        EXAMPLES:
+
+        The first Hochschild cohomology of the $m$th generalized Kronecker quiver
+        is the dimension of $\mathrm{PGL}_{m+1}$::
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(3).first_hochschild_cohomology()
+            8
+
+        The first Hochschild cohomology vanishes if and only if the quiver is a tree::
+
+            sage: from quiver import *
+            sage: SubspaceQuiver(7).first_hochschild_cohomology()
+            0
+
+        """
         assert self.is_acyclic()
+        # TODO think about including G into the Quiver class
+        G = Graph(self.adjacency_matrix(), format="adjacency_matrix")
+
         # see Proposition 1.6 in Happel's "Hochschild cohomology of finite-dimensional algebras"
-        return 1 - self.number_of_vertices() + sum(for a in )
-
-
+        print(len(G.edges()))
+        print(G.edges())
+        print(G.all_paths(0, 1, use_multiedges=True))
+        return 1 - self.number_of_vertices() + sum(len(G.all_paths(a[0], a[1], use_multiedges=True)) for a in G.edges())
 
 
     def is_luna_type(self, tau, theta):
@@ -1241,6 +1266,7 @@ def GeneralizedKroneckerQuiver(m):
     # TODO do Q.rename here
     return Q
 
+# TODO if optional parameter is given, call GeneralizedKroneckerQuiver
 def KroneckerQuiver():
     """The Kronecker quiver has two vertices and 2 arrows from the first vertex to the second."""
     return GeneralizedKroneckerQuiver(2)

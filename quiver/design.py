@@ -64,8 +64,11 @@ class Quiver:
     def indecomposable_injective(self, i)
     def simple(self, i)
 
-    # number of paths between these vertices
+    # number of paths between these vertices (only for "locally acyclic" quivers)
     def number_of_paths(self, i, j)
+
+    # only for acyclic
+    def first_hochschild_cohomology(self)
 
 
 class QuiverModuli:
