@@ -59,6 +59,14 @@ class Quiver:
     def canonical_decomposition(self, d, algorithm="")
     # TODO figure out the different algorithms
 
+    # dimension vectors of these modules
+    def indecomposable_projective(self, i)
+    def indecomposable_injective(self, i)
+    def simple(self, i)
+
+    # number of paths between these vertices
+    def number_of_paths(self, i, j)
+
 
 class QuiverModuli:
 

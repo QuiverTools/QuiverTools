@@ -881,6 +881,10 @@ class Quiver:
 
         return all([weights[i] > tensorWeights[i] for i in range(len(HN))])
 
+    def first_hochschild_cohomology(self):
+        assert self.is_acyclic()
+        # see Proposition 1.6 in Happel's "Hochschild cohomology of finite-dimensional algebras"
+        return 1 - self.number_of_vertices() + sum(for a in )
 
 
 
