@@ -157,7 +157,7 @@ class Quiver:
 
     def indegree(self, j):
         r"""Returns the indegree of a vertex.
-        
+
         INPUT:
         ``j`` -- An Int between 1 and self.number_of_vertices()
 
@@ -186,7 +186,7 @@ class Quiver:
 
     def outdegree(self, i):
         r"""Returns the outdegree of a vertex.
-        
+
         INPUT:
         ``i`` -- An Int between 1 and self.number_of_vertices()
 
@@ -196,7 +196,7 @@ class Quiver:
 
         """The outdegree of i is the number of outgoing arrows from i.
         outdeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix."""
-        
+
         """
         EXAMPLES
 
@@ -304,7 +304,7 @@ class Quiver:
 
     def thin_dimension_vector(self):
         return vector([1 for i in range(self.number_of_vertices())])
-    
+
     def simple_root(self, i):
         """Returns the simple root e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i."""
         n = self.number_of_vertices()
@@ -313,12 +313,12 @@ class Quiver:
         ei = vector([0 for i in range(n)])
         ei[i-1] = 1
         return ei
-    
+
     def support(self, d):
         """Returns the full subquiver supported on {i in Q_0 | d_i > 0}."""
         """
         EXAMPLES
-        
+
         sage: from quiver import *
         sage: Q = ThreeVertexQuiver(2,0,4)
         sage: d = vector([1,1,1])
@@ -347,9 +347,9 @@ class Quiver:
 
     def in_fundamental_domain(self, d):
         """Checks if the dimension vector d is in the fundamental domain."""
-        
+
         """The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
-        Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain. 
+        Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain.
         If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter."""
 
         """
@@ -402,7 +402,7 @@ class Quiver:
         """
 
         n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])    
+        zeroVector = vector([0 for i in range(n)])
         # List all subdimension vectors e of bigger slope than d.
         subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)), all_subdimension_vectors(d)))
         # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
@@ -459,9 +459,9 @@ class Quiver:
         """
 
 
-        if algorithm == "schofield":        
+        if algorithm == "schofield":
             n = self.number_of_vertices()
-            zeroVector = vector([0 for i in range(n)])    
+            zeroVector = vector([0 for i in range(n)])
             subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
 
@@ -544,7 +544,7 @@ class Quiver:
 
         # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
         # But can we find a necessary and sufficient condition?
-        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2. 
+        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
 
         """
         EXAMPLES
@@ -589,8 +589,8 @@ class Quiver:
         By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if <e',d-e> is non-negative for all generic subdimension vectors e' of e."""
 
         # Optimization: Check first if numerical condition is violated and then if any of the e' which does violate it is a generic subdimension vector.
-        
-        if e == d: 
+
+        if e == d:
             return True
         else:
             # list of all dimension vectors e' which are strictly smaller than e
@@ -863,7 +863,7 @@ class Quiver:
         HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
 
         return list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
-        
+
 
     def does_rigidity_inequality_hold(self,d,theta,denominator=sum):
         """
@@ -872,10 +872,10 @@ class Quiver:
 
         #This is only relevant on the unstable locus
         HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
-        
+
         # We compute the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type
         weights = list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
-        
+
         # We compute the maximum weight of the tensors of the universal bundles U_i^\vee \otimes U_j
         tensorWeights = list(map(lambda hntype: slope(hntype[0],theta,denominator=denominator) - slope(hntype[-1],theta,denominator=denominator), HN))
 
@@ -1290,7 +1290,7 @@ def DynkinQuiver(Tn):
     r"""Returns the Dynkin quiver of type Tn. Uses the standard Sagemath implementation of Dynkin diagrams."""
     # use https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/root_system/dynkin_diagram.html
     # TODO: this constructor calls the adjacency_matrix() method many times. Should we call it once and remove lower triangular entries?
-    
+
     #parse the string Tn
     T = Tn[:-1]
     n = int(Tn[-1])
@@ -1319,7 +1319,7 @@ def BipartiteQuiver( m, n):
 def RandomQuiver(vertices,arrow_bound=10,acyclic=False,connected=True):
     """Returns a random Quiver object.
 
-    Input: 
+    Input:
         - vertices: the number of vertices of the desired quiver;
         - acyclic: If True, the quiver will not have cycles. If false, it might but it is not guaranteed. Defaults to True; and
         - arrow_bound: the maximum amount of arrows between any two vertices. Defaults to 10.
@@ -1345,7 +1345,7 @@ def RandomQuiver(vertices,arrow_bound=10,acyclic=False,connected=True):
             acceptable = Quiver(adjacency).is_connected() # unnecessary overhead in defining Quiver object
     elif not connected:
         adjacency = random_matrix(ZZ,vertices,vertices, x=0,y=arrow_bound)
-        
+
         if acyclic:
             # upper triangular matrix
             for i in range(vertices):
@@ -1356,11 +1356,11 @@ def RandomQuiver(vertices,arrow_bound=10,acyclic=False,connected=True):
 
 def RandomDimensionVector(quiver,positive=False,upper_bound=10):
     """Returns a random dimension vector for the given quiver.
-        Inputs: 
+        Inputs:
             - quiver: a Quiver object;
             - positive: if True, the root will not have zero entries. Defaults to False; and
             - upper_bound: an upper bound on the entries. Defaults to 10.
-    """ 
+    """
     # what other features should such a function have?
     # if given a stability condition theta, an option to generate theta-coprime roots;
     # an option to generate indivisible roots;
@@ -1369,10 +1369,10 @@ def RandomDimensionVector(quiver,positive=False,upper_bound=10):
     if positive:
         lower_bound += 1
     return vector([randint(lower_bound,upper_bound) for i in range(quiver.number_of_vertices())])
-    
+
 def RandomStability(quiver,bound=10):
     """Returns a random stability condition for the given quiver.
-        Inputs: 
+        Inputs:
             - quiver: a Quiver object;
             - bound: upper and lower bound on the entries. Defaults to 10.
     """
