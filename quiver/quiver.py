@@ -908,9 +908,6 @@ class Quiver:
         G = Graph(self.adjacency_matrix(), format="adjacency_matrix")
 
         # see Proposition 1.6 in Happel's "Hochschild cohomology of finite-dimensional algebras"
-        print(len(G.edges()))
-        print(G.edges())
-        print(G.all_paths(0, 1, use_multiedges=True))
         return 1 - self.number_of_vertices() + sum(len(G.all_paths(a[0], a[1], use_multiedges=True)) for a in G.edges())
 
 
