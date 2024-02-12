@@ -629,6 +629,12 @@ class Quiver:
                 genericSubdimPair[0,j] = True 
                 # every dimension vector is a generic subdimension vector of itself
                 genericSubdimPair[j,j] = True
+            # Now use recursive characterization: e is generic subdimension vector of d iff <f,d-e> >= 0 for all generic subdimension vectors f of e.
+            for i in range(1,N):
+                for j in range(i+1,N):
+                    # allSubdimensions[i] = e, allSubdimensions[j] = d, allSubdimensions[k] = f
+                    genericSubdimPair[i,j] = all([not genericSubdimPair(k,i) or self.euler_form(allSubdimensions[k], allSubdimensions[j]-allSubdimensions[i]) >= 0 for k in range(i)])
+            return [allSubdimensions[i] for i in list(filter(lambda i: genericSubdimPair(i,N) ,range(N)))]
 
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a+b)
