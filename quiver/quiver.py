@@ -1,4 +1,5 @@
 # from sage.matrix.constructor import matrix
+from concurrent.futures.process import _threads_wakeups
 from sage.all import *
 
 class Quiver:
@@ -601,10 +602,33 @@ class Quiver:
             # check if the list contains no generic subdimension vector of e
             return not any([self.is_generic_subdimension_vector(eprime,e) for eprime in subdimensions])
 
-    def all_generic_subdimension_vectors(self, d):
+    def all_generic_subdimension_vectors(self, d, algorithm="recursive"):
         """Returns the list of all generic subdimension vectors of d."""
-        genericSubdimensions = all_subdimension_vectors(d)
-        return list(filter(lambda e: self.is_generic_subdimension_vector(e,d), genericSubdimensions))
+
+        if (algorithm=="recursive"):
+            genericSubdimensions = all_subdimension_vectors(d)
+            return list(filter(lambda e: self.is_generic_subdimension_vector(e,d), genericSubdimensions))
+        
+        elif (algorithm=="iterative"):
+            allSubdimensions = all_subdimension_vectors(d)
+
+            def deglex_key(e):
+                """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d)."""
+                # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+                n = self.number_of_arrows()
+                b = max(d)+1
+                return sum([e[i]*b**(n-i-1) for i in range(n)])+sum(e)*b**n
+            
+            allSubdimensions.sort(key=deglex_key)
+            N = len(allSubdimensions)
+            # We want to construct a 2d array whose [i,j] entry is True if and only if the i-th dimension vector is a generic subdimension vector of the j-th dimension vector (according to the position in the list allSubdimensions)
+            genericSubdimPair = [False for i in range(N) for j in range(N)]
+            # Use that if allSubdimensions[i] <= allSubdimensions[j] (partial order) then i <= j.
+            for j in range(N):
+                # 0 is a generic subdimension vector of every dimension vector
+                genericSubdimPair[0,j] = True 
+                # every dimension vector is a generic subdimension vector of itself
+                genericSubdimPair[j,j] = True
 
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a+b)
