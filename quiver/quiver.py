@@ -615,7 +615,7 @@ class Quiver:
             def deglex_key(e):
                 """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d)."""
                 # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-                n = self.number_of_arrows()
+                n = self.number_of_vertices()
                 b = max(d)+1
                 return sum([e[i]*b**(n-i-1) for i in range(n)])+sum(e)*b**n
             
