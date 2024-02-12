@@ -610,7 +610,7 @@ class Quiver:
             return list(filter(lambda e: self.is_generic_subdimension_vector(e,d), genericSubdimensions))
         
         elif (algorithm=="iterative"):
-            allSubdimensions = all_subdimension_vectors(d)
+            allSubdims = all_subdimension_vectors(d)
 
             def deglex_key(e):
                 """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d)."""
@@ -619,22 +619,10 @@ class Quiver:
                 b = max(d)+1
                 return sum([e[i]*b**(n-i-1) for i in range(n)])+sum(e)*b**n
             
-            allSubdimensions.sort(key=deglex_key)
-            N = len(allSubdimensions)
-            # We want to construct a 2d array whose [i][j]-entry is True if and only if the i-th dimension vector is a generic subdimension vector of the j-th dimension vector (according to the position in the list allSubdimensions)
-            genericSubdimPair = [[False for j in range(N)] for i in range(N)]
-            # Use that if allSubdimensions[i] <= allSubdimensions[j] (partial order) then i <= j.
-            for j in range(N):
-                # 0 is a generic subdimension vector of every dimension vector
-                genericSubdimPair[0][j] = True 
-                # every dimension vector is a generic subdimension vector of itself
-                genericSubdimPair[j][j] = True
-            # Now use recursive characterization: e is generic subdimension vector of d iff <f,d-e> >= 0 for all generic subdimension vectors f of e.
-            for i in range(1,N):
-                for j in range(i+1,N):
-                    # allSubdimensions[i] = e, allSubdimensions[j] = d, allSubdimensions[k] = f
-                    genericSubdimPair[i][j] = all([not genericSubdimPair[k][i] or self.euler_form(allSubdimensions[k], allSubdimensions[j]-allSubdimensions[i]) >= 0 for k in range(i)])
-            return [allSubdimensions[i] for i in list(filter(lambda i: genericSubdimPair[i][N-1] ,range(N)))]
+            allSubdims.sort(key=deglex_key)
+            N = len(allSubdims)
+
+            return genSubdims[N-1]
 
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a+b)
@@ -1194,6 +1182,11 @@ def slope(d, theta, denominator=sum):
     assert (d.length() == theta.length())
     assert (denominator(d) > 0)
     return (theta*d)/(denominator(d))
+
+def is_subdimension_vector(e,d):
+    assert (e.length() == d.length())
+    n = e.length()
+    return all([e[i] <= d[i] for i in range(n)])
 
 def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
