@@ -457,13 +457,27 @@ class Quiver:
         sage: K3.has_semistable_representation(d,theta,algorithm="schofield")
         False
 
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: dims = [vector([i,j]) for i in range(6) for j in range(6)]
+        sage: all([Q.has_semistable_representation(d, theta, algorithm="schofield") == Q.has_semistable_representation(d, theta, algorithm="schofield_iterative") for d in dims])
+        True
+
         """
 
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])
+        
         if algorithm == "schofield":
-            n = self.number_of_vertices()
-            zeroVector = vector([0 for i in range(n)])
             subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
+        
+        if (algorithm == "schofield_iterative"):
+            genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
+            genSubdims = list(filter(lambda e: e != zeroVector, genSubdims))
+            return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
 
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
@@ -516,11 +530,6 @@ class Quiver:
             else:
                 subdimensionsSlopeNoLess = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) >= slope(d,theta), all_subdimension_vectors(d)))
                 return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsSlopeNoLess])
-            
-        if (algorithm == "schofield_iterative"):
-            genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
-            genSubdims.remove(zeroVector)
-            return all([slope(e) <= slope(d) for e in genSubdims])
 
 
     def is_schur_root(self,d):
