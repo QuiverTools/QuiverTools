@@ -520,6 +520,13 @@ class Quiver:
         sage: K3.has_stable_representation(d,theta,algorithm="schofield")
         True
 
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: theta = vector([1,0])
+        sage: dims = [vector([i,j]) for i in range(6) for j in range(6)]
+        sage: all([Q.has_stable_representation(d, theta, algorithm="schofield") == Q.has_stable_representation(d, theta, algorithm="schofield_iterative") for d in dims])
+        True
+
+
         """
         n = self.number_of_vertices()
         zeroVector = vector([0 for i in range(n)])
@@ -536,7 +543,7 @@ class Quiver:
                 return False
             else:
                 genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
-                genSubdims = list(filter(lambda e: e != zeroVector, genSubdims))
+                genSubdims = list(filter(lambda e: e != zeroVector and e != d, genSubdims))
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
 
