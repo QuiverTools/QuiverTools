@@ -583,31 +583,46 @@ class Quiver:
 
     # taken from code/snippets/canonical.sage
     # TODO still need testing code from there
-    def is_generic_subdimension_vector(self, e, d):
+    def is_generic_subdimension_vector(self, e, d, algorithm="recursive"):
         """Checks if e is a generic subdimension vector of d."""
         # using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
         """A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
         By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if <e',d-e> is non-negative for all generic subdimension vectors e' of e."""
 
-        # Optimization: Check first if numerical condition is violated and then if any of the e' which does violate it is a generic subdimension vector.
+        if (algorithm == "recursive"):
+            # Optimization: Check first if numerical condition is violated and then if any of the e' which does violate it is a generic subdimension vector.
 
-        if e == d:
-            return True
-        else:
-            # list of all dimension vectors e' which are strictly smaller than e
-            subdimensions = all_subdimension_vectors(e)
-            # only those which violate the numerical condition
-            subdimensions = filter(lambda eprime: self.euler_form(eprime, d-e) < 0, subdimensions)
+            if e == d:
+                return True
+            else:
+                # list of all dimension vectors e' which are strictly smaller than e
+                subdimensions = all_subdimension_vectors(e)
+                # only those which violate the numerical condition
+                subdimensions = filter(lambda eprime: self.euler_form(eprime, d-e) < 0, subdimensions)
 
-            # check if the list contains no generic subdimension vector of e
-            return not any([self.is_generic_subdimension_vector(eprime,e) for eprime in subdimensions])
+                # check if the list contains no generic subdimension vector of e
+                return not any([self.is_generic_subdimension_vector(eprime,e) for eprime in subdimensions])
+        
+        elif (algorithm == "iterative"):
+            return (e in self.all_generic_subdimension_vectors(d, algorithm="iterative"))
 
-    def all_generic_subdimension_vectors(self, d, algorithm="recursive"):
+    def all_generic_subdimension_vectors(self, d, algorithm="iterative"):
         """Returns the list of all generic subdimension vectors of d."""
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: dimvects = [vector([i,j]) for i in range(5) for j in range(5)]
+        sage: all([Q.all_generic_subdimension_vectors(d, algorithm="recursive") == Q.all_generic_subdimension_vectors(d, algorithm="iterative") for d in dimvects])
+        True
+
+        """
 
         if (algorithm=="recursive"):
             genericSubdimensions = all_subdimension_vectors(d)
-            return sorted(list(filter(lambda e: self.is_generic_subdimension_vector(e,d), genericSubdimensions)), key=(lambda e: deglex_key(e, b=max(d)+1)))
+            return sorted(list(filter(lambda e: self.is_generic_subdimension_vector(e, d, algorithm="recursive"), genericSubdimensions)), key=(lambda e: deglex_key(e, b=max(d)+1)))
         
         elif (algorithm=="iterative"):
             subdims = all_subdimension_vectors(d)            
