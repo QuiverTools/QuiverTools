@@ -608,6 +608,43 @@ class Quiver:
 
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a+b)
+    
+    def generic_hom_vanishing(self, a, b):
+        # TODO figure out a way to implement this.
+        raise NotImplementedError()
+
+    def is_left_orthogonal(self, a, b):
+        if self.generic_ext_vanishing(a, b):
+            return self.euler_form(a, b) == 0
+        else:
+            return False
+
+    def is_real_root(self, d):
+        return self.euler_form(d,d) == 1
+    
+    def rearrange_dw_decomposition(self,decomposition,i,j):
+        # this is non functional, let alone tested
+        # apply Lemma 11.9.10 of Derksen--Weyman to rearrange the roots from i to j as k, k+1
+        S = []
+        for k in range(i,j-1):
+            # if k has a ``path to j'' satisfying the hypothesis of Lemma 11.9.10, we keep it
+            # m is the j-k times j-k matrix with entry m[i,j] = 1 if !generic_hom_vanishing(Q,decomposition[j][2],decomposition[i][2]) and 0 otherwise
+            m = matrix(j-k)
+            for l in range(k,j-1):
+                for s in range(l+1,j):
+                    if not self.generic_hom_vanishing(decomposition[s][2],decomposition[l][2]):
+                        m[l-k,s-k] = 1
+            paths = matrix(j-k) # paths[i,j] is the number of paths from k + i - 1 to k + j - 1 of length at most j-k
+            for l in range(j-k):
+                paths = paths + m**l
+            if paths[0,j-k-1] > 0:
+                S.append(k)
+        rearrangement = [l for l in range(i+1,j-1) if l not in S]
+        final = S + [i,j] + rearrangement
+        decomposition_temp = [decomposition[l] for l in final]
+        for l in range(i,j):
+            decomposition[l] = decomposition_temp[l-i]
+        return i + len(S) - 1 #this is the index of the element i now.
 
 
     def canonical_decomposition(self, d, algorithm="derksen-weyman"):
@@ -615,8 +652,53 @@ class Quiver:
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1930979
         # this is implemented in code/snippets/canonical.sage, so include it here
         if algorithm == "derksen-weyman":
-            raise NotImplementedError()
-        # TODO implement this
+            decomposition = [[d[i],self.simple_root(i+1)] for i in range(self.number_of_vertices())]
+            while True:
+                decomposition = list(filter(lambda root: root[0] > 0, decomposition))
+                violating_pairs = [(i,j) for i in range(len(decomposition)-1) for j in range(i+1,len(decomposition)) if self.euler_form(decomposition[j][1],decomposition[i][1]) < 0]
+                if not violating_pairs:
+                    break
+                violating_pairs = sorted(violating_pairs, key=(lambda pair: pair[1] - pair[0]))
+                i,j = violating_pairs[0]
+
+                # this modifies the decomposition in place
+                i = self.rearrange_dw_decomposition(decomposition,i,j)
+
+                p,xi = decomposition[i]
+                q,eta = decomposition[i+1]
+                xi_real = self.is_real_root(xi)
+                eta_real = self.is_real_root(eta)
+                zeta = p*xi + q*eta
+                if xi_real and eta_real:
+                    discriminant = self.euler_form(zeta,zeta)
+                    if discriminant > 0:
+                        pass # TODO figure out what this should do
+                    elif discriminant == 0:
+                        zeta_prime = zeta // gcd(zeta)
+                        del decomposition[i+1]
+                        decomposition[i] = [1,zeta_prime]
+                    else:
+                        del decomposition[i+1]
+                        decomposition[i] = [1,zeta]
+                elif xi_real and not eta_real:
+                    if p + q*self.euler_form(eta,xi) >= 0:
+                        del decomposition[i+1]
+                        decomposition[i] = [1,eta - self.euler_form(eta,xi)*xi]
+                    else:
+                        del decomposition[i+1]
+                        decomposition[i] = [1,zeta]
+                elif not xi_real and eta_real:
+                    if q + p*self.euler_form(eta,xi) >= 0:
+                        decomposition[i] = [1,eta]
+                        decomposition[i+1] = [1,xi - self.euler_form(eta,xi)*eta]
+                    else:
+                        del decomposition[i+1]
+                        decomposition[i] = [1,zeta]
+                elif not xi_real and not eta_real:
+                    del decomposition[i+1]
+                    decomposition[i] = [1,zeta]
+            return decomposition
+
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1162487
         elif algorithm == "schofield-1":
             raise NotImplementedError()
