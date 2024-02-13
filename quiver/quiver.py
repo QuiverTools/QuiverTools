@@ -665,12 +665,6 @@ class Quiver:
             for j in range(N):
                 genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
 
-            # for j in range(N):
-            #     print(str(j)+": "+str(subdims[j]))
-
-            # for j in range(N):
-            #     print(str(j)+": "+str(genSubdims[j]))
-
             return [subdims[i] for i in genSubdims[N-1]]
 
     def generic_ext_vanishing(self, a, b):
