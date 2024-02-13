@@ -607,22 +607,27 @@ class Quiver:
 
         if (algorithm=="recursive"):
             genericSubdimensions = all_subdimension_vectors(d)
-            return list(filter(lambda e: self.is_generic_subdimension_vector(e,d), genericSubdimensions))
+            return sorted(list(filter(lambda e: self.is_generic_subdimension_vector(e,d), genericSubdimensions)), key=(lambda e: deglex_key(e, b=max(d)+1)))
         
         elif (algorithm=="iterative"):
-            allSubdims = all_subdimension_vectors(d)
+            subdims = all_subdimension_vectors(d)            
+            subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+            # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+            N = len(subdims)
 
-            def deglex_key(e):
-                """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d)."""
-                # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-                n = self.number_of_vertices()
-                b = max(d)+1
-                return sum([e[i]*b**(n-i-1) for i in range(n)])+sum(e)*b**n
+            # genSubdims[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
+            genSubdims = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
             
-            allSubdims.sort(key=deglex_key)
-            N = len(allSubdims)
+            for j in range(N):
+                genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
 
-            return genSubdims[N-1]
+            # for j in range(N):
+            #     print(str(j)+": "+str(subdims[j]))
+
+            # for j in range(N):
+            #     print(str(j)+": "+str(genSubdims[j]))
+
+            return [subdims[i] for i in genSubdims[N-1]]
 
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a+b)
@@ -1187,6 +1192,11 @@ def is_subdimension_vector(e,d):
     assert (e.length() == d.length())
     n = e.length()
     return all([e[i] <= d[i] for i in range(n)])
+
+def deglex_key(e, b):
+    """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d), provided that b >> 0."""
+    n = e.length()
+    return sum([e[i]*b**(n-i-1) for i in range(n)])+sum(e)*b**n
 
 def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
