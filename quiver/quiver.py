@@ -459,7 +459,6 @@ class Quiver:
 
         """
 
-
         if algorithm == "schofield":
             n = self.number_of_vertices()
             zeroVector = vector([0 for i in range(n)])
@@ -508,14 +507,20 @@ class Quiver:
         True
 
         """
-        if algorithm == "schofield":
-            n = self.number_of_vertices()
-            zeroVector = vector([0 for i in range(n)])
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])
+        
+        if (algorithm == "schofield"):
             if d == zeroVector:
                 return False
             else:
                 subdimensionsSlopeNoLess = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) >= slope(d,theta), all_subdimension_vectors(d)))
                 return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsSlopeNoLess])
+            
+        if (algorithm == "schofield_iterative"):
+            genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
+            genSubdims.remove(zeroVector)
+            return all([slope(e) <= slope(d) for e in genSubdims])
 
 
     def is_schur_root(self,d):
