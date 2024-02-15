@@ -897,21 +897,41 @@ class Quiver:
 
         n = self.number_of_vertices()
         zeroVector = vector([0 for i in range(n)])
-        if (d == zeroVector):
-            return [[zeroVector]]
-        else:
+
+        if (algorithm=="schofield_iterative"):
+            if (d == zeroVector):
+                return [[zeroVector]]
+            else:
+                subdimensions = all_subdimension_vectors(d)
+                # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
+                # Note that we also eliminate d by the following
+                subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta,algorithm=algorithm), subdimensions))
+                # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+                subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
+                # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+                allHNtypes =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta,denominator=denominator) > slope(fstar[0],theta,denominator=denominator) ,self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)))]
+                # Possibly add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
+                if self.has_semistable_representation(d,theta,algorithm=algorithm):
+                    allHNtypes = [[d]] + allHNtypes
+                return allHNtypes
+        
+        elif (algorithm=="schofield_new"):
             subdimensions = all_subdimension_vectors(d)
-            # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
-            # Note that we also eliminate d by the following
-            subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta,algorithm=algorithm), subdimensions))
-            # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
-            subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
-            # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
-            allHNtypes =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta) > slope(fstar[0],theta) ,self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)))]
-            # Possibly add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
-            if self.has_semistable_representation(d,theta,algorithm=algorithm):
-                allHNtypes = [[d]] + allHNtypes
-            return allHNtypes
+            subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+            N = len(subdimensions)
+
+            # complements gives us the position of d-e in subdimensions
+            complements = [subdimensions.index(d-e) for e in subdimensions]
+            # subsubdims is the list of indexes of all non-zero, proper subdimension vectors of e, where e ranges over subdimensions
+            properSubsubdims = [list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), range(1,j-1))) for j in range(N)]
+
+            hn = [(lambda i: [[i]] if self.has_semistable_representation(subdimensions[i], theta, algorithm="schofield_iterative") else [])(j) for j in range(N)]
+
+            for j in range(1,N):
+                hn[j] = hn[j] + [[i]+fstar for i in properSubsubdims[j] for fstar in list(filter(lambda fstar: slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[complements[i]]))]
+
+            return [[subdimensions[r] for r in fstar] for fstar in hn[N-1]]
+                
 
     def all_weight_bounds(self, d, theta,denominator=sum):
         """
