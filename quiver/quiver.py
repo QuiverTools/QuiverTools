@@ -923,12 +923,16 @@ class Quiver:
             # semistables is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
             semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta, algorithm="schofield_iterative"), range(1,N)))
 
+            # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
+            idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
+
             hn = [[[]] for j in range(N)]
 
             for j in range(1,N):
+                # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
                 sstSub = list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), semistables))
-                quot = (lambda i: subdimensions.index(subdimensions[j]-subdimensions[i]))
-                hn[j] = [[i]+fstar for i in sstSub for fstar in list(filter(lambda fstar: fstar == [] or slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[quot(i)]))]
+                # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+                hn[j] = [[i]+fstar for i in sstSub for fstar in list(filter(lambda fstar: fstar == [] or slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[idx_diff(j, i)]))]
 
             hn[0] = [[0]]
 
