@@ -920,15 +920,17 @@ class Quiver:
             subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
             N = len(subdimensions)
 
-            # complements gives us the position of d-e in subdimensions
-            complements = [subdimensions.index(d-e) for e in subdimensions]
-            # subsubdims is the list of indexes of all non-zero, proper subdimension vectors of e, where e ranges over subdimensions
-            properSubsubdims = [list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), range(1,j-1))) for j in range(N)]
+            # semistables is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
+            semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta, algorithm="schofield_iterative"), range(1,N)))
 
-            hn = [(lambda i: [[i]] if self.has_semistable_representation(subdimensions[i], theta, algorithm="schofield_iterative") else [])(j) for j in range(N)]
+            hn = [[[]] for j in range(N)]
 
             for j in range(1,N):
-                hn[j] = hn[j] + [[i]+fstar for i in properSubsubdims[j] for fstar in list(filter(lambda fstar: slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[complements[i]]))]
+                sstSub = list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), semistables))
+                quot = (lambda i: subdimensions.index(subdimensions[j]-subdimensions[i]))
+                hn[j] = [[i]+fstar for i in sstSub for fstar in list(filter(lambda fstar: fstar == [] or slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[quot(i)]))]
+
+            hn[0] = [[0]]
 
             return [[subdimensions[r] for r in fstar] for fstar in hn[N-1]]
                 
