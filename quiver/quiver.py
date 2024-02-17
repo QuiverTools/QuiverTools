@@ -478,6 +478,15 @@ class Quiver:
             genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
             genSubdims = list(filter(lambda e: e != zeroVector, genSubdims))
             return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
+        
+    def all_semistable_subdimension_vectors_helper(self, d, theta):
+        """Computes the list of indexes of all semistable subdimension vectors of d."""
+        subdims = all_subdimension_vectors(d)            
+        subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+        N = len(subdims)
+        genSubdims = self.all_generic_subdimension_vectors_helper(d)
+        return list(filter(lambda j: all([i != 0 or slope(subdims[i], theta) <= slope(subdims[j], theta) for i in genSubdims[j]]), range(N)))
 
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
@@ -634,6 +643,21 @@ class Quiver:
         
         elif (algorithm == "iterative"):
             return (e in self.all_generic_subdimension_vectors(d, algorithm="iterative"))
+        
+    def all_generic_subdimension_vectors_helper(self, d):
+        """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
+        subdims = all_subdimension_vectors(d)            
+        subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+        N = len(subdims)
+
+        # genSubdims[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
+        genSubdims = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
+        
+        for j in range(N):
+            genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
+
+        return genSubdims
 
     def all_generic_subdimension_vectors(self, d, algorithm="iterative"):
         """Returns the list of all generic subdimension vectors of d."""
@@ -654,6 +678,7 @@ class Quiver:
             return sorted(list(filter(lambda e: self.is_generic_subdimension_vector(e, d, algorithm="recursive"), genericSubdimensions)), key=(lambda e: deglex_key(e, b=max(d)+1)))
         
         elif (algorithm=="iterative"):
+            # It's probably a bit faster to do this instead of using the helper function here; we need the helper function in a different place.
             subdims = all_subdimension_vectors(d)            
             subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
             # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
@@ -893,6 +918,17 @@ class Quiver:
          [(1, 1, 1, 0, 1, 0), (0, 0, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
          [(1, 1, 1, 1, 0, 0), (0, 0, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
          [(1, 1, 1, 1, 1, 0), (0, 0, 0, 0, 0, 2)]]
+        
+        
+        Check that the two versions of the algorithm do the same thing
+        sage: from quiver import *        
+        sage: Q, theta = GeneralizedKroneckerQuiver(3), vector([1,0])
+        sage: ds = [vector([i,j]) for i in range(4) for j in range(4)]
+        sage: L1 = (lambda d: Q.all_harder_narasimhan_types(d, theta, algorithm="schofield_new"))
+        sage: L2 = (lambda d: Q.all_harder_narasimhan_types(d, theta, algorithm="schofield_iterative"))
+        sage: all([all([x in L1(d) for x in L2(d)]) and all([x in L2(d) for x in L1(d)]) for d in ds])
+        True
+        
         """
 
         n = self.number_of_vertices()
