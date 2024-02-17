@@ -486,7 +486,7 @@ class Quiver:
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
         genSubdims = self.all_generic_subdimension_vectors_helper(d)
-        return list(filter(lambda j: all([i != 0 or slope(subdims[i], theta) <= slope(subdims[j], theta) for i in genSubdims[j]]), range(N)))
+        return list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genSubdims[j]))]), range(1,N)))
 
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
