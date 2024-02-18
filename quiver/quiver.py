@@ -957,7 +957,8 @@ class Quiver:
             N = len(subdimensions)
 
             # semistables is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
-            semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta, algorithm="schofield_iterative"), range(1,N)))
+            # semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta, algorithm="schofield_iterative"), range(1,N)))
+            semistables = self.all_semistable_subdimension_vectors_helper(d, theta)
 
             # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
             idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
