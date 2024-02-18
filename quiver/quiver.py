@@ -754,6 +754,10 @@ class Quiver:
 
         s = len(dstar)
         return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
+    
+    def codimension_unstable_locus(self, d, theta):
+        hn = list(filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types(d, theta, denominator=sum, algorithm="schofield_new")))
+        return min([self.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn])
 
 
     def all_harder_narasimhan_types(self, d, theta, denominator=sum, algorithm="schofield_iterative"):
