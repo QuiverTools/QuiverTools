@@ -480,23 +480,26 @@ class Quiver:
         
         # Using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
         """A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
-        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if <f,d-e> is non-negative for all generic subdimension vectors f of e."""
+        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if e is a subdimension vector of d (missing in Thm. 5.3!) and <f,d-e> is non-negative for all generic subdimension vectors f of e."""
 
         """
         EXAMPLES:
-        
+
         """
 
-        assert (self.number_of_vertices() == d.length() & Q.number_of_vertices() == e.length())
+        assert (self.number_of_vertices() == d.length() & self.number_of_vertices() == e.length())
         assert (all([di >= 0 for di in d.list()]) and all([ei >= 0 for ei in e.list()]))
         
         if e == d:
             return True
         else:
-            # List of all generic subdimension vectors of e
-            genSubdims = self.all_generic_subdimension_vectors(e)
-            return all([self.euler_form(f, d-e) >= 0 for f in genSubdims])
-        
+            if not is_subdimension_vector(e, d):
+                return False
+            else: # e is subdimension vector of d
+                # List of all generic subdimension vectors of e
+                genSubdims = self.all_generic_subdimension_vectors(e)
+                return all([self.euler_form(f, d-e) >= 0 for f in genSubdims])
+            
     def __all_generic_subdimension_vectors_helper(self, d):
         """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
 
