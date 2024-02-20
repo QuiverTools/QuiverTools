@@ -682,6 +682,7 @@ class Quiver:
         """
 
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
+        N = len(genSubdims)
         return genSubdims[N-1]
 
     def generic_ext_vanishing(self, a, b):
