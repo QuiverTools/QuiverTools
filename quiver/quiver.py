@@ -303,6 +303,9 @@ class Quiver:
     Dimension vectors and stability conditions
     """
 
+    def zero_vector(self):
+        return vector([0 for i in range(self.number_of_vertices())])
+
     def thin_dimension_vector(self):
         return vector([1 for i in range(self.number_of_vertices())])
 
