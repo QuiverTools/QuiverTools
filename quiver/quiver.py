@@ -470,6 +470,9 @@ class Quiver:
     # TODO still need testing code from there
     def is_generic_subdimension_vector(self, e, d, algorithm="recursive"):
         """Checks if e is a generic subdimension vector of d."""
+        # TODO: Optimization!
+        # Generate list of all generic subdimension vectors of e. Then check if numerical condition is satisfied.
+        
         # using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
         """A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
         By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if <e',d-e> is non-negative for all generic subdimension vectors e' of e."""
