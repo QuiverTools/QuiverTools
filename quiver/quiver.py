@@ -1394,7 +1394,7 @@ class Quiver:
 
     def does_rigidity_inequality_hold(self,d,theta,denominator=sum):
         """
-        Returns True if the rigidity inequality holds for d and theta, i.e. if the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type are all strictly larger than the weights of the tensors of the universal bundles U_i^\vee \otimes U_j.
+        Returns True if the rigidity inequality holds for d and theta, i.e. if the weights of the 1-PS lambda on $\det(N_{S/R}|_Z)$ for each HN type are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$.
         """
 
         #This is only relevant on the unstable locus
