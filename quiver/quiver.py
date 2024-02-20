@@ -799,6 +799,7 @@ class Quiver:
         
     def all_semistable_subdimension_vectors_helper(self, d, theta):
         """Computes the list of indexes of all semistable subdimension vectors of d."""
+        # TODO: Make this private
         # TODO: Make this slightly easier to use!
         # Instead of returning just the list of indexes, return both indexes and the vectors. That doesn't make a huge difference in performance but is easier to use in most cases.
 
