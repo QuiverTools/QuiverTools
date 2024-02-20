@@ -507,7 +507,7 @@ class Quiver:
         genIndexes = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
         
         for j in range(N):
-            genIndexes[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genIndexes[j]))
+            genIndexes[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genIndexes[i]]), genIndexes[j]))
 
         genSubdims = [[subdims[i] for i in genIndexes[j]] for j in range(N)]
 
