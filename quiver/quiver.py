@@ -503,13 +503,15 @@ class Quiver:
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
 
-        # genSubdims[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
-        genSubdims = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
+        # genIndexes[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
+        genIndexes = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
         
         for j in range(N):
-            genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
+            genIndexes[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genIndexes[j]))
 
-        return genSubdims
+        genSubdims = [[subdims[i] for i in genIndexes[j]] for j in range(N)]
+
+        return genIndexes, genSubdims
 
     def all_generic_subdimension_vectors(self, d, algorithm="iterative"):
         """Returns the list of all generic subdimension vectors of d."""
@@ -671,8 +673,8 @@ class Quiver:
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
-        genSubdims = self.all_generic_subdimension_vectors_helper(d)
-        return list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genSubdims[j]))]), range(1,N)))
+        genIndexes, genSubdims = self.all_generic_subdimension_vectors_helper(d)
+        return list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genIndexes[j]))]), range(1,N)))
     
     def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="schofield_iterative"):
         """Checks if dstar is a HN type. Peforms the check of semistability according to algorithm"""
