@@ -484,6 +484,120 @@ class Quiver:
 
         """
         EXAMPLES:
+        sage: from quiver import *
+        sage: Q = LoopQuiver(1)
+        sage: dims = [vector([i]) for i in range(3)]
+        sage: for e in dims:
+        ....:     for d in dims:
+        ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
+        ....: 
+        (0) gen. subdim of (0)?: True
+        (0) gen. subdim of (1)?: True
+        (0) gen. subdim of (2)?: True
+        (1) gen. subdim of (0)?: False
+        (1) gen. subdim of (1)?: True
+        (1) gen. subdim of (2)?: True
+        (2) gen. subdim of (0)?: False
+        (2) gen. subdim of (1)?: False
+        (2) gen. subdim of (2)?: True
+        sage: Q = LoopQuiver(2)
+        sage: for e in dims:
+        ....:     for d in dims:
+        ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
+        ....: 
+        (0) gen. subdim of (0)?: True
+        (0) gen. subdim of (1)?: True
+        (0) gen. subdim of (2)?: True
+        (1) gen. subdim of (0)?: False
+        (1) gen. subdim of (1)?: True
+        (1) gen. subdim of (2)?: False
+        (2) gen. subdim of (0)?: False
+        (2) gen. subdim of (1)?: False
+        (2) gen. subdim of (2)?: True
+        sage: Q = GeneralizedKroneckerQuiver(1)
+        sage: for e in dims:
+        ....:     for d in dims:
+        ....:         if is_subdimension_vector(e,d):
+        ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
+        ....: 
+        (0, 0) gen. subdim of (0, 0)?: True
+        (0, 0) gen. subdim of (0, 1)?: True
+        (0, 0) gen. subdim of (0, 2)?: True
+        (0, 0) gen. subdim of (1, 0)?: True
+        (0, 0) gen. subdim of (1, 1)?: True
+        (0, 0) gen. subdim of (1, 2)?: True
+        (0, 0) gen. subdim of (2, 0)?: True
+        (0, 0) gen. subdim of (2, 1)?: True
+        (0, 0) gen. subdim of (2, 2)?: True
+        (0, 1) gen. subdim of (0, 1)?: True
+        (0, 1) gen. subdim of (0, 2)?: True
+        (0, 1) gen. subdim of (1, 1)?: True
+        (0, 1) gen. subdim of (1, 2)?: True
+        (0, 1) gen. subdim of (2, 1)?: True
+        (0, 1) gen. subdim of (2, 2)?: True
+        (0, 2) gen. subdim of (0, 2)?: True
+        (0, 2) gen. subdim of (1, 2)?: True
+        (0, 2) gen. subdim of (2, 2)?: True
+        (1, 0) gen. subdim of (1, 0)?: True
+        (1, 0) gen. subdim of (1, 1)?: False
+        (1, 0) gen. subdim of (1, 2)?: False
+        (1, 0) gen. subdim of (2, 0)?: True
+        (1, 0) gen. subdim of (2, 1)?: True
+        (1, 0) gen. subdim of (2, 2)?: False
+        (1, 1) gen. subdim of (1, 1)?: True
+        (1, 1) gen. subdim of (1, 2)?: True
+        (1, 1) gen. subdim of (2, 1)?: True
+        (1, 1) gen. subdim of (2, 2)?: True
+        (1, 2) gen. subdim of (1, 2)?: True
+        (1, 2) gen. subdim of (2, 2)?: True
+        (2, 0) gen. subdim of (2, 0)?: True
+        (2, 0) gen. subdim of (2, 1)?: False
+        (2, 0) gen. subdim of (2, 2)?: False
+        (2, 1) gen. subdim of (2, 1)?: True
+        (2, 1) gen. subdim of (2, 2)?: False
+        (2, 2) gen. subdim of (2, 2)?: True
+        sage: Q = GeneralizedKroneckerQuiver(2)
+        sage: for e in dims:
+        ....:     for d in dims:
+        ....:         if is_subdimension_vector(e,d):
+        ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
+        ....: 
+        (0, 0) gen. subdim of (0, 0)?: True
+        (0, 0) gen. subdim of (0, 1)?: True
+        (0, 0) gen. subdim of (0, 2)?: True
+        (0, 0) gen. subdim of (1, 0)?: True
+        (0, 0) gen. subdim of (1, 1)?: True
+        (0, 0) gen. subdim of (1, 2)?: True
+        (0, 0) gen. subdim of (2, 0)?: True
+        (0, 0) gen. subdim of (2, 1)?: True
+        (0, 0) gen. subdim of (2, 2)?: True
+        (0, 1) gen. subdim of (0, 1)?: True
+        (0, 1) gen. subdim of (0, 2)?: True
+        (0, 1) gen. subdim of (1, 1)?: True
+        (0, 1) gen. subdim of (1, 2)?: True
+        (0, 1) gen. subdim of (2, 1)?: True
+        (0, 1) gen. subdim of (2, 2)?: True
+        (0, 2) gen. subdim of (0, 2)?: True
+        (0, 2) gen. subdim of (1, 2)?: True
+        (0, 2) gen. subdim of (2, 2)?: True
+        (1, 0) gen. subdim of (1, 0)?: True
+        (1, 0) gen. subdim of (1, 1)?: False
+        (1, 0) gen. subdim of (1, 2)?: False
+        (1, 0) gen. subdim of (2, 0)?: True
+        (1, 0) gen. subdim of (2, 1)?: False
+        (1, 0) gen. subdim of (2, 2)?: False
+        (1, 1) gen. subdim of (1, 1)?: True
+        (1, 1) gen. subdim of (1, 2)?: False
+        (1, 1) gen. subdim of (2, 1)?: True
+        (1, 1) gen. subdim of (2, 2)?: True
+        (1, 2) gen. subdim of (1, 2)?: True
+        (1, 2) gen. subdim of (2, 2)?: True
+        (2, 0) gen. subdim of (2, 0)?: True
+        (2, 0) gen. subdim of (2, 1)?: False
+        (2, 0) gen. subdim of (2, 2)?: False
+        (2, 1) gen. subdim of (2, 1)?: True
+        (2, 1) gen. subdim of (2, 2)?: False
+        (2, 2) gen. subdim of (2, 2)?: True
 
         """
 
