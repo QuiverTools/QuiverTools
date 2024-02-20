@@ -738,13 +738,14 @@ class Quiver:
     """
 
     def has_semistable_representation(self, d, theta, algorithm="schofield"):
-        """Checks if there is a theta-semistable representation of dimension vector d."""
+        r""""Checks if there is a theta-semistable representation of dimension vector d.
+        
+        INPUT:
+        - ``d``: vector of Ints
+        - ``theta``: vector of Ints
 
-        #assert algorithm == "reineke"
-
-        # TODO implement this
-        if algorithm == "reineke":
-            raise NotImplementedError()
+        OUTPUT: Statement truth value as Bool
+        """
 
         """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d."""
         # Thm. 5.4 in Markus's paper is actually a result of Schofield. So the algorithm should bear his name, if any.
