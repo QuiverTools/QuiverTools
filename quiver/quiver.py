@@ -1020,61 +1020,34 @@ class Quiver:
          [(1, 1, 1, 1, 0, 0), (0, 0, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
          [(1, 1, 1, 1, 1, 0), (0, 0, 0, 0, 0, 2)]]
         
-        
-        Check that the two versions of the algorithm do the same thing
-        sage: from quiver import *        
-        sage: Q, theta = GeneralizedKroneckerQuiver(3), vector([1,0])
-        sage: ds = [vector([i,j]) for i in range(4) for j in range(4)]
-        sage: L1 = (lambda d: Q.all_harder_narasimhan_types(d, theta, algorithm="schofield_new"))
-        sage: L2 = (lambda d: Q.all_harder_narasimhan_types(d, theta, algorithm="schofield_iterative"))
-        sage: all([all([x in L1(d) for x in L2(d)]) and all([x in L2(d) for x in L1(d)]) for d in ds])
-        True
-        
         """
 
         n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])
-
-        if (algorithm=="schofield_iterative"):
-            if (d == zeroVector):
-                return [[zeroVector]]
-            else:
-                subdimensions = all_subdimension_vectors(d)
-                # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
-                # Note that we also eliminate d by the following
-                subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta), subdimensions))
-                # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
-                subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
-                # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
-                allHNtypes =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta,denominator=denominator) > slope(fstar[0],theta,denominator=denominator) ,self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)))]
-                # Possibly add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
-                if self.has_semistable_representation(d,theta):
-                    allHNtypes = [[d]] + allHNtypes
-                return allHNtypes
+        assert (d.length() == n and theta.length())
+        assert all([denominator(self.simple_root(i)) > 0 for i in range(1,n+1)])
         
-        elif (algorithm=="schofield_new"): # This is much faster. Keep this implementation and ditch the other one.
-            subdimensions = all_subdimension_vectors(d)
-            subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
-            N = len(subdimensions)
+        subdimensions = all_subdimension_vectors(d)
+        subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+        N = len(subdimensions)
 
-            # semistables is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
-            # semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta), range(1,N)))
-            semistables = self.all_semistable_subdimension_vectors_helper(d, theta)
+        # semistables is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
+        # semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta), range(1,N)))
+        semistables = self.all_semistable_subdimension_vectors_helper(d, theta)
 
-            # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
-            idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
+        # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
+        idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
 
-            hn = [[[]] for j in range(N)]
+        hn = [[[]] for j in range(N)]
 
-            for j in range(1,N):
-                # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
-                sstSub = list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), semistables))
-                # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
-                hn[j] = [[i]+fstar for i in sstSub for fstar in list(filter(lambda fstar: fstar == [] or slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[idx_diff(j, i)]))]
+        for j in range(1,N):
+            # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
+            sstSub = list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), semistables))
+            # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+            hn[j] = [[i]+fstar for i in sstSub for fstar in list(filter(lambda fstar: fstar == [] or slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[idx_diff(j, i)]))]
 
-            hn[0] = [[0]]
+        hn[0] = [[0]]
 
-            return [[subdimensions[r] for r in fstar] for fstar in hn[N-1]]
+        return [[subdimensions[r] for r in fstar] for fstar in hn[N-1]]
 
     """
     Stability and Luna
