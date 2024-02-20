@@ -666,7 +666,7 @@ class Quiver:
 
         return genIndexes, genSubdims
 
-    def all_generic_subdimension_vectors(self, d, algorithm="iterative"):
+    def all_generic_subdimension_vectors(self, d):
         r""""Returns the list of all generic subdimension vectors of d.
         
         INPUT:
@@ -793,7 +793,7 @@ class Quiver:
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
         
         elif (algorithm == "schofield_iterative"): # This is much faster, even for small d
-            genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
+            genSubdims = self.all_generic_subdimension_vectors(d)
             genSubdims = list(filter(lambda e: e != zeroVector, genSubdims))
             return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
         
@@ -1145,7 +1145,7 @@ class Quiver:
             if d == zeroVector:
                 return False
             else:
-                genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
+                genSubdims = self.all_generic_subdimension_vectors(d)
                 genSubdims = list(filter(lambda e: e != zeroVector and e != d, genSubdims))
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
