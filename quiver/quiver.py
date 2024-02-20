@@ -667,37 +667,22 @@ class Quiver:
         return genIndexes, genSubdims
 
     def all_generic_subdimension_vectors(self, d, algorithm="iterative"):
-        """Returns the list of all generic subdimension vectors of d."""
-
-        """
-        EXAMPLES
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: dimvects = [vector([i,j]) for i in range(5) for j in range(5)]
-        sage: all([Q.all_generic_subdimension_vectors(d, algorithm="recursive") == Q.all_generic_subdimension_vectors(d, algorithm="iterative") for d in dimvects])
-        True
-
-        """
-
-        if (algorithm=="recursive"):
-            genericSubdimensions = all_subdimension_vectors(d)
-            return sorted(list(filter(lambda e: self.is_generic_subdimension_vector(e, d, algorithm="recursive"), genericSubdimensions)), key=(lambda e: deglex_key(e, b=max(d)+1)))
+        r""""Returns the list of all generic subdimension vectors of d.
         
-        elif (algorithm=="iterative"):
-            # It's probably a bit faster to do this instead of using the helper function here; we need the helper function in a different place.
-            subdims = all_subdimension_vectors(d)            
-            subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
-            # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-            N = len(subdims)
+        INPUT:
+        - ``d``: vector of Ints
 
-            # genSubdims[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
-            genSubdims = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
-            
-            for j in range(N):
-                genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
+        OUTPUT: list of vectors
+        """
 
-            return [subdims[i] for i in genSubdims[N-1]]
+        """
+        EXAMPLES:
+
+
+        """
+
+        genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
+        return genSubdims[N-1]
 
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a+b)
