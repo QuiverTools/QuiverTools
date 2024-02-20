@@ -732,41 +732,6 @@ class Quiver:
     Semistability and HN
     """
 
-    def all_slope_decreasing_sequences(self, d, theta, denominator=sum):
-        """Returns the list of all sequences (d^1,...,d^l) which sum to d such that slope(d^1) > ... > slope(d^l)"""
-        # TODO: This should be private.
-
-        """
-        EXAMPLES
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: Q.all_slope_decreasing_sequences(d,theta)
-        [[(2, 3)],
-        [(1, 1), (1, 2)],
-        [(2, 2), (0, 1)],
-        [(2, 1), (0, 2)],
-        [(1, 0), (1, 3)],
-        [(1, 0), (1, 2), (0, 1)],
-        [(1, 0), (1, 1), (0, 2)],
-        [(2, 0), (0, 3)]]
-        """
-
-        n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])
-        # List all subdimension vectors e of bigger slope than d.
-        subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)), all_subdimension_vectors(d)))
-        # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
-        subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
-        # The slope decreasing sequences which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
-        allSlopeDecreasing =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta) > slope(fstar[0],theta) ,self.all_slope_decreasing_sequences(d-e,theta,denominator=denominator)))]
-        # Add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
-        allSlopeDecreasing = [[d]] + allSlopeDecreasing
-        return allSlopeDecreasing
-
-
     def has_semistable_representation(self, d, theta, algorithm="schofield"):
         """Checks if there is a theta-semistable representation of dimension vector d."""
 
