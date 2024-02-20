@@ -649,13 +649,16 @@ class Quiver:
             subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
         
-        elif (algorithm == "schofield_iterative"):
+        elif (algorithm == "schofield_iterative"): # This is much faster, even for small d
             genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
             genSubdims = list(filter(lambda e: e != zeroVector, genSubdims))
             return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
         
     def all_semistable_subdimension_vectors_helper(self, d, theta):
         """Computes the list of indexes of all semistable subdimension vectors of d."""
+        # TODO: Make this slightly easier to use!
+        # Instead of returning just the list of indexes, return both indexes and the vectors. That doesn't make a huge difference in performance but is easier to use in most cases.
+
         subdims = all_subdimension_vectors(d)            
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
@@ -665,6 +668,8 @@ class Quiver:
     
     def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="schofield_iterative"):
         """Checks if dstar is a HN type. Peforms the check of semistability according to algorithm"""
+        # TODO: Optimize this!
+        # We can first generate the list of all semistable subdimension vectors and then check if all steps of dstar are in that list.
 
         n = self.number_of_vertices()
         zeroVector = vector([0 for i in range(n)])
