@@ -824,21 +824,19 @@ class Quiver:
 
         The 3-Kronecker quiver
         sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: hn = Q.all_harder_narasimhan_types(d,theta)
-        sage: hn
-        [[(2, 3)],
-        [(1, 1), (1, 2)],
-        [(2, 2), (0, 1)],
-        [(2, 1), (0, 2)],
-        [(1, 0), (1, 3)],
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
+        [[(1, 0), (1, 1), (0, 2)],
         [(1, 0), (1, 2), (0, 1)],
-        [(1, 0), (1, 1), (0, 2)],
-        [(2, 0), (0, 3)]]
+        [(1, 0), (1, 3)],
+        [(1, 1), (1, 2)],
+        [(2, 0), (0, 3)],
+        [(2, 1), (0, 2)],
+        [(2, 2), (0, 1)],
+        [(2, 3)]]
         sage: [Q.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn]
-        [0, 3, 4, 10, 8, 9, 12, 18]
+        [12, 9, 8, 3, 18, 10, 4, 0]
+
         """
 
         s = len(dstar)
