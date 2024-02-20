@@ -737,7 +737,7 @@ class Quiver:
     Semistability and HN
     """
 
-    def has_semistable_representation(self, d, theta, algorithm="schofield"):
+    def has_semistable_representation(self, d, theta):
         r""""Checks if there is a theta-semistable representation of dimension vector d.
         
         INPUT:
@@ -758,16 +758,16 @@ class Quiver:
         sage: A2 = GeneralizedKroneckerQuiver(1)
         sage: theta = vector([1,-1])
         sage: d = vector([1,1])
-        sage: A2.has_semistable_representation(d,theta,algorithm="schofield")
+        sage: A2.has_semistable_representation(d,theta)
         True
         sage: d = vector([2,2])
-        sage: A2.has_semistable_representation(d,theta,algorithm="schofield")
+        sage: A2.has_semistable_representation(d,theta)
         True
         sage: d = vector([1,2])
-        sage: A2.has_semistable_representation(d,theta,algorithm="schofield")
+        sage: A2.has_semistable_representation(d,theta)
         False
         sage: d = vector([0,0])
-        sage: A2.has_semistable_representation(d,theta,algorithm="schofield")
+        sage: A2.has_semistable_representation(d,theta)
         True
 
         The 3-Kronecker quiver:
@@ -775,19 +775,11 @@ class Quiver:
         sage: K3 = GeneralizedKroneckerQuiver(3)
         sage: theta = vector([3,-2])
         sage: d = vector([2,3])
-        sage: K3.has_semistable_representation(d,theta,algorithm="schofield")
+        sage: K3.has_semistable_representation(d,theta)
         True
         sage: d = vector([1,4])
-        sage: K3.has_semistable_representation(d,theta,algorithm="schofield")
+        sage: K3.has_semistable_representation(d,theta)
         False
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = Q.canonical_stability_parameter(d)
-        sage: dims = [vector([i,j]) for i in range(6) for j in range(6)]
-        sage: all([Q.has_semistable_representation(d, theta, algorithm="schofield") == Q.has_semistable_representation(d, theta, algorithm="schofield_iterative") for d in dims])
-        True
 
         """
 
@@ -820,7 +812,7 @@ class Quiver:
             return (dstar == [zeroVector])
         else:
             slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
-            semistable = all([self.has_semistable_representation(d,theta,algorithm=algorithm) for e in dstar])
+            semistable = all([self.has_semistable_representation(d,theta) for e in dstar])
             return (slopeDecreasing and semistable)
 
     def codimension_of_harder_narasimhan_stratum(self,dstar):
@@ -1042,13 +1034,13 @@ class Quiver:
                 subdimensions = all_subdimension_vectors(d)
                 # We consider just those subdimension vectors which are not zero, whose slope is bigger than the slope of d and which admit a semi-stable representation
                 # Note that we also eliminate d by the following
-                subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta,algorithm=algorithm), subdimensions))
+                subdimensions = list(filter(lambda e: (e != zeroVector) and (slope(e,theta,denominator=denominator) > slope(d,theta,denominator=denominator)) and self.has_semistable_representation(e,theta), subdimensions))
                 # We sort the subdimension vectors by slope because that will return the list of all HN types in ascending order with respect to the partial order from Def. 3.6 of https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
                 subdimensions.sort(key=(lambda e: slope(e,theta,denominator=denominator)))
                 # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
                 allHNtypes =  [[e]+fstar for e in subdimensions for fstar in list(filter(lambda fstar: slope(e,theta,denominator=denominator) > slope(fstar[0],theta,denominator=denominator) ,self.all_harder_narasimhan_types(d-e,theta,denominator=denominator)))]
                 # Possibly add d again, at the beginning, because it is smallest with respect to the partial order from Def. 3.6
-                if self.has_semistable_representation(d,theta,algorithm=algorithm):
+                if self.has_semistable_representation(d,theta):
                     allHNtypes = [[d]] + allHNtypes
                 return allHNtypes
         
@@ -1058,7 +1050,7 @@ class Quiver:
             N = len(subdimensions)
 
             # semistables is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
-            # semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta, algorithm="schofield_iterative"), range(1,N)))
+            # semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta), range(1,N)))
             semistables = self.all_semistable_subdimension_vectors_helper(d, theta)
 
             # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
@@ -1321,7 +1313,7 @@ class Quiver:
             return True
         else:
             # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation might be a bit slower
-            if not self.has_semistable_representation(d,theta,algorithm=algorithm):
+            if not self.has_semistable_representation(d,theta):
                 return True
             else:
                 allLunaTypes = self.all_luna_types(d,theta)
