@@ -855,7 +855,15 @@ class Quiver:
         # denominator default being sum is total dimension, there are variations possible
         # and the strata will be different!
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
-        """Returns the list of all HN types."""
+        r""""Returns the list of all HN types.
+        
+        INPUT:
+        - ``d``: vector of Ints
+        - ``theta``: vector of Ints
+        - ``denominator``: function which takes a vector of Ints and returns an Int
+
+        OUTPUT: List of list of vectors of Ints
+        """
 
         """A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
         * d^1 + ... + d^s = d
@@ -863,7 +871,7 @@ class Quiver:
         * Every d^k is theta-semi-stable."""
 
         """
-        EXAMPLES
+        EXAMPLES:
 
         The 3-Kronecker quiver:
         sage: from quiver import *
