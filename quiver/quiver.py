@@ -314,6 +314,9 @@ class Quiver:
         ei = vector([0 for i in range(n)])
         ei[i-1] = 1
         return ei
+    
+    def is_real_root(self, d):
+        return self.euler_form(d,d) == 1
 
     def support(self, d):
         """Returns the full subquiver supported on {i in Q_0 | d_i > 0}."""
@@ -375,11 +378,183 @@ class Quiver:
         # Check if the support is connected
         connected = self.support(d).is_connected()
         return eulerFormCondition and connected
+    
+    # The fundamental domain again! Which implementation should we keep?
+    
+    def in_fundamental_domain(self, d):
+        # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
+
+        # there has to be a more elegant way to do this
+        # oh well
+        simples = [ZeroVector(self.number_of_vertices()) for i in range(self.number_of_vertices())]
+        for i in range(self.number_of_vertices()):
+            simples[i][i] = 1
+        return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
+    
+    def partial_order(self,d,e):
+        """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([1,1])
+        sage: e = vector([2,1])
+        sage: f = vector([2,2])
+        sage: Q.partial_order(d,e)
+        True
+        sage: Q.partial_order(e,d)
+        False
+        sage: Q.partial_order(d,f)
+        False
+        sage: Q.partial_order(f,d)
+        False
+        sage: Q.partial_order(e,f)
+        False
+        sage: Q.partial_order(f,e)
+        True
+
+        sage: Q = ThreeVertexQuiver(2,2,2)
+        sage: Q
+        An acyclic 3-vertex quiver; adjacency matrix:
+        [0 2 2]
+        [0 0 2]
+        [0 0 0]
+        sage: d = vector([1,1,1])
+        sage: e = vector([1,2,1])
+        sage: Q.partial_order(d,e)
+        False
+        sage: Q.partial_order(e,d)
+        False
+        """
+
+        n = self.number_of_vertices()
+        assert (d.length() == n) and (e.length() == n)
+        less = all([d[i-1] <= e[i-1] for i in list(filter(lambda i: self.is_source(i), range(1,n+1)))])
+        less = less and all([d[j-1] >= e[j-1] for j in list(filter(lambda j: self.is_sink(j), range(1,n+1)))])
+        less = less and all([d[k-1] == e[k-1] for k in list(filter(lambda k: (not self.is_source(k)) and (not self.is_sink(k)), range(1,n+1)))])
+
+        return less
+    
+    def all_minimal_forbidden_subdimension_vectors(self,d,theta):
+        """Returns the list of all minimal forbidden subdimension vectors of d."""
+
+        """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: Q.all_minimal_forbidden_subdimension_vectors(d,theta)
+        [(1, 1), (2, 2)]
+        """
+
+        forbidden = all_forbidden_subdimension_vectors(d,theta)
+        return list(filter(lambda e: not any([self.partial_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
 
     def canonical_stability_parameter(self,d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
         E = self.euler_matrix()
         return d * (-self.euler_matrix().transpose() + E)
+    
+    """
+    Generic subdimension vectors and generic Hom and Ext
+    """
+
+    # taken from code/snippets/canonical.sage
+    # TODO still need testing code from there
+    def is_generic_subdimension_vector(self, e, d, algorithm="recursive"):
+        """Checks if e is a generic subdimension vector of d."""
+        # using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
+        """A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
+        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if <e',d-e> is non-negative for all generic subdimension vectors e' of e."""
+
+        if (algorithm == "recursive"):
+            # Optimization: Check first if numerical condition is violated and then if any of the e' which does violate it is a generic subdimension vector.
+
+            if e == d:
+                return True
+            else:
+                # list of all dimension vectors e' which are strictly smaller than e
+                subdimensions = all_subdimension_vectors(e)
+                # only those which violate the numerical condition
+                subdimensions = filter(lambda eprime: self.euler_form(eprime, d-e) < 0, subdimensions)
+
+                # check if the list contains no generic subdimension vector of e
+                return not any([self.is_generic_subdimension_vector(eprime,e) for eprime in subdimensions])
+        
+        elif (algorithm == "iterative"):
+            return (e in self.all_generic_subdimension_vectors(d, algorithm="iterative"))
+        
+    def all_generic_subdimension_vectors_helper(self, d):
+        """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
+        subdims = all_subdimension_vectors(d)            
+        subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+        N = len(subdims)
+
+        # genSubdims[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
+        genSubdims = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
+        
+        for j in range(N):
+            genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
+
+        return genSubdims
+
+    def all_generic_subdimension_vectors(self, d, algorithm="iterative"):
+        """Returns the list of all generic subdimension vectors of d."""
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: dimvects = [vector([i,j]) for i in range(5) for j in range(5)]
+        sage: all([Q.all_generic_subdimension_vectors(d, algorithm="recursive") == Q.all_generic_subdimension_vectors(d, algorithm="iterative") for d in dimvects])
+        True
+
+        """
+
+        if (algorithm=="recursive"):
+            genericSubdimensions = all_subdimension_vectors(d)
+            return sorted(list(filter(lambda e: self.is_generic_subdimension_vector(e, d, algorithm="recursive"), genericSubdimensions)), key=(lambda e: deglex_key(e, b=max(d)+1)))
+        
+        elif (algorithm=="iterative"):
+            # It's probably a bit faster to do this instead of using the helper function here; we need the helper function in a different place.
+            subdims = all_subdimension_vectors(d)            
+            subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+            # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+            N = len(subdims)
+
+            # genSubdims[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
+            genSubdims = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
+            
+            for j in range(N):
+                genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
+
+            return [subdims[i] for i in genSubdims[N-1]]
+
+    def generic_ext_vanishing(self, a, b):
+        return self.is_generic_subdimension_vector(a, a+b)
+    
+    def generic_hom_vanishing(self, a, b):
+        # TODO figure out a way to implement this.
+        raise NotImplementedError()
+
+    def is_left_orthogonal(self, a, b):
+        if self.generic_ext_vanishing(a, b):
+            return self.euler_form(a, b) == 0
+        else:
+            return False
+    
+
+    """
+    Semistability and HN
+    """
 
     def all_slope_decreasing_sequences(self, d, theta, denominator=sum):
         """Returns the list of all sequences (d^1,...,d^l) which sum to d such that slope(d^1) > ... > slope(d^l)"""
@@ -487,314 +662,7 @@ class Quiver:
         N = len(subdims)
         genSubdims = self.all_generic_subdimension_vectors_helper(d)
         return list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genSubdims[j]))]), range(1,N)))
-
-
-    def has_stable_representation(self, d, theta, algorithm="schofield"):
-        """Checks if there is a theta-stable representation of dimension vector d."""
-        # TODO implement this
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
-        """Question: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper."""
-        if algorithm == "king":
-            raise NotImplementedError()
-        # TODO implement this
-        # al stands for Adriaenssens--Le Bruyn
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1972892
-        if algorithm == "al":
-            raise NotImplementedError()
-
-        """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d."""
-
-        """
-        EXAMPLES:
-
-        The A2 quiver:
-        sage: from quiver import *
-        sage: A2 = GeneralizedKroneckerQuiver(1)
-        sage: theta = vector([1,-1])
-        sage: d = vector([1,1])
-        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
-        True
-        sage: d = vector([2,2])
-        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
-        False
-        sage: d = vector([0,0])
-        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
-        False
-
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: K3 = GeneralizedKroneckerQuiver(3)
-        sage: theta = vector([3,-2])
-        sage: d = vector([2,3])
-        sage: K3.has_stable_representation(d,theta,algorithm="schofield")
-        True
-
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: theta = vector([1,0])
-        sage: dims = [vector([i,j]) for i in range(6) for j in range(6)]
-        sage: all([Q.has_stable_representation(d, theta, algorithm="schofield") == Q.has_stable_representation(d, theta, algorithm="schofield_iterative") for d in dims])
-        True
-
-
-        """
-        n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])
-        
-        if (algorithm == "schofield"):
-            if d == zeroVector:
-                return False
-            else:
-                subdimensionsSlopeNoLess = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) >= slope(d,theta), all_subdimension_vectors(d)))
-                return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsSlopeNoLess])
-            
-        if (algorithm == "schofield_iterative"):
-            if d == zeroVector:
-                return False
-            else:
-                genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
-                genSubdims = list(filter(lambda e: e != zeroVector and e != d, genSubdims))
-                return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
-
-
-    def is_schur_root(self,d):
-        """Checks if d is a Schur root for the given quiver, i.e. a dimension vector which admits a Schurian representation."""
-
-        """By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
-
-        """
-        EXAMPLES:
-
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: Q.is_schur_root(d)
-        True
-
-        """
-
-        theta = self.canonical_stability_parameter(d)
-        return self.has_stable_representation(d,theta)
-
-
-    # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
-    def is_amply_stable(self, d, theta):
-        """Checks if d is amply stable for theta, which by definition means that the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
-
-        # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
-        # But can we find a necessary and sufficient condition?
-        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
-
-        """
-        EXAMPLES
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: Q.is_amply_stable(d,theta)
-        True
-        sage: Q.is_amply_stable(d,-theta)
-        False
-        """
-
-        if self.semistable_equals_stable(d,theta):
-            hn = self.all_harder_narasimhan_types(d,theta)
-            if [d] in hn:
-                hn.remove([d])
-            return all([self.codimension_of_harder_narasimhan_stratum(dstar) >= 2 for dstar in hn])
-        else:
-            raise NotImplementedError()
-
-    def is_strongly_amply_stable(self, d, theta):
-        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
-
-        # All subdimension vectors of d
-        es = all_subdimension_vectors(d)
-        # Remove (0,...,0)
-        zeroVector = vector([0 for i in range(d.length())])
-        es.remove(zeroVector)
-        es.remove(d)
-        # All of them which have bigger slope
-        es = list(filter(lambda e: slope(e,theta) >= slope(d,theta), es))
-        return all([self.euler_form(e,d-e) <= -2 for e in es])
-
-    # taken from code/snippets/canonical.sage
-    # TODO still need testing code from there
-    def is_generic_subdimension_vector(self, e, d, algorithm="recursive"):
-        """Checks if e is a generic subdimension vector of d."""
-        # using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
-        """A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
-        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if <e',d-e> is non-negative for all generic subdimension vectors e' of e."""
-
-        if (algorithm == "recursive"):
-            # Optimization: Check first if numerical condition is violated and then if any of the e' which does violate it is a generic subdimension vector.
-
-            if e == d:
-                return True
-            else:
-                # list of all dimension vectors e' which are strictly smaller than e
-                subdimensions = all_subdimension_vectors(e)
-                # only those which violate the numerical condition
-                subdimensions = filter(lambda eprime: self.euler_form(eprime, d-e) < 0, subdimensions)
-
-                # check if the list contains no generic subdimension vector of e
-                return not any([self.is_generic_subdimension_vector(eprime,e) for eprime in subdimensions])
-        
-        elif (algorithm == "iterative"):
-            return (e in self.all_generic_subdimension_vectors(d, algorithm="iterative"))
-        
-    def all_generic_subdimension_vectors_helper(self, d):
-        """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
-        subdims = all_subdimension_vectors(d)            
-        subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
-        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-        N = len(subdims)
-
-        # genSubdims[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
-        genSubdims = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
-        
-        for j in range(N):
-            genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
-
-        return genSubdims
-
-    def all_generic_subdimension_vectors(self, d, algorithm="iterative"):
-        """Returns the list of all generic subdimension vectors of d."""
-
-        """
-        EXAMPLES
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: dimvects = [vector([i,j]) for i in range(5) for j in range(5)]
-        sage: all([Q.all_generic_subdimension_vectors(d, algorithm="recursive") == Q.all_generic_subdimension_vectors(d, algorithm="iterative") for d in dimvects])
-        True
-
-        """
-
-        if (algorithm=="recursive"):
-            genericSubdimensions = all_subdimension_vectors(d)
-            return sorted(list(filter(lambda e: self.is_generic_subdimension_vector(e, d, algorithm="recursive"), genericSubdimensions)), key=(lambda e: deglex_key(e, b=max(d)+1)))
-        
-        elif (algorithm=="iterative"):
-            # It's probably a bit faster to do this instead of using the helper function here; we need the helper function in a different place.
-            subdims = all_subdimension_vectors(d)            
-            subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
-            # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-            N = len(subdims)
-
-            # genSubdims[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
-            genSubdims = [list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N))) for j in range(N)]
-            
-            for j in range(N):
-                genSubdims[j] = list(filter(lambda i: all([self.euler_form(subdims[k], subdims[j]-subdims[i]) >= 0 for k in genSubdims[i]]), genSubdims[j]))
-
-            return [subdims[i] for i in genSubdims[N-1]]
-
-    def generic_ext_vanishing(self, a, b):
-        return self.is_generic_subdimension_vector(a, a+b)
     
-    def generic_hom_vanishing(self, a, b):
-        # TODO figure out a way to implement this.
-        raise NotImplementedError()
-
-    def is_left_orthogonal(self, a, b):
-        if self.generic_ext_vanishing(a, b):
-            return self.euler_form(a, b) == 0
-        else:
-            return False
-
-    def is_real_root(self, d):
-        return self.euler_form(d,d) == 1
-    
-    def rearrange_dw_decomposition(self,decomposition,i,j):
-        # this is non functional, let alone tested
-        # apply Lemma 11.9.10 of Derksen--Weyman to rearrange the roots from i to j as k, k+1
-        S = []
-        for k in range(i,j-1):
-            # if k has a ``path to j'' satisfying the hypothesis of Lemma 11.9.10, we keep it
-            # m is the j-k times j-k matrix with entry m[i,j] = 1 if !generic_hom_vanishing(Q,decomposition[j][2],decomposition[i][2]) and 0 otherwise
-            m = matrix(j-k)
-            for l in range(k,j-1):
-                for s in range(l+1,j):
-                    if not self.generic_hom_vanishing(decomposition[s][2],decomposition[l][2]):
-                        m[l-k,s-k] = 1
-            paths = matrix(j-k) # paths[i,j] is the number of paths from k + i - 1 to k + j - 1 of length at most j-k
-            for l in range(j-k):
-                paths = paths + m**l
-            if paths[0,j-k-1] > 0:
-                S.append(k)
-        rearrangement = [l for l in range(i+1,j-1) if l not in S]
-        final = S + [i,j] + rearrangement
-        decomposition_temp = [decomposition[l] for l in final]
-        for l in range(i,j):
-            decomposition[l] = decomposition_temp[l-i]
-        return i + len(S) - 1 #this is the index of the element i now.
-
-
-    def canonical_decomposition(self, d, algorithm="derksen-weyman"):
-        # TODO implement this
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1930979
-        # this is implemented in code/snippets/canonical.sage, so include it here
-        if algorithm == "derksen-weyman":
-            decomposition = [[d[i],self.simple_root(i+1)] for i in range(self.number_of_vertices())]
-            while True:
-                decomposition = list(filter(lambda root: root[0] > 0, decomposition))
-                violating_pairs = [(i,j) for i in range(len(decomposition)-1) for j in range(i+1,len(decomposition)) if self.euler_form(decomposition[j][1],decomposition[i][1]) < 0]
-                if not violating_pairs:
-                    break
-                violating_pairs = sorted(violating_pairs, key=(lambda pair: pair[1] - pair[0]))
-                i,j = violating_pairs[0]
-
-                # this modifies the decomposition in place
-                i = self.rearrange_dw_decomposition(decomposition,i,j)
-
-                p,xi = decomposition[i]
-                q,eta = decomposition[i+1]
-                xi_real = self.is_real_root(xi)
-                eta_real = self.is_real_root(eta)
-                zeta = p*xi + q*eta
-                if xi_real and eta_real:
-                    discriminant = self.euler_form(zeta,zeta)
-                    if discriminant > 0:
-                        pass # TODO figure out what this should do
-                    elif discriminant == 0:
-                        zeta_prime = zeta // gcd(zeta)
-                        del decomposition[i+1]
-                        decomposition[i] = [1,zeta_prime]
-                    else:
-                        del decomposition[i+1]
-                        decomposition[i] = [1,zeta]
-                elif xi_real and not eta_real:
-                    if p + q*self.euler_form(eta,xi) >= 0:
-                        del decomposition[i+1]
-                        decomposition[i] = [1,eta - self.euler_form(eta,xi)*xi]
-                    else:
-                        del decomposition[i+1]
-                        decomposition[i] = [1,zeta]
-                elif not xi_real and eta_real:
-                    if q + p*self.euler_form(eta,xi) >= 0:
-                        decomposition[i] = [1,eta]
-                        decomposition[i+1] = [1,xi - self.euler_form(eta,xi)*eta]
-                    else:
-                        del decomposition[i+1]
-                        decomposition[i] = [1,zeta]
-                elif not xi_real and not eta_real:
-                    del decomposition[i+1]
-                    decomposition[i] = [1,zeta]
-            return decomposition
-
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1162487
-        elif algorithm == "schofield-1":
-            raise NotImplementedError()
-        # TODO implement this
-        # https://arxiv.org/pdf/math/9911014.pdf (see Section 5, and also Section 3 of https://mathscinet.ams.org/mathscinet/article?mr=1789222)
-        # in Derksen--Weyman's https://mathscinet.ams.org/mathscinet-getitem?mr=1930979 it is claimed that there is a second Schofield algorithm
-        # (they do cite the wrong Schofield preprint though...)
-        elif algorithm == "schofield-2":
-            raise NotImplementedError()
-
     def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="schofield_iterative"):
         """Checks if dstar is a HN type. Peforms the check of semistability according to algorithm"""
 
@@ -1060,67 +928,98 @@ class Quiver:
             hn[0] = [[0]]
 
             return [[subdimensions[r] for r in fstar] for fstar in hn[N-1]]
-                
 
-    def all_weight_bounds(self, d, theta,denominator=sum):
+    """
+    Stability and Luna
+    """
+
+    def has_stable_representation(self, d, theta, algorithm="schofield"):
+        """Checks if there is a theta-stable representation of dimension vector d."""
+        # TODO implement this
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
+        """Question: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper."""
+        if algorithm == "king":
+            raise NotImplementedError()
+        # TODO implement this
+        # al stands for Adriaenssens--Le Bruyn
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1972892
+        if algorithm == "al":
+            raise NotImplementedError()
+
+        """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d."""
+
         """
-        Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
-        For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight. Teleman quantization gives a numerical condition involving these weights to compute cohmology on the quotient.
-        """
-        # TODO return the Hn type as well?
-
-        #This is only relevant on the unstable locus
-        HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
-
-        return list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
-
-
-    def does_rigidity_inequality_hold(self,d,theta,denominator=sum):
-        """
-        Returns True if the rigidity inequality holds for d and theta, i.e. if the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type are all strictly larger than the weights of the tensors of the universal bundles U_i^\vee \otimes U_j.
-        """
-
-        #This is only relevant on the unstable locus
-        HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
-
-        # We compute the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type
-        weights = list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
-
-        # We compute the maximum weight of the tensors of the universal bundles U_i^\vee \otimes U_j
-        tensorWeights = list(map(lambda hntype: slope(hntype[0],theta,denominator=denominator) - slope(hntype[-1],theta,denominator=denominator), HN))
-
-        return all([weights[i] > tensorWeights[i] for i in range(len(HN))])
-
-    def first_hochschild_cohomology(self):
-        """
-        Compute the dimension of the first Hochschild cohomology
-
-        This uses the formula of Happel from Proposition 1.6 in [MR1035222].
-
         EXAMPLES:
 
-        The first Hochschild cohomology of the $m$th generalized Kronecker quiver
-        is the dimension of $\mathrm{PGL}_{m+1}$::
+        The A2 quiver:
+        sage: from quiver import *
+        sage: A2 = GeneralizedKroneckerQuiver(1)
+        sage: theta = vector([1,-1])
+        sage: d = vector([1,1])
+        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
+        True
+        sage: d = vector([2,2])
+        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
+        False
+        sage: d = vector([0,0])
+        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
+        False
 
-            sage: from quiver import *
-            sage: GeneralizedKroneckerQuiver(3).first_hochschild_cohomology()
-            8
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: K3 = GeneralizedKroneckerQuiver(3)
+        sage: theta = vector([3,-2])
+        sage: d = vector([2,3])
+        sage: K3.has_stable_representation(d,theta,algorithm="schofield")
+        True
 
-        The first Hochschild cohomology vanishes if and only if the quiver is a tree::
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: theta = vector([1,0])
+        sage: dims = [vector([i,j]) for i in range(6) for j in range(6)]
+        sage: all([Q.has_stable_representation(d, theta, algorithm="schofield") == Q.has_stable_representation(d, theta, algorithm="schofield_iterative") for d in dims])
+        True
 
-            sage: from quiver import *
-            sage: SubspaceQuiver(7).first_hochschild_cohomology()
-            0
 
         """
-        assert self.is_acyclic()
-        # TODO think about including G into the Quiver class
-        G = Graph(self.adjacency_matrix(), format="adjacency_matrix")
+        n = self.number_of_vertices()
+        zeroVector = vector([0 for i in range(n)])
+        
+        if (algorithm == "schofield"):
+            if d == zeroVector:
+                return False
+            else:
+                subdimensionsSlopeNoLess = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) >= slope(d,theta), all_subdimension_vectors(d)))
+                return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsSlopeNoLess])
+            
+        if (algorithm == "schofield_iterative"):
+            if d == zeroVector:
+                return False
+            else:
+                genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
+                genSubdims = list(filter(lambda e: e != zeroVector and e != d, genSubdims))
+                return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
-        # see Proposition 1.6 in Happel's "Hochschild cohomology of finite-dimensional algebras"
-        return 1 - self.number_of_vertices() + sum(len(G.all_paths(a[0], a[1], use_multiedges=True)) for a in G.edges())
 
+    def is_schur_root(self,d):
+        """Checks if d is a Schur root for the given quiver, i.e. a dimension vector which admits a Schurian representation."""
 
+        """By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
+
+        """
+        EXAMPLES:
+
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: Q.is_schur_root(d)
+        True
+
+        """
+
+        theta = self.canonical_stability_parameter(d)
+        return self.has_stable_representation(d,theta)
+    
     def is_luna_type(self, tau, theta):
         """Checks if tau is a Luna type for theta."""
         n = self.number_of_vertices()
@@ -1275,68 +1174,19 @@ class Quiver:
                 genericType = tuple([d,[1]])
                 if genericType in allLunaTypes:
                     allLunaTypes.remove(genericType)
-                return (not allLunaTypes)
+                return (not allLunaTypes) # This checks if the list is empty
 
-    def in_fundamental_domain(self, d):
-        # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
+    """
+    Ample stability
+    """
 
-        # there has to be a more elegant way to do this
-        # oh well
-        simples = [ZeroVector(self.number_of_vertices()) for i in range(self.number_of_vertices())]
-        for i in range(self.number_of_vertices()):
-            simples[i][i] = 1
-        return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
+    # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
+    def is_amply_stable(self, d, theta):
+        """Checks if d is amply stable for theta, which by definition means that the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
 
-    def partial_order(self,d,e):
-        """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
-
-        """
-        EXAMPLES
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([1,1])
-        sage: e = vector([2,1])
-        sage: f = vector([2,2])
-        sage: Q.partial_order(d,e)
-        True
-        sage: Q.partial_order(e,d)
-        False
-        sage: Q.partial_order(d,f)
-        False
-        sage: Q.partial_order(f,d)
-        False
-        sage: Q.partial_order(e,f)
-        False
-        sage: Q.partial_order(f,e)
-        True
-
-        sage: Q = ThreeVertexQuiver(2,2,2)
-        sage: Q
-        An acyclic 3-vertex quiver; adjacency matrix:
-        [0 2 2]
-        [0 0 2]
-        [0 0 0]
-        sage: d = vector([1,1,1])
-        sage: e = vector([1,2,1])
-        sage: Q.partial_order(d,e)
-        False
-        sage: Q.partial_order(e,d)
-        False
-        """
-
-        n = self.number_of_vertices()
-        assert (d.length() == n) and (e.length() == n)
-        less = all([d[i-1] <= e[i-1] for i in list(filter(lambda i: self.is_source(i), range(1,n+1)))])
-        less = less and all([d[j-1] >= e[j-1] for j in list(filter(lambda j: self.is_sink(j), range(1,n+1)))])
-        less = less and all([d[k-1] == e[k-1] for k in list(filter(lambda k: (not self.is_source(k)) and (not self.is_sink(k)), range(1,n+1)))])
-
-        return less
-
-    def all_minimal_forbidden_subdimension_vectors(self,d,theta):
-        """Returns the list of all minimal forbidden subdimension vectors of d."""
-
-        """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
+        # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
+        # But can we find a necessary and sufficient condition?
+        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
 
         """
         EXAMPLES
@@ -1345,12 +1195,190 @@ class Quiver:
         sage: Q = GeneralizedKroneckerQuiver(3)
         sage: d = vector([2,3])
         sage: theta = vector([3,-2])
-        sage: Q.all_minimal_forbidden_subdimension_vectors(d,theta)
-        [(1, 1), (2, 2)]
+        sage: Q.is_amply_stable(d,theta)
+        True
+        sage: Q.is_amply_stable(d,-theta)
+        False
         """
 
-        forbidden = all_forbidden_subdimension_vectors(d,theta)
-        return list(filter(lambda e: not any([self.partial_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
+        if self.semistable_equals_stable(d,theta):
+            hn = self.all_harder_narasimhan_types(d,theta)
+            if [d] in hn:
+                hn.remove([d])
+            return all([self.codimension_of_harder_narasimhan_stratum(dstar) >= 2 for dstar in hn])
+        else:
+            raise NotImplementedError()
+
+    def is_strongly_amply_stable(self, d, theta):
+        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
+
+        # All subdimension vectors of d
+        es = all_subdimension_vectors(d)
+        # Remove (0,...,0)
+        zeroVector = vector([0 for i in range(d.length())])
+        es.remove(zeroVector)
+        es.remove(d)
+        # All of them which have bigger slope
+        es = list(filter(lambda e: slope(e,theta) >= slope(d,theta), es))
+        return all([self.euler_form(e,d-e) <= -2 for e in es])
+
+    """
+    Canonical decomposition
+    """
+    
+    def rearrange_dw_decomposition(self,decomposition,i,j):
+        # this is non functional, let alone tested
+        # apply Lemma 11.9.10 of Derksen--Weyman to rearrange the roots from i to j as k, k+1
+        S = []
+        for k in range(i,j-1):
+            # if k has a ``path to j'' satisfying the hypothesis of Lemma 11.9.10, we keep it
+            # m is the j-k times j-k matrix with entry m[i,j] = 1 if !generic_hom_vanishing(Q,decomposition[j][2],decomposition[i][2]) and 0 otherwise
+            m = matrix(j-k)
+            for l in range(k,j-1):
+                for s in range(l+1,j):
+                    if not self.generic_hom_vanishing(decomposition[s][2],decomposition[l][2]):
+                        m[l-k,s-k] = 1
+            paths = matrix(j-k) # paths[i,j] is the number of paths from k + i - 1 to k + j - 1 of length at most j-k
+            for l in range(j-k):
+                paths = paths + m**l
+            if paths[0,j-k-1] > 0:
+                S.append(k)
+        rearrangement = [l for l in range(i+1,j-1) if l not in S]
+        final = S + [i,j] + rearrangement
+        decomposition_temp = [decomposition[l] for l in final]
+        for l in range(i,j):
+            decomposition[l] = decomposition_temp[l-i]
+        return i + len(S) - 1 #this is the index of the element i now.
+
+
+    def canonical_decomposition(self, d, algorithm="derksen-weyman"):
+        # TODO implement this
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1930979
+        # this is implemented in code/snippets/canonical.sage, so include it here
+        if algorithm == "derksen-weyman":
+            decomposition = [[d[i],self.simple_root(i+1)] for i in range(self.number_of_vertices())]
+            while True:
+                decomposition = list(filter(lambda root: root[0] > 0, decomposition))
+                violating_pairs = [(i,j) for i in range(len(decomposition)-1) for j in range(i+1,len(decomposition)) if self.euler_form(decomposition[j][1],decomposition[i][1]) < 0]
+                if not violating_pairs:
+                    break
+                violating_pairs = sorted(violating_pairs, key=(lambda pair: pair[1] - pair[0]))
+                i,j = violating_pairs[0]
+
+                # this modifies the decomposition in place
+                i = self.rearrange_dw_decomposition(decomposition,i,j)
+
+                p,xi = decomposition[i]
+                q,eta = decomposition[i+1]
+                xi_real = self.is_real_root(xi)
+                eta_real = self.is_real_root(eta)
+                zeta = p*xi + q*eta
+                if xi_real and eta_real:
+                    discriminant = self.euler_form(zeta,zeta)
+                    if discriminant > 0:
+                        pass # TODO figure out what this should do
+                    elif discriminant == 0:
+                        zeta_prime = zeta // gcd(zeta)
+                        del decomposition[i+1]
+                        decomposition[i] = [1,zeta_prime]
+                    else:
+                        del decomposition[i+1]
+                        decomposition[i] = [1,zeta]
+                elif xi_real and not eta_real:
+                    if p + q*self.euler_form(eta,xi) >= 0:
+                        del decomposition[i+1]
+                        decomposition[i] = [1,eta - self.euler_form(eta,xi)*xi]
+                    else:
+                        del decomposition[i+1]
+                        decomposition[i] = [1,zeta]
+                elif not xi_real and eta_real:
+                    if q + p*self.euler_form(eta,xi) >= 0:
+                        decomposition[i] = [1,eta]
+                        decomposition[i+1] = [1,xi - self.euler_form(eta,xi)*eta]
+                    else:
+                        del decomposition[i+1]
+                        decomposition[i] = [1,zeta]
+                elif not xi_real and not eta_real:
+                    del decomposition[i+1]
+                    decomposition[i] = [1,zeta]
+            return decomposition
+
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1162487
+        elif algorithm == "schofield-1":
+            raise NotImplementedError()
+        # TODO implement this
+        # https://arxiv.org/pdf/math/9911014.pdf (see Section 5, and also Section 3 of https://mathscinet.ams.org/mathscinet/article?mr=1789222)
+        # in Derksen--Weyman's https://mathscinet.ams.org/mathscinet-getitem?mr=1930979 it is claimed that there is a second Schofield algorithm
+        # (they do cite the wrong Schofield preprint though...)
+        elif algorithm == "schofield-2":
+            raise NotImplementedError()
+
+    
+    """
+    Teleman!
+    """            
+
+    def all_weight_bounds(self, d, theta,denominator=sum):
+        """
+        Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
+        For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight. Teleman quantization gives a numerical condition involving these weights to compute cohmology on the quotient.
+        """
+        # TODO return the Hn type as well?
+
+        #This is only relevant on the unstable locus
+        HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
+
+        return list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
+
+
+    def does_rigidity_inequality_hold(self,d,theta,denominator=sum):
+        """
+        Returns True if the rigidity inequality holds for d and theta, i.e. if the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type are all strictly larger than the weights of the tensors of the universal bundles U_i^\vee \otimes U_j.
+        """
+
+        #This is only relevant on the unstable locus
+        HN = list(filter(lambda hntype: hntype != [d] ,self.all_harder_narasimhan_types(d,theta,denominator=denominator)))
+
+        # We compute the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type
+        weights = list(map(lambda hntype: -sum([(slope(hntype[s],theta,denominator=denominator) - slope(hntype[t],theta,denominator=denominator))*self.euler_form(hntype[s],hntype[t]) for s in range(len(hntype)-1) for t in range(s+1,len(hntype))] ), HN))
+
+        # We compute the maximum weight of the tensors of the universal bundles U_i^\vee \otimes U_j
+        tensorWeights = list(map(lambda hntype: slope(hntype[0],theta,denominator=denominator) - slope(hntype[-1],theta,denominator=denominator), HN))
+
+        return all([weights[i] > tensorWeights[i] for i in range(len(HN))])
+    
+    """
+    Hochschild cohomology
+    """
+
+    def first_hochschild_cohomology(self):
+        """
+        Compute the dimension of the first Hochschild cohomology
+
+        This uses the formula of Happel from Proposition 1.6 in [MR1035222].
+
+        EXAMPLES:
+
+        The first Hochschild cohomology of the $m$th generalized Kronecker quiver
+        is the dimension of $\mathrm{PGL}_{m+1}$::
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(3).first_hochschild_cohomology()
+            8
+
+        The first Hochschild cohomology vanishes if and only if the quiver is a tree::
+
+            sage: from quiver import *
+            sage: SubspaceQuiver(7).first_hochschild_cohomology()
+            0
+
+        """
+        assert self.is_acyclic()
+        # TODO think about including G into the Quiver class
+        G = Graph(self.adjacency_matrix(), format="adjacency_matrix")
+
+        # see Proposition 1.6 in Happel's "Hochschild cohomology of finite-dimensional algebras"
+        return 1 - self.number_of_vertices() + sum(len(G.all_paths(a[0], a[1], use_multiedges=True)) for a in G.edges())
 
 
     """
