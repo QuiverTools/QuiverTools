@@ -474,7 +474,7 @@ class Quiver:
             subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
             return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
         
-        if (algorithm == "schofield_iterative"):
+        elif (algorithm == "schofield_iterative"):
             genSubdims = self.all_generic_subdimension_vectors(d, algorithm="iterative")
             genSubdims = list(filter(lambda e: e != zeroVector, genSubdims))
             return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
