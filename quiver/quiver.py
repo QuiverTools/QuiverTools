@@ -791,17 +791,9 @@ class Quiver:
 
         """
 
-        n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])
-        
-        if algorithm == "schofield":
-            subdimensionsBiggerSlope = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) > slope(d,theta), all_subdimension_vectors(d)))
-            return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsBiggerSlope])
-        
-        elif (algorithm == "schofield_iterative"): # This is much faster, even for small d
-            genSubdims = self.all_generic_subdimension_vectors(d)
-            genSubdims = list(filter(lambda e: e != zeroVector, genSubdims))
-            return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
+        genSubdims = self.all_generic_subdimension_vectors(d)
+        genSubdims = list(filter(lambda e: e != self.zero_vector(), genSubdims))
+        return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
         
     def all_semistable_subdimension_vectors_helper(self, d, theta):
         """Computes the list of indexes of all semistable subdimension vectors of d."""
