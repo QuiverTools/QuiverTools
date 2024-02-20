@@ -393,6 +393,7 @@ class Quiver:
     
     def partial_order(self,d,e):
         """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
+        # TODO: Think of a better name.
 
         """
         EXAMPLES
@@ -492,6 +493,8 @@ class Quiver:
         
     def all_generic_subdimension_vectors_helper(self, d):
         """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
+        # TODO: Return both list of indexes and list of vectors. Sometimes we need one thing and sometimes the other.
+
         subdims = all_subdimension_vectors(d)            
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
@@ -558,6 +561,7 @@ class Quiver:
 
     def all_slope_decreasing_sequences(self, d, theta, denominator=sum):
         """Returns the list of all sequences (d^1,...,d^l) which sum to d such that slope(d^1) > ... > slope(d^l)"""
+        # TODO: This should be private.
 
         """
         EXAMPLES
@@ -600,6 +604,7 @@ class Quiver:
             raise NotImplementedError()
 
         """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d."""
+        # Thm. 5.4 in Markus's paper is actually a result of Schofield. So the algorithm should bear his name, if any.
 
         """
         EXAMPLES:
@@ -910,7 +915,7 @@ class Quiver:
                     allHNtypes = [[d]] + allHNtypes
                 return allHNtypes
         
-        elif (algorithm=="schofield_new"):
+        elif (algorithm=="schofield_new"): # This is much faster. Keep this implementation and ditch the other one.
             subdimensions = all_subdimension_vectors(d)
             subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
             N = len(subdimensions)
@@ -940,6 +945,7 @@ class Quiver:
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
         """Checks if there is a theta-stable representation of dimension vector d."""
+        # TODO: Implement analogous version of has_semistable_representation()
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
         """Question: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper."""
@@ -1027,6 +1033,8 @@ class Quiver:
     
     def is_luna_type(self, tau, theta):
         """Checks if tau is a Luna type for theta."""
+        # TODO: Implement analogous version of is_harder_narasimhan_type()
+        
         n = self.number_of_vertices()
         zeroVector = vector([0 for i in range(n)])
         d = sum([sum(dn[1])*dn[0] for dn in tau])
@@ -1040,6 +1048,7 @@ class Quiver:
 
     def all_luna_types(self, d, theta):
         """Returns the unordered list of all Luna types of d for theta."""
+        # TODO: Implement analogous version of all_harder_narasimhan_types()
 
         """A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
         * m_1d^1 + ... + m_sd^s = d
@@ -1108,6 +1117,8 @@ class Quiver:
 
         def partial_luna_types(d):
             """Returns the list of sets of the form {(d^1,n_1),...,(d^s,n_s)} such that all d^k are distinct."""
+            # TODO: This should be private
+
             subdimensions = all_subdimension_vectors(d)
             # We consider just those subdimension vectors which are not zero or d, whose slope equals the slope of d and which admit a stable representation
             subdimensions = list(filter(lambda e: (e != zeroVector) and (e != d) and (slope(e,theta,denominator=sum) == slope(d,theta,denominator=sum)) and self.has_stable_representation(e,theta,algorithm="schofield"), subdimensions))
@@ -1150,6 +1161,7 @@ class Quiver:
 
     def semistable_equals_stable(self, d, theta, algorithm="schofield"):
         """Checks if every theta-semistable representation of dimension vector d is theta-stable"""
+        # TODO: Optimization?
 
         """
         EXAMPLES
