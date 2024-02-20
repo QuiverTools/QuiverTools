@@ -494,7 +494,7 @@ class Quiver:
         elif (algorithm == "iterative"):
             return (e in self.all_generic_subdimension_vectors(d, algorithm="iterative"))
         
-    def all_generic_subdimension_vectors_helper(self, d):
+    def __all_generic_subdimension_vectors_helper(self, d):
         """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
         # TODO: Return both list of indexes and list of vectors. Sometimes we need one thing and sometimes the other.
 
@@ -673,7 +673,7 @@ class Quiver:
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
-        genIndexes, genSubdims = self.all_generic_subdimension_vectors_helper(d)
+        genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
         return list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genIndexes[j]))]), range(1,N)))
     
     def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="schofield_iterative"):
