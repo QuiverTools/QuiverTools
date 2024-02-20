@@ -494,6 +494,14 @@ class Quiver:
         elif (algorithm == "iterative"):
             return (e in self.all_generic_subdimension_vectors(d, algorithm="iterative"))
         
+        elif (algorithm == "new"):
+            if e == d:
+                return True
+            else:
+                # List of all generic subdimension vectors of e
+                genSubdims = self.all_generic_subdimension_vectors(e)
+                return all([self.euler_form(f, d-e) >= 0 for f in genSubdims])
+        
     def __all_generic_subdimension_vectors_helper(self, d):
         """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
 
