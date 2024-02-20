@@ -709,6 +709,8 @@ class Quiver:
         [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
 
         """
+        assert (self.number_of_vertices() == d.length())
+        assert all([di >= 0 for di in d.list()]) 
 
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
         N = len(genSubdims)
