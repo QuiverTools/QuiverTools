@@ -496,7 +496,40 @@ class Quiver:
         
     def __all_generic_subdimension_vectors_helper(self, d):
         """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
-        # TODO: Return both list of indexes and list of vectors. Sometimes we need one thing and sometimes the other.
+
+        """
+        EXAMPLES
+
+        sage: from quiver import *
+        sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
+        sage: i, s = Q._Quiver__all_generic_subdimension_vectors_helper(d)
+        sage: i, s
+        ([[0],
+        [0, 1],
+        [0, 2],
+        [0, 1, 3],
+        [0, 1, 4],
+        [0, 2, 5],
+        [0, 1, 3, 6],
+        [0, 1, 3, 7],
+        [0, 1, 4, 8],
+        [0, 1, 3, 6, 9],
+        [0, 1, 3, 7, 10],
+        [0, 1, 3, 6, 7, 9, 11]],
+        [[(0, 0)],
+        [(0, 0), (0, 1)],
+        [(0, 0), (1, 0)],
+        [(0, 0), (0, 1), (0, 2)],
+        [(0, 0), (0, 1), (1, 1)],
+        [(0, 0), (1, 0), (2, 0)],
+        [(0, 0), (0, 1), (0, 2), (0, 3)],
+        [(0, 0), (0, 1), (0, 2), (1, 2)],
+        [(0, 0), (0, 1), (1, 1), (2, 1)],
+        [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3)],
+        [(0, 0), (0, 1), (0, 2), (1, 2), (2, 2)],
+        [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]])
+
+        """
 
         subdims = all_subdimension_vectors(d)            
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
