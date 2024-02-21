@@ -811,9 +811,15 @@ class Quiver:
         return sstIndexes, sstSubdims
     
     def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="schofield_iterative"):
-        """Checks if dstar is a HN type. Peforms the check of semistability according to algorithm"""
-        # TODO: Optimize this!
-        # We can first generate the list of all semistable subdimension vectors and then check if all steps of dstar are in that list.
+        r""""Checks if dstar is a HN type.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+        - ``theta``: vector of Ints
+        - ``denominator``: function which takes a vector of Ints and returns an Int
+
+        OUTPUT: statement truth value as Bool
+        """
 
         d = sum(dstar)
         if (d == self.zero_vector()):
