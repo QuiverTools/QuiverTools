@@ -847,8 +847,18 @@ class Quiver:
             semistable = all([e in sstSubdims for e in dstar])
             return (slopeDecreasing and semistable)
 
-    def codimension_of_harder_narasimhan_stratum(self,dstar):
-        """Computes the codimension of the HN stratum R_{d^*}^HN inside R_d."""
+    def codimension_of_harder_narasimhan_stratum(self, dstar):
+        r""""Computes the codimension of the HN stratum of dstar inside the representation variety.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+
+        OUTPUT: codimension as Int
+        """
+        # TODO: Think about best way of implementing this.
+        # Shall we make this depend on theta as well and assert that dstar is a HN type? Because it might give nonsense results if dstar isn't a HN type. The downside is that checking for being a HN type is slow and sometimes it is unnecessary as it's guaranteed anyways.
+        # Suggestion for solution: Make this version of the implementation private (fast; for internal use) and a public version which checks for being a HN type.
+
         """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
 
         """
