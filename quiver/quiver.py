@@ -724,6 +724,7 @@ class Quiver:
     
     def generic_hom_vanishing(self, a, b):
         # TODO figure out a way to implement this.
+        # I (= Hans) think this can be done using AR translation.
         raise NotImplementedError()
 
     def is_left_orthogonal(self, a, b):
