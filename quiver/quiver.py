@@ -821,6 +821,10 @@ class Quiver:
         OUTPUT: statement truth value as Bool
         """
 
+        n = self.number_of_vertices()
+        assert (all([e.length() == n for e in dstar]) and theta.length() == n)
+        assert all([denominator(self.simple_root(i)) > 0 for i in range(1,n+1)])
+
         d = sum(dstar)
         if (d == self.zero_vector()):
             return (dstar == [self.zero_vector()])
