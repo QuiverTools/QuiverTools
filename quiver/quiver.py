@@ -789,15 +789,15 @@ class Quiver:
         
     def __all_semistable_subdimension_vectors_helper(self, d, theta):
         """Computes the list of indexes of all semistable subdimension vectors of d."""
-        # TODO: Make this slightly easier to use!
-        # Instead of returning just the list of indexes, return both indexes and the vectors. That doesn't make a huge difference in performance but is easier to use in most cases.
 
         subdims = all_subdimension_vectors(d)            
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
-        return list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genIndexes[j]))]), range(1,N)))
+        sstIndexes =  list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genIndexes[j]))]), range(1,N)))
+        sstSubdims = [subdims[j] for j in sstIndexes]
+        return sstIndexes, sstSubdims
     
     def is_harder_narasimhan_type(self, dstar, theta, denominator=sum, algorithm="schofield_iterative"):
         """Checks if dstar is a HN type. Peforms the check of semistability according to algorithm"""
@@ -1027,9 +1027,8 @@ class Quiver:
         subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
         N = len(subdimensions)
 
-        # semistables is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
-        # semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta), range(1,N)))
-        semistables = self.__all_semistable_subdimension_vectors_helper(d, theta)
+        # sstIndexes is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
+        sstIndexes, sstSubdims = self.__all_semistable_subdimension_vectors_helper(d, theta)
 
         # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
         idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
@@ -1038,7 +1037,7 @@ class Quiver:
 
         for j in range(1,N):
             # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
-            sstSub = list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), semistables))
+            sstSub = list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), sstIndexes))
             # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
             hn[j] = [[i]+fstar for i in sstSub for fstar in list(filter(lambda fstar: fstar == [] or slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[idx_diff(j, i)]))]
 
