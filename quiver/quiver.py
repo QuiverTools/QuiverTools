@@ -790,6 +790,16 @@ class Quiver:
     def __all_semistable_subdimension_vectors_helper(self, d, theta):
         """Computes the list of indexes of all semistable subdimension vectors of d."""
 
+        """
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
+        sage: i, s = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta); i, s
+        ([1, 2, 3, 4, 5, 6, 10],
+        [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
+
+        """
+
         subdims = all_subdimension_vectors(d)            
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
