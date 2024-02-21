@@ -821,6 +821,19 @@ class Quiver:
         OUTPUT: statement truth value as Bool
         """
 
+        """
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta)
+        sage: all([Q.is_harder_narasimhan_type(dstar, theta) for dstar in hn])
+        True
+        sage: dstar = [vector([1,0]), vector([1,0]), vector([0,3])]
+        sage: Q.is_harder_narasimhan_type(dstar, theta)
+        False
+
+        """
+
         n = self.number_of_vertices()
         assert (all([e.length() == n for e in dstar]) and theta.length() == n)
         assert all([denominator(self.simple_root(i)) > 0 for i in range(1,n+1)])
