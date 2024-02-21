@@ -815,11 +815,9 @@ class Quiver:
         # TODO: Optimize this!
         # We can first generate the list of all semistable subdimension vectors and then check if all steps of dstar are in that list.
 
-        n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])
         d = sum(dstar)
-        if (d == zeroVector):
-            return (dstar == [zeroVector])
+        if (d == self.zero_vector()):
+            return (dstar == [self.zero_vector()])
         else:
             slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
             semistable = all([self.has_semistable_representation(d,theta) for e in dstar])
