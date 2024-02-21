@@ -787,9 +787,8 @@ class Quiver:
         genSubdims = list(filter(lambda e: e != self.zero_vector(), genSubdims))
         return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
         
-    def all_semistable_subdimension_vectors_helper(self, d, theta):
+    def __all_semistable_subdimension_vectors_helper(self, d, theta):
         """Computes the list of indexes of all semistable subdimension vectors of d."""
-        # TODO: Make this private
         # TODO: Make this slightly easier to use!
         # Instead of returning just the list of indexes, return both indexes and the vectors. That doesn't make a huge difference in performance but is easier to use in most cases.
 
@@ -1030,7 +1029,7 @@ class Quiver:
 
         # semistables is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
         # semistables = list(filter(lambda j: self.has_semistable_representation(subdimensions[j], theta), range(1,N)))
-        semistables = self.all_semistable_subdimension_vectors_helper(d, theta)
+        semistables = self.__all_semistable_subdimension_vectors_helper(d, theta)
 
         # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
         idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
