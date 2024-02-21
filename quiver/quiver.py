@@ -819,9 +819,15 @@ class Quiver:
         if (d == self.zero_vector()):
             return (dstar == [self.zero_vector()])
         else:
-            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
-            semistable = all([self.has_semistable_representation(d,theta) for e in dstar])
-            return (slopeDecreasing and semistable)
+            if (algorithm == "schofield_iterative"):
+                slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
+                semistable = all([self.has_semistable_representation(d,theta) for e in dstar])
+                return (slopeDecreasing and semistable)
+            elif (algorithm == "new"):
+                sstIndexes, sstSubdims = self.__all_semistable_subdimension_vectors_helper(d, theta)
+                slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
+                semistable = all([e in sstSubdims for e in dstar])
+                return (slopeDecreasing and semistable)
 
     def codimension_of_harder_narasimhan_stratum(self,dstar):
         """Computes the codimension of the HN stratum R_{d^*}^HN inside R_d."""
