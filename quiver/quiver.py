@@ -885,6 +885,23 @@ class Quiver:
         return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
     
     def codimension_unstable_locus(self, d, theta):
+        r""""Computes the codimension of the unstable locus inside the representation variety.
+        
+        INPUT:
+        - ``d``: vector of Ints
+        - ``theta``: vector of Ints
+
+        OUTPUT: codimension as Int
+        """
+
+        """"
+        EXAMPLES:
+
+        """
+
+        n = self.number_of_vertices()
+        assert (d.length() == n and theta.length() == n)
+
         hn = list(filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types(d, theta, denominator=sum)))
         return min([self.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn])
 
@@ -902,7 +919,7 @@ class Quiver:
         - ``theta``: vector of Ints
         - ``denominator``: function which takes a vector of Ints and returns an Int
 
-        OUTPUT: List of list of vectors of Ints
+        OUTPUT: list of list of vectors of Ints
         """
 
         """A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
