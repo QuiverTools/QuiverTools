@@ -1213,6 +1213,10 @@ class Quiver:
 
         """
 
+        assert (algorithm in ["schofield", "king", "al"])
+        n = self.number_of_vertices()
+        assert (d.length() == n and theta.length() == n)
+
         if (algorithm == "schofield"):
             if d == self.zero_vector():
                 return False
