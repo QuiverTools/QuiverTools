@@ -1301,18 +1301,16 @@ class Quiver:
         return stIndexes, stSubdims
 
     
-    def is_luna_type(self, tau, theta):
+    def is_luna_type(self, tau, theta, denominator=sum):
         """Checks if tau is a Luna type for theta."""
         # TODO: Implement analogous version of is_harder_narasimhan_type()
         
-        n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])
         d = sum([sum(dn[1])*dn[0] for dn in tau])
-        if (d == zeroVector):
-            return (tau == [tuple([zeroVector,[1]])])
+        if (d == self.zero_vector()):
+            return (tau == [tuple([self.zero_vector(),[1]])])
         else:
             dstar = [dn[0] for dn in tau]
-            equalSlope = all([slope(e,theta,denominator=sum) == slope(d,theta,denominator=sum) for e in dstar])
+            equalSlope = all([slope(e,theta,denominator=denominator) == slope(d,theta,denominator=denominator) for e in dstar])
             semistable = all([self.has_stable_representation(e,theta,algorithm="schofield") for e in dstar])
             return (equalSlope and semistable)
 
@@ -1492,7 +1490,7 @@ class Quiver:
             hn = self.all_harder_narasimhan_types(d,theta)
             if [d] in hn:
                 hn.remove([d])
-            return all([self.codimension_of_harder_narasimhan_stratum(dstar) >= 2 for dstar in hn])
+            return all([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) >= 2 for dstar in hn])
         else:
             raise NotImplementedError()
 
