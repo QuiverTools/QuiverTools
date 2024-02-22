@@ -1302,17 +1302,25 @@ class Quiver:
 
     
     def is_luna_type(self, tau, theta, denominator=sum):
-        """Checks if tau is a Luna type for theta."""
+        r""""Checks if tau is a Luna type for theta.
+        
+        INPUT:
+        - ``tau``: list of tuples
+        - ``theta``: vector of Ints
+        - ``denominator``: Int-valued function
+        """
         # TODO: Implement analogous version of is_harder_narasimhan_type()
+
+        n = self.number_of_vertices()
+        assert (theta.length() == n and all([dn[0].length() == n for dn in tau]))
         
         d = sum([sum(dn[1])*dn[0] for dn in tau])
         if (d == self.zero_vector()):
             return (tau == [tuple([self.zero_vector(),[1]])])
         else:
             dstar = [dn[0] for dn in tau]
-            equalSlope = all([slope(e,theta,denominator=denominator) == slope(d,theta,denominator=denominator) for e in dstar])
-            semistable = all([self.has_stable_representation(e,theta,algorithm="schofield") for e in dstar])
-            return (equalSlope and semistable)
+            stIndexes, stSubdims = self.__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
+            return all([e in stSubdims for e in dstar]) # Note that in particular the zero vector must not lie in dstar
 
     def all_luna_types(self, d, theta):
         """Returns the unordered list of all Luna types of d for theta."""
