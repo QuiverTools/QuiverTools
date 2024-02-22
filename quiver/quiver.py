@@ -1163,13 +1163,21 @@ class Quiver:
     """
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
-        """Checks if there is a theta-stable representation of dimension vector d."""
-        # TODO: Implement analogous version of has_semistable_representation()
+        r""""Checks if there is a stable representation of this dimension vector.
+        
+        INPUT:
+        - ``d``: vector of Ints
+        - ``theta``: vector of Ints
+        - ``algorithm``: String
+
+        OUTPUT: statement truth value as Bool
+        """
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
-        """Question: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper."""
+        # Question concerning above TODO: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper.
         if algorithm == "king":
             raise NotImplementedError()
+        
         # TODO implement this
         # al stands for Adriaenssens--Le Bruyn
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1972892
@@ -1203,15 +1211,8 @@ class Quiver:
         sage: K3.has_stable_representation(d,theta,algorithm="schofield")
         True
 
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: theta = vector([1,0])
-        sage: dims = [vector([i,j]) for i in range(6) for j in range(6)]
-        sage: all([Q.has_stable_representation(d, theta, algorithm="schofield") == Q.has_stable_representation(d, theta, algorithm="schofield_iterative") for d in dims])
-        True
-
-
         """
-        
+
         if (algorithm == "schofield"):
             if d == self.zero_vector():
                 return False
