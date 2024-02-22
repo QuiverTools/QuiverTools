@@ -1172,6 +1172,11 @@ class Quiver:
 
         OUTPUT: statement truth value as Bool
         """
+
+        assert (algorithm in ["schofield", "king", "al"])
+        n = self.number_of_vertices()
+        assert (d.length() == n and theta.length() == n)
+        
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
         # Question concerning above TODO: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper.
@@ -1212,10 +1217,6 @@ class Quiver:
         True
 
         """
-
-        assert (algorithm in ["schofield", "king", "al"])
-        n = self.number_of_vertices()
-        assert (d.length() == n and theta.length() == n)
 
         if (algorithm == "schofield"):
             if d == self.zero_vector():
