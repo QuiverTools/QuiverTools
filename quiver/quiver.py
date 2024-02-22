@@ -964,7 +964,7 @@ class Quiver:
         # and the strata will be different!
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
         # Can the above TODO go?
-        
+
         r""""Returns the list of all HN types.
         
         INPUT:
@@ -1211,22 +1211,13 @@ class Quiver:
 
 
         """
-        n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])
         
         if (algorithm == "schofield"):
-            if d == zeroVector:
-                return False
-            else:
-                subdimensionsSlopeNoLess = list(filter(lambda e: e != zeroVector and e != d and slope(e,theta) >= slope(d,theta), all_subdimension_vectors(d)))
-                return not any([self.is_generic_subdimension_vector(e,d) for e in subdimensionsSlopeNoLess])
-            
-        if (algorithm == "schofield_iterative"):
-            if d == zeroVector:
+            if d == self.zero_vector():
                 return False
             else:
                 genSubdims = self.all_generic_subdimension_vectors(d)
-                genSubdims = list(filter(lambda e: e != zeroVector and e != d, genSubdims))
+                genSubdims = list(filter(lambda e: e != self.zero_vector() and e != d, genSubdims))
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
 
