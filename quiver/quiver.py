@@ -1259,6 +1259,36 @@ class Quiver:
     
     def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
         """Computes the list of all stable subdimension vectors of d which have the same slope as d."""
+
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,0])
+        sage: all_subdimension_vectors(d)
+        [(0, 0),
+        (0, 1),
+        (0, 2),
+        (0, 3),
+        (1, 0),
+        (1, 1),
+        (1, 2),
+        (1, 3),
+        (2, 0),
+        (2, 1),
+        (2, 2),
+        (2, 3),
+        (3, 0),
+        (3, 1),
+        (3, 2),
+        (3, 3)]
+        sage: i, s = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
+        sage: i
+        [4, 11, 15]
+        sage: s
+        [(1, 1), (2, 2), (3, 3)]
+
+        """
         
         subdims = all_subdimension_vectors(d)            
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
