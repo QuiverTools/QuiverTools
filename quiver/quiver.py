@@ -846,18 +846,55 @@ class Quiver:
             slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
             semistable = all([e in sstSubdims for e in dstar])
             return (slopeDecreasing and semistable)
-
-    def codimension_of_harder_narasimhan_stratum(self, dstar):
-        r""""Computes the codimension of the HN stratum of dstar inside the representation variety.
+        
+    def __codimension_of_harder_narasimhan_stratum_helper(self, dstar):
+        """Computes the codimension of the HN stratum of dstar inside the representation variety.
         
         INPUT:
         - ``dstar``: list of vectors of Ints
 
         OUTPUT: codimension as Int
         """
-        # TODO: Think about best way of implementing this.
-        # Shall we make this depend on theta as well and assert that dstar is a HN type? Because it might give nonsense results if dstar isn't a HN type. The downside is that checking for being a HN type is slow and sometimes it is unnecessary as it's guaranteed anyways.
-        # Suggestion for solution: Make this version of the implementation private (fast; for internal use) and a public version which checks for being a HN type.
+        # This is private because it doesn't check if dstar is a HN type. This is fast but yields nonsense, if dstar is not a HN type.
+
+        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+
+        """
+        EXAMPLES
+
+        The 3-Kronecker quiver
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
+        [[(1, 0), (1, 1), (0, 2)],
+        [(1, 0), (1, 2), (0, 1)],
+        [(1, 0), (1, 3)],
+        [(1, 1), (1, 2)],
+        [(2, 0), (0, 3)],
+        [(2, 1), (0, 2)],
+        [(2, 2), (0, 1)],
+        [(2, 3)]]
+        sage: [Q._Quiver__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn]
+        [12, 9, 8, 3, 18, 10, 4, 0]
+
+        """
+        
+        n = self.number_of_vertices()
+        assert all([e.length() == n for e in dstar])
+
+        s = len(dstar)
+        return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
+
+    def codimension_of_harder_narasimhan_stratum(self, dstar, theta, denominator=sum):
+        r""""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+        - ``theta``: vector of Ints
+        - ``denominator``: function which takes a vector of Ints and returns an Int
+
+        OUTPUT: codimension as Int
+        """
 
         """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
 
@@ -880,9 +917,10 @@ class Quiver:
         [12, 9, 8, 3, 18, 10, 4, 0]
 
         """
+        assert theta.length() == self.number_of_vertices()
+        assert self.is_harder_narasimhan_type(dstar, theta, denominator=denominator)
 
-        s = len(dstar)
-        return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
+        return self.__codimension_of_harder_narasimhan_stratum_helper(dstar)
     
     def codimension_unstable_locus(self, d, theta):
         r""""Computes the codimension of the unstable locus inside the representation variety.
@@ -914,7 +952,9 @@ class Quiver:
         assert (d.length() == n and theta.length() == n)
 
         hn = list(filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types(d, theta, denominator=sum)))
-        return min([self.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn])
+        # Note that while the HN types and strata depend on the denominator, the list of all their codimensions does not.
+
+        return min([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn])
 
 
     def all_harder_narasimhan_types(self, d, theta, denominator=sum):
@@ -923,6 +963,8 @@ class Quiver:
         # denominator default being sum is total dimension, there are variations possible
         # and the strata will be different!
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
+        # Can the above TODO go?
+        
         r""""Returns the list of all HN types.
         
         INPUT:
