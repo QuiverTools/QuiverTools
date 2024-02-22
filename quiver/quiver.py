@@ -896,6 +896,17 @@ class Quiver:
 
         """"
         EXAMPLES:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: Q.codimension_unstable_locus(d, theta)
+        3
+        sage: Q, d = ThreeVertexQuiver(1,6,1), vector([1,6,6])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: Q.codimension_unstable_locus(d, theta)
+        1
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
+        sage: Q.codimension_unstable_locus(d, theta)
+        0
 
         """
 
