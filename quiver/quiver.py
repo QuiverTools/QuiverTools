@@ -1257,6 +1257,20 @@ class Quiver:
         theta = self.canonical_stability_parameter(d)
         return self.has_stable_representation(d, theta)
     
+    def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
+        """Computes the list of all stable subdimension vectors of d which have the same slope as d."""
+        
+        subdims = all_subdimension_vectors(d)            
+        subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+        N = len(subdims)
+        genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
+        slopeIndexes = list(filter(lambda j: slope(subdims[j], theta, denominator=denominator) == slope(d, theta, denominator=denominator), range(1,N)))
+        stIndexes =  list(filter(lambda j: all([slope(subdims[i], theta, denominator=denominator) <= slope(subdims[j], theta, denominator=denominator) for i in list(filter(lambda i: i != 0, genIndexes[j]))]), slopeIndexes))
+        stSubdims = [subdims[j] for j in stIndexes]
+        return stIndexes, stSubdims
+
+    
     def is_luna_type(self, tau, theta):
         """Checks if tau is a Luna type for theta."""
         # TODO: Implement analogous version of is_harder_narasimhan_type()
