@@ -1176,7 +1176,7 @@ class Quiver:
         assert (algorithm in ["schofield", "king", "al"])
         n = self.number_of_vertices()
         assert (d.length() == n and theta.length() == n)
-        
+
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
         # Question concerning above TODO: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper.
@@ -1227,10 +1227,18 @@ class Quiver:
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
 
-    def is_schur_root(self,d):
-        """Checks if d is a Schur root for the given quiver, i.e. a dimension vector which admits a Schurian representation."""
+    def is_schur_root(self, d):
+        r""""Checks if d is a Schur root.
+        
+        INPUT:
+        - ``d``: vector of Ints
 
-        """By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
+        OUTPUT: statement truth value as Bool
+        """
+
+        """
+        A Schur root is a dimension vector which admits a Schurian representation, i.e. a representation whose endomorphism ring is k. It's necessarily indecomposable.
+        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
 
         """
         EXAMPLES:
@@ -1244,8 +1252,10 @@ class Quiver:
 
         """
 
+        assert d.length() == self.number_of_vertices()
+
         theta = self.canonical_stability_parameter(d)
-        return self.has_stable_representation(d,theta)
+        return self.has_stable_representation(d, theta)
     
     def is_luna_type(self, tau, theta):
         """Checks if tau is a Luna type for theta."""
