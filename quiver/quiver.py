@@ -1440,22 +1440,26 @@ class Quiver:
                 return allLunaTypes
             
         elif (algorithm == "new"):
-
             if (d == self.zero_vector()):
                 return [tuple([self.zero_vector(),[1]])]
             else: 
+                subdims = all_subdimension_vectors(d)
+                subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+                N = len(subdims)
+                # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
+                slopeIndexes = list(filter(lambda j: slope(subdims[j], theta, denominator=denominator) == slope(d, theta, denominator=denominator), range(1,N)))
                 # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
                 # They're in deglex order by the way the helper function works.
                 stIndexes, stSubdims = self.__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
-                N = len(stSubdims)
                 # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
-                idx_diff = (lambda j, i: stSubdims.index(stSubdims[j]-stSubdims[i]))
+                idx_diff = (lambda j, i: subdims.index(subdims[j]-subdims[i]))
 
-                # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
-                partialLunaTypes = [[tuple([j,1])] for j in range(N)]
+                # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
+                partialLunaTypes = [[] for j in range(N)]
                 for j in range(N):
-                    stSub = list(filter(lambda i: is_subdimension_vector(stSubdims[i], stSubdims[j]), range(j)))
-                    for i in stSub:
+                    e = subdims[j]
+                    slopeSub = list(filter(lambda i: is_subdimension_vector(subdims[i], e) and i != j, slopeIndexes))
+                    for i in slopeSub:
                         smaller = partialLunaTypes[idx_diff(j,i)]
                         for tau in smaller:
                             # Check if e := stSubdims[i] occurs as a dimension vector in tau.
@@ -1474,10 +1478,18 @@ class Quiver:
                             # We sort it, because it's supposed to be unordered
                             tau.sort()
                             # If tau isn't already contained, then we add it
-                            if tau not in partialLunaTypes:
-                                partialLunaTypes = partialLunaTypes + [tau]
+                            if tau not in partialLunaTypes[j]:
+                                partialLunaTypes[j] = partialLunaTypes[j] + [tau]
+                    if (e in stSubdims):
+                        partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([e,1])]]
             
-                partial = partialLunaTypes[0]
+                partial = partialLunaTypes[N-1]
+                allLunaTypes = []
+                for tau in partial:
+                    listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
+                    Prod = cartesian_product(listOfPartitions).list()
+                    allLunaTypes = allLunaTypes + [[tuple([subdims[tau[i][0]],p[i]]) for i in range(len(tau))] for p in Prod]
+                return allLunaTypes
 
 
     def semistable_equals_stable(self, d, theta, algorithm="schofield"):
