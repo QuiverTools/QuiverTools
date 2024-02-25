@@ -1327,7 +1327,7 @@ class Quiver:
             stIndexes, stSubdims = self.__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
             return all([e in stSubdims for e in dstar]) # Note that in particular the zero vector must not lie in dstar
 
-    def all_luna_types(self, d, theta):
+    def all_luna_types(self, d, theta, denominator=sum, algorithm="old"):
         """Returns the unordered list of all Luna types of d for theta."""
         # TODO: Implement analogous version of all_harder_narasimhan_types()
 
@@ -1392,52 +1392,93 @@ class Quiver:
          [((1, 1, 1, 1, 1, 1, 2), [1])]]
 
         """
+        if (algorithm == "old"):
+            n = self.number_of_vertices()
+            zeroVector = vector([0 for i in range(n)])
 
-        n = self.number_of_vertices()
-        zeroVector = vector([0 for i in range(n)])
+            def partial_luna_types(d):
+                """Returns the list of sets of the form {(d^1,n_1),...,(d^s,n_s)} such that all d^k are distinct, d^1+...+d^s = d and the slopes of all d^k are the same."""
 
-        def partial_luna_types(d):
-            """Returns the list of sets of the form {(d^1,n_1),...,(d^s,n_s)} such that all d^k are distinct, d^1+...+d^s = d and the slopes of all d^k are the same."""
+                subdimensions = all_subdimension_vectors(d)
+                # We consider just those subdimension vectors which are not zero or d, whose slope equals the slope of d and which admit a stable representation
+                subdimensions = list(filter(lambda e: (e != zeroVector) and (e != d) and (slope(e,theta,denominator=sum) == slope(d,theta,denominator=sum)) and self.has_stable_representation(e,theta,algorithm="schofield"), subdimensions))
+                # Create all partial Luna types
+                partialLunaTypes = []
+                for e in subdimensions:
+                    smallerPartialLunaTypes = partial_luna_types(d-e)
+                    for tau in smallerPartialLunaTypes:
+                        # Check if e occurs as a dimension vector in tau.
+                        # If so, say of the form (e,n) then remove this occurrence and add (e,n+1)
+                        # If not, then add (e,1)
+                        occurs = False
+                        for dn in tau:
+                            if (dn[0] == e):
+                                # We remove dn from tau and add the tuple (e,dn[1]+1) instead
+                                tau.remove(dn)
+                                tau.append(tuple([e,dn[1]+1]))
+                                occurs = True
+                        if (not occurs):
+                            tau.append(tuple([e,1]))
+                        # Now tau is a Luna type of d the desired form
+                        # We sort it, because it's supposed to be unordered
+                        tau = sorted(tau)
+                        if tau not in partialLunaTypes:
+                            partialLunaTypes = partialLunaTypes + [tau]
+                if self.has_stable_representation(d,theta,algorithm="schofield"):
+                    partialLunaTypes = partialLunaTypes + [[tuple([d,1])]]
+                return partialLunaTypes
 
-            subdimensions = all_subdimension_vectors(d)
-            # We consider just those subdimension vectors which are not zero or d, whose slope equals the slope of d and which admit a stable representation
-            subdimensions = list(filter(lambda e: (e != zeroVector) and (e != d) and (slope(e,theta,denominator=sum) == slope(d,theta,denominator=sum)) and self.has_stable_representation(e,theta,algorithm="schofield"), subdimensions))
-            # Create all partial Luna types
-            partialLunaTypes = []
-            for e in subdimensions:
-                smallerPartialLunaTypes = partial_luna_types(d-e)
-                for tau in smallerPartialLunaTypes:
-                    # Check if e occurs as a dimension vector in tau.
-                    # If so, say of the form (e,n) then remove this occurrence and add (e,n+1)
-                    # If not, then add (e,1)
-                    occurs = False
-                    for dn in tau:
-                        if (dn[0] == e):
-                            # We remove dn from tau and add the tuple (e,dn[1]+1) instead
-                            tau.remove(dn)
-                            tau.append(tuple([e,dn[1]+1]))
-                            occurs = True
-                    if (not occurs):
-                        tau.append(tuple([e,1]))
-                    # Now tau is a Luna type of d the desired form
-                    # We sort it, because it's supposed to be unordered
-                    tau = sorted(tau)
-                    if tau not in partialLunaTypes:
-                        partialLunaTypes = partialLunaTypes + [tau]
-            if self.has_stable_representation(d,theta,algorithm="schofield"):
-                partialLunaTypes = partialLunaTypes + [[tuple([d,1])]]
-            return partialLunaTypes
+            if (d == zeroVector):
+                return [tuple([zeroVector,[1]])]
+            else:
+                partialLunaTypes = partial_luna_types(d)
+                allLunaTypes = []
+                for tau in partialLunaTypes:
+                    listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
+                    Prod = cartesian_product(listOfPartitions).list()
+                    allLunaTypes = allLunaTypes + [[tuple([tau[i][0],p[i]]) for i in range(len(tau))] for p in Prod]
+                return allLunaTypes
+            
+        elif (algorithm == "new"):
 
-        if (d == zeroVector):
-            return [tuple([zeroVector,[1]])]
-        else:
-            partialLunaTypes = partial_luna_types(d)
-            allLunaTypes = []
-            for tau in partialLunaTypes:
-                listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
-                Prod = cartesian_product(listOfPartitions).list()
-                allLunaTypes = allLunaTypes + [[tuple([tau[i][0],p[i]]) for i in range(len(tau))] for p in Prod]
-            return allLunaTypes
+            if (d == self.zero_vector()):
+                return [tuple([self.zero_vector(),[1]])]
+            else: 
+                # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
+                # They're in deglex order by the way the helper function works.
+                stIndexes, stSubdims = self.__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
+                N = len(stSubdims)
+                # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
+                idx_diff = (lambda j, i: stSubdims.index(stSubdims[j]-stSubdims[i]))
+
+                # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
+                partialLunaTypes = [[tuple([j,1])] for j in range(N)]
+                for j in range(N):
+                    stSub = list(filter(lambda i: is_subdimension_vector(stSubdims[i], stSubdims[j]), range(j)))
+                    for i in stSub:
+                        smaller = partialLunaTypes[idx_diff(j,i)]
+                        for tau in smaller:
+                            # Check if e := stSubdims[i] occurs as a dimension vector in tau.
+                            # If so, say of the form (e,n) then remove this occurrence and add (e,n+1)
+                            # If not, then add (e,1)
+                            occurs = False
+                            for dn in tau:
+                                if (dn[0] == i):
+                                    # We remove dn from tau and add the tuple (e,dn[1]+1) instead
+                                    tau.remove(dn)
+                                    tau.append(tuple([i,dn[1]+1]))
+                                    occurs = True
+                            if (not occurs):
+                                tau.append(tuple([i,1]))
+                            # Now tau is a Luna type of d the desired form
+                            # We sort it, because it's supposed to be unordered
+                            tau.sort()
+                            # If tau isn't already contained, then we add it
+                            if tau not in partialLunaTypes:
+                                partialLunaTypes = partialLunaTypes + [tau]
+            
+                partial = partialLunaTypes[0]
+
 
     def semistable_equals_stable(self, d, theta, algorithm="schofield"):
         """Checks if every theta-semistable representation of dimension vector d is theta-stable"""
