@@ -1308,8 +1308,13 @@ class Quiver:
         - ``tau``: list of tuples
         - ``theta``: vector of Ints
         - ``denominator``: Int-valued function
+
+        OUTPUT: statement truth value as Bool
         """
-        # TODO: Implement analogous version of is_harder_narasimhan_type()
+        """
+        EXAMPLES:
+
+        """
 
         n = self.number_of_vertices()
         assert (theta.length() == n and all([dn[0].length() == n for dn in tau]))
@@ -1392,7 +1397,7 @@ class Quiver:
         zeroVector = vector([0 for i in range(n)])
 
         def partial_luna_types(d):
-            """Returns the list of sets of the form {(d^1,n_1),...,(d^s,n_s)} such that all d^k are distinct."""
+            """Returns the list of sets of the form {(d^1,n_1),...,(d^s,n_s)} such that all d^k are distinct, d^1+...+d^s = d and the slopes of all d^k are the same."""
             # TODO: This should be private
 
             subdimensions = all_subdimension_vectors(d)
