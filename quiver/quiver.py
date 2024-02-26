@@ -1337,8 +1337,15 @@ class Quiver:
             return all([e in stSubdims for e in dstar]) # Note that in particular the zero vector must not lie in dstar
 
     def all_luna_types(self, d, theta, denominator=sum):
-        """Returns the unordered list of all Luna types of d for theta."""
-        # TODO: Implement analogous version of all_harder_narasimhan_types()
+        r"""Returns the unordered list of all Luna types of d for theta.
+        
+        INPUT:
+        - ``d``: vector of Ints
+        - ``theta``: vector of Ints
+        - ``denominator``: Int-valued function
+
+        OUTPUT: list of tuples containing Int-vector and Int 
+        """
 
         """A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
         * m_1d^1 + ... + m_sd^s = d
