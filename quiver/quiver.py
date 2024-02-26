@@ -1,6 +1,7 @@
 # from sage.matrix.constructor import matrix
 from concurrent.futures.process import _threads_wakeups
 from sage.all import *
+import copy
 
 class Quiver:
 
@@ -1295,8 +1296,11 @@ class Quiver:
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
+        # slopeIndexes is the list of subdimension vectors of d of the same slope as d (in particular != 0)
         slopeIndexes = list(filter(lambda j: slope(subdims[j], theta, denominator=denominator) == slope(d, theta, denominator=denominator), range(1,N)))
-        stIndexes =  list(filter(lambda j: all([slope(subdims[i], theta, denominator=denominator) <= slope(subdims[j], theta, denominator=denominator) for i in list(filter(lambda i: i != 0, genIndexes[j]))]), slopeIndexes))
+        # stIndexes contains all j for which subdims[j] is stable
+        # e = subdims[j] is stable if for all generic subdimension vectors f = subdims[i] of e, it holds that slope(f) < slope(e)
+        stIndexes =  list(filter(lambda j: all([slope(subdims[i], theta, denominator=denominator) < slope(subdims[j], theta, denominator=denominator) for i in list(filter(lambda i: i != 0 and i != j, genIndexes[j]))]), slopeIndexes))
         stSubdims = [subdims[j] for j in stIndexes]
         return stIndexes, stSubdims
 
@@ -1457,31 +1461,32 @@ class Quiver:
                 # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
                 partialLunaTypes = [[] for j in range(N)]
                 for j in range(N):
-                    e = subdims[j]
-                    slopeSub = list(filter(lambda i: is_subdimension_vector(subdims[i], e) and i != j, slopeIndexes))
+                    slopeSub = list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]) and i != j, slopeIndexes))
                     for i in slopeSub:
                         smaller = partialLunaTypes[idx_diff(j,i)]
                         for tau in smaller:
-                            # Check if e := stSubdims[i] occurs as a dimension vector in tau.
-                            # If so, say of the form (e,n) then remove this occurrence and add (e,n+1)
-                            # If not, then add (e,1)
+                            # Check if f := stSubdims[i] occurs as a dimension vector in tau.
+                            # If so, say of the form (f,n) then remove this occurrence and add (f,n+1)
+                            # If not, then add (f,1)
+                            tauNew = copy.deepcopy(tau)
                             occurs = False
-                            for dn in tau:
+                            for dn in tauNew:
                                 if (dn[0] == i):
                                     # We remove dn from tau and add the tuple (e,dn[1]+1) instead
-                                    tau.remove(dn)
-                                    tau.append(tuple([i,dn[1]+1]))
+                                    tauNew.remove(dn)
+                                    tauNew.append(tuple([i,dn[1]+1]))
                                     occurs = True
                             if (not occurs):
-                                tau.append(tuple([i,1]))
-                            # Now tau is a Luna type of d the desired form
+                                tauNew.append(tuple([i,1]))
+                            # Now tauNew is a Luna type of e := subdims[j] the desired form
                             # We sort it, because it's supposed to be unordered
-                            tau.sort()
+                            tauNew.sort()
                             # If tau isn't already contained, then we add it
-                            if tau not in partialLunaTypes[j]:
-                                partialLunaTypes[j] = partialLunaTypes[j] + [tau]
-                    if (e in stSubdims):
-                        partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([e,1])]]
+                            if tauNew not in partialLunaTypes[j]:
+                                partialLunaTypes[j] = partialLunaTypes[j] + [tauNew]
+                    if (j in stIndexes):
+                        # If e = subdims[j] is stable then (e,1) is also a Luna type.
+                        partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([j,1])]]
             
                 partial = partialLunaTypes[N-1]
                 allLunaTypes = []
