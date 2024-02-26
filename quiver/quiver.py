@@ -1541,6 +1541,15 @@ class Quiver:
         True
         sage: Q.is_amply_stable(d,-theta)
         False
+
+        A three vertex example from the rigidity paper:
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(1,6,1)
+        sage: d = vector([1,6,6])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: Q.is_amply_stable(d, theta)
+        False
+
         """
 
         if self.semistable_equals_stable(d, theta):
@@ -1559,6 +1568,25 @@ class Quiver:
         """
 
         """We call d strongly amply stable for theta if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
+
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
+        sage: Q.is_strongly_amply_stable(d, theta)
+        True
+
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(5,1,1)
+        sage: d = vector([4,1,4])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: Q.is_amply_stable(d, theta)
+        True
+        sage: Q.is_strongly_amply_stable(d, theta)
+        False
+
+        """
 
         # All subdimension vectors of d
         es = all_subdimension_vectors(d)
