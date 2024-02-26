@@ -1336,7 +1336,7 @@ class Quiver:
             stIndexes, stSubdims = self.__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
             return all([e in stSubdims for e in dstar]) # Note that in particular the zero vector must not lie in dstar
 
-    def all_luna_types(self, d, theta, denominator=sum, algorithm="old"):
+    def all_luna_types(self, d, theta, denominator=sum):
         """Returns the unordered list of all Luna types of d for theta."""
         # TODO: Implement analogous version of all_harder_narasimhan_types()
 
