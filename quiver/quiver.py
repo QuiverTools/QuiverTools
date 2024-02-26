@@ -1692,7 +1692,7 @@ class Quiver:
 
 
     def does_rigidity_inequality_hold(self,d,theta,denominator=sum):
-        """
+        r"""
         Returns True if the rigidity inequality holds for d and theta, i.e. if the weights of the 1-PS lambda on $\det(N_{S/R}|_Z)$ for each HN type are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$.
         """
 
@@ -1712,7 +1712,7 @@ class Quiver:
     """
 
     def first_hochschild_cohomology(self):
-        """
+        r"""
         Compute the dimension of the first Hochschild cohomology
 
         This uses the formula of Happel from Proposition 1.6 in [MR1035222].
