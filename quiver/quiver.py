@@ -52,14 +52,14 @@ class Quiver:
         return self.adjacency_matrix() + self.adjacency_matrix().transpose() - diagonal_matrix(self.adjacency_matrix().diagonal())
 
     def number_of_vertices(self):
-        r""""Returns the amount of vertices that the quiver has.
+        r"""Returns the amount of vertices that the quiver has.
 
         OUTPUT: The number of vertices as an Int.
         """
         return self.adjacency_matrix().nrows()
 
     def number_of_arrows(self):
-        r""""Returns the number of arrows that the quiver has.
+        r"""Returns the number of arrows that the quiver has.
 
         OUTPUT: The number of arrows as an Int.
 
@@ -68,7 +68,7 @@ class Quiver:
         return thin * self.adjacency_matrix() * thin
 
     def is_acyclic(self):
-        r""""Returns the truth value of wether the quiver is acyclic.
+        r"""Returns the truth value of wether the quiver is acyclic.
 
         OUTPUT: Statement truth value as Bool.
         """
@@ -79,7 +79,7 @@ class Quiver:
         return (A**n == zero_matrix(ZZ, n))
 
     def is_connected(self):
-        r""""Returns whether the underlying graph of the quiver is connected or not.
+        r"""Returns whether the underlying graph of the quiver is connected or not.
 
         OUTPUT: Statement truth value as Bool.
 
@@ -473,7 +473,7 @@ class Quiver:
     # taken from code/snippets/canonical.sage
     # TODO still need testing code from there
     def is_generic_subdimension_vector(self, e, d):
-        r""""Checks if e is a generic subdimension vector of d.
+        r"""Checks if e is a generic subdimension vector of d.
         
         INPUT:
         - ``e``: vector of Ints
@@ -671,7 +671,7 @@ class Quiver:
         return genIndexes, genSubdims
 
     def all_generic_subdimension_vectors(self, d):
-        r""""Returns the list of all generic subdimension vectors of d.
+        r"""Returns the list of all generic subdimension vectors of d.
         
         INPUT:
         - ``d``: vector of Ints
@@ -740,7 +740,7 @@ class Quiver:
     """
 
     def has_semistable_representation(self, d, theta):
-        r""""Checks if there is a theta-semistable representation of dimension vector d.
+        r"""Checks if there is a theta-semistable representation of dimension vector d.
         
         INPUT:
         - ``d``: vector of Ints
@@ -812,7 +812,7 @@ class Quiver:
         return sstIndexes, sstSubdims
     
     def is_harder_narasimhan_type(self, dstar, theta, denominator=sum):
-        r""""Checks if dstar is a HN type.
+        r"""Checks if dstar is a HN type.
         
         INPUT:
         - ``dstar``: list of vectors of Ints
@@ -887,7 +887,7 @@ class Quiver:
         return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, theta, denominator=sum):
-        r""""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
+        r"""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
         
         INPUT:
         - ``dstar``: list of vectors of Ints
@@ -924,7 +924,7 @@ class Quiver:
         return self.__codimension_of_harder_narasimhan_stratum_helper(dstar)
     
     def codimension_unstable_locus(self, d, theta):
-        r""""Computes the codimension of the unstable locus inside the representation variety.
+        r"""Computes the codimension of the unstable locus inside the representation variety.
         
         INPUT:
         - ``d``: vector of Ints
@@ -966,7 +966,7 @@ class Quiver:
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
         # Can the above TODO go?
 
-        r""""Returns the list of all HN types.
+        r"""Returns the list of all HN types.
         
         INPUT:
         - ``d``: vector of Ints
@@ -1164,7 +1164,7 @@ class Quiver:
     """
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
-        r""""Checks if there is a stable representation of this dimension vector.
+        r"""Checks if there is a stable representation of this dimension vector.
         
         INPUT:
         - ``d``: vector of Ints
@@ -1229,7 +1229,7 @@ class Quiver:
 
 
     def is_schur_root(self, d):
-        r""""Checks if d is a Schur root.
+        r"""Checks if d is a Schur root.
         
         INPUT:
         - ``d``: vector of Ints
@@ -1311,7 +1311,7 @@ class Quiver:
 
     
     def is_luna_type(self, tau, theta, denominator=sum):
-        r""""Checks if tau is a Luna type for theta.
+        r"""Checks if tau is a Luna type for theta.
         
         INPUT:
         - ``tau``: list of tuples
@@ -1369,6 +1369,12 @@ class Quiver:
 
         """
         EXAMPLES
+
+        The Kronecker quiver:
+        sage: from quiver import *
+        sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
+        sage: Q.all_luna_types(d, theta)
+        [[((1, 1), [3])], [((1, 1), [2, 1])], [((1, 1), [1, 1, 1])]]
 
         The 3-Kronecker quiver:
         sage: from quiver import *
