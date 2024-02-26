@@ -1461,8 +1461,8 @@ class Quiver:
                 # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
                 partialLunaTypes = [[] for j in range(N)]
                 for j in range(N):
-                    slopeSub = list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]) and i != j, slopeIndexes))
-                    for i in slopeSub:
+                    stSub = list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]) and i != j, stIndexes))
+                    for i in stSub:
                         smaller = partialLunaTypes[idx_diff(j,i)]
                         for tau in smaller:
                             # Check if f := stSubdims[i] occurs as a dimension vector in tau.
