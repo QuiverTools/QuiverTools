@@ -1549,15 +1549,23 @@ class Quiver:
             raise NotImplementedError()
 
     def is_strongly_amply_stable(self, d, theta):
-        """Checks if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
+        r"""Checks if d is strongly amply stable for theta.
+        
+        INPUT:
+        - ``d``: vector of Ints
+        - ``theta``: vector of Ints
+
+        OUTPUT: statement truth value as Bool
+        """
+
+        """We call d strongly amply stable for theta if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
 
         # All subdimension vectors of d
         es = all_subdimension_vectors(d)
-        # Remove (0,...,0)
-        zeroVector = vector([0 for i in range(d.length())])
-        es.remove(zeroVector)
+        # Remove 0 and d
+        es.remove(self.zero_vector())
         es.remove(d)
-        # All of them which have bigger slope
+        # Filter out those of bigger slope
         es = list(filter(lambda e: slope(e,theta) >= slope(d,theta), es))
         return all([self.euler_form(e,d-e) <= -2 for e in es])
 
