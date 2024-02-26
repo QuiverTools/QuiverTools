@@ -1468,12 +1468,19 @@ class Quiver:
             return allLunaTypes
 
 
-    def semistable_equals_stable(self, d, theta, algorithm="schofield"):
-        """Checks if every theta-semistable representation of dimension vector d is theta-stable"""
-        # TODO: Optimization?
+    def semistable_equals_stable(self, d, theta):
+        r"""Checks if every theta-semistable representation of dimension vector d is theta-stable
+        
+        INPUT:
+        - ``d``: vector of Ints
+        - ``theta``: vector of Ints
+
+        OUTPUT: statement truth value as Bool
+        """
 
         """
-        EXAMPLES
+        EXAMPLES:
+
         The 3-Kronecker quiver:
         sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
@@ -1492,7 +1499,7 @@ class Quiver:
         if is_coprime_for_stability_parameter(d,theta):
             return True
         else:
-            # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation might be a bit slower
+            # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation is a bit slower
             if not self.has_semistable_representation(d,theta):
                 return True
             else:
