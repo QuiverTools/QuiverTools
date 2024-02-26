@@ -1515,14 +1515,23 @@ class Quiver:
 
     # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
     def is_amply_stable(self, d, theta):
-        """Checks if d is amply stable for theta, which by definition means that the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
+        r"""Checks if d is amply stable for theta.
+        
+        INPUT:
+        - ``d``: vector of Ints
+        - ``theta``: vector of Ints
+
+        OUTPUT: statement truth value as Bool
+        """
+        
+        """By definition, d is theta-amply stable if the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
 
         # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
         # But can we find a necessary and sufficient condition?
         # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
 
         """
-        EXAMPLES
+        EXAMPLES:
 
         sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
@@ -1534,11 +1543,8 @@ class Quiver:
         False
         """
 
-        if self.semistable_equals_stable(d,theta):
-            hn = self.all_harder_narasimhan_types(d,theta)
-            if [d] in hn:
-                hn.remove([d])
-            return all([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) >= 2 for dstar in hn])
+        if self.semistable_equals_stable(d, theta):
+            return self.codimension_unstable_locus(d, theta) >= 2
         else:
             raise NotImplementedError()
 
