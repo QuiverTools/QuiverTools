@@ -1289,6 +1289,11 @@ class Quiver:
         sage: s
         [(1, 1), (2, 2), (3, 3)]
 
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(2), vector([3,3]), vector([1,-1])
+        sage: Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
+        ([4], [(1, 1)])
+
         """
         
         subdims = all_subdimension_vectors(d)            
