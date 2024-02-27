@@ -779,6 +779,27 @@ class Quiver:
 
         """"According to Thm. 5.4 in Schofield's 'General representations of quivers', we have ext(a,b) = max{-<c,b> | c gen. subdimension vector of a}."""
 
+        """
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(1)
+        sage: R = [Q.simple_root(1), Q.simple_root(2), vector([1,1])]
+        sage: for a in R:
+        ....:     for b in R:
+        ....:         print('ext('+str(a)+','+str(b)+') = '+str(Q.generic_ext(a,b)))
+        ....: 
+        ext((1, 0),(1, 0)) = 0
+        ext((1, 0),(0, 1)) = 1
+        ext((1, 0),(1, 1)) = 0
+        ext((0, 1),(1, 0)) = 0
+        ext((0, 1),(0, 1)) = 0
+        ext((0, 1),(1, 1)) = 0
+        ext((1, 1),(1, 0)) = 0
+        ext((1, 1),(0, 1)) = 0
+        ext((1, 1),(1, 1)) = 0
+
+        """
+
         genSubdims = self.all_generic_subdimension_vectors(a)
         return max([-self.euler_form(c,b) for c in genSubdims])
     
@@ -793,6 +814,27 @@ class Quiver:
         """
 
         """There is a non-empty open subset U of R(Q,a) x R(Q,b) such that dim Ext(M,N) = ext(a,b), i.e. is minimal, for all (M,N) in U. Therefore dim Hom(M,N) = <a,b> + dim Ext(M,N) is minimal and therefore hom(a,b) = <a,b> + ext(a,b)."""
+
+        """
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(1)
+        sage: R = [Q.simple_root(1), Q.simple_root(2), vector([1,1])]
+        sage: for a in R:
+        ....:     for b in R:
+        ....:         print('hom('+str(a)+','+str(b)+') = '+str(Q.generic_hom(a,b)))
+        ....: 
+        hom((1, 0),(1, 0)) = 1
+        hom((1, 0),(0, 1)) = 0
+        hom((1, 0),(1, 1)) = 0
+        hom((0, 1),(1, 0)) = 0
+        hom((0, 1),(0, 1)) = 1
+        hom((0, 1),(1, 1)) = 1
+        hom((1, 1),(1, 0)) = 1
+        hom((1, 1),(0, 1)) = 0
+        hom((1, 1),(1, 1)) = 1
+
+        """
 
         return self.euler_form(a,b) + self.generic_ext(a,b)
 
