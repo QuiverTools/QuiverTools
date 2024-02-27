@@ -1327,6 +1327,22 @@ class Quiver:
         sage: Q.is_schur_root(d)
         True
 
+        Examples from Derksen--Weyman's book (Ex. 11.1.4):
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(1,1,1)
+        sage: a = vector([1,1,2])
+        sage: Q.is_schur_root(a)
+        True
+        sage: b = vector([1,2,1])
+        sage: Q.is_schur_root(b)
+        False
+        sage: c = vector([1,1,1])
+        sage: Q.is_schur_root(c)
+        True
+        sage: d = vector([2,2,2])
+        sage: Q.is_schur_root(d)
+        False
+
         """
 
         assert d.length() == self.number_of_vertices()
