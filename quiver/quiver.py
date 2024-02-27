@@ -298,7 +298,53 @@ class Quiver:
         else:
             name = None
         return Quiver(A, name)
+    
+    def framed_quiver(self, f):
+        r"""Returns the framed quiver with framing vector f.
+        
+        INPUT:
+        - ``f``: vector of Ints
 
+        OUTPUT: Quiver object
+        """
+
+        """The framed quiver has one additional vertex 0 and f_i many arrows from 0 to i."""
+        
+        n = self.number_of_vertices()
+        assert (f.length() == n)
+        A =  self.adjacency_matrix()
+        # Adjacency matrix of the framed quiver looks like this (block shape):
+        # [[0 f]
+        #  [0 A]]
+        # Add f as a first row
+        A = A.insert_row(0,f)
+        # Add a zero column
+        A = A.transpose().insert_row(0,ZeroVector(n+1)).transpose()
+        return Quiver(A)
+    
+    def coframed_quiver(self, f):
+        r"""Returns the coframed quiver with framing vector f.
+
+        INPUT:
+        - ``f``: vector of Ints
+
+        OUTPUT: Quiver object
+        """
+
+        """The coframed quiver has one additional vertex oo and f_i many arrows from i to oo."""
+
+        n = self.number_of_vertices()
+        assert (f.length() == n)
+        A =  self.adjacency_matrix()
+        # Adjacency matrix of the coframed quiver looks like this (block shape):
+        # [[A f]
+        #  [0 0]]
+        # Add f as a last column
+        A = A.transpose().insert_row(n,f).transpose()
+        # Add a zero row as last row
+        A = A.insert_row(n,ZeroVector(n+1))
+        return Quiver(A)
+    
 
     """
     Dimension vectors and stability conditions
@@ -384,6 +430,7 @@ class Quiver:
         return eulerFormCondition and connected
     
     # The fundamental domain again! Which implementation should we keep?
+    # The latter is lacking the connectivity condition on the support of d
     
     def in_fundamental_domain(self, d):
         # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
