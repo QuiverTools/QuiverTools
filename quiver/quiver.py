@@ -766,14 +766,43 @@ class Quiver:
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
         N = len(genSubdims)
         return genSubdims[N-1]
+    
+    def generic_ext(self, a, b):
+        r"""Computes ext(a,b).
+        
+        INPUT:
+        - ``a``: vector of Ints
+        - ``b``: vector of Ints
+
+        OUTPUT: Int
+        """
+
+        """"According to Thm. 5.4 in Schofield's 'General representations of quivers', we have ext(a,b) = max{-<c,b> | c gen. subdimension vector of a}."""
+
+        genSubdims = self.all_generic_subdimension_vectors(a)
+        return max([-self.euler_form(c,b) for c in genSubdims])
+    
+    def generic_hom(self, a, b):
+        r"""Computes hom(a,b).
+
+        INPUT:
+        - ``a``: vector of Ints
+        - ``b``: vector of Ints
+
+        OUTPUT: Int
+        """
+
+        """There is a non-empty open subset U of R(Q,a) x R(Q,b) such that dim Ext(M,N) = ext(a,b), i.e. is minimal, for all (M,N) in U. Therefore dim Hom(M,N) = <a,b> + dim Ext(M,N) is minimal and therefore hom(a,b) = <a,b> + ext(a,b)."""
+
+        return self.euler_form(a,b) + self.generic_ext(a,b)
 
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a+b)
     
     def generic_hom_vanishing(self, a, b):
         # TODO figure out a way to implement this.
-        # I (= Hans) think this can be done using AR translation.
-        raise NotImplementedError()
+        # How about this:
+        return self.generic_hom(a,b) == 0
 
     def is_left_orthogonal(self, a, b):
         if self.generic_ext_vanishing(a, b):
