@@ -1913,6 +1913,19 @@ class Quiver:
             return [d]
         
         elif algorithm == "recursive_new":
+            """
+            EXAMPLES:
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver()
+            sage: d = vector([4,6])
+            sage: Q.canonical_decomposition(d, algorithm="recursive_new")
+            [(2, 3), (2, 3)]
+            sage: ds = [vector([i,j]) for i in range(7) for j in range(7)]
+            sage: all([Q.canonical_decomposition(d, algorithm="recursive") == Q.canonical_decomposition(d, algorithm="recursive_new") for d in ds])
+            True
+
+            """
             subdims = all_subdimension_vectors(d)            
             subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
             N = len(subdims)
