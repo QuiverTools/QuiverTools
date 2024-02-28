@@ -1923,7 +1923,7 @@ class Quiver:
 
             def canon_indexes(j):
                 """Computes for j in range(N) the list of indexes in subdims for the canonical decomposition of subdims[j]"""
-                for i in genIndexes[j]:
+                for i in list(filter(lambda i: i != 0 and i != j, genIndexes[j])):
                     k = idx_diff(j,i)
                     if k in genIndexes[j]:
                         return canon_indexes(i) + canon_indexes(k)
