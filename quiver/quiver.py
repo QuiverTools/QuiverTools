@@ -1766,7 +1766,7 @@ class Quiver:
         # this is implemented in code/snippets/canonical.sage, so include it here
         """
         There's something wrong with this implementation. I ran it on the Kronecker quiver and it gave the following:
-        
+
         sage: from quiver import *
         sage: Q = KroneckerQuiver()
         sage: d = vector([2,4])
@@ -1832,6 +1832,22 @@ class Quiver:
         # (they do cite the wrong Schofield preprint though...)
         elif algorithm == "schofield-2":
             raise NotImplementedError()
+        
+        elif algorithm == "recursive":
+            """I'm not sure if one of the Schofield algorithms is meant to be this one. But here's a very simple recursion which computes the canonical decomposition. It is based on Lem. 11.2.5 in Derksen--Weyman's book (a.k.a. 'the book with typos'):
+        
+            Lemma: Let a be a dimension vector and a = b+c a decomposition such that ext(b,c) = ext(c,b) = 0. If b = b_1 + ... + b_s and c = c_1 + ... + c_t are the canonical decompositions, then a = b_1 + ... + b_s + c_1 + ... + c_t is the canonical decomposition of a.
+
+            If no non-trivial decomposition a = b+c as above exists, then a is a Schur root and therefore its own canonical decomposition.
+            """
+
+            genSubdims = self.all_generic_subdimension_vectors(d)
+            genSubdims = list(filter(lambda e: e != self.zero_vector() and e != d, genSubdims))
+            for e in genSubdims:
+                if d-e in genSubdims:
+                    return self.canonical_decomposition(e, algorithm="recursive") + self.canonical_decomposition(d-e, algorithm="recursive")
+            return [d]
+    
 
     
     """
