@@ -1911,7 +1911,25 @@ class Quiver:
                 if d-e in genSubdims:
                     return self.canonical_decomposition(e, algorithm="recursive") + self.canonical_decomposition(d-e, algorithm="recursive")
             return [d]
-    
+        
+        elif algorithm == "recursive_new":
+            subdims = all_subdimension_vectors(d)            
+            subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+            N = len(subdims)
+
+            idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
+
+            genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
+
+            def canon_indexes(j):
+                """Computes for j in range(N) the list of indexes in subdims for the canonical decomposition of subdims[j]"""
+                for i in genIndexes[j]:
+                    k = idx_diff(j,i)
+                    if k in genIndexes[j]:
+                        return canon_indexes(i) + canon_indexes(k)
+                return [j]
+            
+            return [subdims[i] for i in canon_indexes(N-1)]   
 
     
     """
