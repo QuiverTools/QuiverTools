@@ -1838,7 +1838,71 @@ class Quiver:
         
             Lemma: Let a be a dimension vector and a = b+c a decomposition such that ext(b,c) = ext(c,b) = 0. If b = b_1 + ... + b_s and c = c_1 + ... + c_t are the canonical decompositions, then a = b_1 + ... + b_s + c_1 + ... + c_t is the canonical decomposition of a.
 
-            If no non-trivial decomposition a = b+c as above exists, then a is a Schur root and therefore its own canonical decomposition.
+            If no non-trivial decomposition a = b+c as above exists, then a is a Schur root and therefore its own canonical decomposition. This is because a generic representation has no subdimension vector b which admits both a subrepresentation and a quotient representation. So a generic representation is indecomposable, which implies that a is a Schur root.
+            """
+
+            """
+            EXAMPLES:
+
+            sage: Q = KroneckerQuiver()
+            sage: ds = [vector([i,j]) for i in range(7) for j in range(7)]
+            sage: can = [Q.canonical_decomposition(d, algorithm="recursive") for d in ds]
+            sage: for i in range(7):
+            ....:     for j in range(7):
+            ....:         print('Canonical decomp. of '+str(ds[7*i+j])+' is: '+str(can[7*i+j]))
+            ....: 
+            Canonical decomp. of (0, 0) is: [(0, 0)]
+            Canonical decomp. of (0, 1) is: [(0, 1)]
+            Canonical decomp. of (0, 2) is: [(0, 1), (0, 1)]
+            Canonical decomp. of (0, 3) is: [(0, 1), (0, 1), (0, 1)]
+            Canonical decomp. of (0, 4) is: [(0, 1), (0, 1), (0, 1), (0, 1)]
+            Canonical decomp. of (0, 5) is: [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
+            Canonical decomp. of (0, 6) is: [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
+            Canonical decomp. of (1, 0) is: [(1, 0)]
+            Canonical decomp. of (1, 1) is: [(1, 1)]
+            Canonical decomp. of (1, 2) is: [(1, 2)]
+            Canonical decomp. of (1, 3) is: [(0, 1), (1, 2)]
+            Canonical decomp. of (1, 4) is: [(0, 1), (0, 1), (1, 2)]
+            Canonical decomp. of (1, 5) is: [(0, 1), (0, 1), (0, 1), (1, 2)]
+            Canonical decomp. of (1, 6) is: [(0, 1), (0, 1), (0, 1), (0, 1), (1, 2)]
+            Canonical decomp. of (2, 0) is: [(1, 0), (1, 0)]
+            Canonical decomp. of (2, 1) is: [(2, 1)]
+            Canonical decomp. of (2, 2) is: [(1, 1), (1, 1)]
+            Canonical decomp. of (2, 3) is: [(2, 3)]
+            Canonical decomp. of (2, 4) is: [(1, 2), (1, 2)]
+            Canonical decomp. of (2, 5) is: [(0, 1), (1, 2), (1, 2)]
+            Canonical decomp. of (2, 6) is: [(0, 1), (0, 1), (1, 2), (1, 2)]
+            Canonical decomp. of (3, 0) is: [(1, 0), (1, 0), (1, 0)]
+            Canonical decomp. of (3, 1) is: [(1, 0), (2, 1)]
+            Canonical decomp. of (3, 2) is: [(3, 2)]
+            Canonical decomp. of (3, 3) is: [(1, 1), (1, 1), (1, 1)]
+            Canonical decomp. of (3, 4) is: [(3, 4)]
+            Canonical decomp. of (3, 5) is: [(1, 2), (2, 3)]
+            Canonical decomp. of (3, 6) is: [(1, 2), (1, 2), (1, 2)]
+            Canonical decomp. of (4, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0)]
+            Canonical decomp. of (4, 1) is: [(1, 0), (1, 0), (2, 1)]
+            Canonical decomp. of (4, 2) is: [(2, 1), (2, 1)]
+            Canonical decomp. of (4, 3) is: [(4, 3)]
+            Canonical decomp. of (4, 4) is: [(1, 1), (1, 1), (1, 1), (1, 1)]
+            Canonical decomp. of (4, 5) is: [(4, 5)]
+            Canonical decomp. of (4, 6) is: [(2, 3), (2, 3)]
+            Canonical decomp. of (5, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
+            Canonical decomp. of (5, 1) is: [(1, 0), (1, 0), (1, 0), (2, 1)]
+            Canonical decomp. of (5, 2) is: [(1, 0), (2, 1), (2, 1)]
+            Canonical decomp. of (5, 3) is: [(2, 1), (3, 2)]
+            Canonical decomp. of (5, 4) is: [(5, 4)]
+            Canonical decomp. of (5, 5) is: [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+            Canonical decomp. of (5, 6) is: [(5, 6)]
+            Canonical decomp. of (6, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
+            Canonical decomp. of (6, 1) is: [(1, 0), (1, 0), (1, 0), (1, 0), (2, 1)]
+            Canonical decomp. of (6, 2) is: [(1, 0), (1, 0), (2, 1), (2, 1)]
+            Canonical decomp. of (6, 3) is: [(2, 1), (2, 1), (2, 1)]
+            Canonical decomp. of (6, 4) is: [(3, 2), (3, 2)]
+            Canonical decomp. of (6, 5) is: [(6, 5)]
+            Canonical decomp. of (6, 6) is: [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+            sage:
+            sage: all([all([Q.generic_ext(s[i],s[j]) + Q.generic_ext(s[j],s[i]) == 0 for i in range(len(s)) for j in range(i)]) for s in can])
+            True
             """
 
             genSubdims = self.all_generic_subdimension_vectors(d)
