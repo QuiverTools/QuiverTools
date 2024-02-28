@@ -1764,6 +1764,17 @@ class Quiver:
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1930979
         # this is implemented in code/snippets/canonical.sage, so include it here
+        """
+        There's something wrong with this implementation. I ran it on the Kronecker quiver and it gave the following:
+        
+        sage: from quiver import *
+        sage: Q = KroneckerQuiver()
+        sage: d = vector([2,4])
+        sage: Q.canonical_decomposition(d, algorithm="derksen-weyman")
+        [[2, (1, 0)], [4, (0, 1)]]
+
+        But clearly a general representation of dimension vector (2,4) isn't semisimple. It is instead a direct sum of two copies of the preprojective representation of dimension vector (1,2). So the canonical decomposition should be [2, (1, 2)].
+        """
         if algorithm == "derksen-weyman":
             decomposition = [[d[i],self.simple_root(i+1)] for i in range(self.number_of_vertices())]
             while True:
