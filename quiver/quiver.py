@@ -1917,7 +1917,7 @@ class Quiver:
             subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
             N = len(subdims)
 
-            idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
+            idx_diff = (lambda j, i: subdims.index(subdims[j]-subdims[i]))
 
             genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
 
