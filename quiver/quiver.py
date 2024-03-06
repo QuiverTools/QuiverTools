@@ -416,6 +416,19 @@ class Quiver:
         """A root is called real if its Tits form equals 1."""
         assert x.length() == self.number_of_vertices()
         return self.tits_form(x) == 1
+    
+    def is_imaginary_root(self, x):
+        r"""Checks if x is an imaginary root of the underlying diagram of the quiver.
+        
+        INPUT:
+        - ``x``: vector of Ints
+
+        OUTPUT: statement truth value as bool
+        """
+
+        """A root is called real if its Tits form is non-positive."""
+        assert x.length() == self.number_of_vertices()
+        return (x != self.zero_vector() and self.tits_form(x) <= 0)
 
     def support(self, d):
         """Returns the full subquiver supported on {i in Q_0 | d_i > 0}."""
