@@ -517,6 +517,7 @@ class Quiver:
         """
 
         n = self.number_of_vertices()
+        assert (d.length() == n and all([di >= 0 for di in list(d)]))
         # This is the condition <d,e_i> + <e_i,d> <= 0 for all i in Q_0
         eulerFormCondition = all([(self.euler_form(d,self.simple_root(i+1)) + self.euler_form(self.simple_root(i+1),d) <= 0) for i in range(n)])
         # Check if the support is connected
