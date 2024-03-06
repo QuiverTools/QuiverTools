@@ -391,6 +391,19 @@ class Quiver:
         ei[i-1] = 1
         return ei
     
+    def is_root(self, x):
+        r"""Checks if x is a root of the underlying diagram of the quiver.
+        
+        INPUT:
+        - ``x``: vector of Ints
+
+        OUTPUT: statement truth value as bool
+        """
+
+        """A root is a non-zero vector in Z^n such that the Tits form of x is <= 1."""
+        assert x.length() == self.number_of_vertices()
+        return (x != self.zero_vector() and self.tits_form(x) <= 1)
+    
     def is_real_root(self, d):
         return self.euler_form(d,d) == 1
 
