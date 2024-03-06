@@ -266,11 +266,25 @@ class Quiver:
         - ``x`` -- vector of integers
         - ``y`` -- vector of integers
 
-        OUTPUT: the multiplication of ``x * self.adjacency_matrix() * y`` as an  Int.
+        OUTPUT: the multiplication of ``x * self.euler_matrix() * y`` as an  Int.
 
         """
         assert (x.length() == self.number_of_vertices() and y.length() == self.number_of_vertices())
         return x * self.euler_matrix() * y
+    
+    def symmetrized_euler_form(self, x, y):
+        r"""The symmetrization of the Euler bilinear form of the quiver.
+
+        INPUT:
+        - ``x`` -- vector of integers
+        - ``y`` -- vector of integers
+
+        OUTPUT: the sum ``self.euler_form(x,y) + self.euler_form(y,x)`` as an  Int.
+
+        """
+        assert (x.length() == self.number_of_vertices() and y.length() == self.number_of_vertices())
+        return self.euler_form(x, y) + self.euler_form(y, x)
+
 
     """
     Constructing new quivers out of old
