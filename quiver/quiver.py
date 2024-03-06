@@ -285,6 +285,18 @@ class Quiver:
         assert (x.length() == self.number_of_vertices() and y.length() == self.number_of_vertices())
         return self.euler_form(x, y) + self.euler_form(y, x)
 
+    def tits_form(self, x):
+        r"""The Tits quadratic form of the quiver.
+
+        INPUT:
+        - ``x`` -- vector of integers
+
+        OUTPUT: the expression ``self.euler_form(x,x)`` as an  Int.
+
+        """
+        assert x.length() == self.number_of_vertices()
+        return self.euler_form(x, x)
+
 
     """
     Constructing new quivers out of old
