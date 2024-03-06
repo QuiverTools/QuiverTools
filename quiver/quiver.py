@@ -377,13 +377,31 @@ class Quiver:
     """
 
     def zero_vector(self):
+        r"""Returns the zero vector.
+        
+        OUTPUT: vector of Ints
+        """
         return vector([0 for i in range(self.number_of_vertices())])
 
     def thin_dimension_vector(self):
+        r"""Returns the thin dimension vector.
+        
+        OUTPUT: vector of Ints
+        """
+
+        """The thin dimension vector is [1,...,1]."""
         return vector([1 for i in range(self.number_of_vertices())])
 
     def simple_root(self, i):
-        """Returns the simple root e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i."""
+        r"""Returns the simple root at the vertex.
+        
+        INPUT:
+        - ``i``: Int
+
+        OUTPUT: vector of Ints
+        """
+
+        """The simple root at i is e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i."""
         n = self.number_of_vertices()
         # Our convention is that vertices are numbered 1,...,n
         assert (i >= 1 and i <= n)
@@ -431,7 +449,15 @@ class Quiver:
         return (x != self.zero_vector() and self.tits_form(x) <= 0)
 
     def support(self, d):
-        """Returns the full subquiver supported on {i in Q_0 | d_i > 0}."""
+        r"""Returns the support of the dimension vector.
+        
+        INPUT:
+        - ``d``: vector of Ints
+
+        OUTPUT: Quiver object
+        """
+
+        """The support is the full subquiver supported on {i in Q_0 | d_i > 0}."""
         """
         EXAMPLES
 
@@ -462,7 +488,13 @@ class Quiver:
         return Quiver(ASupp)
 
     def in_fundamental_domain(self, d):
-        """Checks if the dimension vector d is in the fundamental domain."""
+        r"""Checks if a dimension vector is in the fundamental domain.
+        
+        INPUT:
+        - ``d``: vector of Ints
+
+        OUTPUT: statement truth value as Bool
+        """
 
         """The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
         Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain.
