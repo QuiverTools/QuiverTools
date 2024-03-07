@@ -484,6 +484,19 @@ class QuiverModuliSpace(QuiverModuli):
         quotient = numerator/denominator
 
         return pi(sect(quotient).homogeneous_components()[N])
+    
+    def degree(self, eta=None, chernClasses=None):
+        r"""Computes the degree of the ample line bundle given by eta."""
+        # TODO: Need check for ampleness first
+
+        if eta == None:
+            eta = -self._Q.canonical_stability_parameter(self._d)
+
+        A = self.chow_ring(chi=None, chernClasses=chernClasses)
+        N = self.dimension()
+        c = self.chern_class_line_bundle(eta, chernClasses=chernClasses)
+        p = self.point_class(chernClasses=chernClasses)
+        return c**N/p
 
     def todd_class(self):
         """The Todd class of X is the Todd class of the tangent bundle. For quiver moduli it computes as
@@ -501,7 +514,7 @@ class QuiverModuliSpace(QuiverModuli):
             keyList = [i for i in hom]
             return sum([hom[i] for i in filter(lambda i: i <= n, keyList)])
 
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def diagonal(self, chi=None):
         """Computes the class of the diagonal in the Chow ring of X x X where X is the quiver moduli space."""
