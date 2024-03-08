@@ -492,6 +492,7 @@ class Quiver:
         """
 
         """The support is the set {i in Q_0 | d_i > 0}."""
+        # I know it doesn't actually depend on Q, but I think I want to make it a method of the object. The reason is that I might want to introduce the possibility to give names to the vertices and arrows. Then support() should return the subset {i in Q_0 | d_i > 0} (as a list) and not the list of indexes of the vector. 
 
         """
         EXAMPLES
@@ -516,7 +517,7 @@ class Quiver:
         [0 0]
         """
         
-        supp = list(filter(lambda i: d[i] > 0, range(n)))
+        supp = list(filter(lambda i: d[i] > 0, range(self.number_of_vertices())))
         return [i+1 for i in supp]
 
     def in_fundamental_domain(self, d):
