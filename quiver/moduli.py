@@ -348,7 +348,7 @@ class QuiverModuliSpace(QuiverModuli):
                 return L[0]
             else:
                 P = product_lists([L[i] for i in range(n-1)])
-                return [p*l for p in P for l in L[n]]
+                return [p*l for p in P for l in L[n-1]]
 
         schubert = product_lists(Bprime)
 
