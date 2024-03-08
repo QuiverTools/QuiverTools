@@ -82,6 +82,7 @@ class QuiverModuli:
     # Also we might want to compute the HN strata for different denominators without having to change the moduli space.
 
     # TODO should this be a public method?
+    # No.
     def all_slope_decreasing_sequences(self)
 
     def has_stable_representation(self, algorithm="generic")
@@ -96,17 +97,26 @@ class QuiverModuli:
     # TODO can / should we abbreviate to HN? or hn?
     def harder_narasimhan_types(self)
     # TODO should this be a public method?
+    # I (= Hans) think so. It's sometimes interesting to know and not so easy to check.
     def is_HN_type(self, dstar)
     def HN_codimension(self, dstar)
 
     def luna_types(self)
     # TODO should this be a public method?
+    # See above.
     def is_luna_type(self, tau)
 
     def semistable_equals_stable(self, algorithm="")
 
     # TODO this should have a more descriptive name!
     def partial_order(self, d, e)
+        
+    # We can compute the tautological relations in Chern roots and in Chern classes already at this stage. 
+    # We only need to know if it's for 'stable' or 'semistable'.
+    # Note: No chi at this stage! Tautological relations hold also if the dimension vector isn't coprime
+    def tautological_relations_chern_roots(self, condition="semistable", chernRoots=None)
+    def tautological_relations_chern_classes(self, condition="semistable", chernClasses=None)
+    
 
 class QuiverModuliSpace(QuiverModuli):
     # TODO default is semistable, False means stable?
@@ -118,6 +128,12 @@ class QuiverModuliSpace(QuiverModuli):
     def dimension(self)
 
     # TODO work out the interface, assert that it is smooth and projective (and not so by accident)
+    def chow_ring(self)
+        
+class QuiverModuliStack(QuiverModuli):
+    # Stuff as in QuiverModuliSpace
+
+    # Chow ring is the equivariant Chow ring; given by generators (equivariant Chern classes) and tautological relations (and no linear relation).
     def chow_ring(self)
 
 
