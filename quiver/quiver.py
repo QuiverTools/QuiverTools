@@ -380,9 +380,9 @@ class Quiver:
         OUTPUT: Quiver object
         """
 
-        assert all([i in range(self.number_of_vertices()) for i in I])
+        assert all([i in range(1,self.number_of_vertices()+1) for i in I])
         A = self.adjacency_matrix()
-        return Quiver(A[I,I])
+        return Quiver(A[[i-1 for i in I], [i-1 for i in I]])
 
     
 
