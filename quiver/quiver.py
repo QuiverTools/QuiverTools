@@ -371,6 +371,20 @@ class Quiver:
         A = A.insert_row(n,ZeroVector(n+1))
         return Quiver(A)
     
+    def full_subquiver(self, I):
+        r"""Returns the full subquiver supported on the given set of vertices.
+        
+        INPUT:
+        - ``I``: List
+
+        OUTPUT: Quiver object
+        """
+
+        assert all([i in range(self.number_of_vertices()) for i in I])
+        A = self.adjacency_matrix()
+        return Quiver(A[I,I])
+
+    
 
     """
     Dimension vectors and stability conditions
