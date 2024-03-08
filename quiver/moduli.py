@@ -338,8 +338,8 @@ class QuiverModuliSpace(QuiverModuli):
         """Schubert basis of A^*([R/T]) over A^*([R/G])"""
         X = SchubertPolynomialRing(ZZ)
         supp = list(filter(lambda i: d[i] > 0, range(n)))
-        B = [[X(p).expand() for p in Permutations(d[i])] for i in supp]
-        Bprime = [[f.parent().hom([generator(R,i,r) for r in range(f.parent().ngens())], R)(f) for f in B[i]] for i in supp]
+        B = lambda i: [X(p).expand() for p in Permutations(d[i])] 
+        Bprime = [[f.parent().hom([generator(R,i,r) for r in range(f.parent().ngens())], R)(f) for f in B(i)] for i in supp]
 
         def product_lists(L):
             n = len(L)
