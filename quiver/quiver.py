@@ -501,20 +501,11 @@ class Quiver:
         sage: Q = ThreeVertexQuiver(2,0,4)
         sage: d = vector([1,1,1])
         sage: Q.support(d)
-        A quiver with adjacency matrix:
-        [0 2 0]
-        [0 0 4]
-        [0 0 0]
+        [1, 2, 3]
         sage: d = vector([1,0,1])
         sage: Q.support(d)
-        A quiver with adjacency matrix:
-        [0 0]
-        [0 0]
-        sage: d = vector([1,1,0])
-        sage: Q.support(d)
-        A quiver with adjacency matrix:
-        [0 2]
-        [0 0]
+        [1, 3]
+
         """
         
         supp = list(filter(lambda i: d[i] > 0, range(self.number_of_vertices())))
