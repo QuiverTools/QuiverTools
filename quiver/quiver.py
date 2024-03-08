@@ -380,6 +380,26 @@ class Quiver:
         OUTPUT: Quiver object
         """
 
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(2,3,4); Q
+        An acyclic 3-vertex quiver; adjacency matrix:
+        [0 2 3]
+        [0 0 4]
+        [0 0 0]
+        sage: Q.full_subquiver([1,2])
+        A quiver with adjacency matrix:
+        [0 2]
+        [0 0]
+        sage: Q.full_subquiver([1,3])
+        A quiver with adjacency matrix:
+        [0 3]
+        [0 0]
+
+        """
+
         assert all([i in range(1,self.number_of_vertices()+1) for i in I])
         A = self.adjacency_matrix()
         return Quiver(A[[i-1 for i in I], [i-1 for i in I]])
