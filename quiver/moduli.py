@@ -501,7 +501,7 @@ class QuiverModuliSpace(QuiverModuli):
         # TODO: Need check for ampleness first
 
         if eta == None:
-            eta = -self._Q.canonical_stability_parameter(self._d)
+            eta = self._Q.canonical_stability_parameter(self._d)
 
         A = self.chow_ring(chi=None, chernClasses=chernClasses)
         N = self.dimension()
