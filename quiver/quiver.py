@@ -488,10 +488,11 @@ class Quiver:
         INPUT:
         - ``d``: vector of Ints
 
-        OUTPUT: Quiver object
+        OUTPUT: List
         """
 
-        """The support is the full subquiver supported on {i in Q_0 | d_i > 0}."""
+        """The support is the set {i in Q_0 | d_i > 0}."""
+
         """
         EXAMPLES
 
@@ -514,12 +515,9 @@ class Quiver:
         [0 2]
         [0 0]
         """
-        n = self.number_of_vertices()
-        A = self.adjacency_matrix()
-        support = list(filter(lambda i: d[i] > 0, range(n)))
-        # Submatrix (A_ij)_{i,j in supp(d)} is the adjacency matrix of the sought quiver
-        ASupp = matrix([[A[i,j] for j in support] for i in support])
-        return Quiver(ASupp)
+        
+        supp = list(filter(lambda i: d[i] > 0, range(n)))
+        return [i+1 for i in supp]
 
     def in_fundamental_domain(self, d):
         r"""Checks if a dimension vector is in the fundamental domain.
