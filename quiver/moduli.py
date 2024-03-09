@@ -637,6 +637,21 @@ class QuiverModuliStack(QuiverModuli):
     def is_smooth(self):
         # TODO think about the empty case, should it be smooth?
         return True
+    
+    def motive(self):
+        r"""The motive is here the 'point count over finite fields', i.e. |R^{(s)st}(Q,d)(F_q)|/|G_d(F_q)|. This is of course just a specialization of the equivariant Chow or whatever motive."""
+
+        Q, d, theta = self._Q, self._d, self._theta
+        n = Q.number_of_vertices()
+
+        if theta == Q.zero_vector():
+            K.<q> = FunctionField(QQ)
+            num = q**(-Q.tits_form(d))
+            den = prod([prod([(1-q^{-nu}) nu in range(1,d[i]+1)]) i in range(n)])
+            return num/den
+        else:
+            raise NotImplementedError()
+
 
 
 class SmoothModel:
