@@ -202,6 +202,29 @@ class QuiverModuliSpace(QuiverModuli):
         I = I + [Q.zero_vector(), d]
         I.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
 
+        K = FunctionField(QQ,'q')
+        q = K.gen(0)
+
+        # Now define a matrix T of size NxN whose entry at position (i,j) is q^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j] and 0 otherwise
+        mot = lambda e: QuiverModuliStack(Q, e, Q.zero_vector()).motive()
+        N = len(I)
+        T = matrix(K, N)
+        for i in range(N):
+            for j in range(i,N):
+                e, f = I[i], I[j]
+                if is_subdimension_vector(e, f):
+                    T[i,j] = q**(Q.euler_form(e-f, e))*mot(f-e)
+
+        # Solve system of linear equations T*x = e_N and extract entry 0 of the solution x.
+        y = vector([0 for i in range(N)])
+        y[N-1] = 1
+        x = T.solve_right(y)
+
+        return x[0]
+
+        
+
+
     def betti_numbers(self):
         raise NotImplementedError()
 
