@@ -620,7 +620,7 @@ class QuiverModuliSpace(QuiverModuli):
 class QuiverModuliStack(QuiverModuli):
 
     def __init__(self, Q, d, theta, condition="stable"):
-        QuiverModuli.__init__(self, Q, d, theta)
+        QuiverModuli.__init__(self, Q, d, theta, condition=condition)
         self._condition = condition # TODO better name than 'condition' or 'version'?
 
     def __repr__(self):
@@ -641,13 +641,30 @@ class QuiverModuliStack(QuiverModuli):
     def motive(self):
         r"""The motive is here the 'point count over finite fields', i.e. |R^{(s)st}(Q,d)(F_q)|/|G_d(F_q)|. This is of course just a specialization of the equivariant Chow or whatever motive."""
 
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: from moduli import *
+        sage: Q, d, theta = LoopQuiver(0), vector([2]), vector([0])
+        sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+        sage: X.motive()
+        1/(q^4 - q^3 - q^2 + q)
+        sage: Q, d, theta = LoopQuiver(1), vector([2]), vector([0])
+        sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+        sage: X.motive()
+        q^3/(q^3 - q^2 - q + 1)
+
+        """
+
         Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
 
         if theta == Q.zero_vector():
-            K.<q> = FunctionField(QQ)
+            K = FunctionField(QQ,'q')
+            q = K.gen(0)
             num = q**(-Q.tits_form(d))
-            den = prod([prod([(1-q^{-nu}) nu in range(1,d[i]+1)]) i in range(n)])
+            den = prod([prod([(1-q**(-nu)) for nu in range(1,d[i]+1)]) for i in range(n)])
             return num/den
         else:
             raise NotImplementedError()
