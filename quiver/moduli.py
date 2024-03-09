@@ -241,9 +241,7 @@ class QuiverModuliSpace(QuiverModuli):
         y[N-1] = 1
         x = T.solve_right(y)
 
-        return (1-q)*x[0]
-
-        
+        return (1-q)*x[0]        
 
 
     def betti_numbers(self):
