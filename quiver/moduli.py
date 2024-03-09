@@ -197,7 +197,6 @@ class QuiverModuliSpace(QuiverModuli):
         EXAMPLES:
 
         sage: from quiver import *
-        sage: from moduli import *
         sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
         sage: X = QuiverModuliSpace(Q, d, theta)
         sage: X.poincare_polynomial()
@@ -687,7 +686,6 @@ class QuiverModuliStack(QuiverModuli):
         EXAMPLES:
 
         sage: from quiver import *
-        sage: from moduli import *
         sage: Q, d, theta = LoopQuiver(0), vector([2]), vector([0])
         sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
         sage: X.motive()
