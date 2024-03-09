@@ -193,8 +193,29 @@ class QuiverModuliSpace(QuiverModuli):
 
         r"""The Poincare polynomial is defined as $P_X(q) = \sum_{i \geq 0} (-1)^i dim H^i(X;\mathbb{C}) q^{i/2}$. For a quiver moduli space whose dimension vector is $\theta$-coprime, the odd cohomology vanishes and this is a Polynomial in $q$. We use Cor. 6.9 in Reineke's Harder--Narasimhan paper to compute it."""
 
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: from moduli import *
+        sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.poincare_polynomial()
+        q + 1
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.poincare_polynomial()
+        q^6 + q^5 + 3*q^4 + 3*q^3 + 3*q^2 + q + 1
+        sage: Q, d = SubspaceQuiver(5), vector([1,1,1,1,1,2])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.poincare_polynomial()
+        q^2 + 5*q + 1
+
+        """
+
         Q, d, theta = self._Q, self._d, self._theta
-        assert (Q.is_coprime_for_stability_parameter(d, theta))
+        assert (is_coprime_for_stability_parameter(d, theta))
 
         I = all_subdimension_vectors(d)
         I = list(filter(lambda e: e != Q.zero_vector() and e != d , I))
@@ -220,7 +241,7 @@ class QuiverModuliSpace(QuiverModuli):
         y[N-1] = 1
         x = T.solve_right(y)
 
-        return x[0]
+        return (1-q)*x[0]
 
         
 
