@@ -185,6 +185,22 @@ class QuiverModuliSpace(QuiverModuli):
         # This check takes a long time. Shall we do it nonetheless?
         assert self._Q.is_luna_type(tau,self._theta)
         return sum([len(dn[1])*(1-self._Q.euler_form(dn[0],dn[0])) for dn in tau])
+    
+    def poincare_polynomial(self):
+        r"""Returns the Poincare polynomial of the moduli space.
+        
+        OUTPUT: polynomial in one variable"""
+
+        r"""The Poincare polynomial is defined as $P_X(q) = \sum_{i \geq 0} (-1)^i dim H^i(X;\mathbb{C}) q^{i/2}$. For a quiver moduli space whose dimension vector is $\theta$-coprime, the odd cohomology vanishes and this is a Polynomial in $q$. We use Cor. 6.9 in Reineke's Harder--Narasimhan paper to compute it."""
+
+        Q, d, theta = self._Q, self._d, self._theta
+        assert (Q.is_coprime_for_stability_parameter(d, theta))
+
+        I = all_subdimension_vectors(d)
+        I = list(filter(lambda e: e != Q.zero_vector() and e != d , I))
+        I = list(filter(lambda e: slope(e, theta) > slope(d, theta), I))
+        I = I + [Q.zero_vector(), d]
+        I.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
 
     def betti_numbers(self):
         raise NotImplementedError()
