@@ -216,31 +216,17 @@ class QuiverModuliSpace(QuiverModuli):
         Q, d, theta = self._Q, self._d, self._theta
         assert (is_coprime_for_stability_parameter(d, theta))
 
-        I = all_subdimension_vectors(d)
-        I = list(filter(lambda e: e != Q.zero_vector() and e != d , I))
-        I = list(filter(lambda e: slope(e, theta) > slope(d, theta), I))
-        I = I + [Q.zero_vector(), d]
-        I.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
-
+        k = FunctionField(QQ,'L')
+        L = k.gen(0)
         K = FunctionField(QQ,'q')
         q = K.gen(0)
 
-        # Now define a matrix T of size NxN whose entry at position (i,j) is q^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j] and 0 otherwise
-        mot = lambda e: QuiverModuliStack(Q, e, Q.zero_vector()).motive()
-        N = len(I)
-        T = matrix(K, N)
-        for i in range(N):
-            for j in range(i,N):
-                e, f = I[i], I[j]
-                if is_subdimension_vector(e, f):
-                    T[i,j] = q**(Q.euler_form(e-f, e))*mot(f-e)
+        X = QuiverModuliStack(Q, d, theta, condition="semistable")
+        mot = X.motive()
 
-        # Solve system of linear equations T*x = e_N and extract entry 0 of the solution x.
-        y = vector([0 for i in range(N)])
-        y[N-1] = 1
-        x = T.solve_right(y)
+        f = k.hom(q, K)
 
-        return (1-q)*x[0]        
+        return (1-q)*f(mot)       
 
 
     def betti_numbers(self):
@@ -680,7 +666,7 @@ class QuiverModuliStack(QuiverModuli):
         return True
     
     def motive(self):
-        r"""The motive is here the 'point count over finite fields', i.e. |R^{(s)st}(Q,d)(F_q)|/|G_d(F_q)|. This is of course just a specialization of the equivariant Chow or whatever motive."""
+        r"""Gives an expression for the motive of the semistable moduli stack in an appropriate localization of K_0(Var)"""
 
         """
         EXAMPLES:
@@ -689,25 +675,52 @@ class QuiverModuliStack(QuiverModuli):
         sage: Q, d, theta = LoopQuiver(0), vector([2]), vector([0])
         sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
         sage: X.motive()
-        1/(q^4 - q^3 - q^2 + q)
+        1/(L^4 - L^3 - L^2 + L)
         sage: Q, d, theta = LoopQuiver(1), vector([2]), vector([0])
         sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
         sage: X.motive()
-        q^3/(q^3 - q^2 - q + 1)
+        L^3/(L^3 - L^2 - L + 1)
 
         """
+
+        # Only for semistable. For stable, we don't know what the motive is. It's not pure in general.
+        assert self._condition == "semistable"
 
         Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
 
         if theta == Q.zero_vector():
-            K = FunctionField(QQ,'q')
-            q = K.gen(0)
-            num = q**(-Q.tits_form(d))
-            den = prod([prod([(1-q**(-nu)) for nu in range(1,d[i]+1)]) for i in range(n)])
+            K = FunctionField(QQ,'L')
+            L = K.gen(0)
+            num = L**(-Q.tits_form(d))
+            den = prod([prod([(1-L**(-nu)) for nu in range(1,d[i]+1)]) for i in range(n)])
             return num/den
         else:
-            raise NotImplementedError()
+            I = all_subdimension_vectors(d)
+            I = list(filter(lambda e: e != Q.zero_vector() and e != d , I))
+            I = list(filter(lambda e: slope(e, theta) > slope(d, theta), I))
+            I = I + [Q.zero_vector(), d]
+            I.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+
+            K = FunctionField(QQ,'L')
+            L = K.gen(0)
+
+            # Now define a matrix T of size NxN whose entry at position (i,j) is L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j] and 0 otherwise
+            mot = lambda e: QuiverModuliStack(Q, e, Q.zero_vector()).motive()
+            N = len(I)
+            T = matrix(K, N)
+            for i in range(N):
+                for j in range(i,N):
+                    e, f = I[i], I[j]
+                    if is_subdimension_vector(e, f):
+                        T[i,j] = L**(Q.euler_form(e-f, e))*mot(f-e)
+
+            # Solve system of linear equations T*x = e_N and extract entry 0 of the solution x.
+            y = vector([0 for i in range(N)])
+            y[N-1] = 1
+            x = T.solve_right(y)
+
+            return x[0]
 
 
 
