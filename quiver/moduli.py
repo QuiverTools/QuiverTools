@@ -706,7 +706,7 @@ class QuiverModuliStack(QuiverModuli):
             L = K.gen(0)
 
             # Now define a matrix T of size NxN whose entry at position (i,j) is L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j] and 0 otherwise
-            mot = lambda e: QuiverModuliStack(Q, e, Q.zero_vector()).motive()
+            mot = lambda e: QuiverModuliStack(Q, e, Q.zero_vector(), condition="semistable").motive()
             N = len(I)
             T = matrix(K, N)
             for i in range(N):
