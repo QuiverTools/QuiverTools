@@ -680,6 +680,10 @@ class QuiverModuliStack(QuiverModuli):
         sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
         sage: X.motive()
         L^3/(L^3 - L^2 - L + 1)
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
+        sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+        sage: X.motive()
+        (-L^6 - L^5 - 3*L^4 - 3*L^3 - 3*L^2 - L - 1)/(L - 1)
 
         """
 
