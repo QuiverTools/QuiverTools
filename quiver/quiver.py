@@ -1744,6 +1744,17 @@ class Quiver:
         sage: d = vector([2,3])
         sage: Q.semistable_equals_stable(d,theta)
         True
+
+        A double framed example as in our vector fields paper
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: Q = Q.framed_quiver(vector([1,0]))
+        sage: Q = Q.coframed_quiver(vector([0,0,1]))
+        sage: d = vector([1,2,3,1])
+        sage: theta = vector([1,300,-200,-1])
+        sage: Q.semistable_equals_stable(d, theta)
+        True
+
         """
 
         """Every theta-semistable representation is theta-stable if and only if there are no Luna types other than (possibly) (d,[1])."""
@@ -1757,7 +1768,7 @@ class Quiver:
                 return True
             else:
                 allLunaTypes = self.all_luna_types(d,theta)
-                genericType = tuple([d,[1]])
+                genericType = [tuple([d,[1]])]
                 if genericType in allLunaTypes:
                     allLunaTypes.remove(genericType)
                 return (not allLunaTypes) # This checks if the list is empty
