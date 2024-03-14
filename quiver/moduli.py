@@ -230,7 +230,29 @@ class QuiverModuliSpace(QuiverModuli):
 
 
     def betti_numbers(self):
-        raise NotImplementedError()
+        r"""Returns the Betti numbers of the moduli space.
+        
+        OUTPUT: List of Ints
+        """
+        
+        Q, d, theta = self._Q, self._d, self._theta
+        assert (is_coprime_for_stability_parameter(d, theta))
+        N = self.dimension()
+
+        K = FunctionField(QQ,'q')
+        q = K.gen(0)
+        L = FunctionField(QQ,'v')
+        v = L.gen(0)
+        ext = K.hom(v**2, L)
+        R = PolynomialRing(QQ,'w')
+        w = R.gen(0)
+        incl = R.hom(v, L)
+
+        p = self.poincare_polynomial()
+        P = incl.inverse_image(ext(p))
+
+        return [P.coefficient(w**i) for i in range(N+1)]
+
 
     def is_smooth(self):
         # if theta-coprime then you can shortcut everything
