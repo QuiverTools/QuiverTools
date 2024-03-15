@@ -234,6 +234,24 @@ class QuiverModuliSpace(QuiverModuli):
         
         OUTPUT: List of Ints
         """
+
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: from moduli import *
+        sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+        sage: X.poincare_polynomial()
+        q + 1
+        sage: X.betti_numbers()
+        [1, 0, 1]
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+        sage: X.betti_numbers()
+        [1, 0, 1, 0, 3, 0, 3, 0, 3, 0, 1, 0, 1]
+
+        """
         
         Q, d, theta = self._Q, self._d, self._theta
         assert (is_coprime_for_stability_parameter(d, theta))
