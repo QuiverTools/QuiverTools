@@ -244,14 +244,16 @@ class QuiverModuliSpace(QuiverModuli):
         L = FunctionField(QQ,'v')
         v = L.gen(0)
         ext = K.hom(v**2, L)
-        R = PolynomialRing(QQ,'w')
-        w = R.gen(0)
-        incl = R.hom(v, L)
+        # p is the prime place of the DVR associated with v
+        p = v.zeros()[0]
 
-        p = self.poincare_polynomial()
-        P = incl.inverse_image(ext(p))
+        f = ext(self.poincare_polynomial())
+        betti = [f.evaluate(p)]
+        for i in range(2*N):
+            f = (f - f.evaluate(p))/v 
+            betti = betti + [f.evaluate(p)]
 
-        return [P.coefficient(w**i) for i in range(N+1)]
+        return betti
 
 
     def is_smooth(self):
