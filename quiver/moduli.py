@@ -283,6 +283,7 @@ class QuiverModuliSpace(QuiverModuli):
     def picard_rank(self):
         """Computes the Picard rank of the moduli space for known cases."""
         # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
+        # Comment: The Picard rank is also n-1 if theta is not in the canonical chamber (with d theta-coprime and theta-amply stable). This is because Pic(X) is isomorphic to A^1(X) (X is smooth) and the latter is free of rank n-1 by theh tautological presentation.
         if self._theta == self._Q.canonical_stability_parameter(self._d) & is_coprime_for_stability_parameter(self._d,self._theta) & self._Q.is_amply_stable(self._Q,self._d,self._theta):
             return self._Q.number_of_vertices() - 1
         else:
