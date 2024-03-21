@@ -551,15 +551,15 @@ class Quiver:
     # The fundamental domain again! Which implementation should we keep?
     # The latter is lacking the connectivity condition on the support of d
     
-    def in_fundamental_domain(self, d):
-        # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
+    # def in_fundamental_domain(self, d):
+    #     # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
 
-        # there has to be a more elegant way to do this
-        # oh well
-        simples = [ZeroVector(self.number_of_vertices()) for i in range(self.number_of_vertices())]
-        for i in range(self.number_of_vertices()):
-            simples[i][i] = 1
-        return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
+    #     # there has to be a more elegant way to do this
+    #     # oh well
+    #     simples = [ZeroVector(self.number_of_vertices()) for i in range(self.number_of_vertices())]
+    #     for i in range(self.number_of_vertices()):
+    #         simples[i][i] = 1
+    #     return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
     
     def partial_order(self,d,e):
         """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
