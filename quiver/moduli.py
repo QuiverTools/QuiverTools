@@ -6,39 +6,18 @@ from sage.combinat.permutation import *
 Permutations.options(mult='r2l')
 
 
-"""
-a brainstorm
-
-What about an abstract base class QuiverModuli which deals with all the things common to moduli spaces and moduli stacks?
-There'd be abstract methods for things like dimension.
-
-Then we'd have implementations in
-- QuiverModuliSpace
-- QuiverModuliStack
-
-This avoids the ugly distinction between the two.
-The stack would also allow _not_ specifying stable or semistable,
-whereas for the quiver moduli space this is a necessity.
-
-
-Something like enumerating Harder-Narasimhan strata is then a method of QuiverModuliStack?
-
-Something like computing Betti numbers is then only implemented for QuiverModuliSpace.
-
-"""
-
-
 from abc import ABC, abstractmethod
 
 class QuiverModuli(ABC):
     @abstractmethod
-    def __init__(self, Q, d, theta, condition):
-        assert (Q.number_of_vertices() == d.length() & Q.number_of_vertices() == theta.length())
-        assert (condition in ["semistable", "stable"])
+    def __init__(self, Q, d, theta, denominator=sum):
+        n = Q.number_of_vertices()
+        assert (n == d.length() & n == theta.length())
+        assert all([denominator(Q.simple_root(i)) > 0 for i in range(1,n+1)])
         self._Q = Q
         self._d = d
         self._theta = theta
-        self._condition = condition
+        self._denominator = denominator
 
     def quiver(self):
         return self._Q
@@ -48,12 +27,412 @@ class QuiverModuli(ABC):
 
     def stability_parameter(self):
         return self._theta
+    
+    """
+    Semistability and HN
+    """
 
+    def has_semistable_representation(self):
+        r"""Checks if there is a theta-semistable representation of dimension vector d.
+
+        OUTPUT: Statement truth value as Bool
+        """
+
+        """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d."""
+        # Thm. 5.4 in Markus's paper is actually a result of Schofield. So the algorithm should bear his name, if any.
+
+        """
+        EXAMPLES:
+
+        The A_2 quiver:
+        sage: from quiver import *
+        sage: A2 = GeneralizedKroneckerQuiver(1)
+        sage: theta = vector([1,-1])
+        sage: d = vector([1,1])
+        sage: A2.has_semistable_representation(d,theta)
+        True
+        sage: d = vector([2,2])
+        sage: A2.has_semistable_representation(d,theta)
+        True
+        sage: d = vector([1,2])
+        sage: A2.has_semistable_representation(d,theta)
+        False
+        sage: d = vector([0,0])
+        sage: A2.has_semistable_representation(d,theta)
+        True
+
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: K3 = GeneralizedKroneckerQuiver(3)
+        sage: theta = vector([3,-2])
+        sage: d = vector([2,3])
+        sage: K3.has_semistable_representation(d,theta)
+        True
+        sage: d = vector([1,4])
+        sage: K3.has_semistable_representation(d,theta)
+        False
+
+        """
+        Q, d, theta = self._Q, self._d, self._theta
+
+        genSubdims = Q.all_generic_subdimension_vectors(d)
+        genSubdims = list(filter(lambda e: e != Q.zero_vector(), genSubdims))
+        return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
+        
+    def __all_semistable_subdimension_vectors_helper(self):
+        """Computes the list of indexes of all semistable subdimension vectors of d."""
+
+        """
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
+        sage: i, s = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta); i, s
+        ([1, 2, 3, 4, 5, 6, 10],
+        [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
+
+        """
+        Q, d, theta = self._Q, self._d, self._theta
+
+        subdims = all_subdimension_vectors(d)            
+        subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+        N = len(subdims)
+        genIndexes, genSubdims = Q.__all_generic_subdimension_vectors_helper(d)
+        sstIndexes =  list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genIndexes[j]))]), range(1,N)))
+        sstSubdims = [subdims[j] for j in sstIndexes]
+        return sstIndexes, sstSubdims
+    
+    def is_harder_narasimhan_type(self, dstar):
+        r"""Checks if dstar is a HN type.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+
+        OUTPUT: statement truth value as Bool
+        """
+
+        """
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta)
+        sage: all([Q.is_harder_narasimhan_type(dstar, theta) for dstar in hn])
+        True
+        sage: dstar = [vector([1,0]), vector([1,0]), vector([0,3])]
+        sage: Q.is_harder_narasimhan_type(dstar, theta)
+        False
+
+        """
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+
+        n = Q.number_of_vertices()
+        assert all([e.length() == n for e in dstar])
+        assert sum(dstar) == d
+
+        if (d == Q.zero_vector()):
+            return (dstar == [Q.zero_vector()])
+        else:
+            sstIndexes, sstSubdims = self.__all_semistable_subdimension_vectors_helper()
+            slopeDecreasing = all([(slope(dstar[i], theta, denominator=denominator) > slope(dstar[i+1], theta, denominator=denominator)) for i in range(len(dstar)-1)])
+            semistable = all([e in sstSubdims for e in dstar])
+            return (slopeDecreasing and semistable)
+        
+    def __codimension_of_harder_narasimhan_stratum_helper(self, dstar):
+        """Computes the codimension of the HN stratum of dstar inside the representation variety.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+
+        OUTPUT: codimension as Int
+        """
+        # This is private because it doesn't check if dstar is a HN type. This is fast but yields nonsense, if dstar is not a HN type.
+
+        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+
+        """
+        EXAMPLES
+
+        The 3-Kronecker quiver
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
+        [[(1, 0), (1, 1), (0, 2)],
+        [(1, 0), (1, 2), (0, 1)],
+        [(1, 0), (1, 3)],
+        [(1, 1), (1, 2)],
+        [(2, 0), (0, 3)],
+        [(2, 1), (0, 2)],
+        [(2, 2), (0, 1)],
+        [(2, 3)]]
+        sage: [Q._Quiver__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn]
+        [12, 9, 8, 3, 18, 10, 4, 0]
+
+        """
+        Q = self._Q
+        
+        n = Q.number_of_vertices()
+        assert all([e.length() == n for e in dstar])
+
+        s = len(dstar)
+        return -sum([Q.euler_form(dstar[k], dstar[l]) for k in range(s-1) for l in range(k+1,s)])
+
+    def codimension_of_harder_narasimhan_stratum(self, dstar):
+        r"""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+
+        OUTPUT: codimension as Int
+        """
+
+        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+
+        """
+        EXAMPLES
+
+        The 3-Kronecker quiver
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
+        [[(1, 0), (1, 1), (0, 2)],
+        [(1, 0), (1, 2), (0, 1)],
+        [(1, 0), (1, 3)],
+        [(1, 1), (1, 2)],
+        [(2, 0), (0, 3)],
+        [(2, 1), (0, 2)],
+        [(2, 2), (0, 1)],
+        [(2, 3)]]
+        sage: [Q.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn]
+        [12, 9, 8, 3, 18, 10, 4, 0]
+
+        """
+        d = self._d
+
+        assert sum(dstar) == d
+        assert self.is_harder_narasimhan_type(dstar)
+
+        return self.__codimension_of_harder_narasimhan_stratum_helper(dstar)
+    
+    def codimension_unstable_locus(self):
+        r"""Computes the codimension of the unstable locus inside the representation variety.
+        
+        OUTPUT: codimension as Int
+        """
+
+        """"
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: Q.codimension_unstable_locus(d, theta)
+        3
+        sage: Q, d = ThreeVertexQuiver(1,6,1), vector([1,6,6])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: Q.codimension_unstable_locus(d, theta)
+        1
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
+        sage: Q.codimension_unstable_locus(d, theta)
+        0
+
+        """
+        d = self._d
+
+        hn = list(filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types()))
+        # Note that while the HN types and strata depend on the denominator, the list of all their codimensions does not.
+
+        return min([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn])
+
+
+    def all_harder_narasimhan_types(self):
+
+        r"""Returns the list of all HN types.
+
+        OUTPUT: list of list of vectors of Ints
+        """
+
+        """A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
+        * d^1 + ... + d^s = d
+        * mu_theta(d^1) > ... > mu_theta(d^s)
+        * Every d^k is theta-semi-stable."""
+
+        """
+        EXAMPLES:
+
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: theta = vector([3,-2])
+        sage: d = vector([2,3])
+        sage: Q.all_harder_narasimhan_types(d,theta)
+        [[(2, 3)],
+         [(1, 1), (1, 2)],
+         [(2, 2), (0, 1)],
+         [(2, 1), (0, 2)],
+         [(1, 0), (1, 3)],
+         [(1, 0), (1, 2), (0, 1)],
+         [(1, 0), (1, 1), (0, 2)],
+         [(2, 0), (0, 3)]]
+        sage: Q.all_harder_narasimhan_types(d,-theta)
+        [[(0, 3), (2, 0)]]
+
+        The 5-subspace quiver:
+        sage: from quiver import *
+        sage: Q = SubspaceQuiver(5)
+        sage: d = vector([1,1,1,1,1,2])
+        sage: theta = vector([2,2,2,2,2,-5])
+        sage: Q.all_harder_narasimhan_types(d,theta)
+        [[(1, 1, 1, 1, 1, 2)],
+         [(0, 0, 1, 1, 1, 1), (1, 1, 0, 0, 0, 1)],
+         [(0, 1, 0, 1, 1, 1), (1, 0, 1, 0, 0, 1)],
+         [(0, 1, 1, 0, 1, 1), (1, 0, 0, 1, 0, 1)],
+         [(0, 1, 1, 1, 0, 1), (1, 0, 0, 0, 1, 1)],
+         [(1, 0, 0, 1, 1, 1), (0, 1, 1, 0, 0, 1)],
+         [(1, 0, 1, 0, 1, 1), (0, 1, 0, 1, 0, 1)],
+         [(1, 0, 1, 1, 0, 1), (0, 1, 0, 0, 1, 1)],
+         [(1, 1, 0, 0, 1, 1), (0, 0, 1, 1, 0, 1)],
+         [(1, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 1)],
+         [(1, 1, 1, 0, 0, 1), (0, 0, 0, 1, 1, 1)],
+         [(0, 1, 1, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
+         [(1, 0, 1, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
+         [(1, 1, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
+         [(1, 1, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+         [(1, 1, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(1, 1, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 0, 0, 0, 1, 0), (1, 1, 1, 1, 0, 2)],
+         [(0, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 0, 0, 0, 1, 0), (1, 0, 1, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
+         [(0, 0, 0, 0, 1, 0), (1, 1, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
+         [(0, 0, 0, 0, 1, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
+         [(0, 0, 0, 0, 1, 0), (1, 1, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 1, 2)],
+         [(0, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 0, 0, 1, 0, 0), (1, 0, 1, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
+         [(0, 0, 0, 1, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
+         [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 0, 0, 1, 1, 0), (1, 1, 1, 0, 0, 2)],
+         [(0, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 0, 0, 1, 1, 0), (1, 0, 1, 0, 0, 1), (0, 1, 0, 0, 0, 1)],
+         [(0, 0, 0, 1, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 1, 0, 0, 1)],
+         [(0, 0, 0, 1, 1, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 1, 2)],
+         [(0, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 0, 1, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
+         [(0, 0, 1, 0, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+         [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 0, 1, 0, 1, 0), (1, 1, 0, 1, 0, 2)],
+         [(0, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 0, 1, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
+         [(0, 0, 1, 0, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
+         [(0, 0, 1, 0, 1, 0), (1, 1, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 1, 2)],
+         [(0, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 0, 1, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
+         [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 0, 1, 1, 1, 0), (1, 1, 0, 0, 0, 2)],
+         [(0, 0, 1, 1, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 1, 2)],
+         [(0, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 1, 0, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
+         [(0, 1, 0, 0, 0, 0), (1, 0, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+         [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 1, 0, 0, 1, 0), (1, 0, 1, 1, 0, 2)],
+         [(0, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 1, 0, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
+         [(0, 1, 0, 0, 1, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
+         [(0, 1, 0, 0, 1, 0), (1, 0, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 1, 2)],
+         [(0, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 1, 0, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
+         [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 1, 0, 1, 1, 0), (1, 0, 1, 0, 0, 2)],
+         [(0, 1, 0, 1, 1, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 1, 2)],
+         [(0, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
+         [(0, 1, 1, 0, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+         [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 1, 1, 0, 1, 0), (1, 0, 0, 1, 0, 2)],
+         [(0, 1, 1, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 1, 1, 1, 0, 0), (1, 0, 0, 0, 1, 2)],
+         [(0, 1, 1, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(0, 1, 1, 1, 1, 0), (1, 0, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 1, 2)],
+         [(1, 0, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
+         [(1, 0, 0, 0, 0, 0), (0, 1, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
+         [(1, 0, 0, 0, 0, 0), (0, 1, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+         [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 2)],
+         [(1, 0, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
+         [(1, 0, 0, 0, 1, 0), (0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
+         [(1, 0, 0, 0, 1, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
+         [(1, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 2)],
+         [(1, 0, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
+         [(1, 0, 0, 1, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
+         [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 2)],
+         [(1, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 2)],
+         [(1, 0, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
+         [(1, 0, 1, 0, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+         [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 2)],
+         [(1, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 2)],
+         [(1, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 0, 1, 1, 1, 0), (0, 1, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 2)],
+         [(1, 1, 0, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
+         [(1, 1, 0, 0, 0, 0), (0, 0, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
+         [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
+         [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 2)],
+         [(1, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 2)],
+         [(1, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 1, 0, 1, 1, 0), (0, 0, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 2)],
+         [(1, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 1, 1, 0, 1, 0), (0, 0, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 1, 1, 1, 0, 0), (0, 0, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
+         [(1, 1, 1, 1, 1, 0), (0, 0, 0, 0, 0, 2)]]
+        
+        """
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        
+        subdimensions = all_subdimension_vectors(d)
+        subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+        N = len(subdimensions)
+
+        # sstIndexes is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
+        sstIndexes, sstSubdims = self.__all_semistable_subdimension_vectors_helper(d, theta)
+
+        # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
+        idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
+
+        hn = [[[]] for j in range(N)]
+
+        for j in range(1,N):
+            # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
+            sstSub = list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), sstIndexes))
+            # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
+            hn[j] = [[i]+fstar for i in sstSub for fstar in list(filter(lambda fstar: fstar == [] or slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[idx_diff(j, i)]))]
+
+        hn[0] = [[0]]
+
+        return [[subdimensions[r] for r in fstar] for fstar in hn[N-1]]
+
+    
+    @abstractmethod
     def is_nonempty(self):
-        if self._condition == "stable":
-            return self._Q.has_stable_representation(self._d, self._theta)
-        elif self._condition == "semistable":
-            return self._Q.has_semistable_representation(self._d, self._theta)
+        pass
 
     @abstractmethod
     def dimension(self):
@@ -71,6 +450,12 @@ class QuiverModuliSpace(QuiverModuli):
 
     def __repr__(self):
         return "A "+self._condition+" quiver moduli space with:\n"+ "Q = "+str(self._Q)+"\n"+ "d = "+str(self._d)+"\n"+ "theta = "+str(self._theta)
+    
+    def is_nonempty(self):
+        if self._condition == "stable":
+            return self._Q.has_stable_representation(self._d, self._theta)
+        elif self._condition == "semistable":
+            return self._Q.has_semistable_representation(self._d, self._theta)
 
     def dimension(self):
         """Computes the dimension of the moduli space M^{theta-(s)st}(Q,d)."""
@@ -695,6 +1080,12 @@ class QuiverModuliStack(QuiverModuli):
 
     def __repr__(self):
         return "A "+self._condition+" quiver moduli stack with:\n"+ "Q = "+str(self._Q)+"\n"+ "d = "+str(self._d)+"\n"+ "theta = "+str(self._theta)
+    
+    def is_nonempty(self):
+        if self._condition == "stable":
+            return self._Q.has_stable_representation(self._d, self._theta)
+        elif self._condition == "semistable":
+            return self._Q.has_semistable_representation(self._d, self._theta)
 
     def dimension(self):
         """dim [R^{(s)st}/G] = dim R^{(s)st} - dim G
