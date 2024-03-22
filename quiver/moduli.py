@@ -198,6 +198,38 @@ class QuiverModuli(ABC):
 
         return [[subdimensions[r] for r in fstar] for fstar in hn[N-1]]
 
+    def is_harder_narasimhan_type(self, dstar):
+        r"""Checks if dstar is a HN type.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+
+        OUTPUT: statement truth value as Bool
+        """
+
+        """
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta)
+        sage: all([Q.is_harder_narasimhan_type(dstar, theta) for dstar in hn])
+        True
+        sage: dstar = [vector([1,0]), vector([1,0]), vector([0,3])]
+        sage: Q.is_harder_narasimhan_type(dstar, theta)
+        False
+
+        """
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        
+        assert d == sum(dstar)
+
+        if (d == self.zero_vector()):
+            return (dstar == [self.zero_vector()])
+        else:
+            sstIndexes, sstSubdims = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta)
+            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
+            semistable = all([e in sstSubdims for e in dstar])
+            return (slopeDecreasing and semistable)
 
     @abstractmethod
     def dimension(self):

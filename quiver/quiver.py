@@ -1047,43 +1047,6 @@ class Quiver:
         sstIndexes =  list(filter(lambda j: all([slope(subdims[i], theta) <= slope(subdims[j], theta) for i in list(filter(lambda i: i != 0, genIndexes[j]))]), range(1,N)))
         sstSubdims = [subdims[j] for j in sstIndexes]
         return sstIndexes, sstSubdims
-    
-    def is_harder_narasimhan_type(self, dstar, theta, denominator=sum):
-        r"""Checks if dstar is a HN type.
-        
-        INPUT:
-        - ``dstar``: list of vectors of Ints
-        - ``theta``: vector of Ints
-        - ``denominator``: function which takes a vector of Ints and returns an Int
-
-        OUTPUT: statement truth value as Bool
-        """
-
-        """
-        EXAMPLES:
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: hn = Q.all_harder_narasimhan_types(d, theta)
-        sage: all([Q.is_harder_narasimhan_type(dstar, theta) for dstar in hn])
-        True
-        sage: dstar = [vector([1,0]), vector([1,0]), vector([0,3])]
-        sage: Q.is_harder_narasimhan_type(dstar, theta)
-        False
-
-        """
-
-        n = self.number_of_vertices()
-        assert (all([e.length() == n for e in dstar]) and theta.length() == n)
-        assert all([denominator(self.simple_root(i)) > 0 for i in range(1,n+1)])
-
-        d = sum(dstar)
-        if (d == self.zero_vector()):
-            return (dstar == [self.zero_vector()])
-        else:
-            sstIndexes, sstSubdims = self.__all_semistable_subdimension_vectors_helper(d, theta)
-            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
-            semistable = all([e in sstSubdims for e in dstar])
-            return (slopeDecreasing and semistable)
         
     def __codimension_of_harder_narasimhan_stratum_helper(self, dstar):
         """Computes the codimension of the HN stratum of dstar inside the representation variety.
