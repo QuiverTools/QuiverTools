@@ -32,12 +32,15 @@ from abc import ABC, abstractmethod
 
 class QuiverModuli(ABC):
     @abstractmethod
-    def __init__(self, Q, d, theta, condition):
+    def __init__(self, Q, d, theta, denominator=sum, condition="semistable"):
+        n = Q.number_of_vertices()
         assert (Q.number_of_vertices() == d.length() & Q.number_of_vertices() == theta.length())
         assert (condition in ["semistable", "stable"])
+        assert all([denominator(Q.simple_root(i)) > 0 for i in range(1,n+1)])
         self._Q = Q
         self._d = d
         self._theta = theta
+        self._denominator = denominator
         self._condition = condition
 
     def quiver(self):
@@ -48,6 +51,9 @@ class QuiverModuli(ABC):
 
     def stability_parameter(self):
         return self._theta
+    
+    def denominator(self):
+        return self._denominator
 
     def is_nonempty(self):
         if self._condition == "stable":
@@ -65,9 +71,8 @@ class QuiverModuli(ABC):
 
 class QuiverModuliSpace(QuiverModuli):
 
-    def __init__(self, Q, d, theta, condition="stable"):
-        QuiverModuli.__init__(self, Q, d, theta, condition)
-        self._condition = condition # TODO better name than 'condition' or 'version'?
+    def __init__(self, Q, d, theta, denominator=sum, condition="semistable"):
+        QuiverModuli.__init__(self, Q, d, theta, denominator=denominator, condition=condition)
 
     def __repr__(self):
         return "A "+self._condition+" quiver moduli space with:\n"+ "Q = "+str(self._Q)+"\n"+ "d = "+str(self._d)+"\n"+ "theta = "+str(self._theta)
@@ -689,9 +694,8 @@ class QuiverModuliSpace(QuiverModuli):
 
 class QuiverModuliStack(QuiverModuli):
 
-    def __init__(self, Q, d, theta, condition="stable"):
-        QuiverModuli.__init__(self, Q, d, theta, condition=condition)
-        self._condition = condition # TODO better name than 'condition' or 'version'?
+    def __init__(self, Q, d, theta, denominator=sum, condition="semistable"):
+        QuiverModuli.__init__(self, Q, d, theta, denominator=denominator, condition=condition)
 
     def __repr__(self):
         return "A "+self._condition+" quiver moduli stack with:\n"+ "Q = "+str(self._Q)+"\n"+ "d = "+str(self._d)+"\n"+ "theta = "+str(self._theta)
