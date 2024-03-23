@@ -250,7 +250,8 @@ class QuiverModuli(ABC):
         The 3-Kronecker quiver
         sage: from quiver import *
         sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: hn = X.all_harder_narasimhan_types(); hn
         [[(1, 0), (1, 1), (0, 2)],
         [(1, 0), (1, 2), (0, 1)],
         [(1, 0), (1, 3)],
@@ -259,7 +260,7 @@ class QuiverModuli(ABC):
         [(2, 1), (0, 2)],
         [(2, 2), (0, 1)],
         [(2, 3)]]
-        sage: [Q._Quiver__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn]
+        sage: [X._QuiverModuli__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn]
         [12, 9, 8, 3, 18, 10, 4, 0]
 
         """
@@ -271,7 +272,7 @@ class QuiverModuli(ABC):
         s = len(dstar)
         return -sum([Q.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
 
-    def codimension_of_harder_narasimhan_stratum(self, dstar, theta, denominator=sum):
+    def codimension_of_harder_narasimhan_stratum(self, dstar):
         r"""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
         
         INPUT:
