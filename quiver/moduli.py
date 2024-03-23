@@ -289,7 +289,8 @@ class QuiverModuli(ABC):
         The 3-Kronecker quiver
         sage: from quiver import *
         sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: hn = X.all_harder_narasimhan_types(); hn
         [[(1, 0), (1, 1), (0, 2)],
         [(1, 0), (1, 2), (0, 1)],
         [(1, 0), (1, 3)],
@@ -298,7 +299,7 @@ class QuiverModuli(ABC):
         [(2, 1), (0, 2)],
         [(2, 2), (0, 1)],
         [(2, 3)]]
-        sage: [Q.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn]
+        sage: [X.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn]
         [12, 9, 8, 3, 18, 10, 4, 0]
 
         """
