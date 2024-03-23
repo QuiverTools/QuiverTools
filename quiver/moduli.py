@@ -231,6 +231,78 @@ class QuiverModuli(ABC):
             slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
             semistable = all([e in sstSubdims for e in dstar])
             return (slopeDecreasing and semistable)
+        
+    def __codimension_of_harder_narasimhan_stratum_helper(self, dstar):
+        """Computes the codimension of the HN stratum of dstar inside the representation variety.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+
+        OUTPUT: codimension as Int
+        """
+        # This is private because it doesn't check if dstar is a HN type. This is fast but yields nonsense, if dstar is not a HN type.
+
+        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+
+        """
+        EXAMPLES
+
+        The 3-Kronecker quiver
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
+        [[(1, 0), (1, 1), (0, 2)],
+        [(1, 0), (1, 2), (0, 1)],
+        [(1, 0), (1, 3)],
+        [(1, 1), (1, 2)],
+        [(2, 0), (0, 3)],
+        [(2, 1), (0, 2)],
+        [(2, 2), (0, 1)],
+        [(2, 3)]]
+        sage: [Q._Quiver__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn]
+        [12, 9, 8, 3, 18, 10, 4, 0]
+
+        """
+        
+        n = self._Q.number_of_vertices()
+        assert all([e.length() == n for e in dstar])
+
+        s = len(dstar)
+        return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
+
+    def codimension_of_harder_narasimhan_stratum(self, dstar, theta, denominator=sum):
+        r"""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
+        
+        INPUT:
+        - ``dstar``: list of vectors of Ints
+
+        OUTPUT: codimension as Int
+        """
+
+        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+
+        """
+        EXAMPLES
+
+        The 3-Kronecker quiver
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
+        [[(1, 0), (1, 1), (0, 2)],
+        [(1, 0), (1, 2), (0, 1)],
+        [(1, 0), (1, 3)],
+        [(1, 1), (1, 2)],
+        [(2, 0), (0, 3)],
+        [(2, 1), (0, 2)],
+        [(2, 2), (0, 1)],
+        [(2, 3)]]
+        sage: [Q.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn]
+        [12, 9, 8, 3, 18, 10, 4, 0]
+
+        """
+        assert self.is_harder_narasimhan_type(dstar)
+
+        return self.__codimension_of_harder_narasimhan_stratum_helper(dstar)
 
     @abstractmethod
     def dimension(self):
