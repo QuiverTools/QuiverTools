@@ -576,20 +576,20 @@ class QuiverModuli(ABC):
         EXAMPLES:
 
         sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: Q.is_amply_stable(d,theta)
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.is_amply_stable()
         True
-        sage: Q.is_amply_stable(d,-theta)
+        sage: Y = QuiverModuliSpace(Q, d, -theta)
+        sage: Y.is_amply_stable()
         False
 
         A three vertex example from the rigidity paper:
         sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(1,6,1)
-        sage: d = vector([1,6,6])
+        sage: Q, d = ThreeVertexQuiver(1,6,1), vector([1,6,6])
         sage: theta = Q.canonical_stability_parameter(d)
-        sage: Q.is_amply_stable(d, theta)
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.is_amply_stable()
         False
 
         """
@@ -612,16 +612,17 @@ class QuiverModuli(ABC):
 
         sage: from quiver import *
         sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
-        sage: Q.is_strongly_amply_stable(d, theta)
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.is_strongly_amply_stable()
         True
 
         sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(5,1,1)
-        sage: d = vector([4,1,4])
+        sage: Q, d = ThreeVertexQuiver(5,1,1), vector([4,1,4])
         sage: theta = Q.canonical_stability_parameter(d)
-        sage: Q.is_amply_stable(d, theta)
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.is_amply_stable()
         True
-        sage: Q.is_strongly_amply_stable(d, theta)
+        sage: X.is_strongly_amply_stable()
         False
 
         """
