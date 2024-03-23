@@ -379,7 +379,7 @@ class QuiverModuli(ABC):
         """
 
         """
-        EXAMPLES
+        EXAMPLES:
 
         The Kronecker quiver:
         sage: from quiver import *
@@ -389,33 +389,26 @@ class QuiverModuli(ABC):
 
         The 3-Kronecker quiver:
         sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([3,3])
-        sage: theta = vector([1,-1])
-        sage: Q.all_luna_types(d,theta)
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.all_luna_types()
         [[((1, 1), [3])],
-         [((1, 1), [2, 1])],
-         [((1, 1), [1, 1, 1])],
-         [((1, 1), [1]), ((2, 2), [1])],
-         [((3, 3), [1])]]
+        [((1, 1), [2, 1])],
+        [((1, 1), [1, 1, 1])],
+        [((1, 1), [1]), ((2, 2), [1])],
+        [((3, 3), [1])]]
+
 
         The 6-subspace quiver:
         sage: from quiver import *
-        sage: Q = SubspaceQuiver(6)
-        sage: d = vector([1,1,1,1,1,1,2])
-        sage: theta = vector([1,1,1,1,1,1,-3])
-        sage: Q.all_luna_types(d,theta)
-        [[((0, 0, 0, 1, 1, 1, 1), [1]), ((1, 1, 1, 0, 0, 0, 1), [1])],
-         [((0, 0, 1, 0, 1, 1, 1), [1]), ((1, 1, 0, 1, 0, 0, 1), [1])],
-         [((0, 0, 1, 1, 0, 1, 1), [1]), ((1, 1, 0, 0, 1, 0, 1), [1])],
-         [((0, 0, 1, 1, 1, 0, 1), [1]), ((1, 1, 0, 0, 0, 1, 1), [1])],
-         [((0, 1, 0, 0, 1, 1, 1), [1]), ((1, 0, 1, 1, 0, 0, 1), [1])],
-         [((0, 1, 0, 1, 0, 1, 1), [1]), ((1, 0, 1, 0, 1, 0, 1), [1])],
-         [((0, 1, 0, 1, 1, 0, 1), [1]), ((1, 0, 1, 0, 0, 1, 1), [1])],
-         [((0, 1, 1, 0, 0, 1, 1), [1]), ((1, 0, 0, 1, 1, 0, 1), [1])],
-         [((0, 1, 1, 0, 1, 0, 1), [1]), ((1, 0, 0, 1, 0, 1, 1), [1])],
-         [((0, 1, 1, 1, 0, 0, 1), [1]), ((1, 0, 0, 0, 1, 1, 1), [1])],
-         [((1, 1, 1, 1, 1, 1, 2), [1])]]
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.all_luna_types()
+        [[((1, 1), [3])],
+        [((1, 1), [2, 1])],
+        [((1, 1), [1, 1, 1])],
+        [((1, 1), [1]), ((2, 2), [1])],
+        [((3, 3), [1])]]
 
         """
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
