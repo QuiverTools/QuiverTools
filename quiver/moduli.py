@@ -263,12 +263,13 @@ class QuiverModuli(ABC):
         [12, 9, 8, 3, 18, 10, 4, 0]
 
         """
+        Q = self._Q
         
-        n = self._Q.number_of_vertices()
+        n = Q.number_of_vertices()
         assert all([e.length() == n for e in dstar])
 
         s = len(dstar)
-        return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
+        return -sum([Q.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, theta, denominator=sum):
         r"""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
