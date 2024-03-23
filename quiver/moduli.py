@@ -553,6 +553,88 @@ class QuiverModuli(ABC):
                 if genericType in allLunaTypes:
                     allLunaTypes.remove(genericType)
                 return (not allLunaTypes) # This checks if the list is empty
+            
+    """
+    Ample stability
+    """
+            
+    # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
+    # Is this comment now obsolete?
+    def is_amply_stable(self):
+        r"""Checks if d is amply stable for theta.
+
+        OUTPUT: statement truth value as Bool
+        """
+        
+        """By definition, d is theta-amply stable if the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
+
+        # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
+        # But can we find a necessary and sufficient condition?
+        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
+
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: Q.is_amply_stable(d,theta)
+        True
+        sage: Q.is_amply_stable(d,-theta)
+        False
+
+        A three vertex example from the rigidity paper:
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(1,6,1)
+        sage: d = vector([1,6,6])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: Q.is_amply_stable(d, theta)
+        False
+
+        """
+
+        if self.semistable_equals_stable():
+            return self.codimension_unstable_locus() >= 2
+        else:
+            raise NotImplementedError()
+
+    def is_strongly_amply_stable(self):
+        r"""Checks if d is strongly amply stable for theta.
+
+        OUTPUT: statement truth value as Bool
+        """
+
+        """We call d strongly amply stable for theta if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
+
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
+        sage: Q.is_strongly_amply_stable(d, theta)
+        True
+
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(5,1,1)
+        sage: d = vector([4,1,4])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: Q.is_amply_stable(d, theta)
+        True
+        sage: Q.is_strongly_amply_stable(d, theta)
+        False
+
+        """
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+
+        # All subdimension vectors of d
+        es = all_subdimension_vectors(d)
+        # Remove 0 and d
+        es.remove(Q.zero_vector())
+        es.remove(d)
+        # Filter out those of bigger slope
+        es = list(filter(lambda e: slope(e, theta, denominator=denominator) >= slope(d, theta, denominator=denominator), es))
+        return all([Q.euler_form(e, d-e) <= -2 for e in es])
 
     @abstractmethod
     def dimension(self):
