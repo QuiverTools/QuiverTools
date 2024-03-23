@@ -211,11 +211,12 @@ class QuiverModuli(ABC):
         EXAMPLES:
         sage: from quiver import *
         sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: hn = Q.all_harder_narasimhan_types(d, theta)
-        sage: all([Q.is_harder_narasimhan_type(dstar, theta) for dstar in hn])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: hn = X.all_harder_narasimhan_types()
+        sage: all([X.is_harder_narasimhan_type(dstar) for dstar in hn])
         True
         sage: dstar = [vector([1,0]), vector([1,0]), vector([0,3])]
-        sage: Q.is_harder_narasimhan_type(dstar, theta)
+        sage: X.is_harder_narasimhan_type(dstar)
         False
 
         """
