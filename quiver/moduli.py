@@ -515,23 +515,24 @@ class QuiverModuli(ABC):
 
         The 3-Kronecker quiver:
         sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([3,3])
-        sage: theta = vector([1,-1])
-        sage: Q.semistable_equals_stable(d,theta)
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.semistable_equals_stable()
         False
-        sage: d = vector([2,3])
-        sage: Q.semistable_equals_stable(d,theta)
+        sage: e = vector([2,3])
+        sage: Y = QuiverModuliSpace(Q, e, theta)
+        sage: Y.semistable_equals_stable()
         True
 
         A double framed example as in our vector fields paper
         sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: Q = Q.framed_quiver(vector([1,0]))
-        sage: Q = Q.coframed_quiver(vector([0,0,1]))
+        sage: Q = GeneralizedKroneckerQuiver(3).framed_quiver(vector([1,0])).coframed_quiver(vector([0,0,1]))
         sage: d = vector([1,2,3,1])
         sage: theta = vector([1,300,-200,-1])
-        sage: Q.semistable_equals_stable(d, theta)
+        sage: is_coprime_for_stability_parameter(d, theta)
+        False
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.semistable_equals_stable()
         True
 
         """
