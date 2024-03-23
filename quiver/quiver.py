@@ -1048,41 +1048,6 @@ class Quiver:
         sstSubdims = [subdims[j] for j in sstIndexes]
         return sstIndexes, sstSubdims
         
-    
-    def codimension_unstable_locus(self, d, theta):
-        r"""Computes the codimension of the unstable locus inside the representation variety.
-        
-        INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
-
-        OUTPUT: codimension as Int
-        """
-
-        """"
-        EXAMPLES:
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: Q.codimension_unstable_locus(d, theta)
-        3
-        sage: Q, d = ThreeVertexQuiver(1,6,1), vector([1,6,6])
-        sage: theta = Q.canonical_stability_parameter(d)
-        sage: Q.codimension_unstable_locus(d, theta)
-        1
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
-        sage: Q.codimension_unstable_locus(d, theta)
-        0
-
-        """
-
-        n = self.number_of_vertices()
-        assert (d.length() == n and theta.length() == n)
-
-        hn = list(filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types(d, theta, denominator=sum)))
-        # Note that while the HN types and strata depend on the denominator, the list of all their codimensions does not.
-
-        return min([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn])
-
     """
     Stability and Luna
     """

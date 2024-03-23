@@ -306,6 +306,35 @@ class QuiverModuli(ABC):
         assert self.is_harder_narasimhan_type(dstar)
 
         return self.__codimension_of_harder_narasimhan_stratum_helper(dstar)
+    
+    def codimension_unstable_locus(self):
+        r"""Computes the codimension of the unstable locus inside the representation variety.
+
+        OUTPUT: codimension as Int
+        """
+
+        """"
+        EXAMPLES:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+        sage: Q.codimension_unstable_locus(d, theta)
+        3
+        sage: Q, d = ThreeVertexQuiver(1,6,1), vector([1,6,6])
+        sage: theta = Q.canonical_stability_parameter(d)
+        sage: Q.codimension_unstable_locus(d, theta)
+        1
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
+        sage: Q.codimension_unstable_locus(d, theta)
+        0
+
+        """
+        d = self._d
+
+        hn = list(filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types()))
+        # Note that while the HN types and strata depend on the denominator, the list of all their codimensions does not.
+
+        return min([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn])
+
 
     @abstractmethod
     def dimension(self):
