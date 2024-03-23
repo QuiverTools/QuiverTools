@@ -384,7 +384,8 @@ class QuiverModuli(ABC):
         The Kronecker quiver:
         sage: from quiver import *
         sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
-        sage: Q.all_luna_types(d, theta)
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.all_luna_types()
         [[((1, 1), [3])], [((1, 1), [2, 1])], [((1, 1), [1, 1, 1])]]
 
         The 3-Kronecker quiver:
@@ -397,7 +398,6 @@ class QuiverModuli(ABC):
         [((1, 1), [1, 1, 1])],
         [((1, 1), [1]), ((2, 2), [1])],
         [((3, 3), [1])]]
-
 
         The 6-subspace quiver:
         sage: from quiver import *
@@ -464,6 +464,31 @@ class QuiverModuli(ABC):
                 Prod = cartesian_product(listOfPartitions).list()
                 allLunaTypes = allLunaTypes + [[tuple([subdims[tau[i][0]],p[i]]) for i in range(len(tau))] for p in Prod]
             return allLunaTypes
+        
+    def is_luna_type(self, tau):
+        r"""Checks if tau is a Luna type for theta.
+        
+        INPUT:
+        - ``tau``: list of tuples
+
+        OUTPUT: statement truth value as Bool
+        """
+        """
+        EXAMPLES:
+
+        """
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+
+        n = Q.number_of_vertices()
+        assert all([dn[0].length() == n for dn in tau])
+        assert d == sum([sum(dn[1])*dn[0] for dn in tau])
+
+        if (d == Q.zero_vector()):
+            return (tau == [tuple([Q.zero_vector(),[1]])])
+        else:
+            dstar = [dn[0] for dn in tau]
+            stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
+            return all([e in stSubdims for e in dstar]) # Note that in particular the zero vector must not lie in dstar
         
 
     @abstractmethod
