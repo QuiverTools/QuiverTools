@@ -223,8 +223,8 @@ class QuiverModuli(ABC):
         
         assert d == sum(dstar)
 
-        if (d == self.zero_vector()):
-            return (dstar == [self.zero_vector()])
+        if (d == Q.zero_vector()):
+            return (dstar == [Q.zero_vector()])
         else:
             sstIndexes, sstSubdims = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta)
             slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
