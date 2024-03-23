@@ -406,7 +406,7 @@ class Quiver:
     
 
     """
-    Dimension vectors and stability conditions
+    Dimension vectors and roots
     """
 
     def zero_vector(self):
@@ -480,6 +480,52 @@ class Quiver:
         """A root is called real if its Tits form is non-positive."""
         assert x.length() == self.number_of_vertices()
         return (x != self.zero_vector() and self.tits_form(x) <= 0)
+    
+    def is_schur_root(self, d):
+        r"""Checks if d is a Schur root.
+        
+        INPUT:
+        - ``d``: vector of Ints
+
+        OUTPUT: statement truth value as Bool
+        """
+
+        """
+        A Schur root is a dimension vector which admits a Schurian representation, i.e. a representation whose endomorphism ring is k. It's necessarily indecomposable.
+        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
+
+        """
+        EXAMPLES:
+
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: Q.is_schur_root(d)
+        True
+
+        Examples from Derksen--Weyman's book (Ex. 11.1.4):
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(1,1,1)
+        sage: a = vector([1,1,2])
+        sage: Q.is_schur_root(a)
+        True
+        sage: b = vector([1,2,1])
+        sage: Q.is_schur_root(b)
+        False
+        sage: c = vector([1,1,1])
+        sage: Q.is_schur_root(c)
+        True
+        sage: d = vector([2,2,2])
+        sage: Q.is_schur_root(d)
+        False
+
+        """
+
+        assert d.length() == self.number_of_vertices()
+
+        theta = self.canonical_stability_parameter(d)
+        return self.has_stable_representation(d, theta)
 
     def support(self, d):
         r"""Returns the support of the dimension vector.
@@ -607,6 +653,7 @@ class Quiver:
 
         return less
     
+    # TODO: Move this to QuiverModuli, take condition into account
     def all_minimal_forbidden_subdimension_vectors(self,d,theta):
         """Returns the list of all minimal forbidden subdimension vectors of d."""
 
@@ -625,11 +672,6 @@ class Quiver:
 
         forbidden = all_forbidden_subdimension_vectors(d,theta)
         return list(filter(lambda e: not any([self.partial_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
-
-    def canonical_stability_parameter(self,d):
-        """The canonical stability parameter is given by <d,_> - <_,d>"""
-        E = self.euler_matrix()
-        return d * (-self.euler_matrix().transpose() + E)
     
     """
     Generic subdimension vectors and generic Hom and Ext
@@ -975,6 +1017,11 @@ class Quiver:
     (Semi-)stability
     """
 
+    def canonical_stability_parameter(self,d):
+        """The canonical stability parameter is given by <d,_> - <_,d>"""
+        E = self.euler_matrix()
+        return d * (-self.euler_matrix().transpose() + E)
+
     def has_semistable_representation(self, d, theta):
         r"""Checks if there is a theta-semistable representation of dimension vector d.
         
@@ -1113,53 +1160,6 @@ class Quiver:
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
 
-    # TODO: Move this with all the other root stuff
-    def is_schur_root(self, d):
-        r"""Checks if d is a Schur root.
-        
-        INPUT:
-        - ``d``: vector of Ints
-
-        OUTPUT: statement truth value as Bool
-        """
-
-        """
-        A Schur root is a dimension vector which admits a Schurian representation, i.e. a representation whose endomorphism ring is k. It's necessarily indecomposable.
-        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
-
-        """
-        EXAMPLES:
-
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: Q.is_schur_root(d)
-        True
-
-        Examples from Derksen--Weyman's book (Ex. 11.1.4):
-        sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(1,1,1)
-        sage: a = vector([1,1,2])
-        sage: Q.is_schur_root(a)
-        True
-        sage: b = vector([1,2,1])
-        sage: Q.is_schur_root(b)
-        False
-        sage: c = vector([1,1,1])
-        sage: Q.is_schur_root(c)
-        True
-        sage: d = vector([2,2,2])
-        sage: Q.is_schur_root(d)
-        False
-
-        """
-
-        assert d.length() == self.number_of_vertices()
-
-        theta = self.canonical_stability_parameter(d)
-        return self.has_stable_representation(d, theta)
-    
     def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
         """Computes the list of all stable subdimension vectors of d which have the same slope as d."""
 
