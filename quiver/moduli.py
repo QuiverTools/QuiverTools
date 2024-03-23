@@ -502,8 +502,8 @@ class QuiverModuli(ABC):
     (Semi-)stability and ample stability
     """
 
-    def semistable_equals_stable(self, d, theta):
-        # TODO: Should this stay here or go to QuiverModuli?
+    def semistable_equals_stable(self):
+        # TODO: I moved it here because it uses the luna methods. 
 
         r"""Checks if every theta-semistable representation of dimension vector d is theta-stable
 
