@@ -1,5 +1,6 @@
 from quiver import *
 from sage.combinat.permutation import *
+import copy
 
 
 """Defines how permutations are multiplied."""
@@ -61,7 +62,9 @@ class QuiverModuli(ABC):
         elif self._condition == "semistable":
             return self._Q.has_semistable_representation(self._d, self._theta)
         
-    """HN business"""
+    """
+    HN business
+    """
         
     def all_harder_narasimhan_types(self):
         r"""Returns the list of all HN types.
@@ -337,7 +340,138 @@ class QuiverModuli(ABC):
         # Note that while the HN types and strata depend on the denominator, the list of all their codimensions does not.
 
         return min([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn])
+    
+    """
+    Luna
+    """
 
+    def all_luna_types(self):
+        r"""Returns the unordered list of all Luna types of d for theta.
+
+        OUTPUT: list of tuples containing Int-vector and Int 
+        """
+
+        """A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
+        * m_1d^1 + ... + m_sd^s = d
+        * mu_theta(d^k) = mu_theta(d)
+        * All d^k admit a theta-stable representation
+        """
+
+        """Example: Suppose that d = 3e and e, 2e, d = 3e are the only stable subdimension vectors. Then the Luna types are:
+        ((3e,1))
+        ((2e,1),(e,1))
+        ((e,3))
+        ((e,2),(e,1))
+        ((e,1),(e,1),(e,1))
+        """
+
+        """Therefore we implement it as follows. A Luna type for us is a list [(d^1,p^1),...,(d^s,p^s)] (actually it should be unordered, but that's difficult because vectors are mutable) of dimension vectors d^k and (non-empty) partitions p^k such that
+        * |p^1|d^1 + ... + |p^s|d^s = d
+        * same
+        * same """
+
+        """So in the above example, the Luna types are
+        [(3e,[1])]
+        [(2e,[1]),(e,[1])]
+        [(e,[3])]
+        [(e,[2,1])]
+        [(e,[1,1,1])]
+        """
+
+        """
+        EXAMPLES
+
+        The Kronecker quiver:
+        sage: from quiver import *
+        sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
+        sage: Q.all_luna_types(d, theta)
+        [[((1, 1), [3])], [((1, 1), [2, 1])], [((1, 1), [1, 1, 1])]]
+
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([3,3])
+        sage: theta = vector([1,-1])
+        sage: Q.all_luna_types(d,theta)
+        [[((1, 1), [3])],
+         [((1, 1), [2, 1])],
+         [((1, 1), [1, 1, 1])],
+         [((1, 1), [1]), ((2, 2), [1])],
+         [((3, 3), [1])]]
+
+        The 6-subspace quiver:
+        sage: from quiver import *
+        sage: Q = SubspaceQuiver(6)
+        sage: d = vector([1,1,1,1,1,1,2])
+        sage: theta = vector([1,1,1,1,1,1,-3])
+        sage: Q.all_luna_types(d,theta)
+        [[((0, 0, 0, 1, 1, 1, 1), [1]), ((1, 1, 1, 0, 0, 0, 1), [1])],
+         [((0, 0, 1, 0, 1, 1, 1), [1]), ((1, 1, 0, 1, 0, 0, 1), [1])],
+         [((0, 0, 1, 1, 0, 1, 1), [1]), ((1, 1, 0, 0, 1, 0, 1), [1])],
+         [((0, 0, 1, 1, 1, 0, 1), [1]), ((1, 1, 0, 0, 0, 1, 1), [1])],
+         [((0, 1, 0, 0, 1, 1, 1), [1]), ((1, 0, 1, 1, 0, 0, 1), [1])],
+         [((0, 1, 0, 1, 0, 1, 1), [1]), ((1, 0, 1, 0, 1, 0, 1), [1])],
+         [((0, 1, 0, 1, 1, 0, 1), [1]), ((1, 0, 1, 0, 0, 1, 1), [1])],
+         [((0, 1, 1, 0, 0, 1, 1), [1]), ((1, 0, 0, 1, 1, 0, 1), [1])],
+         [((0, 1, 1, 0, 1, 0, 1), [1]), ((1, 0, 0, 1, 0, 1, 1), [1])],
+         [((0, 1, 1, 1, 0, 0, 1), [1]), ((1, 0, 0, 0, 1, 1, 1), [1])],
+         [((1, 1, 1, 1, 1, 1, 2), [1])]]
+
+        """
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+
+        if (d == Q.zero_vector()):
+            return [tuple([Q.zero_vector(),[1]])]
+        else: 
+            subdims = all_subdimension_vectors(d)
+            subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
+            N = len(subdims)
+            # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
+            slopeIndexes = list(filter(lambda j: slope(subdims[j], theta, denominator=denominator) == slope(d, theta, denominator=denominator), range(1,N)))
+            # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
+            # They're in deglex order by the way the helper function works.
+            stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
+            # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
+            idx_diff = (lambda j, i: subdims.index(subdims[j]-subdims[i]))
+
+            # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
+            partialLunaTypes = [[] for j in range(N)]
+            for j in range(N):
+                stSub = list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]) and i != j, stIndexes))
+                for i in stSub:
+                    smaller = partialLunaTypes[idx_diff(j,i)]
+                    for tau in smaller:
+                        # Check if f := stSubdims[i] occurs as a dimension vector in tau.
+                        # If so, say of the form (f,n) then remove this occurrence and add (f,n+1)
+                        # If not, then add (f,1)
+                        tauNew = copy.deepcopy(tau)
+                        occurs = False
+                        for dn in tauNew:
+                            if (dn[0] == i):
+                                # We remove dn from tau and add the tuple (e,dn[1]+1) instead
+                                tauNew.remove(dn)
+                                tauNew.append(tuple([i,dn[1]+1]))
+                                occurs = True
+                        if (not occurs):
+                            tauNew.append(tuple([i,1]))
+                        # Now tauNew is a Luna type of e := subdims[j] the desired form
+                        # We sort it, because it's supposed to be unordered
+                        tauNew.sort()
+                        # If tau isn't already contained, then we add it
+                        if tauNew not in partialLunaTypes[j]:
+                            partialLunaTypes[j] = partialLunaTypes[j] + [tauNew]
+                if (j in stIndexes):
+                    # If e = subdims[j] is stable then (e,1) is also a Luna type.
+                    partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([j,1])]]
+        
+            partial = partialLunaTypes[N-1]
+            allLunaTypes = []
+            for tau in partial:
+                listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
+                Prod = cartesian_product(listOfPartitions).list()
+                allLunaTypes = allLunaTypes + [[tuple([subdims[tau[i][0]],p[i]]) for i in range(len(tau))] for p in Prod]
+            return allLunaTypes
+        
 
     @abstractmethod
     def dimension(self):
