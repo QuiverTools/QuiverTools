@@ -498,6 +498,60 @@ class QuiverModuli(ABC):
             stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
             return all([e in stSubdims for e in dstar]) # Note that in particular the zero vector must not lie in dstar
         
+    """
+    (Semi-)stability and ample stability
+    """
+
+    def semistable_equals_stable(self, d, theta):
+        # TODO: Should this stay here or go to QuiverModuli?
+
+        r"""Checks if every theta-semistable representation of dimension vector d is theta-stable
+
+        OUTPUT: statement truth value as Bool
+        """
+
+        """
+        EXAMPLES:
+
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([3,3])
+        sage: theta = vector([1,-1])
+        sage: Q.semistable_equals_stable(d,theta)
+        False
+        sage: d = vector([2,3])
+        sage: Q.semistable_equals_stable(d,theta)
+        True
+
+        A double framed example as in our vector fields paper
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: Q = Q.framed_quiver(vector([1,0]))
+        sage: Q = Q.coframed_quiver(vector([0,0,1]))
+        sage: d = vector([1,2,3,1])
+        sage: theta = vector([1,300,-200,-1])
+        sage: Q.semistable_equals_stable(d, theta)
+        True
+
+        """
+
+        """Every theta-semistable representation is theta-stable if and only if there are no Luna types other than (possibly) (d,[1])."""
+        Q, d, theta = self._Q, self._d, self._theta
+
+        # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
+        if is_coprime_for_stability_parameter(d,theta):
+            return True
+        else:
+            # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation is a bit slower
+            if not Q.has_semistable_representation(d,theta):
+                return True
+            else:
+                allLunaTypes = self.all_luna_types()
+                genericType = [tuple([d,[1]])]
+                if genericType in allLunaTypes:
+                    allLunaTypes.remove(genericType)
+                return (not allLunaTypes) # This checks if the list is empty
 
     @abstractmethod
     def dimension(self):
