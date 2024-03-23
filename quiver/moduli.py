@@ -473,8 +473,16 @@ class QuiverModuli(ABC):
 
         OUTPUT: statement truth value as Bool
         """
+
         """
         EXAMPLES:
+        
+        sage: from quiver import *
+        sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: l = X.all_luna_types()
+        sage: all([X.is_luna_type(tau) for tau in l])
+        True
 
         """
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
