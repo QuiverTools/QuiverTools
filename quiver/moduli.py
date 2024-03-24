@@ -575,7 +575,7 @@ class QuiverModuli(ABC):
         return min([self.__codimension_inverse_image_luna_stratum(tau) for tau in L])
         
     """
-    (Semi-)stability and ample stability
+    (Semi-)stability
     """
 
     def semistable_equals_stable(self):
@@ -647,6 +647,7 @@ class QuiverModuli(ABC):
         # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
         # But can we find a necessary and sufficient condition?
         # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
+        # I think I can compute the codimension of the non-stable locus in full generality.
 
         """
         EXAMPLES:
@@ -670,10 +671,13 @@ class QuiverModuli(ABC):
 
         """
 
-        if self.semistable_equals_stable():
+        Q, d, theta = self._Q, self._d, self._theta
+
+        # It's probably faster to make this distinction
+        if is_coprime_for_stability_parameter(d, theta):
             return self.codimension_unstable_locus() >= 2
         else:
-            raise NotImplementedError()
+            return min([self.codimension_unstable_locus(), self.codimension_properly_semistable_locus()]) >= 2
 
     def is_strongly_amply_stable(self):
         r"""Checks if d is strongly amply stable for theta.
