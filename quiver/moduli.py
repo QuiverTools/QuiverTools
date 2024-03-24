@@ -235,54 +235,17 @@ class QuiverModuli(ABC):
             semistable = all([e in sstSubdims for e in dstar])
             return (slopeDecreasing and semistable)
         
-    def __codimension_of_harder_narasimhan_stratum_helper(self, dstar):
+    def codimension_of_harder_narasimhan_stratum(self, dstar, secure=True):
         """Computes the codimension of the HN stratum of dstar inside the representation variety.
         
         INPUT:
         - ``dstar``: list of vectors of Ints
+        - ``secure``: Bool
 
         OUTPUT: codimension as Int
         """
-        # This is private because it doesn't check if dstar is a HN type. This is fast but yields nonsense, if dstar is not a HN type.
-
-        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
-
-        """
-        EXAMPLES
-
-        The 3-Kronecker quiver
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: X = QuiverModuliSpace(Q, d, theta)
-        sage: hn = X.all_harder_narasimhan_types(); hn
-        [[(1, 0), (1, 1), (0, 2)],
-        [(1, 0), (1, 2), (0, 1)],
-        [(1, 0), (1, 3)],
-        [(1, 1), (1, 2)],
-        [(2, 0), (0, 3)],
-        [(2, 1), (0, 2)],
-        [(2, 2), (0, 1)],
-        [(2, 3)]]
-        sage: [X._QuiverModuli__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn]
-        [12, 9, 8, 3, 18, 10, 4, 0]
-
-        """
-        Q = self._Q
-        
-        n = Q.number_of_vertices()
-        assert all([e.length() == n for e in dstar])
-
-        s = len(dstar)
-        return -sum([Q.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
-
-    def codimension_of_harder_narasimhan_stratum(self, dstar):
-        r"""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
-        
-        INPUT:
-        - ``dstar``: list of vectors of Ints
-
-        OUTPUT: codimension as Int
-        """
+        # It checks for dstar to be a HN type iff secure == True. This check is slow.
+        # Be sure to be dealing with a HN type if you call it with secure == False. This is fast but yields nonsense, if dstar is not a HN type.
 
         """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
 
@@ -306,9 +269,16 @@ class QuiverModuli(ABC):
         [12, 9, 8, 3, 18, 10, 4, 0]
 
         """
-        assert self.is_harder_narasimhan_type(dstar)
+        Q = self._Q
+        
+        n = Q.number_of_vertices()
+        assert all([e.length() == n for e in dstar])
 
-        return self.__codimension_of_harder_narasimhan_stratum_helper(dstar)
+        if secure:
+            assert self.is_harder_narasimhan_type(dstar)
+
+        s = len(dstar)
+        return -sum([Q.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
     
     def codimension_unstable_locus(self):
         r"""Computes the codimension of the unstable locus inside the representation variety.
@@ -339,7 +309,7 @@ class QuiverModuli(ABC):
         hn = list(filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types()))
         # Note that while the HN types and strata depend on the denominator, the list of all their codimensions does not.
 
-        return min([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn])
+        return min([self.codimension_of_harder_narasimhan_stratum(dstar, secure=False) for dstar in hn])
     
     """
     Luna
