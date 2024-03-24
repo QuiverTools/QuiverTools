@@ -482,18 +482,16 @@ class QuiverModuli(ABC):
 
         """
         EXAMPLES:
-        
+
         The Kronecker quiver:
         sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(2)
-        sage: d = vector([2,2])
-        sage: theta = vector([1,-1])
-        sage: L = Q.all_luna_types(d,theta)
-        sage: L
+        sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: L = X.all_luna_types(); L
         [[((1, 1), [2])], [((1, 1), [1, 1])]]
-        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
         sage: [X.dimension_of_luna_stratum(tau) for tau in L]
         [1, 2]
+        
         """
 
         if secure:
