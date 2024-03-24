@@ -481,7 +481,8 @@ class QuiverModuli(ABC):
         """The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is sum_k l(p^k)(1 - <d^k,d^k>) where for a partition p = (n_1,...,n_l), the length l(p) is l, i.e. the number of rows."""
 
         """
-        EXAMPLES
+        EXAMPLES:
+        
         The Kronecker quiver:
         sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(2)
