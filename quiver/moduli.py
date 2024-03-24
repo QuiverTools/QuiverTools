@@ -468,6 +468,37 @@ class QuiverModuli(ABC):
             stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
             return all([e in stSubdims for e in dstar]) # Note that in particular the zero vector must not lie in dstar
         
+    def dimension_of_luna_stratum(self, tau, secure=True):
+        r"""Computes the dimension of the Luna stratum S_tau.
+        
+        INPUT:
+        - ``tau``: list of tuples
+        - ``secure``: Bool
+
+        OUTPUT: Dimension as Int
+        """
+
+        """The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is sum_k l(p^k)(1 - <d^k,d^k>) where for a partition p = (n_1,...,n_l), the length l(p) is l, i.e. the number of rows."""
+
+        """
+        EXAMPLES
+        The Kronecker quiver:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(2)
+        sage: d = vector([2,2])
+        sage: theta = vector([1,-1])
+        sage: L = Q.all_luna_types(d,theta)
+        sage: L
+        [[((1, 1), [2])], [((1, 1), [1, 1])]]
+        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+        sage: [X.dimension_of_luna_stratum(tau) for tau in L]
+        [1, 2]
+        """
+
+        if secure:
+            assert self.is_luna_type(tau)
+        return sum([len(dn[1])*(1-self._Q.euler_form(dn[0],dn[0])) for dn in tau])
+        
     """
     (Semi-)stability and ample stability
     """
@@ -712,30 +743,6 @@ class QuiverModuliSpace(QuiverModuli):
             else:
                 # self._condition == "stable"
                 return -oo
-
-    def dimension_of_luna_stratum(self,tau):
-        """Computes the dimension of the Luna stratum S_tau."""
-        """The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is sum_k l(p^k)(1 - <d^k,d^k>) where for a partition p = (n_1,...,n_l), the length l(p) is l, i.e. the number of rows."""
-
-        """
-        EXAMPLES
-        The Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(2)
-        sage: d = vector([2,2])
-        sage: theta = vector([1,-1])
-        sage: L = Q.all_luna_types(d,theta)
-        sage: L
-        [[((1, 1), [2])], [((1, 1), [1, 1])]]
-        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-        sage: [X.dimension_of_luna_stratum(tau) for tau in L]
-        [1, 2]
-        """
-        # The Luna stratification is a stratification of the semistable moduli space
-        assert self._condition == "semistable"
-        # This check takes a long time. Shall we do it nonetheless?
-        assert self._Q.is_luna_type(tau,self._theta)
-        return sum([len(dn[1])*(1-self._Q.euler_form(dn[0],dn[0])) for dn in tau])
     
     def poincare_polynomial(self):
         r"""Returns the Poincare polynomial of the moduli space.
