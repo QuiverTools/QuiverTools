@@ -669,6 +669,20 @@ class QuiverModuli(ABC):
         sage: X.is_amply_stable()
         False
 
+        A 3-Kronecker example with a divisible dimension vector:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.is_amply_stable()
+        True
+
+        A Kronecker example with an empty stable locus:
+        sage: from quiver import *
+        sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: X.is_amply_stable()
+        False
+
         """
 
         Q, d, theta = self._Q, self._d, self._theta
