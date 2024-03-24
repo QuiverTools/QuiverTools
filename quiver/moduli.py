@@ -543,6 +543,21 @@ class QuiverModuli(ABC):
 
         Q, d = self._Q, self._d
         return -Q.euler_form(d,d)+sum([Q.euler_form(dk[0], dk[0])-len(dk[1])+sum([nkv**2 for nkv in dk[1]]) for dk in tau])
+    
+    def codimension_properly_semistable_locus(self):
+        r"""Computes the codimension of R(Q,d)^{theta-sst} \ R(Q,d)^{theta-st} inside R(Q,d).
+        
+        OUTPUT: codimension as Int
+        """
+
+        """The codimension of the properly semistable locus is the minimal codimension of the inverse image of the non-stable Luna strata."""
+
+        Q, d = self._Q, self._d
+        L = self.all_luna_types()
+        # This is the stable Luna type; remove it if it occurs
+        dstable = [tuple([d, [1]])]
+        L = list(filter(lambda tau: tau != dstable, L))
+        return min([self.__codimension_inverse_image_luna_stratum(tau) for tau in L])
         
     """
     (Semi-)stability and ample stability
