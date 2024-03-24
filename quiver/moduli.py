@@ -497,6 +497,31 @@ class QuiverModuli(ABC):
         if secure:
             assert self.is_luna_type(tau)
         return sum([len(dn[1])*(1-self._Q.euler_form(dn[0],dn[0])) for dn in tau])
+    
+    def __codimension_inverse_image_luna_stratum(self, tau):
+        r"""Computes the codimension of pi^{-1}(S_tau) inside R(Q,d) where pi: R(Q,d)^{theta-sst} --> M^{theta-sst}(Q,d) is the semistable quotient map.
+        
+        INPUT:
+        - ``tau``: list of tuples
+
+        OUTPUT: codimension as Int
+        """
+
+        """For tau = [(d^1,p^1),...,(d^s,p^s)] the codimension of pi^{-1}(S_tau) is
+        
+        -<d,d> + sum_{k=1}^s (<d^k,d^k> - l(p^k) + ||p^k||^2)
+
+        where for a partition p = (n_1,...,n_l), we define ||p||^2 = sum_v n_v^2.
+        """
+
+        """
+        EXAMPLES:
+        
+        
+        """
+
+        Q, d = self._Q, self._d
+        return -Q.euler_form(d,d)+sum([Q.euler_form(dk[0], dk[0])-len(dk[1])+sum([nkv**2 for nkv in dk[1]]) for dk in tau])
         
     """
     (Semi-)stability and ample stability
@@ -636,6 +661,7 @@ class QuiverModuli(ABC):
         # Filter out those of bigger slope
         es = list(filter(lambda e: slope(e, theta, denominator=denominator) >= slope(d, theta, denominator=denominator), es))
         return all([Q.euler_form(e, d-e) <= -2 for e in es])
+
 
     @abstractmethod
     def dimension(self):
