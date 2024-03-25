@@ -735,7 +735,7 @@ class QuiverModuli(ABC):
     Tautological relations
     """
 
-    def all_forbidden_subdimension_vectors():
+    def all_forbidden_subdimension_vectors(self):
         """Returns the list of all subdimension vectors d' of d for which mu_theta(d') > mu_theta(d) (in the semistable case) or for which mu_theta(d') >= mu_theta(d) (in the stable case).
         
         OUTPUT: list of vectors
