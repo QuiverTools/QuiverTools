@@ -773,14 +773,18 @@ class QuiverModuli(ABC):
         """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
 
         """
-        EXAMPLES
+        EXAMPLES:
 
         sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: Q.all_minimal_forbidden_subdimension_vectors(d,theta)
+        sage: Q, d, theta, condition = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1]), "semistable"
+        sage: X = QuiverModuliSpace(Q, d, theta, condition=condition)
+        sage: X.all_minimal_forbidden_subdimension_vectors()
+        [(1, 0), (2, 1), (3, 2)]
+        sage: Q, d, theta, condition = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1]), "stable"
+        sage: Y = QuiverModuliSpace(Q, d, theta, condition=condition)
+        sage: Y.all_minimal_forbidden_subdimension_vectors()
         [(1, 1), (2, 2)]
+
         """
         Q = self._Q
 
