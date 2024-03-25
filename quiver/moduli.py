@@ -782,7 +782,7 @@ class QuiverModuli(ABC):
         sage: Q.all_minimal_forbidden_subdimension_vectors(d,theta)
         [(1, 1), (2, 2)]
         """
-        Q = self.Q
+        Q = self._Q
 
         forbidden = self.all_forbidden_subdimension_vectors()
         return list(filter(lambda e: not any([Q.division_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
