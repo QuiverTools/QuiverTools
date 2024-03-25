@@ -730,6 +730,34 @@ class QuiverModuli(ABC):
         # Filter out those of bigger slope
         es = list(filter(lambda e: slope(e, theta, denominator=denominator) >= slope(d, theta, denominator=denominator), es))
         return all([Q.euler_form(e, d-e) <= -2 for e in es])
+    
+    """
+    Tautological relations
+    """
+
+    def all_forbidden_subdimension_vectors():
+        """Returns the list of all subdimension vectors d' of d for which mu_theta(d') > mu_theta(d) (in the semistable case) or for which mu_theta(d') >= mu_theta(d) (in the stable case).
+        
+        OUTPUT: list of vectors
+        """
+
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: all_forbidden_subdimension_vectors(d,theta)
+        [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2)]
+        """
+        Q, d, theta, condition = self._Q, self._d, self._theta, self._condition
+
+        properSubdimensions = list(filter(lambda e: e != d and e != Q.zero_vector(), all_subdimension_vectors(d)))
+        
+        if condition == "semistable":
+            return list(filter(lambda e: slope(e,theta) > slope(d,theta), properSubdimensions))
+        elif condition == "stable":
+            return list(filter(lambda e: slope(e,theta) >= slope(d,theta), properSubdimensions))
 
 
     @abstractmethod
