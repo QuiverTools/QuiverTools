@@ -745,10 +745,15 @@ class QuiverModuli(ABC):
         EXAMPLES:
 
         sage: from quiver import *
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: all_forbidden_subdimension_vectors(d,theta)
-        [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2)]
+        sage: Q, d, theta, condition = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1]), "semistable"
+        sage: X = QuiverModuliSpace(Q, d, theta, condition=condition)
+        sage: X.all_forbidden_subdimension_vectors()
+        [(1, 0), (2, 0), (2, 1), (3, 0), (3, 1), (3, 2)]
+        sage: Q, d, theta, condition = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1]), "stable"
+        sage: Y = QuiverModuliSpace(Q, d, theta, condition=condition)
+        sage: Y.all_forbidden_subdimension_vectors()
+        [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2), (3, 0), (3, 1), (3, 2)]
+
         """
         Q, d, theta, condition = self._Q, self._d, self._theta, self._condition
 
