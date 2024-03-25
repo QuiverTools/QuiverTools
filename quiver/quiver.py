@@ -606,9 +606,10 @@ class Quiver:
     #         simples[i][i] = 1
     #     return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
     
-    def partial_order(self,d,e):
+    def division_order(self, d, e):
         """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
         # TODO: Think of a better name.
+        # Good name?
 
         """
         EXAMPLES
@@ -618,17 +619,17 @@ class Quiver:
         sage: d = vector([1,1])
         sage: e = vector([2,1])
         sage: f = vector([2,2])
-        sage: Q.partial_order(d,e)
+        sage: Q.division_order(d,e)
         True
-        sage: Q.partial_order(e,d)
+        sage: Q.division_order(e,d)
         False
-        sage: Q.partial_order(d,f)
+        sage: Q.division_order(d,f)
         False
-        sage: Q.partial_order(f,d)
+        sage: Q.division_order(f,d)
         False
-        sage: Q.partial_order(e,f)
+        sage: Q.division_order(e,f)
         False
-        sage: Q.partial_order(f,e)
+        sage: Q.division_order(f,e)
         True
 
         sage: Q = ThreeVertexQuiver(2,2,2)
@@ -639,9 +640,9 @@ class Quiver:
         [0 0 0]
         sage: d = vector([1,1,1])
         sage: e = vector([1,2,1])
-        sage: Q.partial_order(d,e)
+        sage: Q.division_order(d,e)
         False
-        sage: Q.partial_order(e,d)
+        sage: Q.division_order(e,d)
         False
         """
 
@@ -671,7 +672,7 @@ class Quiver:
         """
 
         forbidden = all_forbidden_subdimension_vectors(d,theta)
-        return list(filter(lambda e: not any([self.partial_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
+        return list(filter(lambda e: not any([self.division_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
     
     """
     Generic subdimension vectors and generic Hom and Ext
@@ -1529,24 +1530,8 @@ def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
     return list(map(vector, cartesian_product([range(di + 1) for di in d])))
 
-def all_forbidden_subdimension_vectors(d,theta):
-    """Returns the list of all subdimension vectors d' of d for which mu_theta(d') > mu_theta(d)."""
 
-    """
-    EXAMPLES
-
-    sage: from quiver import *
-    sage: d = vector([2,3])
-    sage: theta = vector([3,-2])
-    sage: all_forbidden_subdimension_vectors(d,theta)
-    [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2)]
-    """
-
-    zeroVector = vector([0 for i in range(d.length())])
-    properSubdimensions = list(filter(lambda e: e != d and e != zeroVector, all_subdimension_vectors(d)))
-    return list(filter(lambda e: slope(e,theta) > slope(d,theta), properSubdimensions))
-
-
+# TODO: This method has a stupid name (my own fault). Think of a better one.
 def is_coprime_for_stability_parameter(d,theta):
     """Checks if d is theta-coprime."""
 
