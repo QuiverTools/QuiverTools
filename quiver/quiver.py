@@ -654,26 +654,6 @@ class Quiver:
 
         return less
     
-    # TODO: Move this to QuiverModuli, take condition into account
-    def all_minimal_forbidden_subdimension_vectors(self,d,theta):
-        """Returns the list of all minimal forbidden subdimension vectors of d."""
-
-        """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
-
-        """
-        EXAMPLES
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: Q.all_minimal_forbidden_subdimension_vectors(d,theta)
-        [(1, 1), (2, 2)]
-        """
-
-        forbidden = all_forbidden_subdimension_vectors(d,theta)
-        return list(filter(lambda e: not any([self.division_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
-    
     """
     Generic subdimension vectors and generic Hom and Ext
     """
