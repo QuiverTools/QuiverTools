@@ -498,6 +498,8 @@ class QuiverModuli(ABC):
             assert self.is_luna_type(tau)
         return sum([len(dn[1])*(1-self._Q.euler_form(dn[0],dn[0])) for dn in tau])
     
+    # TODO: I realized that this computation is wrong! I made a stupid mistake. I'll correct it once I've settled the Chow stuff.
+    # Note that this implies that ample stability is also still incomplete.
     def __codimension_inverse_image_luna_stratum(self, tau):
         r"""Computes the codimension of pi^{-1}(S_tau) inside R(Q,d) where pi: R(Q,d)^{theta-sst} --> M^{theta-sst}(Q,d) is the semistable quotient map.
         
@@ -790,6 +792,53 @@ class QuiverModuli(ABC):
 
         forbidden = self.all_forbidden_subdimension_vectors()
         return list(filter(lambda e: not any([Q.division_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
+    
+    def tautological_relations(self, chernRoots=False, alphabet=None):
+        r"""Returns the tautological relations in Chern classes (if chernRoots == False) or in Chern roots.
+        
+        INPUT:
+        - ``chernRoots``: Bool
+        - ``alphabet``: list of Strings
+        
+        OUTPUT: list
+        """
+
+        # TODO
+        """Explanation ..."""
+
+        """
+        Notation for explanations:
+        G = G_d = prod_{i in Q_0} GL_{d_i}
+        T = maximal torus of diagonal matrices
+        PG = G/G_m
+        PT = T/G_m maximal torus of PT
+        W = Weyl group of T in G = Weyl group of PT in PG
+          = prod_{i in Q_0} S_{d_i}
+        R = bigoplus_{a in Q_1} Hom(k^{d_{s(a)}},k^{d_{t(a)}})
+        R^{sst}, R^{st} semi-stable/stable locus
+        """
+
+        """
+        EXAMPLES:
+        """
+        Q, d, theta = self._Q, self._d, self._theta
+        n = Q.number_of_vertices()
+
+        if chernRoots:
+            if alphabet == None:
+                alphabet = ['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+        else: # chernRoots == False
+            if alphabet == None:
+                alphabet = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+                
+        R = PolynomialRing(QQ, alphabet)
+
+        def generator(R, i, r):
+            r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
+            return R.gen(r+sum([d[j] for j in range(i)]))
+
+        """delta is the discriminant"""
+        delta = prod([prod([generator(R,i,l) - generator(R,i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
     
 
     @abstractmethod
