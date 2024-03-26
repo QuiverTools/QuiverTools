@@ -793,12 +793,13 @@ class QuiverModuli(ABC):
         forbidden = self.all_forbidden_subdimension_vectors()
         return list(filter(lambda e: not any([Q.division_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
     
-    def tautological_relations(self, chernRoots=False, alphabet=None):
-        r"""Returns the tautological relations in Chern classes (if chernRoots == False) or in Chern roots.
+    def tautological_relations(self, inRoots=False, chernClasses=None, chernRoots=None):
+        r"""Returns the tautological relations in Chern classes (if inRoots == False) or in Chern roots.
         
         INPUT:
-        - ``chernRoots``: Bool
-        - ``alphabet``: list of Strings
+        - ``inRoots``: Bool
+        - ``chernClasses``: list of Strings
+        - ``chernRoots``: list of Strings
         
         OUTPUT: list
         """
@@ -824,22 +825,81 @@ class QuiverModuli(ABC):
         Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
 
-        if chernRoots:
-            if alphabet == None:
-                alphabet = ['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-        else: # chernRoots == False
-            if alphabet == None:
-                alphabet = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+        if chernClasses == None:
+            chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+        if chernRoots == None:
+            chernRoots = ['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
                 
-        R = PolynomialRing(QQ, alphabet)
+        R = PolynomialRing(QQ, chernRoots)
 
         def generator(R, i, r):
             r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
             return R.gen(r+sum([d[j] for j in range(i)]))
 
-        """delta is the discriminant"""
-        delta = prod([prod([generator(R,i,l) - generator(R,i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
-    
+        """Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T]).
+        For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
+        forbiddenPolynomials = [prod([prod([(generator(R,j,s) - generator(R,i,r))**a[i,j]  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in self.all_minimal_forbidden_subdimension_vectors()]
+
+        if inRoots:
+            return forbiddenPolynomials
+        else:
+            """delta is the discriminant"""
+            delta = prod([prod([generator(R,i,l) - generator(R,i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
+
+            """longest is the longest Weyl group element when regarding W as a subgroup of S_{sum d_i}"""
+            longest = []
+            r = 0
+            for i in range(n):
+                longest = longest + list(reversed(range(r+1,r+d[i]+1)))
+                r += d[i]
+            W = Permutations(bruhat_smaller=longest)
+
+            def antisymmetrization(f):
+                """The antisymmetrization of f is the symmetrization divided by the discriminant."""
+                # I don't want to define W and delta here but globally because then we need to
+                # compute it just once. That's probably a bit faster.
+                def permute(f, w):
+                    return f.subs({R.gen(i): R.gen(w[i] - 1) for i in range(R.ngens())})
+
+                return sum(w.sign() * permute(f, w) for w in W) // delta
+
+            """Schubert basis of A^*([R/T]) over A^*([R/G])"""
+            X = SchubertPolynomialRing(ZZ)
+            supp = list(filter(lambda i: d[i] > 0, range(n)))
+            B = lambda i: [X(p).expand() for p in Permutations(d[i])] 
+            Bprime = [[f.parent().hom([generator(R,i,r) for r in range(f.parent().ngens())], R)(f) for f in B(i)] for i in supp]
+
+            def product_lists(L):
+                n = len(L)
+                assert n > 0
+                if n == 1:
+                    return L[0]
+                else:
+                    P = product_lists([L[i] for i in range(n-1)])
+                    return [p*l for p in P for l in L[n-1]]
+
+            schubert = product_lists(Bprime)
+
+            """Define A = A*([R/G])."""
+            degrees = []
+            for i in range(n):
+                degrees = degrees+list(range(1,d[i]+1))
+            A = PolynomialRing(QQ, ['c%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)], order=TermOrder('wdegrevlex', degrees))
+
+            E = SymmetricFunctions(ZZ).e()
+            """The Chern classes of U_i on [R/G] are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
+            elementarySymmetric = []
+            for i in range(n):
+                elementarySymmetric = elementarySymmetric + [E([k]).expand(d[i], alphabet=[generator(R,i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
+            """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
+            inclusion = A.hom(elementarySymmetric, R)
+
+            """Tautological relations in Chern classes."""
+            tautological = [antisymmetrization(b * f) for b in schubert for f in forbiddenPolynomials]
+            tautological = [inclusion.inverse_image(g) for g in tautological]
+
+            return tautological
+
 
     @abstractmethod
     def dimension(self):
