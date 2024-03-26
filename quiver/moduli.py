@@ -885,7 +885,7 @@ class QuiverModuli(ABC):
             degrees = []
             for i in range(n):
                 degrees = degrees+list(range(1,d[i]+1))
-            A = PolynomialRing(QQ, ['c%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)], order=TermOrder('wdegrevlex', degrees))
+            A = PolynomialRing(QQ, chernClasses, order=TermOrder('wdegrevlex', degrees))
 
             E = SymmetricFunctions(ZZ).e()
             """The Chern classes of U_i on [R/G] are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
@@ -1321,9 +1321,25 @@ class QuiverModuliSpace(QuiverModuli):
         sage: h
         h
         """
+        
+        if chernClasses == None:
+            chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
 
-        di = self.tautological_presentation(chi=chi, chernClasses=chernClasses)
-        return di["ChowRing"]
+        if chi == None:
+            [g,m] = extended_gcd(d.list())
+            chi = vector(m)
+
+        # TODO assert that chi has integer entries.
+        """Make sure that chi has weight one, i.e. provides a retraction for X*(PG) --> X*(G)."""
+        assert chi*d == 1
+        
+        A = PolynomialRing(QQ, chernClasses, order=TermOrder('wdegrevlex', degrees))
+        tautological = self.tautological_presentation(inRoots=False, chernClasses=chernClasses)
+        I = A.ideal(tautological)
+
+        I = I + A.ideal(sum([chi[i]*generator(A,i,0) for i in range(n)]))
+
+        return QuotientRing(A, I, names=chernClasses)
 
     def chern_class_line_bundle(self, eta, chernClasses=None):
         """Returns the first Chern class of the line bundle L(eta) = bigotimes_{i in Q_0} det(U_i)^{-eta_i} where eta is a character of PG_d."""
