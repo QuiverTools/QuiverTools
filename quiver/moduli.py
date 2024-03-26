@@ -824,6 +824,7 @@ class QuiverModuli(ABC):
         """
         Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
+        a = Q.adjacency_matrix()
 
         if chernClasses == None:
             chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
