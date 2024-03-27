@@ -793,7 +793,7 @@ class QuiverModuli(ABC):
         forbidden = self.all_forbidden_subdimension_vectors()
         return list(filter(lambda e: not any([Q.division_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
     
-    def tautological_relations(self, inRoots=False, chernClasses=None, chernRoots=None):
+    def __tautological_presentation(self, inRoots=False, chernClasses=None, chernRoots=None):
         r"""Returns the tautological relations in Chern classes (if inRoots == False) or in Chern roots.
         
         INPUT:
@@ -801,7 +801,7 @@ class QuiverModuli(ABC):
         - ``chernClasses``: list of Strings
         - ``chernRoots``: list of Strings
         
-        OUTPUT: list
+        OUTPUT: dict
         """
 
         # TODO
@@ -842,7 +842,11 @@ class QuiverModuli(ABC):
         forbiddenPolynomials = [prod([prod([(generator(R,j,s) - generator(R,i,r))**a[i,j]  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in self.all_minimal_forbidden_subdimension_vectors()]
 
         if inRoots:
-            return forbiddenPolynomials
+            return {
+                "ParentRing" : R,
+                "Generators" : lambda i, r: generator(R, i, r),
+                "Relations"  : forbiddenPolynomials
+            }
         else:
             """delta is the discriminant"""
             delta = prod([prod([generator(R,i,l) - generator(R,i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
@@ -899,8 +903,25 @@ class QuiverModuli(ABC):
             tautological = [antisymmetrization(b * f) for b in schubert for f in forbiddenPolynomials]
             tautological = [inclusion.inverse_image(g) for g in tautological]
 
-            return tautological
+            return { 
+                "ParentRing" : A,
+                "Generators" : lambda i, r: generator(A, i, r),
+                "Relations"  : tautological
+            }
 
+    def tautological_relations(self, inRoots=False, chernClasses=None, chernRoots=None):
+        r"""Returns the tautological relations in Chern classes (if inRoots == False) or in Chern roots.
+        
+        INPUT:
+        - ``inRoots``: Bool
+        - ``chernClasses``: list of Strings
+        - ``chernRoots``: list of Strings
+        
+        OUTPUT: list
+        """
+
+        taut = self.__tautological_presentation(inRoots=inRoots, chernClasses=chernClasses, chernRoots=chernRoots)
+        return taut["Relations"]
 
     @abstractmethod
     def dimension(self):
@@ -1321,6 +1342,8 @@ class QuiverModuliSpace(QuiverModuli):
         sage: h
         h
         """
+        Q, d = self._Q, self._d
+        n = Q.number_of_vertices()
         
         if chernClasses == None:
             chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
@@ -1333,8 +1356,12 @@ class QuiverModuliSpace(QuiverModuli):
         """Make sure that chi has weight one, i.e. provides a retraction for X*(PG) --> X*(G)."""
         assert chi*d == 1
         
+        degrees = []
+        for i in range(n):
+            degrees = degrees+list(range(1,d[i]+1))
         A = PolynomialRing(QQ, chernClasses, order=TermOrder('wdegrevlex', degrees))
-        tautological = self.tautological_presentation(inRoots=False, chernClasses=chernClasses)
+
+        tautological = self.tautological_relations(inRoots=False, chernClasses=chernClasses)
         I = A.ideal(tautological)
 
         I = I + A.ideal(sum([chi[i]*generator(A,i,0) for i in range(n)]))
