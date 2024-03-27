@@ -1344,9 +1344,12 @@ class QuiverModuliSpace(QuiverModuli):
         """
         Q, d = self._Q, self._d
         n = Q.number_of_vertices()
-        
+
         if chernClasses == None:
             chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+
+        taut = self.__tautological_presentation(inRoots=False, chernClasses=chernClasses)
+        A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
         if chi == None:
             [g,m] = extended_gcd(d.list())
@@ -1355,16 +1358,8 @@ class QuiverModuliSpace(QuiverModuli):
         # TODO assert that chi has integer entries.
         """Make sure that chi has weight one, i.e. provides a retraction for X*(PG) --> X*(G)."""
         assert chi*d == 1
-        
-        degrees = []
-        for i in range(n):
-            degrees = degrees+list(range(1,d[i]+1))
-        A = PolynomialRing(QQ, chernClasses, order=TermOrder('wdegrevlex', degrees))
 
-        tautological = self.tautological_relations(inRoots=False, chernClasses=chernClasses)
-        I = A.ideal(tautological)
-
-        I = I + A.ideal(sum([chi[i]*generator(A,i,0) for i in range(n)]))
+        I = A.ideal(rels) + A.ideal(sum([chi[i]*generator(i,0) for i in range(n)]))
 
         return QuotientRing(A, I, names=chernClasses)
 
