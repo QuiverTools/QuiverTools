@@ -928,7 +928,11 @@ class QuiverModuli(ABC):
         pass
 
     @abstractmethod
-    def is_smooth():
+    def is_smooth(self):
+        pass
+
+    @abstractmethod
+    def chow_ring(self):
         pass
 
 class QuiverModuliSpace(QuiverModuli):
