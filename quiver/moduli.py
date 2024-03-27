@@ -1200,8 +1200,11 @@ class QuiverModuliSpace(QuiverModuli):
         [[1], [x2_1, x3_1, x4_1, x5_1, x6_1], [x6_2]]
 
         """
-        Q, d = self._Q, self._d
+        Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
+
+        # This implementation only works if d is theta-coprime which implies that d is indivisible. 
+        assert is_coprime_for_stability_parameter(d, theta)
 
         if chernClasses == None:
             chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
