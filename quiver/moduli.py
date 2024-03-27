@@ -650,6 +650,7 @@ class QuiverModuli(ABC):
         # But can we find a necessary and sufficient condition?
         # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
         # I think I can compute the codimension of the non-stable locus in full generality.
+        # TODO: It's more difficult than I thought. I think it's doable though.
 
         """
         EXAMPLES:
