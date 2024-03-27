@@ -935,6 +935,7 @@ class QuiverModuli(ABC):
     def chow_ring(self):
         pass
 
+
 class QuiverModuliSpace(QuiverModuli):
 
     def __init__(self, Q, d, theta, denominator=sum, condition="semistable"):
@@ -1161,10 +1162,17 @@ class QuiverModuliSpace(QuiverModuli):
         raise NotImplementedError()
 
     def chow_ring(self, chi=None, chernClasses=None):
-        """Returns the Chow ring of the moduli space."""
+        r"""Returns the Chow ring of the moduli space.
+        
+        INPUT:
+        - ``chi``: vector of Ints
+        - ``chernClasses``: list of Strings
+
+        OUTPUT: ring
+        """
 
         """
-        EXAMPLES
+        EXAMPLES:
 
         The Kronecker quiver:
         sage: from quiver import *
@@ -1502,6 +1510,26 @@ class QuiverModuliStack(QuiverModuli):
             x = T.solve_right(y)
 
             return x[0]
+        
+    def chow_ring(self, chernClasses=None):
+        r"""Returns the Chow ring of the quotient stack.
+        
+        INPUT:
+        - ``chernClasses``: list of Strings
+
+        OUTPUT: ring
+        """
+
+        Q, d = self._Q, self._d
+        n = Q.number_of_vertices()
+
+        if chernClasses == None:
+            chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+
+        taut = self._QuiverModuli__tautological_presentation(inRoots=False, chernClasses=chernClasses)
+        A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
+
+        return QuotientRing(A, A.ideal(rels), names=chernClasses)
 
 
 
