@@ -1154,172 +1154,7 @@ class QuiverModuliSpace(QuiverModuli):
     # In QuiverModuliStack
     # chow_ring(self, alphabet): Works in both cases (semistable and stable).
     def tautological_presentation(self, chi=None, chernClasses=None):
-        """Returns the Chow ring of the moduli space in terms of generators and relations."""
-
-        """chi is a character of weight one, i.e. it provides a retraction of the inclusion X*(PG) --> X*(G). For this chi*d = 1 must hold. This requires d to be indivisible. If chi=None is given the chi is computed by the extended Euclidean algorithm."""
-        """chernClasses is a list of alphanumeric strings that denote the Chern classes of the universal bundles U_i(chi) in the Chow ring. If None is given then they are of the form xi_r."""
-
-        """
-        OUTPUT
-
-        A dict
-        { "ChowRing" : The Chow ring of the moduli space
-        "Generators" : The Chow ring of [R/G],
-        "Relations"  : The tautological ideal}
-        """
-
-        """
-        EXAMPLES
-
-        The Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = KroneckerQuiver()
-        sage: d = vector([1,1])
-        sage: theta = vector([1,-1])
-        sage: chi = vector([1,0])
-        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-        sage: di = X.tautological_presentation(chi)
-        sage: I = di["Relations"]
-        sage: N = X.dimension()
-        sage: [I.normal_basis(i) for i in range(N+1)]
-        [[1], [c2_1]]
-
-        The 3-Kronecker quiver:
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: chi = vector([-1,1])
-        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-        sage: di = X.tautological_presentation(chi)
-        sage: I = di["Relations"]
-        sage: N = X.dimension()
-        sage: [I.normal_basis(i) for i in range(N+1)]
-        [[1],
-         [c2_1],
-         [c1_2, c2_1^2, c2_2],
-         [c2_1^3, c2_1*c2_2, c2_3],
-         [c2_1^2*c2_2, c2_2^2, c2_1*c2_3],
-         [c2_2*c2_3],
-         [c2_3^2]]
-
-        The 5-subspaces quiver:
-        sage: Q = SubspaceQuiver(5)
-        sage: d = vector([1,1,1,1,1,2])
-        sage: theta = vector([2,2,2,2,2,-5])
-        sage: chi = vector([-1,-1,-1,-1,-1,3])
-        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-        sage: di = X.tautological_presentation(chi)
-        sage: I = di["Relations"]
-        sage: N = X.dimension()
-        sage: [I.normal_basis(i) for i in range(N+1)]
-        [[1], [c2_1, c3_1, c4_1, c5_1, c6_1], [c6_2]]
-
-        """
-
-        """
-        Notation for explanations:
-        G = G_d = prod_{i in Q_0} GL_{d_i}
-        T = maximal torus of diagonal matrices
-        PG = G/G_m
-        PT = T/G_m maximal torus of PT
-        W = Weyl group of T in G = Weyl group of PT in PG
-          = prod_{i in Q_0} S_{d_i}
-        R = bigoplus_{a in Q_1} Hom(k^{d_{s(a)}},k^{d_{t(a)}})
-        R^{sst}, R^{st} semi-stable/stable locus
-        """
-
-        Q, d, theta = self._Q, self._d, self._theta
-        # The Chow group has a ring structure only if the space is smooth.
-        # Our algorithm works only in the case that sst=st.
-        assert is_coprime_for_stability_parameter(d,theta)
-        n = Q.number_of_vertices()
-        a = Q.adjacency_matrix()
-
-        if chi == None:
-            [g,m] = extended_gcd(d.list())
-            chi = vector(m)
-
-        # TODO assert that chi has integer entries.
-        """Make sure that chi has weight one, i.e. provides a retraction for X*(PG) --> X*(G)."""
-        assert chi*d == 1
-
-        if chernClasses == None:
-            chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-
-        """This is the Chow ring of the quotient stack [R/T]. The generators ti_r denote the Chern roots of the universal bundles U_i."""
-        R = PolynomialRing(QQ,['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)])
-
-        def generator(R,i,r):
-            """Returns generator(R,i,r) = t{i+1}_{r+1}."""
-            return R.gen(r+sum([d[j] for j in range(i)]))
-
-        """delta is the discriminant"""
-        delta = prod([prod([generator(R,i,l) - generator(R,i,k) for k in range(d[i]) for l in range(k+1,d[i])]) for i in range(n)])
-
-        """longest is the longest Weyl group element when regarding W as a subgroup of S_{sum d_i}"""
-        longest = []
-        r = 0
-        for i in range(n):
-            longest = longest + list(reversed(range(r+1,r+d[i]+1)))
-            r += d[i]
-        W = Permutations(bruhat_smaller=longest)
-
-        def antisymmetrization(f):
-            """The antisymmetrization of f is the symmetrization divided by the discriminant."""
-            # I don't want to define W and delta here but globally because then we need to
-            # compute it just once. That's probably a bit faster.
-            def permute(f, w):
-                return f.subs({R.gen(i): R.gen(w[i] - 1) for i in range(R.ngens())})
-
-            return sum(w.sign() * permute(f, w) for w in W) // delta
-
-        """Schubert basis of A^*([R/T]) over A^*([R/G])"""
-        X = SchubertPolynomialRing(ZZ)
-        supp = list(filter(lambda i: d[i] > 0, range(n)))
-        B = lambda i: [X(p).expand() for p in Permutations(d[i])] 
-        Bprime = [[f.parent().hom([generator(R,i,r) for r in range(f.parent().ngens())], R)(f) for f in B(i)] for i in supp]
-
-        def product_lists(L):
-            n = len(L)
-            assert n > 0
-            if n == 1:
-                return L[0]
-            else:
-                P = product_lists([L[i] for i in range(n-1)])
-                return [p*l for p in P for l in L[n-1]]
-
-        schubert = product_lists(Bprime)
-
-        """Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T])."""
-        minimalForbiddenSubdimensionVectors = Q.all_minimal_forbidden_subdimension_vectors(d,theta)
-        """For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
-        forbiddenPolynomials = [prod([prod([(generator(R,j,s) - generator(R,i,r))**a[i,j]  for r in range(e[i]) for s in range(e[j],d[j])]) for i in range(n) for j in range(n)]) for e in minimalForbiddenSubdimensionVectors]
-
-        """Define A = A*([R/G])."""
-        degrees = []
-        for i in range(n):
-            degrees = degrees+list(range(1,d[i]+1))
-        A = PolynomialRing(QQ, ['c%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)], order=TermOrder('wdegrevlex', degrees))
-
-        E = SymmetricFunctions(ZZ).e()
-        """The Chern classes of U_i on [R/G] are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
-        elementarySymmetric = []
-        for i in range(n):
-            elementarySymmetric = elementarySymmetric + [E([k]).expand(d[i], alphabet=[generator(R,i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
-        """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
-        inclusion = A.hom(elementarySymmetric, R)
-
-        """Definition of the tautological ideal."""
-        tautological = [antisymmetrization(b * f) for b in schubert for f in forbiddenPolynomials]
-        tautological = A.ideal([inclusion.inverse_image(g) for g in tautological])
-
-        linear = A.ideal(sum([chi[i]*generator(A,i,0) for i in range(n)]))
-        I = linear + tautological
-
-        return { "ChowRing" : QuotientRing(A,I,names=chernClasses),
-        "Generators" : A,
-        "Relations" : I
-        }
+        raise NotImplementedError()
 
     def chow_ring(self, chi=None, chernClasses=None):
         """Returns the Chow ring of the moduli space."""
@@ -1329,18 +1164,41 @@ class QuiverModuliSpace(QuiverModuli):
 
         The Kronecker quiver:
         sage: from quiver import *
-        sage: Q = KroneckerQuiver()
-        sage: d = vector([1,1])
-        sage: theta = vector([1,-1])
+        sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
         sage: chi = vector([1,0])
-        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-        sage: A = X.chow_ring(chi=chi,chernClasses=['o','h'])
-        sage: A.inject_variables()
-        Defining o, h
-        sage: o
-        0
-        sage: h
-        h
+        sage: A = X.chow_ring(chi=chi)
+        sage: I = A.defining_ideal()
+        sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
+        [[1], [x2_1]]
+
+
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
+        sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+        sage: chi = vector([-1,1])
+        sage: A = X.chow_ring(chi=chi)
+        sage: I = A.defining_ideal()
+        sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
+        [[1],
+        [x2_1],
+        [x1_2, x2_1^2, x2_2],
+        [x2_1^3, x2_1*x2_2, x2_3],
+        [x2_1^2*x2_2, x2_2^2, x2_1*x2_3],
+        [x2_2*x2_3],
+        [x2_3^2]]
+
+        The 5-subspaces quiver:
+        sage: from quiver import *
+        sage: Q, d, theta = SubspaceQuiver(5), vector([1,1,1,1,1,2]), vector([2,2,2,2,2,-5])
+        sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+        sage: chi = vector([-1,-1,-1,-1,-1,3])
+        sage: A = X.chow_ring(chi=chi)
+        sage: I = A.defining_ideal()
+        sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
+        [[1], [x2_1, x3_1, x4_1, x5_1, x6_1], [x6_2]]
+
         """
         Q, d = self._Q, self._d
         n = Q.number_of_vertices()
@@ -1348,7 +1206,7 @@ class QuiverModuliSpace(QuiverModuli):
         if chernClasses == None:
             chernClasses = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
 
-        taut = self.__tautological_presentation(inRoots=False, chernClasses=chernClasses)
+        taut = self._QuiverModuli__tautological_presentation(inRoots=False, chernClasses=chernClasses)
         A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
         if chi == None:
