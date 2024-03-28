@@ -1410,6 +1410,7 @@ class Quiver:
     """
     Teleman!
     """            
+    # TODO: This section should go into QuiverModuliSpace, I think.
 
     def all_weight_bounds(self, d, theta,denominator=sum):
         """
