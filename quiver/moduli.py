@@ -498,6 +498,27 @@ class QuiverModuli(ABC):
             assert self.is_luna_type(tau)
         return sum([len(dn[1])*(1-self._Q.euler_form(dn[0],dn[0])) for dn in tau])
     
+    def local_quiver_setting(self, tau, secure=True):
+        r"""Returns the local quiver and dimension vector for the given Luna type.
+        
+        INPUT:
+        - ``tau``: list of tuples
+        - ``secure``: Bool
+
+        OUTPUT: tuple cosisting of a Quiver object and a vector
+        """
+
+        if secure:
+            assert self.is_luna_type(tau)
+
+        Q = self._Q
+
+        A = matrix(ZZ, [[Q.generic_ext(di[0], dj[0]) for dj in tau] for di in tau])
+        Qloc = Quiver(A)
+        dloc = vector([di[1] for di in tau])
+
+        return Qloc, dloc
+    
     # TODO: I realized that this computation is wrong! I made a stupid mistake. I'll correct it once I've settled the Chow stuff.
     # Note that this implies that ample stability is also still incomplete.
     def __codimension_inverse_image_luna_stratum(self, tau):
