@@ -1406,6 +1406,23 @@ class Quiver:
             
             return [subdims[i] for i in canon_indexes(N-1)]   
 
+    """
+    Nilpotent cone and Hesselink
+    """
+
+    def dimension_nullcone(self, d):
+        r"""Returns the dimension of the nullcone which is the set of all nilpotent representations.
+        
+        INPUT:
+        - ``d``: vector of Ints
+
+        OUTPUT: dimension as Int
+        """
+
+        if self.is_acyclic():
+            return d.transpose()*self.adjacency_matrix()*d 
+        else:
+            raise NotImplementedError()
     
     """
     Teleman!
