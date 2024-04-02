@@ -513,9 +513,9 @@ class QuiverModuli(ABC):
 
         Q = self._Q
 
-        A = matrix(ZZ, [[Q.generic_ext(di[0], dj[0]) for dj in tau] for di in tau])
+        A = matrix([[Q.generic_ext(dp[0], eq[0]) for eq in tau for n in eq[1]] for dp in tau for m in dp[1]])
         Qloc = Quiver(A)
-        dloc = vector([di[1] for di in tau])
+        dloc = vector([m for dp in tau for m in dp[1]])
 
         return Qloc, dloc
     
