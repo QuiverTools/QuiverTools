@@ -508,6 +508,26 @@ class QuiverModuli(ABC):
         OUTPUT: tuple cosisting of a Quiver object and a vector
         """
 
+        """
+        EXAMPLES:
+
+        sage: from quiver import *
+        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,2]), vector([1,-1])
+        sage: X = QuiverModuliSpace(Q, d, theta)
+        sage: L = X.all_luna_types(); L
+        [[((1, 1), [2])], [((1, 1), [1, 1])], [((2, 2), [1])]]
+        sage: Qloc, dloc = X.local_quiver_setting(L[0]); Qloc.adjacency_matrix() , dloc
+        ([1], (2))
+        sage: Qloc, dloc = X.local_quiver_setting(L[1]); Qloc.adjacency_matrix() , dloc
+        (
+        [1 1]        
+        [1 1], (1, 1)
+        )
+        sage: Qloc, dloc = X.local_quiver_setting(L[2]); Qloc.adjacency_matrix() , dloc
+        ([4], (1))
+
+        """
+
         if secure:
             assert self.is_luna_type(tau)
 
