@@ -546,15 +546,16 @@ class QuiverModuli(ABC):
         
         INPUT:
         - ``tau``: list of tuples
+        - ``secure``: Bool
 
         OUTPUT: codimension as Int
         """
 
         """For tau = [(d^1,p^1),...,(d^s,p^s)] the codimension of pi^{-1}(S_tau) is
         
-        -<d,d> + sum_{k=1}^s (<d^k,d^k> - l(p^k) + ||p^k||^2)
+        -<d,d> + sum_{k=1}^s (<d^k,d^k> - l(p^k) + ||p^k||^2) - dim N(Q_tau, d_tau)
 
-        where for a partition p = (n_1,...,n_l), we define ||p||^2 = sum_v n_v^2.
+        where for a partition p = (n_1,...,n_l), we define ||p||^2 = sum_v n_v^2 and N(Q_tau, d_tau) is the nullcone of the local quiver setting.
         """
 
         """
@@ -585,7 +586,9 @@ class QuiverModuli(ABC):
         """
 
         Q, d = self._Q, self._d
-        return -Q.euler_form(d,d)+sum([Q.euler_form(dk[0], dk[0])-len(dk[1])+sum([nkv**2 for nkv in dk[1]]) for dk in tau])
+        Qtau, dtau = self.local_quiver_setting(tau, secure=False)
+        dimNull = Qtau.dimension_nullcone(dtau)
+        return -Q.euler_form(d,d)+sum([Q.euler_form(dk[0], dk[0])-len(dk[1])+sum([nkv**2 for nkv in dk[1]]) for dk in tau])-dimNull
     
     def codimension_properly_semistable_locus(self):
         r"""Computes the codimension of R(Q,d)^{theta-sst} \ R(Q,d)^{theta-st} inside R(Q,d).
