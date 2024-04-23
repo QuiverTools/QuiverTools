@@ -539,8 +539,7 @@ class QuiverModuli(ABC):
 
         return Qloc, dloc
     
-    # TODO: I realized that this computation is wrong! I made a stupid mistake. I'll correct it once I've settled the Chow stuff.
-    # Note that this implies that ample stability is also still incomplete.
+    # TODO: The codimension computation requires the dimension of the nullcone. This is hard, it turns out. It can be done with the Hesselink stratification, but I wasn't willing to go thourgh Lieven's treatment of this.
     def __codimension_inverse_image_luna_stratum(self, tau):
         r"""Computes the codimension of pi^{-1}(S_tau) inside R(Q,d) where pi: R(Q,d)^{theta-sst} --> M^{theta-sst}(Q,d) is the semistable quotient map.
         
@@ -673,25 +672,11 @@ class QuiverModuli(ABC):
         sage: X.is_amply_stable()
         False
 
-        A 3-Kronecker example with a divisible dimension vector:
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
-        sage: X = QuiverModuliSpace(Q, d, theta)
-        sage: X.is_amply_stable()
-        True
-
-        A Kronecker example with an empty stable locus:
-        sage: from quiver import *
-        sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
-        sage: X = QuiverModuliSpace(Q, d, theta)
-        sage: X.is_amply_stable()
-        False
-
         """
 
         Q, d, theta = self._Q, self._d, self._theta
 
-        # It's probably faster to make this distinction
+        # It's currently only possible with this distinction
         if is_coprime_for_stability_parameter(d, theta):
             return self.codimension_unstable_locus() >= 2
         else:
