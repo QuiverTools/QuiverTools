@@ -1113,7 +1113,10 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta-coprime then you can shortcut everything
         # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
-        raise NotImplementedError()
+        if (self._condition == "stable") or (is_coprime_for_stability_parameter(self._d, self._theta)):
+            return True
+        else:
+            raise NotImplementedError()
     
     def picard_rank(self):
         """Computes the Picard rank of the moduli space for known cases."""
