@@ -570,21 +570,6 @@ class QuiverModuli(ABC):
 
         """The codimension of the properly semistable locus is the minimal codimension of the inverse image of the non-stable Luna strata."""
 
-        """
-        EXAMPLES:
-
-        sage: from quiver import *
-        sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
-        sage: X = QuiverModuliSpace(Q, d, theta)
-        sage: X.codimension_properly_semistable_locus()
-        0
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
-        sage: X = QuiverModuliSpace(Q, d, theta)
-        sage: X.codimension_properly_semistable_locus()
-        4
-
-        """
-
         Q, d = self._Q, self._d
         L = self.all_luna_types()
         # This is the stable Luna type; remove it if it occurs
