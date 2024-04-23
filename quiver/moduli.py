@@ -557,33 +557,6 @@ class QuiverModuli(ABC):
         where for a partition p = (n_1,...,n_l), we define ||p||^2 = sum_v n_v^2 and N(Q_tau, d_tau) is the nullcone of the local quiver setting.
         """
 
-        """
-        EXAMPLES:
-        
-        Kronecker example:
-        sage: from quiver import *
-        sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
-        sage: X = QuiverModuliSpace(Q, d, theta)
-        sage: L = X.all_luna_types(); L
-        [[((1, 1), [2])], [((1, 1), [1, 1])]]
-        sage: [X._QuiverModuli__codimension_inverse_image_luna_stratum(tau) for tau in L]
-        [3, 0]
-
-        3-Kronecker example:
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
-        sage: X = QuiverModuliSpace(Q, d, theta)
-        sage: L = X.all_luna_types(); L
-        [[((1, 1), [3])],
-        [((1, 1), [2, 1])],
-        [((1, 1), [1, 1, 1])],
-        [((1, 1), [1]), ((2, 2), [1])],
-        [((3, 3), [1])]]
-        sage: [X._QuiverModuli__codimension_inverse_image_luna_stratum(tau) for tau in L]
-        [16, 11, 8, 4, 0]
-
-        """
-
         Q, d = self._Q, self._d
         Qtau, dtau = self.local_quiver_setting(tau, secure=False)
         dimNull = Qtau.dimension_nullcone(dtau)
