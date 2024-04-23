@@ -546,7 +546,6 @@ class QuiverModuli(ABC):
         
         INPUT:
         - ``tau``: list of tuples
-        - ``secure``: Bool
 
         OUTPUT: codimension as Int
         """
