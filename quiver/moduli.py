@@ -1335,78 +1335,78 @@ class QuiverModuliSpace(QuiverModuli):
         raise NotImplementedError()
 
     # TODO: This is maybe too specific.
-    def diagonal(self, chi=None):
-        """Computes the class of the diagonal in the Chow ring of X x X where X is the quiver moduli space."""
-        """It is given by the homogeneous component of degree dim X = 1 - <d,d> of the expression c(F)/C(E), where E = bigoplus_{i in Q_0} U_i^vee boxtimes U_i and F = bigoplus_{a in Q_1} U_{s(a)}^vee boxtimes U_{t(a)} = bigoplus_{i,j in Q_0} (U_i^vee boxtimes U_j)^{a_ij}."""
+    # def diagonal(self, chi=None):
+    #     """Computes the class of the diagonal in the Chow ring of X x X where X is the quiver moduli space."""
+    #     """It is given by the homogeneous component of degree dim X = 1 - <d,d> of the expression c(F)/C(E), where E = bigoplus_{i in Q_0} U_i^vee boxtimes U_i and F = bigoplus_{a in Q_1} U_{s(a)}^vee boxtimes U_{t(a)} = bigoplus_{i,j in Q_0} (U_i^vee boxtimes U_j)^{a_ij}."""
 
-        """
-        EXAMPLES
+    #     """
+    #     EXAMPLES
 
-        P^2 as a quiver moduli space:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([1,1])
-        sage: theta = vector([1,-1])
-        sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-        sage: X.diagonal()
-        x1_1^2 + x1_1*y1_1 + y1_1^2
+    #     P^2 as a quiver moduli space:
+    #     sage: from quiver import *
+    #     sage: Q = GeneralizedKroneckerQuiver(3)
+    #     sage: d = vector([1,1])
+    #     sage: theta = vector([1,-1])
+    #     sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+    #     sage: X.diagonal()
+    #     x1_1^2 + x1_1*y1_1 + y1_1^2
 
-        """
+    #     """
 
-        Q, d, theta = self._Q, self._d, self._theta
-        n = Q.number_of_vertices()
-        N = self.dimension()
-        a = Q.adjacency_matrix()
+    #     Q, d, theta = self._Q, self._d, self._theta
+    #     n = Q.number_of_vertices()
+    #     N = self.dimension()
+    #     a = Q.adjacency_matrix()
 
-        di = self.__tautological_presentation(chi=chi)
-        A = di["Generators"]
-        I = di["Relations"]
+    #     di = self._QuiverModuli__tautological_presentation()
+    #     A = di["Generators"]
+    #     I = di["Relations"] + A.ideal(chi)
 
-        chernClasses1 = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-        chernClasses2 = ['y%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-        chernClasses = chernClasses1+chernClasses2
+    #     chernClasses1 = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+    #     chernClasses2 = ['y%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+    #     chernClasses = chernClasses1+chernClasses2
 
-        AxA = PolynomialRing(QQ,chernClasses)
-        inclusion1 = A.hom(chernClasses1,AxA)
-        inclusion2 = A.hom(chernClasses2,AxA)
-        B = QuotientRing(AxA,inclusion1(I) + inclusion2(I),names=chernClasses)
+    #     AxA = PolynomialRing(QQ,chernClasses)
+    #     inclusion1 = A.hom(chernClasses1,AxA)
+    #     inclusion2 = A.hom(chernClasses2,AxA)
+    #     B = QuotientRing(AxA,inclusion1(I) + inclusion2(I),names=chernClasses)
 
-        pi = B.cover() # The quotient map AxA --> B
-        sect = B.lifting_map() # A choice of a section of pi
+    #     pi = B.cover() # The quotient map AxA --> B
+    #     sect = B.lifting_map() # A choice of a section of pi
 
-        chernRoots1 = ['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-        chernRoots2 = ['u%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-        chernRoots = chernRoots1+chernRoots2
-        RxR = PolynomialRing(QQ,chernRoots)
+    #     chernRoots1 = ['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+    #     chernRoots2 = ['u%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+    #     chernRoots = chernRoots1+chernRoots2
+    #     RxR = PolynomialRing(QQ,chernRoots)
 
-        def generatorRxR1(i,r):
-            """Returns generatorRxR1(i,r) = t{i+1}_{r+1}."""
-            return RxR.gen(r + sum([d[j] for j in range(i)]))
+    #     def generatorRxR1(i,r):
+    #         """Returns generatorRxR1(i,r) = t{i+1}_{r+1}."""
+    #         return RxR.gen(r + sum([d[j] for j in range(i)]))
 
-        def generatorRxR2(i,r):
-            """Returns generatorRxR2(i,r) = u{i+1}_{r+1}."""
-            return RxR.gen(sum([d[j] for j in range(n)]) + r + sum([d[j] for j in range(i)]))
+    #     def generatorRxR2(i,r):
+    #         """Returns generatorRxR2(i,r) = u{i+1}_{r+1}."""
+    #         return RxR.gen(sum([d[j] for j in range(n)]) + r + sum([d[j] for j in range(i)]))
 
-        E = SymmetricFunctions(ZZ).e()
-        elementarySymmetric1 = []
-        elementarySymmetric2 = []
-        for i in range(n):
-            elementarySymmetric1 = elementarySymmetric1 + [E([k]).expand(d[i], alphabet=[generatorRxR1(i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
-            elementarySymmetric2 = elementarySymmetric2 + [E([k]).expand(d[i], alphabet=[generatorRxR2(i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
-        elementarySymmetric = elementarySymmetric1 + elementarySymmetric2
-        """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i} and yi_r to the same in ui_1,...,ui_{d_i}."""
-        inclusion = AxA.hom(elementarySymmetric, RxR)
+    #     E = SymmetricFunctions(ZZ).e()
+    #     elementarySymmetric1 = []
+    #     elementarySymmetric2 = []
+    #     for i in range(n):
+    #         elementarySymmetric1 = elementarySymmetric1 + [E([k]).expand(d[i], alphabet=[generatorRxR1(i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
+    #         elementarySymmetric2 = elementarySymmetric2 + [E([k]).expand(d[i], alphabet=[generatorRxR2(i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]
+    #     elementarySymmetric = elementarySymmetric1 + elementarySymmetric2
+    #     """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i} and yi_r to the same in ui_1,...,ui_{d_i}."""
+    #     inclusion = AxA.hom(elementarySymmetric, RxR)
 
-        def total_chern_class_boxproduct(i,j):
-            """Computes the total Chern class of U_i^vee boxtimes U_j"""
-            c = prod([(1-generatorRxR1(i,r)+generatorRxR2(j,s)) for r in range(d[i]) for s in range(d[j])])
-            return pi(inclusion.inverse_image(c))
+    #     def total_chern_class_boxproduct(i,j):
+    #         """Computes the total Chern class of U_i^vee boxtimes U_j"""
+    #         c = prod([(1-generatorRxR1(i,r)+generatorRxR2(j,s)) for r in range(d[i]) for s in range(d[j])])
+    #         return pi(inclusion.inverse_image(c))
 
-        numerator = prod([total_chern_class_boxproduct(i,j)**a[i,j] for i in range(n) for j in range(n)])
-        denominator = prod([total_chern_class_boxproduct(i,i) for i in range(n)])
-        quotient = numerator/denominator
+    #     numerator = prod([total_chern_class_boxproduct(i,j)**a[i,j] for i in range(n) for j in range(n)])
+    #     denominator = prod([total_chern_class_boxproduct(i,i) for i in range(n)])
+    #     quotient = numerator/denominator
 
-        return pi(sect(quotient).homogeneous_components()[N])
+    #     return pi(sect(quotient).homogeneous_components()[N])
 
 
 class QuiverModuliStack(QuiverModuli):
