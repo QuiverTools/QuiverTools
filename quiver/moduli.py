@@ -1358,7 +1358,7 @@ class QuiverModuliSpace(QuiverModuli):
         N = self.dimension()
         a = Q.adjacency_matrix()
 
-        di = self.tautological_presentation(chi=chi)
+        di = self.__tautological_presentation(chi=chi)
         A = di["Generators"]
         I = di["Relations"]
 
