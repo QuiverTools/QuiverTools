@@ -1012,7 +1012,7 @@ class QuiverModuliSpace(QuiverModuli):
             if self._condition == "semistable":
                 if self._Q.has_semistable_representation(self._d, self._theta):
                     # In this case the dimension is given by the maximum of the dimensions of the Luna strata
-                    allLunaTypes = self._Q.all_luna_types(self._d,self._theta)
+                    allLunaTypes = self.all_luna_types(self._d,self._theta)
                     return max([self.dimension_of_luna_stratum(tau) for tau in allLunaTypes])
                 else:
                     # I somehow like the convention that the dimension of the empty set is -Infinity
