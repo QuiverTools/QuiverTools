@@ -4,6 +4,10 @@ from sage.all import *
 
 
 class Quiver:
+    # TODO this explanation is about implementation details, which don't matter
+    # it should be possible to also create a quiver from a DiGraph
+    # if so: things like indegree should explicitly refer to the vertices of the graph (and not 1, ..., n)
+    # if the adjacency matrix constructor is given: explain _which_ DiGraph would be created
     """
     A quiver is represented by its adjacency matrix (a_ij) in M_{n x n}(N) where Q_0 = {1,...,n} and a_{ij} is the number of arrows i --> j.
 
@@ -43,6 +47,7 @@ class Quiver:
         """
         return self._adjacency
 
+    # TODO is there a good reason to call this underlying_graph, and not just graph?
     def underlying_graph(self):
         r"""Returns the (necessarily symmetric) adjacency matrix of the underlying graph of the quiver.
 
@@ -81,6 +86,7 @@ class Quiver:
         # a quiver is acyclic if and only if its adjacency matrix is nilpotent
         return A**n == zero_matrix(ZZ, n)
 
+    # TODO some of the examples should really be tests (so they don't clutter the docs as much)
     def is_connected(self):
         r"""Returns whether the underlying graph of the quiver is connected or not.
 
@@ -160,6 +166,7 @@ class Quiver:
     Some graph-theoretic properties of the quiver
     """
 
+    # TODO docstrings are split into pieces
     def indegree(self, j):
         r"""Returns the indegree of a vertex.
 
@@ -716,7 +723,7 @@ class Quiver:
         sage: for e in dims:
         ....:     for d in dims:
         ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        ....: 
+        ....:
         (0) gen. subdim of (0)?: True
         (0) gen. subdim of (1)?: True
         (0) gen. subdim of (2)?: True
@@ -730,7 +737,7 @@ class Quiver:
         sage: for e in dims:
         ....:     for d in dims:
         ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        ....: 
+        ....:
         (0) gen. subdim of (0)?: True
         (0) gen. subdim of (1)?: True
         (0) gen. subdim of (2)?: True
@@ -745,7 +752,7 @@ class Quiver:
         ....:     for d in dims:
         ....:         if is_subdimension_vector(e,d):
         ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        ....: 
+        ....:
         (0, 0) gen. subdim of (0, 0)?: True
         (0, 0) gen. subdim of (0, 1)?: True
         (0, 0) gen. subdim of (0, 2)?: True
@@ -787,7 +794,7 @@ class Quiver:
         ....:     for d in dims:
         ....:         if is_subdimension_vector(e,d):
         ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        ....: 
+        ....:
         (0, 0) gen. subdim of (0, 0)?: True
         (0, 0) gen. subdim of (0, 1)?: True
         (0, 0) gen. subdim of (0, 2)?: True
@@ -983,7 +990,7 @@ class Quiver:
         sage: for a in R:
         ....:     for b in R:
         ....:         print('ext('+str(a)+','+str(b)+') = '+str(Q.generic_ext(a,b)))
-        ....: 
+        ....:
         ext((1, 0),(1, 0)) = 0
         ext((1, 0),(0, 1)) = 1
         ext((1, 0),(1, 1)) = 0
@@ -1019,7 +1026,7 @@ class Quiver:
         sage: for a in R:
         ....:     for b in R:
         ....:         print('hom('+str(a)+','+str(b)+') = '+str(Q.generic_hom(a,b)))
-        ....: 
+        ....:
         hom((1, 0),(1, 0)) = 1
         hom((1, 0),(0, 1)) = 0
         hom((1, 0),(1, 1)) = 0
@@ -1279,6 +1286,7 @@ class Quiver:
     Canonical decomposition
     """
 
+    # TODO this is an implementation detail, not something for the public interface
     def rearrange_dw_decomposition(self, decomposition, i, j):
         # this is non functional, let alone tested
         # apply Lemma 11.9.10 of Derksen--Weyman to rearrange the roots from i to j as k, k+1
@@ -1322,6 +1330,7 @@ class Quiver:
 
         But clearly a general representation of dimension vector (2,4) isn't semisimple. It is instead a direct sum of two copies of the preprojective representation of dimension vector (1,2). So the canonical decomposition should be [2, (1, 2)].
         """
+        # TODO this implementation needs to be documented (much better)
         if algorithm == "derksen-weyman":
             decomposition = [
                 [d[i], self.simple_root(i + 1)]
@@ -1407,7 +1416,7 @@ class Quiver:
             sage: for i in range(7):
             ....:     for j in range(7):
             ....:         print('Canonical decomp. of '+str(ds[7*i+j])+' is: '+str(can[7*i+j]))
-            ....: 
+            ....:
             Canonical decomp. of (0, 0) is: [(0, 0)]
             Canonical decomp. of (0, 1) is: [(0, 1)]
             Canonical decomp. of (0, 2) is: [(0, 1), (0, 1)]
