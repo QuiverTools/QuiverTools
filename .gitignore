@@ -13,4 +13,5 @@ theory/*.pdf
 theory/*.run.xml
 .DS_Store
 quiver/output
-quiver/testFundamentalDomain.sage
+docs/*
+*.swo

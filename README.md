@@ -11,6 +11,17 @@ You can install it using
 and then you can just do `from quiver import *` to get started.
 
 
+# Documentation
+
+To build the documentation, run
+
+```
+sage -sh -c "make html"
+cp -r _build/html/ docs
+sage -sh -c "make latexpdf"
+cp _build/latex/quivertools.pdf docs
+```
+
 # Summary
 
 The goal is to implement algorithms related to
