@@ -1,7 +1,6 @@
 # from sage.matrix.constructor import matrix
 from concurrent.futures.process import _threads_wakeups
 from sage.all import *
-import copy
 
 class Quiver:
 
@@ -407,7 +406,7 @@ class Quiver:
     
 
     """
-    Dimension vectors and stability conditions
+    Dimension vectors and roots
     """
 
     def zero_vector(self):
@@ -481,6 +480,52 @@ class Quiver:
         """A root is called real if its Tits form is non-positive."""
         assert x.length() == self.number_of_vertices()
         return (x != self.zero_vector() and self.tits_form(x) <= 0)
+    
+    def is_schur_root(self, d):
+        r"""Checks if d is a Schur root.
+        
+        INPUT:
+        - ``d``: vector of Ints
+
+        OUTPUT: statement truth value as Bool
+        """
+
+        """
+        A Schur root is a dimension vector which admits a Schurian representation, i.e. a representation whose endomorphism ring is k. It's necessarily indecomposable.
+        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
+
+        """
+        EXAMPLES:
+
+        The 3-Kronecker quiver:
+        sage: from quiver import *
+        sage: Q = GeneralizedKroneckerQuiver(3)
+        sage: d = vector([2,3])
+        sage: Q.is_schur_root(d)
+        True
+
+        Examples from Derksen--Weyman's book (Ex. 11.1.4):
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(1,1,1)
+        sage: a = vector([1,1,2])
+        sage: Q.is_schur_root(a)
+        True
+        sage: b = vector([1,2,1])
+        sage: Q.is_schur_root(b)
+        False
+        sage: c = vector([1,1,1])
+        sage: Q.is_schur_root(c)
+        True
+        sage: d = vector([2,2,2])
+        sage: Q.is_schur_root(d)
+        False
+
+        """
+
+        assert d.length() == self.number_of_vertices()
+
+        theta = self.canonical_stability_parameter(d)
+        return self.has_stable_representation(d, theta)
 
     def support(self, d):
         r"""Returns the support of the dimension vector.
@@ -561,9 +606,10 @@ class Quiver:
     #         simples[i][i] = 1
     #     return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
     
-    def partial_order(self,d,e):
+    def division_order(self, d, e):
         """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
         # TODO: Think of a better name.
+        # Good name?
 
         """
         EXAMPLES
@@ -573,17 +619,17 @@ class Quiver:
         sage: d = vector([1,1])
         sage: e = vector([2,1])
         sage: f = vector([2,2])
-        sage: Q.partial_order(d,e)
+        sage: Q.division_order(d,e)
         True
-        sage: Q.partial_order(e,d)
+        sage: Q.division_order(e,d)
         False
-        sage: Q.partial_order(d,f)
+        sage: Q.division_order(d,f)
         False
-        sage: Q.partial_order(f,d)
+        sage: Q.division_order(f,d)
         False
-        sage: Q.partial_order(e,f)
+        sage: Q.division_order(e,f)
         False
-        sage: Q.partial_order(f,e)
+        sage: Q.division_order(f,e)
         True
 
         sage: Q = ThreeVertexQuiver(2,2,2)
@@ -594,9 +640,9 @@ class Quiver:
         [0 0 0]
         sage: d = vector([1,1,1])
         sage: e = vector([1,2,1])
-        sage: Q.partial_order(d,e)
+        sage: Q.division_order(d,e)
         False
-        sage: Q.partial_order(e,d)
+        sage: Q.division_order(e,d)
         False
         """
 
@@ -607,30 +653,6 @@ class Quiver:
         less = less and all([d[k-1] == e[k-1] for k in list(filter(lambda k: (not self.is_source(k)) and (not self.is_sink(k)), range(1,n+1)))])
 
         return less
-    
-    def all_minimal_forbidden_subdimension_vectors(self,d,theta):
-        """Returns the list of all minimal forbidden subdimension vectors of d."""
-
-        """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
-
-        """
-        EXAMPLES
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: Q.all_minimal_forbidden_subdimension_vectors(d,theta)
-        [(1, 1), (2, 2)]
-        """
-
-        forbidden = all_forbidden_subdimension_vectors(d,theta)
-        return list(filter(lambda e: not any([self.partial_order(f,e) for f in list(filter(lambda f: f != e, forbidden))]), forbidden))
-
-    def canonical_stability_parameter(self,d):
-        """The canonical stability parameter is given by <d,_> - <_,d>"""
-        E = self.euler_matrix()
-        return d * (-self.euler_matrix().transpose() + E)
     
     """
     Generic subdimension vectors and generic Hom and Ext
@@ -973,8 +995,13 @@ class Quiver:
     
 
     """
-    Semistability and HN
+    (Semi-)stability
     """
+
+    def canonical_stability_parameter(self,d):
+        """The canonical stability parameter is given by <d,_> - <_,d>"""
+        E = self.euler_matrix()
+        return d * (-self.euler_matrix().transpose() + E)
 
     def has_semistable_representation(self, d, theta):
         r"""Checks if there is a theta-semistable representation of dimension vector d.
@@ -1048,357 +1075,6 @@ class Quiver:
         sstSubdims = [subdims[j] for j in sstIndexes]
         return sstIndexes, sstSubdims
     
-    def is_harder_narasimhan_type(self, dstar, theta, denominator=sum):
-        r"""Checks if dstar is a HN type.
-        
-        INPUT:
-        - ``dstar``: list of vectors of Ints
-        - ``theta``: vector of Ints
-        - ``denominator``: function which takes a vector of Ints and returns an Int
-
-        OUTPUT: statement truth value as Bool
-        """
-
-        """
-        EXAMPLES:
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: hn = Q.all_harder_narasimhan_types(d, theta)
-        sage: all([Q.is_harder_narasimhan_type(dstar, theta) for dstar in hn])
-        True
-        sage: dstar = [vector([1,0]), vector([1,0]), vector([0,3])]
-        sage: Q.is_harder_narasimhan_type(dstar, theta)
-        False
-
-        """
-
-        n = self.number_of_vertices()
-        assert (all([e.length() == n for e in dstar]) and theta.length() == n)
-        assert all([denominator(self.simple_root(i)) > 0 for i in range(1,n+1)])
-
-        d = sum(dstar)
-        if (d == self.zero_vector()):
-            return (dstar == [self.zero_vector()])
-        else:
-            sstIndexes, sstSubdims = self.__all_semistable_subdimension_vectors_helper(d, theta)
-            slopeDecreasing = all([(slope(dstar[i],theta,denominator=denominator) > slope(dstar[i+1],theta,denominator=denominator)) for i in range(len(dstar)-1)])
-            semistable = all([e in sstSubdims for e in dstar])
-            return (slopeDecreasing and semistable)
-        
-    def __codimension_of_harder_narasimhan_stratum_helper(self, dstar):
-        """Computes the codimension of the HN stratum of dstar inside the representation variety.
-        
-        INPUT:
-        - ``dstar``: list of vectors of Ints
-
-        OUTPUT: codimension as Int
-        """
-        # This is private because it doesn't check if dstar is a HN type. This is fast but yields nonsense, if dstar is not a HN type.
-
-        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
-
-        """
-        EXAMPLES
-
-        The 3-Kronecker quiver
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
-        [[(1, 0), (1, 1), (0, 2)],
-        [(1, 0), (1, 2), (0, 1)],
-        [(1, 0), (1, 3)],
-        [(1, 1), (1, 2)],
-        [(2, 0), (0, 3)],
-        [(2, 1), (0, 2)],
-        [(2, 2), (0, 1)],
-        [(2, 3)]]
-        sage: [Q._Quiver__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn]
-        [12, 9, 8, 3, 18, 10, 4, 0]
-
-        """
-        
-        n = self.number_of_vertices()
-        assert all([e.length() == n for e in dstar])
-
-        s = len(dstar)
-        return -sum([self.euler_form(dstar[k],dstar[l]) for k in range(s-1) for l in range(k+1,s)])
-
-    def codimension_of_harder_narasimhan_stratum(self, dstar, theta, denominator=sum):
-        r"""Computes the codimension of the HN stratum of dstar inside the representation variety, if dstar is a HN type.
-        
-        INPUT:
-        - ``dstar``: list of vectors of Ints
-        - ``theta``: vector of Ints
-        - ``denominator``: function which takes a vector of Ints and returns an Int
-
-        OUTPUT: codimension as Int
-        """
-
-        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
-
-        """
-        EXAMPLES
-
-        The 3-Kronecker quiver
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: hn = Q.all_harder_narasimhan_types(d, theta); hn
-        [[(1, 0), (1, 1), (0, 2)],
-        [(1, 0), (1, 2), (0, 1)],
-        [(1, 0), (1, 3)],
-        [(1, 1), (1, 2)],
-        [(2, 0), (0, 3)],
-        [(2, 1), (0, 2)],
-        [(2, 2), (0, 1)],
-        [(2, 3)]]
-        sage: [Q.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn]
-        [12, 9, 8, 3, 18, 10, 4, 0]
-
-        """
-        assert theta.length() == self.number_of_vertices()
-        assert self.is_harder_narasimhan_type(dstar, theta, denominator=denominator)
-
-        return self.__codimension_of_harder_narasimhan_stratum_helper(dstar)
-    
-    def codimension_unstable_locus(self, d, theta):
-        r"""Computes the codimension of the unstable locus inside the representation variety.
-        
-        INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
-
-        OUTPUT: codimension as Int
-        """
-
-        """"
-        EXAMPLES:
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-        sage: Q.codimension_unstable_locus(d, theta)
-        3
-        sage: Q, d = ThreeVertexQuiver(1,6,1), vector([1,6,6])
-        sage: theta = Q.canonical_stability_parameter(d)
-        sage: Q.codimension_unstable_locus(d, theta)
-        1
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
-        sage: Q.codimension_unstable_locus(d, theta)
-        0
-
-        """
-
-        n = self.number_of_vertices()
-        assert (d.length() == n and theta.length() == n)
-
-        hn = list(filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types(d, theta, denominator=sum)))
-        # Note that while the HN types and strata depend on the denominator, the list of all their codimensions does not.
-
-        return min([self.__codimension_of_harder_narasimhan_stratum_helper(dstar) for dstar in hn])
-
-
-    def all_harder_narasimhan_types(self, d, theta, denominator=sum):
-        # TODO what to return?
-        # list of the Harder-Narasimhan types?
-        # denominator default being sum is total dimension, there are variations possible
-        # and the strata will be different!
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1974891
-        # Can the above TODO go?
-
-        r"""Returns the list of all HN types.
-        
-        INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
-        - ``denominator``: function which takes a vector of Ints and returns an Int
-
-        OUTPUT: list of list of vectors of Ints
-        """
-
-        """A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
-        * d^1 + ... + d^s = d
-        * mu_theta(d^1) > ... > mu_theta(d^s)
-        * Every d^k is theta-semi-stable."""
-
-        """
-        EXAMPLES:
-
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: theta = vector([3,-2])
-        sage: d = vector([2,3])
-        sage: Q.all_harder_narasimhan_types(d,theta)
-        [[(2, 3)],
-         [(1, 1), (1, 2)],
-         [(2, 2), (0, 1)],
-         [(2, 1), (0, 2)],
-         [(1, 0), (1, 3)],
-         [(1, 0), (1, 2), (0, 1)],
-         [(1, 0), (1, 1), (0, 2)],
-         [(2, 0), (0, 3)]]
-        sage: Q.all_harder_narasimhan_types(d,-theta)
-        [[(0, 3), (2, 0)]]
-
-        The 5-subspace quiver:
-        sage: from quiver import *
-        sage: Q = SubspaceQuiver(5)
-        sage: d = vector([1,1,1,1,1,2])
-        sage: theta = vector([2,2,2,2,2,-5])
-        sage: Q.all_harder_narasimhan_types(d,theta)
-        [[(1, 1, 1, 1, 1, 2)],
-         [(0, 0, 1, 1, 1, 1), (1, 1, 0, 0, 0, 1)],
-         [(0, 1, 0, 1, 1, 1), (1, 0, 1, 0, 0, 1)],
-         [(0, 1, 1, 0, 1, 1), (1, 0, 0, 1, 0, 1)],
-         [(0, 1, 1, 1, 0, 1), (1, 0, 0, 0, 1, 1)],
-         [(1, 0, 0, 1, 1, 1), (0, 1, 1, 0, 0, 1)],
-         [(1, 0, 1, 0, 1, 1), (0, 1, 0, 1, 0, 1)],
-         [(1, 0, 1, 1, 0, 1), (0, 1, 0, 0, 1, 1)],
-         [(1, 1, 0, 0, 1, 1), (0, 0, 1, 1, 0, 1)],
-         [(1, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 1)],
-         [(1, 1, 1, 0, 0, 1), (0, 0, 0, 1, 1, 1)],
-         [(0, 1, 1, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
-         [(1, 0, 1, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
-         [(1, 1, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
-         [(1, 1, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
-         [(1, 1, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(1, 1, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 0, 0, 0, 1, 0), (1, 1, 1, 1, 0, 2)],
-         [(0, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 0, 0, 0, 1, 0), (1, 0, 1, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
-         [(0, 0, 0, 0, 1, 0), (1, 1, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
-         [(0, 0, 0, 0, 1, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
-         [(0, 0, 0, 0, 1, 0), (1, 1, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 1, 2)],
-         [(0, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 0, 0, 1, 0, 0), (1, 0, 1, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
-         [(0, 0, 0, 1, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
-         [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(0, 0, 0, 1, 0, 0), (1, 1, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 0, 0, 1, 1, 0), (1, 1, 1, 0, 0, 2)],
-         [(0, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 0, 0, 1, 1, 0), (1, 0, 1, 0, 0, 1), (0, 1, 0, 0, 0, 1)],
-         [(0, 0, 0, 1, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 1, 0, 0, 1)],
-         [(0, 0, 0, 1, 1, 0), (1, 1, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 1, 2)],
-         [(0, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 0, 1, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
-         [(0, 0, 1, 0, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
-         [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(0, 0, 1, 0, 0, 0), (1, 1, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 0, 1, 0, 1, 0), (1, 1, 0, 1, 0, 2)],
-         [(0, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 0, 1, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
-         [(0, 0, 1, 0, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
-         [(0, 0, 1, 0, 1, 0), (1, 1, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 1, 2)],
-         [(0, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 0, 1, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
-         [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(0, 0, 1, 1, 0, 0), (1, 1, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 0, 1, 1, 1, 0), (1, 1, 0, 0, 0, 2)],
-         [(0, 0, 1, 1, 1, 0), (1, 1, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 1, 2)],
-         [(0, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 1, 0, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
-         [(0, 1, 0, 0, 0, 0), (1, 0, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
-         [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(0, 1, 0, 0, 0, 0), (1, 0, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 1, 0, 0, 1, 0), (1, 0, 1, 1, 0, 2)],
-         [(0, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 1, 0, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
-         [(0, 1, 0, 0, 1, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
-         [(0, 1, 0, 0, 1, 0), (1, 0, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 1, 2)],
-         [(0, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 1, 0, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
-         [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(0, 1, 0, 1, 0, 0), (1, 0, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 1, 0, 1, 1, 0), (1, 0, 1, 0, 0, 2)],
-         [(0, 1, 0, 1, 1, 0), (1, 0, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 1, 2)],
-         [(0, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (1, 0, 0, 0, 0, 1)],
-         [(0, 1, 1, 0, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
-         [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(0, 1, 1, 0, 0, 0), (1, 0, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 1, 1, 0, 1, 0), (1, 0, 0, 1, 0, 2)],
-         [(0, 1, 1, 0, 1, 0), (1, 0, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 1, 1, 1, 0, 0), (1, 0, 0, 0, 1, 2)],
-         [(0, 1, 1, 1, 0, 0), (1, 0, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(0, 1, 1, 1, 1, 0), (1, 0, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 1, 2)],
-         [(1, 0, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
-         [(1, 0, 0, 0, 0, 0), (0, 1, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
-         [(1, 0, 0, 0, 0, 0), (0, 1, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
-         [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(1, 0, 0, 0, 0, 0), (0, 1, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 2)],
-         [(1, 0, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (0, 1, 0, 0, 0, 1)],
-         [(1, 0, 0, 0, 1, 0), (0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 0, 1)],
-         [(1, 0, 0, 0, 1, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 1, 0, 1)],
-         [(1, 0, 0, 0, 1, 0), (0, 1, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 2)],
-         [(1, 0, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (0, 1, 0, 0, 0, 1)],
-         [(1, 0, 0, 1, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 1, 0, 0, 1)],
-         [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(1, 0, 0, 1, 0, 0), (0, 1, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 2)],
-         [(1, 0, 0, 1, 1, 0), (0, 1, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 2)],
-         [(1, 0, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 1, 0, 0, 0, 1)],
-         [(1, 0, 1, 0, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
-         [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(1, 0, 1, 0, 0, 0), (0, 1, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 2)],
-         [(1, 0, 1, 0, 1, 0), (0, 1, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 2)],
-         [(1, 0, 1, 1, 0, 0), (0, 1, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 0, 1, 1, 1, 0), (0, 1, 0, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 2)],
-         [(1, 1, 0, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 0, 1, 0, 0, 1)],
-         [(1, 1, 0, 0, 0, 0), (0, 0, 1, 0, 1, 1), (0, 0, 0, 1, 0, 1)],
-         [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 0, 1), (0, 0, 0, 0, 1, 1)],
-         [(1, 1, 0, 0, 0, 0), (0, 0, 1, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 2)],
-         [(1, 1, 0, 0, 1, 0), (0, 0, 1, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 2)],
-         [(1, 1, 0, 1, 0, 0), (0, 0, 1, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 1, 0, 1, 1, 0), (0, 0, 1, 0, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 2)],
-         [(1, 1, 1, 0, 0, 0), (0, 0, 0, 1, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 1, 1, 0, 1, 0), (0, 0, 0, 1, 0, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 1, 1, 1, 0, 0), (0, 0, 0, 0, 1, 1), (0, 0, 0, 0, 0, 1)],
-         [(1, 1, 1, 1, 1, 0), (0, 0, 0, 0, 0, 2)]]
-        
-        """
-
-        n = self.number_of_vertices()
-        assert (d.length() == n and theta.length())
-        assert all([denominator(self.simple_root(i)) > 0 for i in range(1,n+1)])
-        
-        subdimensions = all_subdimension_vectors(d)
-        subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
-        N = len(subdimensions)
-
-        # sstIndexes is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
-        sstIndexes, sstSubdims = self.__all_semistable_subdimension_vectors_helper(d, theta)
-
-        # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
-        idx_diff = (lambda j, i: subdimensions.index(subdimensions[j]-subdimensions[i]))
-
-        hn = [[[]] for j in range(N)]
-
-        for j in range(1,N):
-            # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
-            sstSub = list(filter(lambda i: is_subdimension_vector(subdimensions[i], subdimensions[j]), sstIndexes))
-            # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
-            hn[j] = [[i]+fstar for i in sstSub for fstar in list(filter(lambda fstar: fstar == [] or slope(subdimensions[i], theta, denominator=denominator) > slope(subdimensions[fstar[0]], theta, denominator=denominator), hn[idx_diff(j, i)]))]
-
-        hn[0] = [[0]]
-
-        return [[subdimensions[r] for r in fstar] for fstar in hn[N-1]]
-
-    """
-    Stability and Luna
-    """
 
     def has_stable_representation(self, d, theta, algorithm="schofield"):
         r"""Checks if there is a stable representation of this dimension vector.
@@ -1465,52 +1141,6 @@ class Quiver:
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
 
-    def is_schur_root(self, d):
-        r"""Checks if d is a Schur root.
-        
-        INPUT:
-        - ``d``: vector of Ints
-
-        OUTPUT: statement truth value as Bool
-        """
-
-        """
-        A Schur root is a dimension vector which admits a Schurian representation, i.e. a representation whose endomorphism ring is k. It's necessarily indecomposable.
-        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
-
-        """
-        EXAMPLES:
-
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: Q.is_schur_root(d)
-        True
-
-        Examples from Derksen--Weyman's book (Ex. 11.1.4):
-        sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(1,1,1)
-        sage: a = vector([1,1,2])
-        sage: Q.is_schur_root(a)
-        True
-        sage: b = vector([1,2,1])
-        sage: Q.is_schur_root(b)
-        False
-        sage: c = vector([1,1,1])
-        sage: Q.is_schur_root(c)
-        True
-        sage: d = vector([2,2,2])
-        sage: Q.is_schur_root(d)
-        False
-
-        """
-
-        assert d.length() == self.number_of_vertices()
-
-        theta = self.canonical_stability_parameter(d)
-        return self.has_stable_representation(d, theta)
-    
     def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
         """Computes the list of all stable subdimension vectors of d which have the same slope as d."""
 
@@ -1562,304 +1192,6 @@ class Quiver:
         stSubdims = [subdims[j] for j in stIndexes]
         return stIndexes, stSubdims
 
-    
-    def is_luna_type(self, tau, theta, denominator=sum):
-        r"""Checks if tau is a Luna type for theta.
-        
-        INPUT:
-        - ``tau``: list of tuples
-        - ``theta``: vector of Ints
-        - ``denominator``: Int-valued function
-
-        OUTPUT: statement truth value as Bool
-        """
-        """
-        EXAMPLES:
-
-        """
-
-        n = self.number_of_vertices()
-        assert (theta.length() == n and all([dn[0].length() == n for dn in tau]))
-        
-        d = sum([sum(dn[1])*dn[0] for dn in tau])
-        if (d == self.zero_vector()):
-            return (tau == [tuple([self.zero_vector(),[1]])])
-        else:
-            dstar = [dn[0] for dn in tau]
-            stIndexes, stSubdims = self.__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
-            return all([e in stSubdims for e in dstar]) # Note that in particular the zero vector must not lie in dstar
-
-    def all_luna_types(self, d, theta, denominator=sum):
-        r"""Returns the unordered list of all Luna types of d for theta.
-        
-        INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
-        - ``denominator``: Int-valued function
-
-        OUTPUT: list of tuples containing Int-vector and Int 
-        """
-
-        """A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
-        * m_1d^1 + ... + m_sd^s = d
-        * mu_theta(d^k) = mu_theta(d)
-        * All d^k admit a theta-stable representation
-        """
-
-        """Example: Suppose that d = 3e and e, 2e, d = 3e are the only stable subdimension vectors. Then the Luna types are:
-        ((3e,1))
-        ((2e,1),(e,1))
-        ((e,3))
-        ((e,2),(e,1))
-        ((e,1),(e,1),(e,1))
-        """
-
-        """Therefore we implement it as follows. A Luna type for us is a list [(d^1,p^1),...,(d^s,p^s)] (actually it should be unordered, but that's difficult because vectors are mutable) of dimension vectors d^k and (non-empty) partitions p^k such that
-        * |p^1|d^1 + ... + |p^s|d^s = d
-        * same
-        * same """
-
-        """So in the above example, the Luna types are
-        [(3e,[1])]
-        [(2e,[1]),(e,[1])]
-        [(e,[3])]
-        [(e,[2,1])]
-        [(e,[1,1,1])]
-        """
-
-        """
-        EXAMPLES
-
-        The Kronecker quiver:
-        sage: from quiver import *
-        sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
-        sage: Q.all_luna_types(d, theta)
-        [[((1, 1), [3])], [((1, 1), [2, 1])], [((1, 1), [1, 1, 1])]]
-
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([3,3])
-        sage: theta = vector([1,-1])
-        sage: Q.all_luna_types(d,theta)
-        [[((1, 1), [3])],
-         [((1, 1), [2, 1])],
-         [((1, 1), [1, 1, 1])],
-         [((1, 1), [1]), ((2, 2), [1])],
-         [((3, 3), [1])]]
-
-        The 6-subspace quiver:
-        sage: from quiver import *
-        sage: Q = SubspaceQuiver(6)
-        sage: d = vector([1,1,1,1,1,1,2])
-        sage: theta = vector([1,1,1,1,1,1,-3])
-        sage: Q.all_luna_types(d,theta)
-        [[((0, 0, 0, 1, 1, 1, 1), [1]), ((1, 1, 1, 0, 0, 0, 1), [1])],
-         [((0, 0, 1, 0, 1, 1, 1), [1]), ((1, 1, 0, 1, 0, 0, 1), [1])],
-         [((0, 0, 1, 1, 0, 1, 1), [1]), ((1, 1, 0, 0, 1, 0, 1), [1])],
-         [((0, 0, 1, 1, 1, 0, 1), [1]), ((1, 1, 0, 0, 0, 1, 1), [1])],
-         [((0, 1, 0, 0, 1, 1, 1), [1]), ((1, 0, 1, 1, 0, 0, 1), [1])],
-         [((0, 1, 0, 1, 0, 1, 1), [1]), ((1, 0, 1, 0, 1, 0, 1), [1])],
-         [((0, 1, 0, 1, 1, 0, 1), [1]), ((1, 0, 1, 0, 0, 1, 1), [1])],
-         [((0, 1, 1, 0, 0, 1, 1), [1]), ((1, 0, 0, 1, 1, 0, 1), [1])],
-         [((0, 1, 1, 0, 1, 0, 1), [1]), ((1, 0, 0, 1, 0, 1, 1), [1])],
-         [((0, 1, 1, 1, 0, 0, 1), [1]), ((1, 0, 0, 0, 1, 1, 1), [1])],
-         [((1, 1, 1, 1, 1, 1, 2), [1])]]
-
-        """
-        
-        if (d == self.zero_vector()):
-            return [tuple([self.zero_vector(),[1]])]
-        else: 
-            subdims = all_subdimension_vectors(d)
-            subdims.sort(key=(lambda e: deglex_key(e, b=max(d)+1)))
-            N = len(subdims)
-            # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
-            slopeIndexes = list(filter(lambda j: slope(subdims[j], theta, denominator=denominator) == slope(d, theta, denominator=denominator), range(1,N)))
-            # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
-            # They're in deglex order by the way the helper function works.
-            stIndexes, stSubdims = self.__all_stable_subdimension_vectors_helper(d, theta, denominator=denominator)
-            # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
-            idx_diff = (lambda j, i: subdims.index(subdims[j]-subdims[i]))
-
-            # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
-            partialLunaTypes = [[] for j in range(N)]
-            for j in range(N):
-                stSub = list(filter(lambda i: is_subdimension_vector(subdims[i], subdims[j]) and i != j, stIndexes))
-                for i in stSub:
-                    smaller = partialLunaTypes[idx_diff(j,i)]
-                    for tau in smaller:
-                        # Check if f := stSubdims[i] occurs as a dimension vector in tau.
-                        # If so, say of the form (f,n) then remove this occurrence and add (f,n+1)
-                        # If not, then add (f,1)
-                        tauNew = copy.deepcopy(tau)
-                        occurs = False
-                        for dn in tauNew:
-                            if (dn[0] == i):
-                                # We remove dn from tau and add the tuple (e,dn[1]+1) instead
-                                tauNew.remove(dn)
-                                tauNew.append(tuple([i,dn[1]+1]))
-                                occurs = True
-                        if (not occurs):
-                            tauNew.append(tuple([i,1]))
-                        # Now tauNew is a Luna type of e := subdims[j] the desired form
-                        # We sort it, because it's supposed to be unordered
-                        tauNew.sort()
-                        # If tau isn't already contained, then we add it
-                        if tauNew not in partialLunaTypes[j]:
-                            partialLunaTypes[j] = partialLunaTypes[j] + [tauNew]
-                if (j in stIndexes):
-                    # If e = subdims[j] is stable then (e,1) is also a Luna type.
-                    partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([j,1])]]
-        
-            partial = partialLunaTypes[N-1]
-            allLunaTypes = []
-            for tau in partial:
-                listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
-                Prod = cartesian_product(listOfPartitions).list()
-                allLunaTypes = allLunaTypes + [[tuple([subdims[tau[i][0]],p[i]]) for i in range(len(tau))] for p in Prod]
-            return allLunaTypes
-
-
-    def semistable_equals_stable(self, d, theta):
-        r"""Checks if every theta-semistable representation of dimension vector d is theta-stable
-        
-        INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
-
-        OUTPUT: statement truth value as Bool
-        """
-
-        """
-        EXAMPLES:
-
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([3,3])
-        sage: theta = vector([1,-1])
-        sage: Q.semistable_equals_stable(d,theta)
-        False
-        sage: d = vector([2,3])
-        sage: Q.semistable_equals_stable(d,theta)
-        True
-
-        A double framed example as in our vector fields paper
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: Q = Q.framed_quiver(vector([1,0]))
-        sage: Q = Q.coframed_quiver(vector([0,0,1]))
-        sage: d = vector([1,2,3,1])
-        sage: theta = vector([1,300,-200,-1])
-        sage: Q.semistable_equals_stable(d, theta)
-        True
-
-        """
-
-        """Every theta-semistable representation is theta-stable if and only if there are no Luna types other than (possibly) (d,[1])."""
-
-        # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
-        if is_coprime_for_stability_parameter(d,theta):
-            return True
-        else:
-            # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation is a bit slower
-            if not self.has_semistable_representation(d,theta):
-                return True
-            else:
-                allLunaTypes = self.all_luna_types(d,theta)
-                genericType = [tuple([d,[1]])]
-                if genericType in allLunaTypes:
-                    allLunaTypes.remove(genericType)
-                return (not allLunaTypes) # This checks if the list is empty
-
-    """
-    Ample stability
-    """
-
-    # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
-    def is_amply_stable(self, d, theta):
-        r"""Checks if d is amply stable for theta.
-        
-        INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
-
-        OUTPUT: statement truth value as Bool
-        """
-        
-        """By definition, d is theta-amply stable if the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
-
-        # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
-        # But can we find a necessary and sufficient condition?
-        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
-
-        """
-        EXAMPLES:
-
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: Q.is_amply_stable(d,theta)
-        True
-        sage: Q.is_amply_stable(d,-theta)
-        False
-
-        A three vertex example from the rigidity paper:
-        sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(1,6,1)
-        sage: d = vector([1,6,6])
-        sage: theta = Q.canonical_stability_parameter(d)
-        sage: Q.is_amply_stable(d, theta)
-        False
-
-        """
-
-        if self.semistable_equals_stable(d, theta):
-            return self.codimension_unstable_locus(d, theta) >= 2
-        else:
-            raise NotImplementedError()
-
-    def is_strongly_amply_stable(self, d, theta):
-        r"""Checks if d is strongly amply stable for theta.
-        
-        INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
-
-        OUTPUT: statement truth value as Bool
-        """
-
-        """We call d strongly amply stable for theta if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
-
-        """
-        EXAMPLES:
-
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
-        sage: Q.is_strongly_amply_stable(d, theta)
-        True
-
-        sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(5,1,1)
-        sage: d = vector([4,1,4])
-        sage: theta = Q.canonical_stability_parameter(d)
-        sage: Q.is_amply_stable(d, theta)
-        True
-        sage: Q.is_strongly_amply_stable(d, theta)
-        False
-
-        """
-
-        # All subdimension vectors of d
-        es = all_subdimension_vectors(d)
-        # Remove 0 and d
-        es.remove(self.zero_vector())
-        es.remove(d)
-        # Filter out those of bigger slope
-        es = list(filter(lambda e: slope(e,theta) >= slope(d,theta), es))
-        return all([self.euler_form(e,d-e) <= -2 for e in es])
 
     """
     Canonical decomposition
@@ -2074,10 +1406,28 @@ class Quiver:
             
             return [subdims[i] for i in canon_indexes(N-1)]   
 
+    """
+    Nilpotent cone and Hesselink
+    """
+
+    def dimension_nullcone(self, d):
+        r"""Returns the dimension of the nullcone which is the set of all nilpotent representations.
+        
+        INPUT:
+        - ``d``: vector of Ints
+
+        OUTPUT: dimension as Int
+        """
+
+        if self.is_acyclic():
+            return d.transpose()*self.adjacency_matrix()*d 
+        else:
+            raise NotImplementedError()
     
     """
     Teleman!
     """            
+    # TODO: This section should go into QuiverModuliSpace, I think.
 
     def all_weight_bounds(self, d, theta,denominator=sum):
         """
@@ -2178,24 +1528,8 @@ def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
     return list(map(vector, cartesian_product([range(di + 1) for di in d])))
 
-def all_forbidden_subdimension_vectors(d,theta):
-    """Returns the list of all subdimension vectors d' of d for which mu_theta(d') > mu_theta(d)."""
 
-    """
-    EXAMPLES
-
-    sage: from quiver import *
-    sage: d = vector([2,3])
-    sage: theta = vector([3,-2])
-    sage: all_forbidden_subdimension_vectors(d,theta)
-    [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2)]
-    """
-
-    zeroVector = vector([0 for i in range(d.length())])
-    properSubdimensions = list(filter(lambda e: e != d and e != zeroVector, all_subdimension_vectors(d)))
-    return list(filter(lambda e: slope(e,theta) > slope(d,theta), properSubdimensions))
-
-
+# TODO: This method has a stupid name (my own fault). Think of a better one.
 def is_coprime_for_stability_parameter(d,theta):
     """Checks if d is theta-coprime."""
 
