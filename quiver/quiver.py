@@ -369,7 +369,8 @@ class Quiver:
 
         OUTPUT: Quiver object
 
-        The framed quiver has one additional vertex 0 and f_i many arrows from 0 to i."""
+        The framed quiver has one additional vertex 0 and f_i many arrows from 0 to i.
+        """
 
         # TODO tests are missing
 
@@ -393,7 +394,8 @@ class Quiver:
 
         OUTPUT: Quiver object
 
-        The coframed quiver has one additional vertex oo and f_i many arrows from i to oo."""
+        The coframed quiver has one additional vertex oo and f_i many arrows from i to oo.
+        """
 
         n = self.number_of_vertices()
         assert f.length() == n

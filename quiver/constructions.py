@@ -122,6 +122,7 @@ def JordanQuiver(cls):
     # TODO do Q.rename here
     return Q
 
+
 # TODO generalized Jordan quiver
 
 
@@ -257,4 +258,3 @@ def RandomStability(quiver, bound=10):
     return vector(
         [randint(-bound // 2, bound) for i in range(quiver.number_of_vertices())]
     )
-
