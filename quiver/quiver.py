@@ -536,7 +536,8 @@ class Quiver:
         r"""Returns the support of the dimension vector.
 
         INPUT:
-        - ``d``: vector of Ints
+
+        - ``d``: dimension vector
 
         OUTPUT: List
 
@@ -564,7 +565,8 @@ class Quiver:
         r"""Checks if a dimension vector is in the fundamental domain.
 
         INPUT:
-        - ``d``: vector of Ints
+
+        - ``d``: dimension vector
 
         OUTPUT: statement truth value as Bool
 
@@ -695,8 +697,10 @@ class Quiver:
         r"""Checks if e is a generic subdimension vector of d.
 
         INPUT:
-        - ``e``: vector of Ints
-        - ``d``: vector of Ints
+
+        - ``e``: dimension vector for the subrepresentation
+
+        - ``d``: dimension vector for the ambient representation
 
         OUTPUT: Statement truth value as Bool
 
@@ -911,7 +915,8 @@ class Quiver:
         r"""Returns the list of all generic subdimension vectors of d.
 
         INPUT:
-        - ``d``: vector of Ints
+
+        - ``d``: dimension vector
 
         OUTPUT: list of vectors
 
@@ -959,8 +964,10 @@ class Quiver:
         r"""Computes ext(a,b).
 
         INPUT:
-        - ``a``: vector of Ints
-        - ``b``: vector of Ints
+
+        - ``a``: dimension vector
+
+        - ``b``: dimension vector
 
         OUTPUT: Int
 
@@ -993,8 +1000,10 @@ class Quiver:
         r"""Computes hom(a,b).
 
         INPUT:
-        - ``a``: vector of Ints
-        - ``b``: vector of Ints
+
+        - ``a``: dimension vector
+
+        - ``b``: dimension vector
 
         OUTPUT: Int
 
@@ -1046,11 +1055,12 @@ class Quiver:
         return d * (-self.euler_matrix().transpose() + E)
 
     def has_semistable_representation(self, d, theta):
-        r"""Checks if there is a theta-semistable representation of dimension vector d.
+        r"""Checks if there is a `\theta`-semistable representation of dimension vector `d`
 
         INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
+        - ``d``: dimension vector
+
+        - ``theta``: stability parameter
 
         OUTPUT: Statement truth value as Bool
 
@@ -1124,12 +1134,16 @@ class Quiver:
         sstSubdims = [subdims[j] for j in sstIndexes]
         return sstIndexes, sstSubdims
 
+    # TODO need to specify what the input for "stability parameter" is
+    # TODO always have canonical stability as default?
     def has_stable_representation(self, d, theta, algorithm="schofield"):
-        r"""Checks if there is a stable representation of this dimension vector.
+        r"""Checks if there is a `\theta`-stable representation of this dimension vector.
 
         INPUT:
-        - ``d``: vector of Ints
-        - ``theta``: vector of Ints
+        - ``d``: dimension vector
+
+        - ``theta``: stability parameter
+
         - ``algorithm``: String
 
         OUTPUT: statement truth value as Bool
@@ -1138,27 +1152,26 @@ class Quiver:
 
         EXAMPLES:
 
-        The A2 quiver:
-        sage: from quiver import *
-        sage: A2 = GeneralizedKroneckerQuiver(1)
-        sage: theta = vector([1,-1])
-        sage: d = vector([1,1])
-        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
-        True
-        sage: d = vector([2,2])
-        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
-        False
-        sage: d = vector([0,0])
-        sage: A2.has_stable_representation(d,theta,algorithm="schofield")
-        False
+        The `\mathrm{A}_2` quiver::
 
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: K3 = GeneralizedKroneckerQuiver(3)
-        sage: theta = vector([3,-2])
-        sage: d = vector([2,3])
-        sage: K3.has_stable_representation(d,theta,algorithm="schofield")
-        True
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(1)
+            sage: theta = (1, -1)
+            sage: Q.has_stable_representation([1, 1], theta, algorithm="schofield")
+            True
+            sage: Q.has_stable_representation([2, 2], theta, algorithm="schofield")
+            False
+            sage: Q.has_stable_representation([0, 0], theta, algorithm="schofield")
+            False
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuivrr(3)
+            sage: d = (2, 3)
+            sage: theta = Q.canonical_stability(d)
+            sage: Q.has_stable_representation(d, theta, algorithm="schofield")
+            True
 
         """
 
