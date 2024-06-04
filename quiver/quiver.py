@@ -180,14 +180,17 @@ class Quiver:
         indeg(j) = sum_i a_{ij} where (a_{ij}) is the adjacency matrix.
         # TODO Question: Should we number the vertices 1,...,n or 0,...,n-1?
 
-        EXAMPLES
+        EXAMPLES:
 
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: Q.indegree(1)
-        0
-        sage: Q.indegree(2)
-        3
+        In the 3-Kronecker quiver the indegree is either 0 or 3::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.indegree(1)
+            0
+            sage: Q.indegree(2)
+            3
+
         """
 
         assert (j > 0) and (j <= self.number_of_vertices())
@@ -205,14 +208,15 @@ class Quiver:
         The outdegree of i is the number of outgoing arrows from i.
         outdeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix.
 
-        EXAMPLES
+        EXAMPLES:
 
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: Q.outdegree(1)
-        3
-        sage: Q.outdegree(2)
-        0
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.outdegree(1)
+            3
+            sage: Q.outdegree(2)
+            0
+
         """
 
         assert (i > 0) and (i <= self.number_of_vertices())
