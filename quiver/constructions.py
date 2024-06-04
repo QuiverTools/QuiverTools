@@ -27,7 +27,10 @@ def disjoint_union(Q1, Q2):
         name = None
 
     return Quiver(
-        block_diagonal_matrix(Q1._adjacency, Q2._adjacency, subdivide=False), name=name
+        block_diagonal_matrix(
+            Q1.adjacency_matrix(), Q2.adjacency_matrix(), subdivide=False
+        ),
+        name=name,
     )
 
 
