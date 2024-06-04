@@ -574,19 +574,19 @@ class Quiver:
         Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain.
         If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter.
 
-        EXAMPLES
+        EXAMPLES:
 
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([1,1])
-        sage: Q.in_fundamental_domain(d)
-        True
-        sage: d = vector([1,2])
-        sage: Q.in_fundamental_domain(d)
-        False
-        sage: d = vector([2,3])
-        sage: Q.in_fundamental_domain(d)
-        True
+        The fundamental domain of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.in_fundamental_domain((1, 1))
+            True
+            sage: Q.in_fundamental_domain((1, 2))
+            False
+            sage: Q.in_fundamental_domain((2, 3))
+            True
+
         """
 
         # coerce dimension vector
