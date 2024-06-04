@@ -1033,7 +1033,7 @@ class Quiver:
 
         EXAMPLES:
 
-        
+
         Generic ext on the 3-Kronecker quiver::
 
             sage: from quiver import *
@@ -1072,7 +1072,7 @@ class Quiver:
         There is a non-empty open subset U of R(Q,a) x R(Q,b) such that dim Ext(M,N) = ext(a,b), i.e. is minimal, for all (M,N) in U. Therefore dim Hom(M,N) = <a,b> + dim Ext(M,N) is minimal and therefore hom(a,b) = <a,b> + ext(a,b).
 
         EXAMPLES:
- 
+
         Generic hom for the Kronecker quiver::
 
             sage: from quiver import *
@@ -1096,11 +1096,11 @@ class Quiver:
 
         return self.euler_form(a, b) + self.generic_ext(a, b)
 
-# TODO remove
+    # TODO remove
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a + b)
 
-# TODO remove
+    # TODO remove
     def generic_hom_vanishing(self, a, b):
         # TODO figure out a way to implement this.
         # How about this:
@@ -1174,7 +1174,7 @@ class Quiver:
         genSubdims = list(filter(lambda e: e != self.zero_vector(), genSubdims))
         return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
 
-# TODO remove and cache the recursive one instead
+    # TODO remove and cache the recursive one instead
     def __all_semistable_subdimension_vectors_helper(self, d, theta):
         """Computes the list of indexes of all semistable subdimension vectors of d.
 
@@ -1280,7 +1280,7 @@ class Quiver:
                 )
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
-# TODO remove and cache the recursive one instead
+    # TODO remove and cache the recursive one instead
     def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
         """Computes the list of all stable subdimension vectors of d which have the same slope as d.
 
@@ -1616,6 +1616,7 @@ class Quiver:
     """
     Teleman!
     """
+
     # TODO: This section should go into QuiverModuliSpace, I think.
     # TODO return weights as dictionaries with HN types as keys.
     def all_weight_bounds(self, d, theta, denominator=sum):

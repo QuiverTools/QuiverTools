@@ -151,7 +151,7 @@ def LoopQuiver(m):
     """
     Q = GeneralizedJordanQuiver(m)
     # TODO do rename
-    #Q.rename("{}-loop quiver".format(m))
+    # Q.rename("{}-loop quiver".format(m))
 
     return Q
 
@@ -169,7 +169,7 @@ def JordanQuiver(m=1):
     Q = GeneralizedJordanQuiver(m)
 
     # TODO do rename
-    #if m == 1:
+    # if m == 1:
     #    Q.rename("Jordan quiver")
 
     return Q
@@ -200,7 +200,6 @@ def GeneralizedJordanQuiver(m: int):
     Q = Quiver(matrix([[m]]), name="generalized Jordan quiver with {} loops".format(m))
 
     return Q
-
 
 
 def SubspaceQuiver(m):
