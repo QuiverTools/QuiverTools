@@ -589,22 +589,35 @@ class Quiver:
         True
         """
 
-        n = self.number_of_vertices()
-        assert d.length() == n and all([di >= 0 for di in list(d)])
-        # This is the condition <d,e_i> + <e_i,d> <= 0 for all i in Q_0
-        eulerFormCondition = all(
+        # coerce dimension vector
+        # TODO in fact: we don't need to do this here
+        # when the helper function is introduced this is no longer needed
+        d = vector(d)
+
+        # TODO these checks happen all the time
+        # move them to a helper function? e.g.,
+        # assert self._is_dimension_vector(d)
+        assert d.length() == self.number_of_vertices() and all(
+            [di >= 0 for di in list(d)]
+        )
+
+        # check if `\langle d,e_i\rangle + \langle e_i,d\rangle \leq 0`
+        # for all vertices `i\in Q_0`
+        inequality = all(
             [
                 (
                     self.euler_form(d, self.simple_root(i + 1))
                     + self.euler_form(self.simple_root(i + 1), d)
                     <= 0
                 )
-                for i in range(n)
+                for i in range(self.number_of_vertices())
             ]
         )
-        # Check if the support is connected
-        connected = self.support(d).is_connected()
-        return eulerFormCondition and connected
+
+        # check if the support is connected
+        connected = self.full_subquiver(self.support(d)).is_connected()
+
+        return inequality and connected
 
     # The fundamental domain again! Which implementation should we keep?
     # The latter is lacking the connectivity condition on the support of d
