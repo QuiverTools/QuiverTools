@@ -21,4 +21,5 @@ jobs:
       - name: Run the tests
         run: |
           sage -t quiver/quiver.py
+          sage -t quiver/constructions.py
           sage -t quiver/moduli.py
