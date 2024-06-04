@@ -175,13 +175,11 @@ class Quiver:
 
         OUTPUT:
         The indegree as an Int
-        """
 
-        """The indegree of j is the number of incoming arrows into j.
-        indeg(j) = sum_i a_{ij} where (a_{ij}) is the adjacency matrix."""
-        # Question: Should we number the vertices 1,...,n or 0,...,n-1?
+        The indegree of j is the number of incoming arrows into j.
+        indeg(j) = sum_i a_{ij} where (a_{ij}) is the adjacency matrix.
+        # TODO Question: Should we number the vertices 1,...,n or 0,...,n-1?
 
-        """
         EXAMPLES
 
         sage: from quiver import *
@@ -203,12 +201,10 @@ class Quiver:
 
         OUTPUT:
         The outdegree as an Int
-        """
 
-        """The outdegree of i is the number of outgoing arrows from i.
-        outdeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix."""
+        The outdegree of i is the number of outgoing arrows from i.
+        outdeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix.
 
-        """
         EXAMPLES
 
         sage: from quiver import *
@@ -223,9 +219,8 @@ class Quiver:
         return sum(self._adjacency.row(i - 1))
 
     def is_source(self, i):
-        """Checks if i is a source of the quiver, i.e. if there are no incoming arrows into i."""
+        """Checks if i is a source of the quiver, i.e. if there are no incoming arrows into i.
 
-        """
         EXAMPLES
 
         sage: from quiver import *
@@ -240,9 +235,8 @@ class Quiver:
         return self.indegree(i) == 0
 
     def is_sink(self, j):
-        """Checks if j is a sink of the quiver, i.e. if there are no outgoing arrows out of j."""
+        """Checks if j is a sink of the quiver, i.e. if there are no outgoing arrows out of j.
 
-        """
         EXAMPLES
 
         sage: from quiver import *
@@ -391,9 +385,7 @@ class Quiver:
         - ``I``: List
 
         OUTPUT: Quiver object
-        """
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -500,13 +492,10 @@ class Quiver:
         - ``d``: vector of Ints
 
         OUTPUT: statement truth value as Bool
-        """
 
-        """
         A Schur root is a dimension vector which admits a Schurian representation, i.e. a representation whose endomorphism ring is k. It's necessarily indecomposable.
-        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter."""
+        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter.
 
-        """
         EXAMPLES:
 
         The 3-Kronecker quiver:
@@ -575,13 +564,11 @@ class Quiver:
         - ``d``: vector of Ints
 
         OUTPUT: statement truth value as Bool
-        """
 
-        """The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
+        The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
         Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain.
-        If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter."""
+        If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter.
 
-        """
         EXAMPLES
 
         sage: from quiver import *
@@ -628,11 +615,11 @@ class Quiver:
     #     return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
 
     def division_order(self, d, e):
-        """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink."""
+        """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink.
+
         # TODO: Think of a better name.
         # Good name?
 
-        """
         EXAMPLES
 
         sage: from quiver import *
@@ -709,13 +696,11 @@ class Quiver:
         - ``d``: vector of Ints
 
         OUTPUT: Statement truth value as Bool
-        """
 
         # Using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
-        """A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
-        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if e is a subdimension vector of d (missing in Thm. 5.3!) and <f,d-e> is non-negative for all generic subdimension vectors f of e."""
+        A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
+        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if e is a subdimension vector of d (missing in Thm. 5.3!) and <f,d-e> is non-negative for all generic subdimension vectors f of e.
 
-        """
         EXAMPLES:
         sage: from quiver import *
         sage: Q = LoopQuiver(1)
@@ -852,9 +837,8 @@ class Quiver:
                 return all([self.euler_form(f, d - e) >= 0 for f in genSubdims])
 
     def __all_generic_subdimension_vectors_helper(self, d):
-        """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order."""
+        """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order.
 
-        """
         EXAMPLES
 
         sage: from quiver import *
@@ -927,9 +911,7 @@ class Quiver:
         - ``d``: vector of Ints
 
         OUTPUT: list of vectors
-        """
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -978,11 +960,9 @@ class Quiver:
         - ``b``: vector of Ints
 
         OUTPUT: Int
-        """
 
-        """"According to Thm. 5.4 in Schofield's 'General representations of quivers', we have ext(a,b) = max{-<c,b> | c gen. subdimension vector of a}."""
+        According to Thm. 5.4 in Schofield's 'General representations of quivers', we have ext(a,b) = max{-<c,b> | c gen. subdimension vector of a}.
 
-        """
         EXAMPLES:
         sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(1)
@@ -1014,11 +994,9 @@ class Quiver:
         - ``b``: vector of Ints
 
         OUTPUT: Int
-        """
 
-        """There is a non-empty open subset U of R(Q,a) x R(Q,b) such that dim Ext(M,N) = ext(a,b), i.e. is minimal, for all (M,N) in U. Therefore dim Hom(M,N) = <a,b> + dim Ext(M,N) is minimal and therefore hom(a,b) = <a,b> + ext(a,b)."""
+        There is a non-empty open subset U of R(Q,a) x R(Q,b) such that dim Ext(M,N) = ext(a,b), i.e. is minimal, for all (M,N) in U. Therefore dim Hom(M,N) = <a,b> + dim Ext(M,N) is minimal and therefore hom(a,b) = <a,b> + ext(a,b).
 
-        """
         EXAMPLES:
         sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(1)
@@ -1072,12 +1050,10 @@ class Quiver:
         - ``theta``: vector of Ints
 
         OUTPUT: Statement truth value as Bool
-        """
 
-        """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d."""
+        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d.
         # Thm. 5.4 in Markus's paper is actually a result of Schofield. So the algorithm should bear his name, if any.
 
-        """
         EXAMPLES:
 
         The A_2 quiver:
@@ -1115,9 +1091,8 @@ class Quiver:
         return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
 
     def __all_semistable_subdimension_vectors_helper(self, d, theta):
-        """Computes the list of indexes of all semistable subdimension vectors of d."""
+        """Computes the list of indexes of all semistable subdimension vectors of d.
 
-        """
         EXAMPLES:
         sage: from quiver import *
         sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
@@ -1155,27 +1130,9 @@ class Quiver:
         - ``algorithm``: String
 
         OUTPUT: statement truth value as Bool
-        """
 
-        assert algorithm in ["schofield", "king", "al"]
-        n = self.number_of_vertices()
-        assert d.length() == n and theta.length() == n
+        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d.
 
-        # TODO implement this
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
-        # Question concerning above TODO: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper.
-        if algorithm == "king":
-            raise NotImplementedError()
-
-        # TODO implement this
-        # al stands for Adriaenssens--Le Bruyn
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1972892
-        if algorithm == "al":
-            raise NotImplementedError()
-
-        """See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d."""
-
-        """
         EXAMPLES:
 
         The A2 quiver:
@@ -1202,6 +1159,23 @@ class Quiver:
 
         """
 
+
+        assert algorithm in ["schofield", "king", "al"]
+        n = self.number_of_vertices()
+        assert d.length() == n and theta.length() == n
+
+        # TODO implement this
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
+        # Question concerning above TODO: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper.
+        if algorithm == "king":
+            raise NotImplementedError()
+
+        # TODO implement this
+        # al stands for Adriaenssens--Le Bruyn
+        # https://mathscinet.ams.org/mathscinet-getitem?mr=1972892
+        if algorithm == "al":
+            raise NotImplementedError()
+
         if algorithm == "schofield":
             if d == self.zero_vector():
                 return False
@@ -1213,9 +1187,8 @@ class Quiver:
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
     def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
-        """Computes the list of all stable subdimension vectors of d which have the same slope as d."""
+        """Computes the list of all stable subdimension vectors of d which have the same slope as d.
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -1400,72 +1373,73 @@ class Quiver:
             raise NotImplementedError()
 
         elif algorithm == "recursive":
+            # TODO move this to docstring
             """I'm not sure if one of the Schofield algorithms is meant to be this one. But here's a very simple recursion which computes the canonical decomposition. It is based on Lem. 11.2.5 in Derksen--Weyman's book (a.k.a. 'the book with typos'):
 
             Lemma: Let a be a dimension vector and a = b+c a decomposition such that ext(b,c) = ext(c,b) = 0. If b = b_1 + ... + b_s and c = c_1 + ... + c_t are the canonical decompositions, then a = b_1 + ... + b_s + c_1 + ... + c_t is the canonical decomposition of a.
 
             If no non-trivial decomposition a = b+c as above exists, then a is a Schur root and therefore its own canonical decomposition. This is because a generic representation has no subdimension vector b which admits both a subrepresentation and a quotient representation. So a generic representation is indecomposable, which implies that a is a Schur root.
-            """
 
-            """
             EXAMPLES:
+
+            # TODO make a smaller example?
 
             sage: Q = KroneckerQuiver()
             sage: ds = [vector([i,j]) for i in range(7) for j in range(7)]
             sage: can = [Q.canonical_decomposition(d, algorithm="recursive") for d in ds]
             sage: for i in range(7):
             ....:     for j in range(7):
-            ....:         print('Canonical decomp. of '+str(ds[7*i+j])+' is: '+str(can[7*i+j]))
+            ....:         print('decomposition of '+str(ds[7*i+j])+' is: '+str(can[7*i+j]))
             ....:
-            Canonical decomp. of (0, 0) is: [(0, 0)]
-            Canonical decomp. of (0, 1) is: [(0, 1)]
-            Canonical decomp. of (0, 2) is: [(0, 1), (0, 1)]
-            Canonical decomp. of (0, 3) is: [(0, 1), (0, 1), (0, 1)]
-            Canonical decomp. of (0, 4) is: [(0, 1), (0, 1), (0, 1), (0, 1)]
-            Canonical decomp. of (0, 5) is: [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-            Canonical decomp. of (0, 6) is: [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-            Canonical decomp. of (1, 0) is: [(1, 0)]
-            Canonical decomp. of (1, 1) is: [(1, 1)]
-            Canonical decomp. of (1, 2) is: [(1, 2)]
-            Canonical decomp. of (1, 3) is: [(0, 1), (1, 2)]
-            Canonical decomp. of (1, 4) is: [(0, 1), (0, 1), (1, 2)]
-            Canonical decomp. of (1, 5) is: [(0, 1), (0, 1), (0, 1), (1, 2)]
-            Canonical decomp. of (1, 6) is: [(0, 1), (0, 1), (0, 1), (0, 1), (1, 2)]
-            Canonical decomp. of (2, 0) is: [(1, 0), (1, 0)]
-            Canonical decomp. of (2, 1) is: [(2, 1)]
-            Canonical decomp. of (2, 2) is: [(1, 1), (1, 1)]
-            Canonical decomp. of (2, 3) is: [(2, 3)]
-            Canonical decomp. of (2, 4) is: [(1, 2), (1, 2)]
-            Canonical decomp. of (2, 5) is: [(0, 1), (1, 2), (1, 2)]
-            Canonical decomp. of (2, 6) is: [(0, 1), (0, 1), (1, 2), (1, 2)]
-            Canonical decomp. of (3, 0) is: [(1, 0), (1, 0), (1, 0)]
-            Canonical decomp. of (3, 1) is: [(1, 0), (2, 1)]
-            Canonical decomp. of (3, 2) is: [(3, 2)]
-            Canonical decomp. of (3, 3) is: [(1, 1), (1, 1), (1, 1)]
-            Canonical decomp. of (3, 4) is: [(3, 4)]
-            Canonical decomp. of (3, 5) is: [(1, 2), (2, 3)]
-            Canonical decomp. of (3, 6) is: [(1, 2), (1, 2), (1, 2)]
-            Canonical decomp. of (4, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0)]
-            Canonical decomp. of (4, 1) is: [(1, 0), (1, 0), (2, 1)]
-            Canonical decomp. of (4, 2) is: [(2, 1), (2, 1)]
-            Canonical decomp. of (4, 3) is: [(4, 3)]
-            Canonical decomp. of (4, 4) is: [(1, 1), (1, 1), (1, 1), (1, 1)]
-            Canonical decomp. of (4, 5) is: [(4, 5)]
-            Canonical decomp. of (4, 6) is: [(2, 3), (2, 3)]
-            Canonical decomp. of (5, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
-            Canonical decomp. of (5, 1) is: [(1, 0), (1, 0), (1, 0), (2, 1)]
-            Canonical decomp. of (5, 2) is: [(1, 0), (2, 1), (2, 1)]
-            Canonical decomp. of (5, 3) is: [(2, 1), (3, 2)]
-            Canonical decomp. of (5, 4) is: [(5, 4)]
-            Canonical decomp. of (5, 5) is: [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
-            Canonical decomp. of (5, 6) is: [(5, 6)]
-            Canonical decomp. of (6, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
-            Canonical decomp. of (6, 1) is: [(1, 0), (1, 0), (1, 0), (1, 0), (2, 1)]
-            Canonical decomp. of (6, 2) is: [(1, 0), (1, 0), (2, 1), (2, 1)]
-            Canonical decomp. of (6, 3) is: [(2, 1), (2, 1), (2, 1)]
-            Canonical decomp. of (6, 4) is: [(3, 2), (3, 2)]
-            Canonical decomp. of (6, 5) is: [(6, 5)]
-            Canonical decomp. of (6, 6) is: [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+            decomposition of (0, 0) is: [(0, 0)]
+            decomposition of (0, 1) is: [(0, 1)]
+            decomposition of (0, 2) is: [(0, 1), (0, 1)]
+            decomposition of (0, 3) is: [(0, 1), (0, 1), (0, 1)]
+            decomposition of (0, 4) is: [(0, 1), (0, 1), (0, 1), (0, 1)]
+            decomposition of (0, 5) is: [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
+            decomposition of (0, 6) is: [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
+            decomposition of (1, 0) is: [(1, 0)]
+            decomposition of (1, 1) is: [(1, 1)]
+            decomposition of (1, 2) is: [(1, 2)]
+            decomposition of (1, 3) is: [(0, 1), (1, 2)]
+            decomposition of (1, 4) is: [(0, 1), (0, 1), (1, 2)]
+            decomposition of (1, 5) is: [(0, 1), (0, 1), (0, 1), (1, 2)]
+            decomposition of (1, 6) is: [(0, 1), (0, 1), (0, 1), (0, 1), (1, 2)]
+            decomposition of (2, 0) is: [(1, 0), (1, 0)]
+            decomposition of (2, 1) is: [(2, 1)]
+            decomposition of (2, 2) is: [(1, 1), (1, 1)]
+            decomposition of (2, 3) is: [(2, 3)]
+            decomposition of (2, 4) is: [(1, 2), (1, 2)]
+            decomposition of (2, 5) is: [(0, 1), (1, 2), (1, 2)]
+            decomposition of (2, 6) is: [(0, 1), (0, 1), (1, 2), (1, 2)]
+            decomposition of (3, 0) is: [(1, 0), (1, 0), (1, 0)]
+            decomposition of (3, 1) is: [(1, 0), (2, 1)]
+            decomposition of (3, 2) is: [(3, 2)]
+            decomposition of (3, 3) is: [(1, 1), (1, 1), (1, 1)]
+            decomposition of (3, 4) is: [(3, 4)]
+            decomposition of (3, 5) is: [(1, 2), (2, 3)]
+            decomposition of (3, 6) is: [(1, 2), (1, 2), (1, 2)]
+            decomposition of (4, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0)]
+            decomposition of (4, 1) is: [(1, 0), (1, 0), (2, 1)]
+            decomposition of (4, 2) is: [(2, 1), (2, 1)]
+            decomposition of (4, 3) is: [(4, 3)]
+            decomposition of (4, 4) is: [(1, 1), (1, 1), (1, 1), (1, 1)]
+            decomposition of (4, 5) is: [(4, 5)]
+            decomposition of (4, 6) is: [(2, 3), (2, 3)]
+            decomposition of (5, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
+            decomposition of (5, 1) is: [(1, 0), (1, 0), (1, 0), (2, 1)]
+            decomposition of (5, 2) is: [(1, 0), (2, 1), (2, 1)]
+            decomposition of (5, 3) is: [(2, 1), (3, 2)]
+            decomposition of (5, 4) is: [(5, 4)]
+            decomposition of (5, 5) is: [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+            decomposition of (5, 6) is: [(5, 6)]
+            decomposition of (6, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
+            decomposition of (6, 1) is: [(1, 0), (1, 0), (1, 0), (1, 0), (2, 1)]
+            decomposition of (6, 2) is: [(1, 0), (1, 0), (2, 1), (2, 1)]
+            decomposition of (6, 3) is: [(2, 1), (2, 1), (2, 1)]
+            decomposition of (6, 4) is: [(3, 2), (3, 2)]
+            decomposition of (6, 5) is: [(6, 5)]
+            decomposition of (6, 6) is: [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
             sage:
             sage: all([all([Q.generic_ext(s[i],s[j]) + Q.generic_ext(s[j],s[i]) == 0 for i in range(len(s)) for j in range(i)]) for s in can])
             True
@@ -1483,6 +1457,7 @@ class Quiver:
             return [d]
 
         elif algorithm == "recursive_new":
+            # TODO move this to docstring
             """
             EXAMPLES:
 
@@ -1530,6 +1505,7 @@ class Quiver:
         if self.is_acyclic():
             return d.transpose() * self.adjacency_matrix() * d
         else:
+            # TODO where is the algorithm?
             raise NotImplementedError()
 
     """
@@ -1692,11 +1668,10 @@ def all_subdimension_vectors(d):
 
 # TODO: This method has a stupid name (my own fault). Think of a better one.
 def is_coprime_for_stability_parameter(d, theta):
-    """Checks if d is theta-coprime."""
+    """Checks if d is theta-coprime.
 
-    """A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d."""
+    A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d.
 
-    """
     EXAMPLES
     sage: from quiver import *
     sage: d = vector([2,3])
@@ -1726,9 +1701,8 @@ def is_indivisible(d):
 
 
 def disjoint_union(Q1, Q2):
-    """Returns the disjoint union of two quivers Q1 and Q2."""
+    """Returns the disjoint union of two quivers Q1 and Q2.
 
-    """
     EXAMPLES
 
     sage: from quiver import *

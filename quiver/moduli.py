@@ -75,14 +75,12 @@ class QuiverModuli(ABC):
         r"""Returns the list of all HN types.
 
         OUTPUT: list of list of vectors of Ints
-        """
 
-        """A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
+        A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
         * d^1 + ... + d^s = d
         * mu_theta(d^1) > ... > mu_theta(d^s)
-        * Every d^k is theta-semi-stable."""
+        * Every d^k is theta-semi-stable.
 
-        """
         EXAMPLES:
 
         The 3-Kronecker quiver:
@@ -235,9 +233,7 @@ class QuiverModuli(ABC):
         - ``dstar``: list of vectors of Ints
 
         OUTPUT: statement truth value as Bool
-        """
 
-        """
         EXAMPLES:
         sage: from quiver import *
         sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
@@ -280,13 +276,12 @@ class QuiverModuli(ABC):
         - ``secure``: Bool
 
         OUTPUT: codimension as Int
-        """
+        # TODO
         # It checks for dstar to be a HN type iff secure == True. This check is slow.
         # Be sure to be dealing with a HN type if you call it with secure == False. This is fast but yields nonsense, if dstar is not a HN type.
 
-        """The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>"""
+        The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>
 
-        """
         EXAMPLES
 
         The 3-Kronecker quiver
@@ -327,9 +322,7 @@ class QuiverModuli(ABC):
         r"""Computes the codimension of the unstable locus inside the representation variety.
 
         OUTPUT: codimension as Int
-        """
 
-        """"
         EXAMPLES:
         sage: from quiver import *
         sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
@@ -369,36 +362,31 @@ class QuiverModuli(ABC):
         r"""Returns the unordered list of all Luna types of d for theta.
 
         OUTPUT: list of tuples containing Int-vector and Int
-        """
 
-        """A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
+        A Luna type of d for theta is an unordered sequence (i.e. multiset) ((d^1,m_1),...,(d^s,m_s)) of dimension vectors d^k and (positive) natural numbers m_k such that
         * m_1d^1 + ... + m_sd^s = d
         * mu_theta(d^k) = mu_theta(d)
         * All d^k admit a theta-stable representation
-        """
 
-        """Example: Suppose that d = 3e and e, 2e, d = 3e are the only stable subdimension vectors. Then the Luna types are:
+        Example: Suppose that d = 3e and e, 2e, d = 3e are the only stable subdimension vectors. Then the Luna types are:
         ((3e,1))
         ((2e,1),(e,1))
         ((e,3))
         ((e,2),(e,1))
         ((e,1),(e,1),(e,1))
-        """
 
-        """Therefore we implement it as follows. A Luna type for us is a list [(d^1,p^1),...,(d^s,p^s)] (actually it should be unordered, but that's difficult because vectors are mutable) of dimension vectors d^k and (non-empty) partitions p^k such that
+        Therefore we implement it as follows. A Luna type for us is a list [(d^1,p^1),...,(d^s,p^s)] (actually it should be unordered, but that's difficult because vectors are mutable) of dimension vectors d^k and (non-empty) partitions p^k such that
         * |p^1|d^1 + ... + |p^s|d^s = d
         * same
-        * same """
+        * same
 
-        """So in the above example, the Luna types are
+        So in the above example, the Luna types are
         [(3e,[1])]
         [(2e,[1]),(e,[1])]
         [(e,[3])]
         [(e,[2,1])]
         [(e,[1,1,1])]
-        """
 
-        """
         EXAMPLES:
 
         The Kronecker quiver:
@@ -509,9 +497,7 @@ class QuiverModuli(ABC):
         - ``tau``: list of tuples
 
         OUTPUT: statement truth value as Bool
-        """
 
-        """
         EXAMPLES:
         
         sage: from quiver import *
@@ -547,11 +533,9 @@ class QuiverModuli(ABC):
         - ``secure``: Bool
 
         OUTPUT: Dimension as Int
-        """
 
-        """The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is sum_k l(p^k)(1 - <d^k,d^k>) where for a partition p = (n_1,...,n_l), the length l(p) is l, i.e. the number of rows."""
+        The dimension of the Luna stratum of tau = [(d^1,p^1),...,(d^s,p^s)] is sum_k l(p^k)(1 - <d^k,d^k>) where for a partition p = (n_1,...,n_l), the length l(p) is l, i.e. the number of rows.
 
-        """
         EXAMPLES:
 
         The Kronecker quiver:
@@ -577,9 +561,7 @@ class QuiverModuli(ABC):
         - ``secure``: Bool
 
         OUTPUT: tuple cosisting of a Quiver object and a vector
-        """
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -674,9 +656,7 @@ class QuiverModuli(ABC):
         r"""Checks if every theta-semistable representation of dimension vector d is theta-stable
 
         OUTPUT: statement truth value as Bool
-        """
 
-        """
         EXAMPLES:
 
         The 3-Kronecker quiver:
@@ -730,9 +710,8 @@ class QuiverModuli(ABC):
         r"""Checks if d is amply stable for theta.
 
         OUTPUT: statement truth value as Bool
-        """
 
-        """By definition, d is theta-amply stable if the codimension of the theta-stable locus inside R(Q,d) is at least 2."""
+        By definition, d is theta-amply stable if the codimension of the theta-stable locus inside R(Q,d) is at least 2.
 
         # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
         # But can we find a necessary and sufficient condition?
@@ -740,7 +719,6 @@ class QuiverModuli(ABC):
         # I think I can compute the codimension of the non-stable locus in full generality.
         # TODO: It's more difficult than I thought. I think it's doable though.
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -782,11 +760,9 @@ class QuiverModuli(ABC):
         r"""Checks if d is strongly amply stable for theta.
 
         OUTPUT: statement truth value as Bool
-        """
 
-        """We call d strongly amply stable for theta if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d)."""
+        We call d strongly amply stable for theta if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d).
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -830,9 +806,7 @@ class QuiverModuli(ABC):
         r"""Returns the list of all subdimension vectors d' of d for which mu_theta(d') > mu_theta(d) (in the semistable case) or for which mu_theta(d') >= mu_theta(d) (in the stable case).
 
         OUTPUT: list of vectors
-        """
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -869,11 +843,9 @@ class QuiverModuli(ABC):
         r"""Returns the list of all minimal forbidden subdimension vectors of d.
 
         OUTPUT: list of vectors
-        """
 
-        """Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink."""
+        Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink.
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -913,12 +885,10 @@ class QuiverModuli(ABC):
         - ``chernRoots``: list of Strings
 
         OUTPUT: dict
-        """
 
         # TODO
-        """Explanation ..."""
+        Explanation ...
 
-        """
         Notation for explanations:
         G = G_d = prod_{i in Q_0} GL_{d_i}
         T = maximal torus of diagonal matrices
@@ -928,10 +898,10 @@ class QuiverModuli(ABC):
           = prod_{i in Q_0} S_{d_i}
         R = bigoplus_{a in Q_1} Hom(k^{d_{s(a)}},k^{d_{t(a)}})
         R^{sst}, R^{st} semi-stable/stable locus
-        """
 
-        """
         EXAMPLES:
+
+        # TODO
         """
         Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
@@ -1124,13 +1094,12 @@ class QuiverModuliSpace(QuiverModuli):
         )
 
     def dimension(self):
-        """Computes the dimension of the moduli space M^{theta-(s)st}(Q,d)."""
+        """Computes the dimension of the moduli space M^{theta-(s)st}(Q,d).
 
-        """This involves several cases:
+        This involves several cases:
         * if there are theta-stable representations then dim M^{theta-sst}(Q,d) = M^{theta-st}(Q,d) = 1 - <d,d>
-        * if there are no theta-stable representations then dim M^{theta-st}(Q,d) = -Infinity (by convention) and dim M^{theta-sst} = max_tau dim S_tau, the maximum of the dimension of all Luna strata."""
+        * if there are no theta-stable representations then dim M^{theta-st}(Q,d) = -Infinity (by convention) and dim M^{theta-sst} = max_tau dim S_tau, the maximum of the dimension of all Luna strata.
 
-        """
         EXAMPLES
 
         The A2-quiver:
@@ -1218,11 +1187,11 @@ class QuiverModuliSpace(QuiverModuli):
     def poincare_polynomial(self):
         r"""Returns the Poincare polynomial of the moduli space.
 
-        OUTPUT: polynomial in one variable"""
+        OUTPUT: polynomial in one variable
+        # TODO allow a user-supplied ring?
 
-        r"""The Poincare polynomial is defined as $P_X(q) = \sum_{i \geq 0} (-1)^i dim H^i(X;\mathbb{C}) q^{i/2}$. For a quiver moduli space whose dimension vector is $\theta$-coprime, the odd cohomology vanishes and this is a Polynomial in $q$. We use Cor. 6.9 in Reineke's Harder--Narasimhan paper to compute it."""
+        The Poincare polynomial is defined as $P_X(q) = \sum_{i \geq 0} (-1)^i dim H^i(X;\mathbb{C}) q^{i/2}$. For a quiver moduli space whose dimension vector is $\theta$-coprime, the odd cohomology vanishes and this is a Polynomial in $q$. We use Cor. 6.9 in Reineke's Harder--Narasimhan paper to compute it.
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
@@ -1261,13 +1230,10 @@ class QuiverModuliSpace(QuiverModuli):
         r"""Returns the Betti numbers of the moduli space.
 
         OUTPUT: List of Ints
-        """
 
-        """
         EXAMPLES:
 
         sage: from quiver import *
-        sage: from moduli import *
         sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
         sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
         sage: X.poincare_polynomial()
@@ -1351,9 +1317,7 @@ class QuiverModuliSpace(QuiverModuli):
         - ``chernClasses``: list of Strings
 
         OUTPUT: ring
-        """
 
-        """
         EXAMPLES:
 
         The Kronecker quiver:
@@ -1454,11 +1418,10 @@ class QuiverModuliSpace(QuiverModuli):
         )
 
     def point_class(self, chi=None, chernClasses=None):
-        """Returns the point class as an expression in Chern classes of the U_i(chi)."""
+        """Returns the point class as an expression in Chern classes of the U_i(chi).
 
-        """The point class is given as the homogeneous component of degree dim X of the expression prod_{a in Q_1} c(U_{t(a)})^{d_{s(a)}} / (prod_{i in Q_0} c(U_i)^{d_i})"""
+        The point class is given as the homogeneous component of degree dim X of the expression prod_{a in Q_1} c(U_{t(a)})^{d_{s(a)}} / (prod_{i in Q_0} c(U_i)^{d_i})
 
-        """
         EXAMPLES
 
         P^7 as a quiver moduli space of a generalized Kronecker quiver:
@@ -1672,9 +1635,10 @@ class QuiverModuliStack(QuiverModuli):
         return True
 
     def motive(self):
-        r"""Gives an expression for the motive of the semistable moduli stack in an appropriate localization of K_0(Var)"""
+        r"""Gives an expression for the motive of the semistable moduli stack in an appropriate localization of K_0(Var)
 
-        """
+        # TODO more explanation
+
         EXAMPLES:
 
         sage: from quiver import *
