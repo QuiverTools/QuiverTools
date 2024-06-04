@@ -845,9 +845,8 @@ class Quiver:
 
         # TODO helper function
         assert (
-            self.number_of_vertices()
-            == d.length() & self.number_of_vertices()
-            == e.length()
+            self.number_of_vertices() == d.length()
+            and self.number_of_vertices() == e.length()
         )
         assert all([di >= 0 for di in d.list()]) and all([ei >= 0 for ei in e.list()])
 
@@ -1434,7 +1433,7 @@ class Quiver:
                 # TODO make a smaller example? don't print _everything_?
                 sage: from quiver import *
                 sage: Q = KroneckerQuiver()
-                sage: ds = Tuples(range(7), 2).list()
+                sage: ds = Tuples(range(7), 2)
                 sage: decompositions = {d: Q.canonical_decomposition(d, algorithm="recursive") for d in ds}
                 sage: for d in ds:
                 ....:     print("decomposition of {} is {}".format(d, decompositions[d]))
@@ -1490,7 +1489,7 @@ class Quiver:
 
             We verify the vanishing of generic Ext::
 
-                sage: all([all([Q.generic_ext(s[i], s[j]) + Q.generic_ext(s[j], s[i]) == 0 for i in range(len(s)) for j in range(i)]) for s in decompositions])
+                sage: all([all([Q.generic_ext(s[i], s[j]) + Q.generic_ext(s[j], s[i]) == 0 for i in range(len(s)) for j in range(i)]) for s in decompositions.values()])
                 True
 
             """
