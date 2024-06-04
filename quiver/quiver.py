@@ -529,31 +529,31 @@ class Quiver:
 
         EXAMPLES:
 
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([2,3])
-        sage: Q.is_schur_root(d)
-        True
+        The 3-Kronecker quiver::
 
-        Examples from Derksen--Weyman's book (Ex. 11.1.4):
-        sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(1,1,1)
-        sage: a = vector([1,1,2])
-        sage: Q.is_schur_root(a)
-        True
-        sage: b = vector([1,2,1])
-        sage: Q.is_schur_root(b)
-        False
-        sage: c = vector([1,1,1])
-        sage: Q.is_schur_root(c)
-        True
-        sage: d = vector([2,2,2])
-        sage: Q.is_schur_root(d)
-        False
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.is_schur_root((2, 3))
+            True
+
+        Examples from Derksen--Weyman's book (Example 11.1.4)::
+
+            sage: from quiver import *
+            sage: Q = ThreeVertexQuiver(1, 1, 1)
+            sage: Q.is_schur_root((1, 1, 2))
+            True
+            sage: Q.is_schur_root((1, 2, 1))
+            False
+            sage: Q.is_schur_root((1, 1, 1))
+            True
+            sage: Q.is_schur_root((2, 2, 2))
+            False
 
         """
 
+        d = vector(d)
+
+        # TODO use to-be-written helper function, self._is_dimension_vector
         assert d.length() == self.number_of_vertices()
 
         theta = self.canonical_stability_parameter(d)
