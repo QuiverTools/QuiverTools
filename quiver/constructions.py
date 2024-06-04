@@ -152,7 +152,32 @@ def JordanQuiver(cls):
     return Q
 
 
-# TODO generalized Jordan quiver
+def GeneralizedJordanQuiver(m: int):
+    r"""
+    Return the generalized Jordan quiver with `m` loops
+
+    INPUT:
+
+    - ``m`` -- integer; the number of loops in the generalized Jordan quiver
+
+    OUTPUT: the generalized Jordan quiver
+
+    EXAMPLES::
+
+    The generalized Jordan quiver has 1 vertex and `m` arrows::
+
+        sage: from quiver import *
+        sage: Q = GeneralizedJordanQuiver(7)
+        sage: Q.number_of_vertices()
+        1
+        sage: Q.number_of_arrows()
+        7
+
+    """
+    Q = Quiver(matrix([[m]]), name="generalized Jordan quiver with {} loops".format(m))
+
+    return Q
+
 
 
 def SubspaceQuiver(m):
