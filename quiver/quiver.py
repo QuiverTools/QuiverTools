@@ -103,7 +103,7 @@ class Quiver:
     def is_acyclic(self):
         r"""Returns the truth value of wether the quiver is acyclic.
 
-        OUTPUT: Statement truth value as Bool.
+        OUTPUT: True if the quiver is acyclic, False otherwise.
         """
         A = self.adjacency_matrix()
         n = self.number_of_vertices()
@@ -115,7 +115,7 @@ class Quiver:
     def is_connected(self):
         r"""Returns whether the underlying graph of the quiver is connected or not.
 
-        OUTPUT: Statement truth value as Bool.
+        OUTPUT: True if the quiver is connected, False otherwise.
 
         EXAMPLES:
 
@@ -235,6 +235,8 @@ class Quiver:
 
         EXAMPLES:
 
+        The 3-Kronecker quiver::
+
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: Q.outdegree(1)
@@ -252,12 +254,14 @@ class Quiver:
 
         EXAMPLES
 
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: Q.is_source(1)
-        True
-        sage: Q.is_source(2)
-        False
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.is_source(1)
+            True
+            sage: Q.is_source(2)
+            False
         """
 
         assert (i > 0) and (i <= self.number_of_vertices())
@@ -268,12 +272,14 @@ class Quiver:
 
         EXAMPLES
 
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: Q.is_sink(1)
-        False
-        sage: Q.is_sink(2)
-        True
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.is_sink(1)
+            False
+            sage: Q.is_sink(2)
+            True
         """
 
         assert (j > 0) and (j <= self.number_of_vertices())
@@ -419,20 +425,22 @@ class Quiver:
 
         EXAMPLES:
 
-        sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(2,3,4); Q
-        An acyclic 3-vertex quiver; adjacency matrix:
-        [0 2 3]
-        [0 0 4]
-        [0 0 0]
-        sage: Q.full_subquiver([1,2])
-        A quiver with adjacency matrix:
-        [0 2]
-        [0 0]
-        sage: Q.full_subquiver([1,3])
-        A quiver with adjacency matrix:
-        [0 3]
-        [0 0]
+        The support is the set {i in Q_0 | d_i > 0}.::
+
+            sage: from quiver import *
+            sage: Q = ThreeVertexQuiver(2, 3, 4); Q
+            An acyclic 3-vertex quiver; adjacency matrix:
+            [0 2 3]
+            [0 0 4]
+            [0 0 0]
+            sage: Q.full_subquiver([1, 2])
+            A quiver with adjacency matrix:
+            [0 2]
+            [0 0]
+            sage: Q.full_subquiver([1, 3])
+            A quiver with adjacency matrix:
+            [0 3]
+            [0 0]
 
         """
 
@@ -512,7 +520,7 @@ class Quiver:
         OUTPUT: statement truth value as bool
         """
 
-        """A root is called real if its Tits form is non-positive."""
+        """A root is called imaginary if its Tits form is non-positive."""
         assert x.length() == self.number_of_vertices()
         return x != self.zero_vector() and self.tits_form(x) <= 0
 
@@ -573,14 +581,16 @@ class Quiver:
 
         EXAMPLES
 
-        sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(2, 0, 4)
-        sage: d = vector([1, 1, 1])
-        sage: Q.support(d)
-        [1, 2, 3]
-        sage: d = vector([1, 0, 1])
-        sage: Q.support(d)
-        [1, 3]
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = ThreeVertexQuiver(2, 0, 4)
+            sage: d = vector([1, 1, 1])
+            sage: Q.support(d)
+            [1, 2, 3]
+            sage: d = vector([1, 0, 1])
+            sage: Q.support(d)
+            [1, 3]
 
         """
 
@@ -646,19 +656,6 @@ class Quiver:
 
         return inequality and connected
 
-    # The fundamental domain again! Which implementation should we keep?
-    # The latter is lacking the connectivity condition on the support of d
-
-    # def in_fundamental_domain(self, d):
-    #     # see e.g. page 3 of https://arxiv.org/pdf/2303.08522.pdf
-
-    #     # there has to be a more elegant way to do this
-    #     # oh well
-    #     simples = [ZeroVector(self.number_of_vertices()) for i in range(self.number_of_vertices())]
-    #     for i in range(self.number_of_vertices()):
-    #         simples[i][i] = 1
-    #     return all(self.euler_form(d,i) + self.euler_form(i,d) <= 0 for i in simples)
-
     def division_order(self, d, e):
         """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink.
 
@@ -667,36 +664,40 @@ class Quiver:
 
         EXAMPLES
 
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: d = vector([1,1])
-        sage: e = vector([2,1])
-        sage: f = vector([2,2])
-        sage: Q.division_order(d,e)
-        True
-        sage: Q.division_order(e,d)
-        False
-        sage: Q.division_order(d,f)
-        False
-        sage: Q.division_order(f,d)
-        False
-        sage: Q.division_order(e,f)
-        False
-        sage: Q.division_order(f,e)
-        True
+        The 3-Kronecker quiver::
 
-        sage: Q = ThreeVertexQuiver(2,2,2)
-        sage: Q
-        An acyclic 3-vertex quiver; adjacency matrix:
-        [0 2 2]
-        [0 0 2]
-        [0 0 0]
-        sage: d = vector([1,1,1])
-        sage: e = vector([1,2,1])
-        sage: Q.division_order(d,e)
-        False
-        sage: Q.division_order(e,d)
-        False
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: d = vector([1,1])
+            sage: e = vector([2,1])
+            sage: f = vector([2,2])
+            sage: Q.division_order(d,e)
+            True
+            sage: Q.division_order(e,d)
+            False
+            sage: Q.division_order(d,f)
+            False
+            sage: Q.division_order(f,d)
+            False
+            sage: Q.division_order(e,f)
+            False
+            sage: Q.division_order(f,e)
+            True
+
+        A 3-vertex quiver::
+
+            sage: Q = ThreeVertexQuiver(2,2,2)
+            sage: Q
+            An acyclic 3-vertex quiver; adjacency matrix:
+            [0 2 2]
+            [0 0 2]
+            [0 0 0]
+            sage: d = vector([1,1,1])
+            sage: e = vector([1,2,1])
+            sage: Q.division_order(d,e)
+            False
+            sage: Q.division_order(e,d)
+            False
         """
 
         n = self.number_of_vertices()
@@ -742,127 +743,134 @@ class Quiver:
 
         - ``d``: dimension vector for the ambient representation
 
-        OUTPUT: Statement truth value as Bool
+        OUTPUT: True if e is a generic subdimension vector of d, False otherwise.
 
         # Using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
         A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
         By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if e is a subdimension vector of d (missing in Thm. 5.3!) and <f,d-e> is non-negative for all generic subdimension vectors f of e.
 
         EXAMPLES:
-        sage: from quiver import *
-        sage: Q = LoopQuiver(1)
-        sage: dims = [vector([i]) for i in range(3)]
-        sage: for e in dims:
-        ....:     for d in dims:
-        ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        ....:
-        (0) gen. subdim of (0)?: True
-        (0) gen. subdim of (1)?: True
-        (0) gen. subdim of (2)?: True
-        (1) gen. subdim of (0)?: False
-        (1) gen. subdim of (1)?: True
-        (1) gen. subdim of (2)?: True
-        (2) gen. subdim of (0)?: False
-        (2) gen. subdim of (1)?: False
-        (2) gen. subdim of (2)?: True
-        sage: Q = LoopQuiver(2)
-        sage: for e in dims:
-        ....:     for d in dims:
-        ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        ....:
-        (0) gen. subdim of (0)?: True
-        (0) gen. subdim of (1)?: True
-        (0) gen. subdim of (2)?: True
-        (1) gen. subdim of (0)?: False
-        (1) gen. subdim of (1)?: True
-        (1) gen. subdim of (2)?: False
-        (2) gen. subdim of (0)?: False
-        (2) gen. subdim of (1)?: False
-        (2) gen. subdim of (2)?: True
-        sage: Q = GeneralizedKroneckerQuiver(1)
-        sage: dims = Tuples(range(3), 2)
-        sage: for e in dims:
-        ....:     for d in dims:
-        ....:         if is_subdimension_vector(e,d):
-        ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        (0, 0) gen. subdim of (0, 0)?: True
-        (0, 0) gen. subdim of (1, 0)?: True
-        (0, 0) gen. subdim of (2, 0)?: True
-        (0, 0) gen. subdim of (0, 1)?: True
-        (0, 0) gen. subdim of (1, 1)?: True
-        (0, 0) gen. subdim of (2, 1)?: True
-        (0, 0) gen. subdim of (0, 2)?: True
-        (0, 0) gen. subdim of (1, 2)?: True
-        (0, 0) gen. subdim of (2, 2)?: True
-        (1, 0) gen. subdim of (1, 0)?: True
-        (1, 0) gen. subdim of (2, 0)?: True
-        (1, 0) gen. subdim of (1, 1)?: False
-        (1, 0) gen. subdim of (2, 1)?: True
-        (1, 0) gen. subdim of (1, 2)?: False
-        (1, 0) gen. subdim of (2, 2)?: False
-        (2, 0) gen. subdim of (2, 0)?: True
-        (2, 0) gen. subdim of (2, 1)?: False
-        (2, 0) gen. subdim of (2, 2)?: False
-        (0, 1) gen. subdim of (0, 1)?: True
-        (0, 1) gen. subdim of (1, 1)?: True
-        (0, 1) gen. subdim of (2, 1)?: True
-        (0, 1) gen. subdim of (0, 2)?: True
-        (0, 1) gen. subdim of (1, 2)?: True
-        (0, 1) gen. subdim of (2, 2)?: True
-        (1, 1) gen. subdim of (1, 1)?: True
-        (1, 1) gen. subdim of (2, 1)?: True
-        (1, 1) gen. subdim of (1, 2)?: True
-        (1, 1) gen. subdim of (2, 2)?: True
-        (2, 1) gen. subdim of (2, 1)?: True
-        (2, 1) gen. subdim of (2, 2)?: False
-        (0, 2) gen. subdim of (0, 2)?: True
-        (0, 2) gen. subdim of (1, 2)?: True
-        (0, 2) gen. subdim of (2, 2)?: True
-        (1, 2) gen. subdim of (1, 2)?: True
-        (1, 2) gen. subdim of (2, 2)?: True
-        (2, 2) gen. subdim of (2, 2)?: True
-        sage: Q = GeneralizedKroneckerQuiver(2)
-        sage: for e in dims:
-        ....:     for d in dims:
-        ....:         if is_subdimension_vector(e,d):
-        ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        ....:
-        (0, 0) gen. subdim of (0, 0)?: True
-        (0, 0) gen. subdim of (1, 0)?: True
-        (0, 0) gen. subdim of (2, 0)?: True
-        (0, 0) gen. subdim of (0, 1)?: True
-        (0, 0) gen. subdim of (1, 1)?: True
-        (0, 0) gen. subdim of (2, 1)?: True
-        (0, 0) gen. subdim of (0, 2)?: True
-        (0, 0) gen. subdim of (1, 2)?: True
-        (0, 0) gen. subdim of (2, 2)?: True
-        (1, 0) gen. subdim of (1, 0)?: True
-        (1, 0) gen. subdim of (2, 0)?: True
-        (1, 0) gen. subdim of (1, 1)?: False
-        (1, 0) gen. subdim of (2, 1)?: False
-        (1, 0) gen. subdim of (1, 2)?: False
-        (1, 0) gen. subdim of (2, 2)?: False
-        (2, 0) gen. subdim of (2, 0)?: True
-        (2, 0) gen. subdim of (2, 1)?: False
-        (2, 0) gen. subdim of (2, 2)?: False
-        (0, 1) gen. subdim of (0, 1)?: True
-        (0, 1) gen. subdim of (1, 1)?: True
-        (0, 1) gen. subdim of (2, 1)?: True
-        (0, 1) gen. subdim of (0, 2)?: True
-        (0, 1) gen. subdim of (1, 2)?: True
-        (0, 1) gen. subdim of (2, 2)?: True
-        (1, 1) gen. subdim of (1, 1)?: True
-        (1, 1) gen. subdim of (2, 1)?: True
-        (1, 1) gen. subdim of (1, 2)?: False
-        (1, 1) gen. subdim of (2, 2)?: True
-        (2, 1) gen. subdim of (2, 1)?: True
-        (2, 1) gen. subdim of (2, 2)?: False
-        (0, 2) gen. subdim of (0, 2)?: True
-        (0, 2) gen. subdim of (1, 2)?: True
-        (0, 2) gen. subdim of (2, 2)?: True
-        (1, 2) gen. subdim of (1, 2)?: True
-        (1, 2) gen. subdim of (2, 2)?: True
-        (2, 2) gen. subdim of (2, 2)?: True
+
+        Some examples on loop quivers::
+
+            sage: from quiver import *
+            sage: Q = LoopQuiver(1)
+            sage: dims = [vector([i]) for i in range(3)]
+            sage: for e in dims:
+            ....:     for d in dims:
+            ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
+            ....:
+            (0) gen. subdim of (0)?: True
+            (0) gen. subdim of (1)?: True
+            (0) gen. subdim of (2)?: True
+            (1) gen. subdim of (0)?: False
+            (1) gen. subdim of (1)?: True
+            (1) gen. subdim of (2)?: True
+            (2) gen. subdim of (0)?: False
+            (2) gen. subdim of (1)?: False
+            (2) gen. subdim of (2)?: True
+            sage: Q = LoopQuiver(2)
+            sage: for e in dims:
+            ....:     for d in dims:
+            ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
+            ....:
+            (0) gen. subdim of (0)?: True
+            (0) gen. subdim of (1)?: True
+            (0) gen. subdim of (2)?: True
+            (1) gen. subdim of (0)?: False
+            (1) gen. subdim of (1)?: True
+            (1) gen. subdim of (2)?: False
+            (2) gen. subdim of (0)?: False
+            (2) gen. subdim of (1)?: False
+            (2) gen. subdim of (2)?: True
+
+
+        Some n-Kronecker quivers::
+
+            sage: Q = GeneralizedKroneckerQuiver(1)
+            sage: dims = Tuples(range(3), 2)
+            sage: for e in dims:
+            ....:     for d in dims:
+            ....:         if is_subdimension_vector(e,d):
+            ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
+            (0, 0) gen. subdim of (0, 0)?: True
+            (0, 0) gen. subdim of (1, 0)?: True
+            (0, 0) gen. subdim of (2, 0)?: True
+            (0, 0) gen. subdim of (0, 1)?: True
+            (0, 0) gen. subdim of (1, 1)?: True
+            (0, 0) gen. subdim of (2, 1)?: True
+            (0, 0) gen. subdim of (0, 2)?: True
+            (0, 0) gen. subdim of (1, 2)?: True
+            (0, 0) gen. subdim of (2, 2)?: True
+            (1, 0) gen. subdim of (1, 0)?: True
+            (1, 0) gen. subdim of (2, 0)?: True
+            (1, 0) gen. subdim of (1, 1)?: False
+            (1, 0) gen. subdim of (2, 1)?: True
+            (1, 0) gen. subdim of (1, 2)?: False
+            (1, 0) gen. subdim of (2, 2)?: False
+            (2, 0) gen. subdim of (2, 0)?: True
+            (2, 0) gen. subdim of (2, 1)?: False
+            (2, 0) gen. subdim of (2, 2)?: False
+            (0, 1) gen. subdim of (0, 1)?: True
+            (0, 1) gen. subdim of (1, 1)?: True
+            (0, 1) gen. subdim of (2, 1)?: True
+            (0, 1) gen. subdim of (0, 2)?: True
+            (0, 1) gen. subdim of (1, 2)?: True
+            (0, 1) gen. subdim of (2, 2)?: True
+            (1, 1) gen. subdim of (1, 1)?: True
+            (1, 1) gen. subdim of (2, 1)?: True
+            (1, 1) gen. subdim of (1, 2)?: True
+            (1, 1) gen. subdim of (2, 2)?: True
+            (2, 1) gen. subdim of (2, 1)?: True
+            (2, 1) gen. subdim of (2, 2)?: False
+            (0, 2) gen. subdim of (0, 2)?: True
+            (0, 2) gen. subdim of (1, 2)?: True
+            (0, 2) gen. subdim of (2, 2)?: True
+            (1, 2) gen. subdim of (1, 2)?: True
+            (1, 2) gen. subdim of (2, 2)?: True
+            (2, 2) gen. subdim of (2, 2)?: True
+            sage: Q = GeneralizedKroneckerQuiver(2)
+            sage: for e in dims:
+            ....:     for d in dims:
+            ....:         if is_subdimension_vector(e,d):
+            ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
+            ....:
+            (0, 0) gen. subdim of (0, 0)?: True
+            (0, 0) gen. subdim of (1, 0)?: True
+            (0, 0) gen. subdim of (2, 0)?: True
+            (0, 0) gen. subdim of (0, 1)?: True
+            (0, 0) gen. subdim of (1, 1)?: True
+            (0, 0) gen. subdim of (2, 1)?: True
+            (0, 0) gen. subdim of (0, 2)?: True
+            (0, 0) gen. subdim of (1, 2)?: True
+            (0, 0) gen. subdim of (2, 2)?: True
+            (1, 0) gen. subdim of (1, 0)?: True
+            (1, 0) gen. subdim of (2, 0)?: True
+            (1, 0) gen. subdim of (1, 1)?: False
+            (1, 0) gen. subdim of (2, 1)?: False
+            (1, 0) gen. subdim of (1, 2)?: False
+            (1, 0) gen. subdim of (2, 2)?: False
+            (2, 0) gen. subdim of (2, 0)?: True
+            (2, 0) gen. subdim of (2, 1)?: False
+            (2, 0) gen. subdim of (2, 2)?: False
+            (0, 1) gen. subdim of (0, 1)?: True
+            (0, 1) gen. subdim of (1, 1)?: True
+            (0, 1) gen. subdim of (2, 1)?: True
+            (0, 1) gen. subdim of (0, 2)?: True
+            (0, 1) gen. subdim of (1, 2)?: True
+            (0, 1) gen. subdim of (2, 2)?: True
+            (1, 1) gen. subdim of (1, 1)?: True
+            (1, 1) gen. subdim of (2, 1)?: True
+            (1, 1) gen. subdim of (1, 2)?: False
+            (1, 1) gen. subdim of (2, 2)?: True
+            (2, 1) gen. subdim of (2, 1)?: True
+            (2, 1) gen. subdim of (2, 2)?: False
+            (0, 2) gen. subdim of (0, 2)?: True
+            (0, 2) gen. subdim of (1, 2)?: True
+            (0, 2) gen. subdim of (2, 2)?: True
+            (1, 2) gen. subdim of (1, 2)?: True
+            (1, 2) gen. subdim of (2, 2)?: True
+            (2, 2) gen. subdim of (2, 2)?: True
 
         """
 
@@ -885,6 +893,7 @@ class Quiver:
                 genSubdims = self.all_generic_subdimension_vectors(e)
                 return all([self.euler_form(f, d - e) >= 0 for f in genSubdims])
 
+    # TODO remove this and cache the recursive one instead
     def __all_generic_subdimension_vectors_helper(self, d):
         """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order.
 
@@ -964,35 +973,37 @@ class Quiver:
 
         EXAMPLES:
 
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(1)
-        sage: d = vector([3,3])
-        sage: Q.all_generic_subdimension_vectors(d)
-        [(0, 0),
-        (0, 1),
-        (0, 2),
-        (1, 1),
-        (0, 3),
-        (1, 2),
-        (1, 3),
-        (2, 2),
-        (2, 3),
-        (3, 3)]
-        sage: Q = GeneralizedKroneckerQuiver(2)
-        sage: Q.all_generic_subdimension_vectors(d)
-        [(0, 0),
-        (0, 1),
-        (0, 2),
-        (1, 1),
-        (0, 3),
-        (1, 2),
-        (1, 3),
-        (2, 2),
-        (2, 3),
-        (3, 3)]
-        sage: Q = GeneralizedKroneckerQuiver(3)
-        sage: Q.all_generic_subdimension_vectors(d)
-        [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
+        Some n-Kronecker quivers::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(1)
+            sage: d = vector([3,3])
+            sage: Q.all_generic_subdimension_vectors(d)
+            [(0, 0),
+            (0, 1),
+            (0, 2),
+            (1, 1),
+            (0, 3),
+            (1, 2),
+            (1, 3),
+            (2, 2),
+            (2, 3),
+            (3, 3)]
+            sage: Q = GeneralizedKroneckerQuiver(2)
+            sage: Q.all_generic_subdimension_vectors(d)
+            [(0, 0),
+            (0, 1),
+            (0, 2),
+            (1, 1),
+            (0, 3),
+            (1, 2),
+            (1, 3),
+            (2, 2),
+            (2, 3),
+            (3, 3)]
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.all_generic_subdimension_vectors(d)
+            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
 
         """
 
@@ -1021,22 +1032,26 @@ class Quiver:
         According to Thm. 5.4 in Schofield's 'General representations of quivers', we have ext(a,b) = max{-<c,b> | c gen. subdimension vector of a}.
 
         EXAMPLES:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(1)
-        sage: R = [Q.simple_root(1), Q.simple_root(2), vector([1,1])]
-        sage: for a in R:
-        ....:     for b in R:
-        ....:         print('ext('+str(a)+','+str(b)+') = '+str(Q.generic_ext(a,b)))
-        ....:
-        ext((1, 0),(1, 0)) = 0
-        ext((1, 0),(0, 1)) = 1
-        ext((1, 0),(1, 1)) = 0
-        ext((0, 1),(1, 0)) = 0
-        ext((0, 1),(0, 1)) = 0
-        ext((0, 1),(1, 1)) = 0
-        ext((1, 1),(1, 0)) = 0
-        ext((1, 1),(0, 1)) = 0
-        ext((1, 1),(1, 1)) = 0
+
+        
+        Generic ext on the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(1)
+            sage: R = [Q.simple_root(1), Q.simple_root(2), vector([1, 1])]
+            sage: for a in R:
+            ....:     for b in R:
+            ....:         print('ext(' + str(a) + ',' + str(b) + ') = ' + str(Q.generic_ext(a, b)))
+            ....:
+            ext((1, 0),(1, 0)) = 0
+            ext((1, 0),(0, 1)) = 1
+            ext((1, 0),(1, 1)) = 0
+            ext((0, 1),(1, 0)) = 0
+            ext((0, 1),(0, 1)) = 0
+            ext((0, 1),(1, 1)) = 0
+            ext((1, 1),(1, 0)) = 0
+            ext((1, 1),(0, 1)) = 0
+            ext((1, 1),(1, 1)) = 0
 
         """
 
@@ -1044,7 +1059,7 @@ class Quiver:
         return max([-self.euler_form(c, b) for c in genSubdims])
 
     def generic_hom(self, a, b):
-        r"""Computes hom(a,b).
+        r"""Computes hom(a, b).
 
         INPUT:
 
@@ -1057,30 +1072,35 @@ class Quiver:
         There is a non-empty open subset U of R(Q,a) x R(Q,b) such that dim Ext(M,N) = ext(a,b), i.e. is minimal, for all (M,N) in U. Therefore dim Hom(M,N) = <a,b> + dim Ext(M,N) is minimal and therefore hom(a,b) = <a,b> + ext(a,b).
 
         EXAMPLES:
-        sage: from quiver import *
-        sage: Q = GeneralizedKroneckerQuiver(1)
-        sage: R = [Q.simple_root(1), Q.simple_root(2), vector([1,1])]
-        sage: for a in R:
-        ....:     for b in R:
-        ....:         print('hom('+str(a)+','+str(b)+') = '+str(Q.generic_hom(a,b)))
-        ....:
-        hom((1, 0),(1, 0)) = 1
-        hom((1, 0),(0, 1)) = 0
-        hom((1, 0),(1, 1)) = 0
-        hom((0, 1),(1, 0)) = 0
-        hom((0, 1),(0, 1)) = 1
-        hom((0, 1),(1, 1)) = 1
-        hom((1, 1),(1, 0)) = 1
-        hom((1, 1),(0, 1)) = 0
-        hom((1, 1),(1, 1)) = 1
+ 
+        Generic hom for the Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(1)
+            sage: R = [Q.simple_root(1), Q.simple_root(2), vector([1,1])]
+            sage: for a in R:
+            ....:     for b in R:
+            ....:         print('hom('+str(a)+','+str(b)+') = '+str(Q.generic_hom(a,b)))
+            ....:
+            hom((1, 0),(1, 0)) = 1
+            hom((1, 0),(0, 1)) = 0
+            hom((1, 0),(1, 1)) = 0
+            hom((0, 1),(1, 0)) = 0
+            hom((0, 1),(0, 1)) = 1
+            hom((0, 1),(1, 1)) = 1
+            hom((1, 1),(1, 0)) = 1
+            hom((1, 1),(0, 1)) = 0
+            hom((1, 1),(1, 1)) = 1
 
         """
 
         return self.euler_form(a, b) + self.generic_ext(a, b)
 
+# TODO remove
     def generic_ext_vanishing(self, a, b):
         return self.is_generic_subdimension_vector(a, a + b)
 
+# TODO remove
     def generic_hom_vanishing(self, a, b):
         # TODO figure out a way to implement this.
         # How about this:
@@ -1115,33 +1135,35 @@ class Quiver:
 
         EXAMPLES:
 
-        The A_2 quiver:
-        sage: from quiver import *
-        sage: A2 = GeneralizedKroneckerQuiver(1)
-        sage: theta = vector([1,-1])
-        sage: d = vector([1,1])
-        sage: A2.has_semistable_representation(d,theta)
-        True
-        sage: d = vector([2,2])
-        sage: A2.has_semistable_representation(d,theta)
-        True
-        sage: d = vector([1,2])
-        sage: A2.has_semistable_representation(d,theta)
-        False
-        sage: d = vector([0,0])
-        sage: A2.has_semistable_representation(d,theta)
-        True
+        The A_2 quiver::
 
-        The 3-Kronecker quiver:
-        sage: from quiver import *
-        sage: K3 = GeneralizedKroneckerQuiver(3)
-        sage: theta = vector([3,-2])
-        sage: d = vector([2,3])
-        sage: K3.has_semistable_representation(d,theta)
-        True
-        sage: d = vector([1,4])
-        sage: K3.has_semistable_representation(d,theta)
-        False
+            sage: from quiver import *
+            sage: A2 = GeneralizedKroneckerQuiver(1)
+            sage: theta = vector([1,-1])
+            sage: d = vector([1,1])
+            sage: A2.has_semistable_representation(d,theta)
+            True
+            sage: d = vector([2,2])
+            sage: A2.has_semistable_representation(d,theta)
+            True
+            sage: d = vector([1,2])
+            sage: A2.has_semistable_representation(d,theta)
+            False
+            sage: d = vector([0,0])
+            sage: A2.has_semistable_representation(d,theta)
+            True
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: K3 = GeneralizedKroneckerQuiver(3)
+            sage: theta = vector([3,-2])
+            sage: d = vector([2,3])
+            sage: K3.has_semistable_representation(d,theta)
+            True
+            sage: d = vector([1,4])
+            sage: K3.has_semistable_representation(d,theta)
+            False
 
         """
 
@@ -1152,6 +1174,7 @@ class Quiver:
         genSubdims = list(filter(lambda e: e != self.zero_vector(), genSubdims))
         return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
 
+# TODO remove and cache the recursive one instead
     def __all_semistable_subdimension_vectors_helper(self, d, theta):
         """Computes the list of indexes of all semistable subdimension vectors of d.
 
@@ -1257,6 +1280,7 @@ class Quiver:
                 )
                 return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
 
+# TODO remove and cache the recursive one instead
     def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
         """Computes the list of all stable subdimension vectors of d which have the same slope as d.
 
@@ -1593,7 +1617,7 @@ class Quiver:
     Teleman!
     """
     # TODO: This section should go into QuiverModuliSpace, I think.
-
+    # TODO return weights as dictionaries with HN types as keys.
     def all_weight_bounds(self, d, theta, denominator=sum):
         """
         Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
@@ -1628,7 +1652,20 @@ class Quiver:
 
     def does_rigidity_inequality_hold(self, d, theta, denominator=sum):
         r"""
-        Returns True if the rigidity inequality holds for d and theta, i.e. if the weights of the 1-PS lambda on $\det(N_{S/R}|_Z)$ for each HN type are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$.
+
+        INPUT:
+
+        - ``d`` -- dimension vector
+
+        - ``theta`` -- stability parameter
+
+        - ``denominator`` -- function to compute the denominator of the slope. Default is sum.
+
+        OUTPUT: True if the rigidity inequality holds for d and theta, False otherwise.
+
+        If the weights of the 1-PS lambda on $\det(N_{S/R}|_Z)$ for each HN type
+        are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$,
+        then the resulting moduli space is infinitesimally rigid.
         """
 
         # This is only relevant on the unstable locus
@@ -1758,15 +1795,18 @@ def is_coprime_for_stability_parameter(d, theta):
     A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d.
 
     EXAMPLES
-    sage: from quiver import *
-    sage: d = vector([2,3])
-    sage: theta = vector([3,-2])
-    sage: is_coprime_for_stability_parameter(d,theta)
-    True
-    sage: d = vector([3,3])
-    sage: theta = vector([1,-1])
-    sage: is_coprime_for_stability_parameter(d,theta)
-    False
+
+    Examples of coprimality::
+
+        sage: from quiver import *
+        sage: d = vector([2,3])
+        sage: theta = vector([3,-2])
+        sage: is_coprime_for_stability_parameter(d,theta)
+        True
+        sage: d = vector([3,3])
+        sage: theta = vector([1,-1])
+        sage: is_coprime_for_stability_parameter(d,theta)
+        False
     """
 
     assert d.length() == theta.length()
