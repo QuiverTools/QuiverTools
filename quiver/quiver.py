@@ -753,46 +753,46 @@ class Quiver:
         (2) gen. subdim of (1)?: False
         (2) gen. subdim of (2)?: True
         sage: Q = GeneralizedKroneckerQuiver(1)
+        sage: dims = Tuples(range(3), 2)
         sage: for e in dims:
         ....:     for d in dims:
         ....:         if is_subdimension_vector(e,d):
         ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-        ....:
         (0, 0) gen. subdim of (0, 0)?: True
-        (0, 0) gen. subdim of (0, 1)?: True
-        (0, 0) gen. subdim of (0, 2)?: True
         (0, 0) gen. subdim of (1, 0)?: True
-        (0, 0) gen. subdim of (1, 1)?: True
-        (0, 0) gen. subdim of (1, 2)?: True
         (0, 0) gen. subdim of (2, 0)?: True
+        (0, 0) gen. subdim of (0, 1)?: True
+        (0, 0) gen. subdim of (1, 1)?: True
         (0, 0) gen. subdim of (2, 1)?: True
+        (0, 0) gen. subdim of (0, 2)?: True
+        (0, 0) gen. subdim of (1, 2)?: True
         (0, 0) gen. subdim of (2, 2)?: True
-        (0, 1) gen. subdim of (0, 1)?: True
-        (0, 1) gen. subdim of (0, 2)?: True
-        (0, 1) gen. subdim of (1, 1)?: True
-        (0, 1) gen. subdim of (1, 2)?: True
-        (0, 1) gen. subdim of (2, 1)?: True
-        (0, 1) gen. subdim of (2, 2)?: True
-        (0, 2) gen. subdim of (0, 2)?: True
-        (0, 2) gen. subdim of (1, 2)?: True
-        (0, 2) gen. subdim of (2, 2)?: True
         (1, 0) gen. subdim of (1, 0)?: True
-        (1, 0) gen. subdim of (1, 1)?: False
-        (1, 0) gen. subdim of (1, 2)?: False
         (1, 0) gen. subdim of (2, 0)?: True
+        (1, 0) gen. subdim of (1, 1)?: False
         (1, 0) gen. subdim of (2, 1)?: True
+        (1, 0) gen. subdim of (1, 2)?: False
         (1, 0) gen. subdim of (2, 2)?: False
-        (1, 1) gen. subdim of (1, 1)?: True
-        (1, 1) gen. subdim of (1, 2)?: True
-        (1, 1) gen. subdim of (2, 1)?: True
-        (1, 1) gen. subdim of (2, 2)?: True
-        (1, 2) gen. subdim of (1, 2)?: True
-        (1, 2) gen. subdim of (2, 2)?: True
         (2, 0) gen. subdim of (2, 0)?: True
         (2, 0) gen. subdim of (2, 1)?: False
         (2, 0) gen. subdim of (2, 2)?: False
+        (0, 1) gen. subdim of (0, 1)?: True
+        (0, 1) gen. subdim of (1, 1)?: True
+        (0, 1) gen. subdim of (2, 1)?: True
+        (0, 1) gen. subdim of (0, 2)?: True
+        (0, 1) gen. subdim of (1, 2)?: True
+        (0, 1) gen. subdim of (2, 2)?: True
+        (1, 1) gen. subdim of (1, 1)?: True
+        (1, 1) gen. subdim of (2, 1)?: True
+        (1, 1) gen. subdim of (1, 2)?: True
+        (1, 1) gen. subdim of (2, 2)?: True
         (2, 1) gen. subdim of (2, 1)?: True
         (2, 1) gen. subdim of (2, 2)?: False
+        (0, 2) gen. subdim of (0, 2)?: True
+        (0, 2) gen. subdim of (1, 2)?: True
+        (0, 2) gen. subdim of (2, 2)?: True
+        (1, 2) gen. subdim of (1, 2)?: True
+        (1, 2) gen. subdim of (2, 2)?: True
         (2, 2) gen. subdim of (2, 2)?: True
         sage: Q = GeneralizedKroneckerQuiver(2)
         sage: for e in dims:
@@ -801,40 +801,40 @@ class Quiver:
         ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
         ....:
         (0, 0) gen. subdim of (0, 0)?: True
-        (0, 0) gen. subdim of (0, 1)?: True
-        (0, 0) gen. subdim of (0, 2)?: True
         (0, 0) gen. subdim of (1, 0)?: True
-        (0, 0) gen. subdim of (1, 1)?: True
-        (0, 0) gen. subdim of (1, 2)?: True
         (0, 0) gen. subdim of (2, 0)?: True
+        (0, 0) gen. subdim of (0, 1)?: True
+        (0, 0) gen. subdim of (1, 1)?: True
         (0, 0) gen. subdim of (2, 1)?: True
+        (0, 0) gen. subdim of (0, 2)?: True
+        (0, 0) gen. subdim of (1, 2)?: True
         (0, 0) gen. subdim of (2, 2)?: True
-        (0, 1) gen. subdim of (0, 1)?: True
-        (0, 1) gen. subdim of (0, 2)?: True
-        (0, 1) gen. subdim of (1, 1)?: True
-        (0, 1) gen. subdim of (1, 2)?: True
-        (0, 1) gen. subdim of (2, 1)?: True
-        (0, 1) gen. subdim of (2, 2)?: True
-        (0, 2) gen. subdim of (0, 2)?: True
-        (0, 2) gen. subdim of (1, 2)?: True
-        (0, 2) gen. subdim of (2, 2)?: True
         (1, 0) gen. subdim of (1, 0)?: True
-        (1, 0) gen. subdim of (1, 1)?: False
-        (1, 0) gen. subdim of (1, 2)?: False
         (1, 0) gen. subdim of (2, 0)?: True
+        (1, 0) gen. subdim of (1, 1)?: False
         (1, 0) gen. subdim of (2, 1)?: False
+        (1, 0) gen. subdim of (1, 2)?: False
         (1, 0) gen. subdim of (2, 2)?: False
-        (1, 1) gen. subdim of (1, 1)?: True
-        (1, 1) gen. subdim of (1, 2)?: False
-        (1, 1) gen. subdim of (2, 1)?: True
-        (1, 1) gen. subdim of (2, 2)?: True
-        (1, 2) gen. subdim of (1, 2)?: True
-        (1, 2) gen. subdim of (2, 2)?: True
         (2, 0) gen. subdim of (2, 0)?: True
         (2, 0) gen. subdim of (2, 1)?: False
         (2, 0) gen. subdim of (2, 2)?: False
+        (0, 1) gen. subdim of (0, 1)?: True
+        (0, 1) gen. subdim of (1, 1)?: True
+        (0, 1) gen. subdim of (2, 1)?: True
+        (0, 1) gen. subdim of (0, 2)?: True
+        (0, 1) gen. subdim of (1, 2)?: True
+        (0, 1) gen. subdim of (2, 2)?: True
+        (1, 1) gen. subdim of (1, 1)?: True
+        (1, 1) gen. subdim of (2, 1)?: True
+        (1, 1) gen. subdim of (1, 2)?: False
+        (1, 1) gen. subdim of (2, 2)?: True
         (2, 1) gen. subdim of (2, 1)?: True
         (2, 1) gen. subdim of (2, 2)?: False
+        (0, 2) gen. subdim of (0, 2)?: True
+        (0, 2) gen. subdim of (1, 2)?: True
+        (0, 2) gen. subdim of (2, 2)?: True
+        (1, 2) gen. subdim of (1, 2)?: True
+        (1, 2) gen. subdim of (2, 2)?: True
         (2, 2) gen. subdim of (2, 2)?: True
 
         """
@@ -844,10 +844,8 @@ class Quiver:
         e = vector(e)
 
         # TODO helper function
-        assert (
-            self.number_of_vertices() == d.length()
-            and self.number_of_vertices() == e.length()
-        )
+        assert self.number_of_vertices() == d.length()
+        assert self.number_of_vertices() == e.length()
         assert all([di >= 0 for di in d.list()]) and all([ei >= 0 for ei in e.list()])
 
         if e == d:
