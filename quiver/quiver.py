@@ -539,20 +539,18 @@ class Quiver:
         - ``d``: vector of Ints
 
         OUTPUT: List
-        """
 
-        """The support is the set {i in Q_0 | d_i > 0}."""
+        The support is the set {i in Q_0 | d_i > 0}.
         # I know it doesn't actually depend on Q, but I think I want to make it a method of the object. The reason is that I might want to introduce the possibility to give names to the vertices and arrows. Then support() should return the subset {i in Q_0 | d_i > 0} (as a list) and not the list of indexes of the vector.
 
-        """
         EXAMPLES
 
         sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(2,0,4)
-        sage: d = vector([1,1,1])
+        sage: Q = ThreeVertexQuiver(2, 0, 4)
+        sage: d = vector([1, 1, 1])
         sage: Q.support(d)
         [1, 2, 3]
-        sage: d = vector([1,0,1])
+        sage: d = vector([1, 0, 1])
         sage: Q.support(d)
         [1, 3]
 
@@ -562,6 +560,7 @@ class Quiver:
         return [i + 1 for i in supp]
 
     def in_fundamental_domain(self, d):
+        # TODO optional parameter for strict interior? maybe even specify how deep into the strict interior?
         r"""Checks if a dimension vector is in the fundamental domain.
 
         INPUT:
