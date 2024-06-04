@@ -150,7 +150,8 @@ def LoopQuiver(m):
 
     """
     Q = GeneralizedJordanQuiver(m)
-    Q.rename("{}-loop quiver".format(m))
+    # TODO do rename
+    #Q.rename("{}-loop quiver".format(m))
 
     return Q
 
@@ -167,8 +168,9 @@ def JordanQuiver(m=1):
 
     Q = GeneralizedJordanQuiver(m)
 
-    if m == 1:
-        Q.rename("Jordan quiver")
+    # TODO do rename
+    #if m == 1:
+    #    Q.rename("Jordan quiver")
 
     return Q
 
