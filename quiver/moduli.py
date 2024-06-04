@@ -499,7 +499,7 @@ class QuiverModuli(ABC):
         OUTPUT: statement truth value as Bool
 
         EXAMPLES:
-        
+
         sage: from quiver import *
         sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
         sage: X = QuiverModuliSpace(Q, d, theta)
@@ -573,7 +573,7 @@ class QuiverModuli(ABC):
         ([1], (2))
         sage: Qloc, dloc = X.local_quiver_setting(L[1]); Qloc.adjacency_matrix() , dloc
         (
-        [1 1]        
+        [1 1]
         [1 1], (1, 1)
         )
         sage: Qloc, dloc = X.local_quiver_setting(L[2]); Qloc.adjacency_matrix() , dloc
