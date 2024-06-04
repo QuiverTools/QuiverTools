@@ -966,6 +966,11 @@ class Quiver:
         [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
 
         """
+
+        # coerce dimension vector
+        d = vector(d)
+
+        # TODO helper function
         assert self.number_of_vertices() == d.length()
         assert all([di >= 0 for di in d.list()])
 
@@ -1417,68 +1422,76 @@ class Quiver:
 
             EXAMPLES:
 
-            # TODO make a smaller example?
+            Canonical decompositions of small dimension vectors for the Kronecker quiver::
 
-            sage: Q = KroneckerQuiver()
-            sage: ds = [vector([i,j]) for i in range(7) for j in range(7)]
-            sage: can = [Q.canonical_decomposition(d, algorithm="recursive") for d in ds]
-            sage: for i in range(7):
-            ....:     for j in range(7):
-            ....:         print('decomposition of '+str(ds[7*i+j])+' is: '+str(can[7*i+j]))
-            ....:
-            decomposition of (0, 0) is: [(0, 0)]
-            decomposition of (0, 1) is: [(0, 1)]
-            decomposition of (0, 2) is: [(0, 1), (0, 1)]
-            decomposition of (0, 3) is: [(0, 1), (0, 1), (0, 1)]
-            decomposition of (0, 4) is: [(0, 1), (0, 1), (0, 1), (0, 1)]
-            decomposition of (0, 5) is: [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-            decomposition of (0, 6) is: [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-            decomposition of (1, 0) is: [(1, 0)]
-            decomposition of (1, 1) is: [(1, 1)]
-            decomposition of (1, 2) is: [(1, 2)]
-            decomposition of (1, 3) is: [(0, 1), (1, 2)]
-            decomposition of (1, 4) is: [(0, 1), (0, 1), (1, 2)]
-            decomposition of (1, 5) is: [(0, 1), (0, 1), (0, 1), (1, 2)]
-            decomposition of (1, 6) is: [(0, 1), (0, 1), (0, 1), (0, 1), (1, 2)]
-            decomposition of (2, 0) is: [(1, 0), (1, 0)]
-            decomposition of (2, 1) is: [(2, 1)]
-            decomposition of (2, 2) is: [(1, 1), (1, 1)]
-            decomposition of (2, 3) is: [(2, 3)]
-            decomposition of (2, 4) is: [(1, 2), (1, 2)]
-            decomposition of (2, 5) is: [(0, 1), (1, 2), (1, 2)]
-            decomposition of (2, 6) is: [(0, 1), (0, 1), (1, 2), (1, 2)]
-            decomposition of (3, 0) is: [(1, 0), (1, 0), (1, 0)]
-            decomposition of (3, 1) is: [(1, 0), (2, 1)]
-            decomposition of (3, 2) is: [(3, 2)]
-            decomposition of (3, 3) is: [(1, 1), (1, 1), (1, 1)]
-            decomposition of (3, 4) is: [(3, 4)]
-            decomposition of (3, 5) is: [(1, 2), (2, 3)]
-            decomposition of (3, 6) is: [(1, 2), (1, 2), (1, 2)]
-            decomposition of (4, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0)]
-            decomposition of (4, 1) is: [(1, 0), (1, 0), (2, 1)]
-            decomposition of (4, 2) is: [(2, 1), (2, 1)]
-            decomposition of (4, 3) is: [(4, 3)]
-            decomposition of (4, 4) is: [(1, 1), (1, 1), (1, 1), (1, 1)]
-            decomposition of (4, 5) is: [(4, 5)]
-            decomposition of (4, 6) is: [(2, 3), (2, 3)]
-            decomposition of (5, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
-            decomposition of (5, 1) is: [(1, 0), (1, 0), (1, 0), (2, 1)]
-            decomposition of (5, 2) is: [(1, 0), (2, 1), (2, 1)]
-            decomposition of (5, 3) is: [(2, 1), (3, 2)]
-            decomposition of (5, 4) is: [(5, 4)]
-            decomposition of (5, 5) is: [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
-            decomposition of (5, 6) is: [(5, 6)]
-            decomposition of (6, 0) is: [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
-            decomposition of (6, 1) is: [(1, 0), (1, 0), (1, 0), (1, 0), (2, 1)]
-            decomposition of (6, 2) is: [(1, 0), (1, 0), (2, 1), (2, 1)]
-            decomposition of (6, 3) is: [(2, 1), (2, 1), (2, 1)]
-            decomposition of (6, 4) is: [(3, 2), (3, 2)]
-            decomposition of (6, 5) is: [(6, 5)]
-            decomposition of (6, 6) is: [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
-            sage:
-            sage: all([all([Q.generic_ext(s[i],s[j]) + Q.generic_ext(s[j],s[i]) == 0 for i in range(len(s)) for j in range(i)]) for s in can])
-            True
+                # TODO make a smaller example? don't print _everything_?
+                sage: from quiver import *
+                sage: Q = KroneckerQuiver()
+                sage: ds = Tuples(range(7), 2).list()
+                sage: decompositions = {d: Q.canonical_decomposition(d, algorithm="recursive") for d in ds}
+                sage: for d in ds:
+                ....:     print("decomposition of {} is {}".format(d, decompositions[d]))
+                decomposition of (0, 0) is [(0, 0)]
+                decomposition of (1, 0) is [(1, 0)]
+                decomposition of (2, 0) is [(1, 0), (1, 0)]
+                decomposition of (3, 0) is [(1, 0), (1, 0), (1, 0)]
+                decomposition of (4, 0) is [(1, 0), (1, 0), (1, 0), (1, 0)]
+                decomposition of (5, 0) is [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
+                decomposition of (6, 0) is [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
+                decomposition of (0, 1) is [(0, 1)]
+                decomposition of (1, 1) is [(1, 1)]
+                decomposition of (2, 1) is [(2, 1)]
+                decomposition of (3, 1) is [(1, 0), (2, 1)]
+                decomposition of (4, 1) is [(1, 0), (1, 0), (2, 1)]
+                decomposition of (5, 1) is [(1, 0), (1, 0), (1, 0), (2, 1)]
+                decomposition of (6, 1) is [(1, 0), (1, 0), (1, 0), (1, 0), (2, 1)]
+                decomposition of (0, 2) is [(0, 1), (0, 1)]
+                decomposition of (1, 2) is [(1, 2)]
+                decomposition of (2, 2) is [(1, 1), (1, 1)]
+                decomposition of (3, 2) is [(3, 2)]
+                decomposition of (4, 2) is [(2, 1), (2, 1)]
+                decomposition of (5, 2) is [(1, 0), (2, 1), (2, 1)]
+                decomposition of (6, 2) is [(1, 0), (1, 0), (2, 1), (2, 1)]
+                decomposition of (0, 3) is [(0, 1), (0, 1), (0, 1)]
+                decomposition of (1, 3) is [(0, 1), (1, 2)]
+                decomposition of (2, 3) is [(2, 3)]
+                decomposition of (3, 3) is [(1, 1), (1, 1), (1, 1)]
+                decomposition of (4, 3) is [(4, 3)]
+                decomposition of (5, 3) is [(2, 1), (3, 2)]
+                decomposition of (6, 3) is [(2, 1), (2, 1), (2, 1)]
+                decomposition of (0, 4) is [(0, 1), (0, 1), (0, 1), (0, 1)]
+                decomposition of (1, 4) is [(0, 1), (0, 1), (1, 2)]
+                decomposition of (2, 4) is [(1, 2), (1, 2)]
+                decomposition of (3, 4) is [(3, 4)]
+                decomposition of (4, 4) is [(1, 1), (1, 1), (1, 1), (1, 1)]
+                decomposition of (5, 4) is [(5, 4)]
+                decomposition of (6, 4) is [(3, 2), (3, 2)]
+                decomposition of (0, 5) is [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
+                decomposition of (1, 5) is [(0, 1), (0, 1), (0, 1), (1, 2)]
+                decomposition of (2, 5) is [(0, 1), (1, 2), (1, 2)]
+                decomposition of (3, 5) is [(1, 2), (2, 3)]
+                decomposition of (4, 5) is [(4, 5)]
+                decomposition of (5, 5) is [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+                decomposition of (6, 5) is [(6, 5)]
+                decomposition of (0, 6) is [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
+                decomposition of (1, 6) is [(0, 1), (0, 1), (0, 1), (0, 1), (1, 2)]
+                decomposition of (2, 6) is [(0, 1), (0, 1), (1, 2), (1, 2)]
+                decomposition of (3, 6) is [(1, 2), (1, 2), (1, 2)]
+                decomposition of (4, 6) is [(2, 3), (2, 3)]
+                decomposition of (5, 6) is [(5, 6)]
+                decomposition of (6, 6) is [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+
+            We verify the vanishing of generic Ext::
+
+                sage: all([all([Q.generic_ext(s[i], s[j]) + Q.generic_ext(s[j], s[i]) == 0 for i in range(len(s)) for j in range(i)]) for s in decompositions])
+                True
+
             """
+
+            # TODO helper function for d
+
+            # coerce dimension vector
+            d = vector(d)
 
             genSubdims = self.all_generic_subdimension_vectors(d)
             genSubdims = list(
