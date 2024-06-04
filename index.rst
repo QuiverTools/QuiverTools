@@ -2,6 +2,7 @@ Documentation for QuiverTools
 =============================
 
 .. automodule:: quiver.quiver
+.. automodule:: quiver.constructions
 .. automodule:: quiver.moduli
 
 .. autoclass:: quiver.Quiver
