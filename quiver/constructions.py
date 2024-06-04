@@ -1,3 +1,5 @@
+from quiver import *
+
 def disjoint_union(Q1, Q2):
     """Returns the disjoint union of two quivers Q1 and Q2.
 
@@ -31,10 +33,21 @@ def disjoint_union(Q1, Q2):
 
 
 def GeneralizedKroneckerQuiver(m):
-    """
-    The generalized Kronecker quiver has two vertices and $m$ arrows from the first to the second.
+    r"""
+    Return the generalized Kronecker quiver
+
+    The generalized Kronecker quiver has two vertices and $m$ arrows
+    from the first to the second vertex.
+
+    INPUT:
+
+    - ``m`` -- integer; number of arrows in the quiver
+
+    OUTPUT: the generalized Kronecker quiver as Quiver instance
 
     TESTS::
+
+    The generalized Kronecker quiver is as claimed::
 
         sage: from quiver import *
         sage: Q = GeneralizedKroneckerQuiver(3)
@@ -50,9 +63,39 @@ def GeneralizedKroneckerQuiver(m):
 
 
 # TODO if optional parameter is given, call GeneralizedKroneckerQuiver
-def KroneckerQuiver():
-    """The Kronecker quiver has two vertices and 2 arrows from the first vertex to the second."""
-    return GeneralizedKroneckerQuiver(2)
+def KroneckerQuiver(m=2):
+    r"""
+    Return the Kronecker quiver
+
+    The Kronecker quiver has two vertices and 2 arrow from the first
+    to the second vertex. If the optional parameter ``m`` is specified
+    we construct the generalized Kronecker quiver on ``m`` arrows;
+
+    INPUT:
+
+    - ``m`` -- integer (default: `2`; number of arrows in the quiver
+
+    OUTPUT: the Kronecker quiver as Quiver instance
+
+    TESTS::
+
+    The Kronecker quiver is as claimed::
+
+        sage: from quiver import *
+        sage: Q = KroneckerQuiver()
+        sage: Q.number_of_vertices()
+        2
+        sage: Q.number_of_arrows()
+        2
+
+    If we specify the number of arrows, we construct a generalized Kronecker quiver::
+
+        sage: KroneckerQuiver(3) == GeneralizedKroneckerQuiver(3)
+        True
+
+    """
+
+    return GeneralizedKroneckerQuiver(m)
 
 
 def ThreeVertexQuiver(m12, m13, m23):
