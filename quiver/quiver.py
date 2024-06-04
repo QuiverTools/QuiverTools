@@ -368,9 +368,10 @@ class Quiver:
         - ``f``: vector of Ints
 
         OUTPUT: Quiver object
-        """
 
-        """The framed quiver has one additional vertex 0 and f_i many arrows from 0 to i."""
+        The framed quiver has one additional vertex 0 and f_i many arrows from 0 to i."""
+
+        # TODO tests are missing
 
         n = self.number_of_vertices()
         assert f.length() == n
@@ -381,7 +382,7 @@ class Quiver:
         # Add f as a first row
         A = A.insert_row(0, f)
         # Add a zero column
-        A = A.transpose().insert_row(0, ZeroVector(n + 1)).transpose()
+        A = A.transpose().insert_row(0, zero_vector(n + 1)).transpose()
         return Quiver(A)
 
     def coframed_quiver(self, f):
@@ -391,9 +392,8 @@ class Quiver:
         - ``f``: vector of Ints
 
         OUTPUT: Quiver object
-        """
 
-        """The coframed quiver has one additional vertex oo and f_i many arrows from i to oo."""
+        The coframed quiver has one additional vertex oo and f_i many arrows from i to oo."""
 
         n = self.number_of_vertices()
         assert f.length() == n
@@ -404,7 +404,7 @@ class Quiver:
         # Add f as a last column
         A = A.transpose().insert_row(n, f).transpose()
         # Add a zero row as last row
-        A = A.insert_row(n, ZeroVector(n + 1))
+        A = A.insert_row(n, zero_vector(n + 1))
         return Quiver(A)
 
     def full_subquiver(self, I):
