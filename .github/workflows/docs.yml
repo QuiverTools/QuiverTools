@@ -31,8 +31,7 @@ jobs:
         run: |
           mkdir -p github-artifacts/docs
           mv _build/latex/quivertools.pdf ./github-artifacts/documentation.pdf
-          # useless for now because GitHub pages doesn't work for private repositories
-          mv _build/html ./github-artifacts/docs
+          mv _build/html/* ./github-artifacts/docs
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
