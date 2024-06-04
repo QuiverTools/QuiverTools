@@ -1489,7 +1489,9 @@ class Quiver:
 
             We verify the vanishing of generic Ext::
 
-                sage: all([all([Q.generic_ext(s[i], s[j]) + Q.generic_ext(s[j], s[i]) == 0 for i in range(len(s)) for j in range(i)]) for s in decompositions.values()])
+                sage: all(all(Q.generic_ext(di, dj) + Q.generic_ext(dj, di) == 0
+                ....:         for (di, dj) in Combinations(s, 2))
+                ....:     for s in decompositions.values())
                 True
 
             """
