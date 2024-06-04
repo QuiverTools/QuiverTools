@@ -1,5 +1,6 @@
 from quiver import *
 
+
 def disjoint_union(Q1, Q2):
     """Returns the disjoint union of two quivers Q1 and Q2.
 
@@ -261,4 +262,3 @@ def RandomStability(quiver, bound=10):
 def ZeroVector(dimension):
     """Returns a zero vector of the given dimension."""
     return vector([0 for i in range(dimension)])
-

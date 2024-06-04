@@ -1701,5 +1701,3 @@ def is_indivisible(d):
 
 
 """Class methods"""
-
-
