@@ -116,10 +116,13 @@ def LoopQuiver(m):
     return Q
 
 
+# TODO cls?
 def JordanQuiver(cls):
     Q = loop_quiver(1)
     # TODO do Q.rename here
     return Q
+
+# TODO generalized Jordan quiver
 
 
 def SubspaceQuiver(m):
@@ -255,10 +258,3 @@ def RandomStability(quiver, bound=10):
         [randint(-bound // 2, bound) for i in range(quiver.number_of_vertices())]
     )
 
-
-# TODO I (= Pieter) would not write this function:
-# it should be possible to give dimension vectors as tuples (coerce whenever needed)
-# and [0]*dimension is then perfectly good shorthand for ZeroVector(dimension)
-def ZeroVector(dimension):
-    """Returns a zero vector of the given dimension."""
-    return vector([0 for i in range(dimension)])
