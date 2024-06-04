@@ -1181,7 +1181,10 @@ class Quiver:
         d = vector(d)
         theta = vector(theta)
 
-        assert d.length() == self.number_of_vertices() and theta.length() == self.number_of_vertices()
+        assert (
+            d.length() == self.number_of_vertices()
+            and theta.length() == self.number_of_vertices()
+        )
 
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
