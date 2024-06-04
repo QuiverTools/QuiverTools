@@ -4,18 +4,21 @@ from quiver import *
 def disjoint_union(Q1, Q2):
     """Returns the disjoint union of two quivers Q1 and Q2.
 
-    EXAMPLES
+    EXAMPLES:
 
-    sage: from quiver import *
-    sage: Q1 = GeneralizedKroneckerQuiver(3)
-    sage: Q2 = GeneralizedKroneckerQuiver(4)
-    sage: Q = disjoint_union(Q1,Q2)
-    sage: Q
-    Disjoint union of 3-Kronecker quiver and 4-Kronecker quiver; adjacency matrix:
-    [0 3 0 0]
-    [0 0 0 0]
-    [0 0 0 4]
-    [0 0 0 0]
+    We construct the disjoint union of 2 generalized Kronecker quivers::
+
+        sage: from quiver import *
+        sage: Q1 = GeneralizedKroneckerQuiver(3)
+        sage: Q2 = GeneralizedKroneckerQuiver(4)
+        sage: Q = disjoint_union(Q1,Q2)
+        sage: Q
+        Disjoint union of 3-Kronecker quiver and 4-Kronecker quiver; adjacency matrix:
+        [0 3 0 0]
+        [0 0 0 0]
+        [0 0 0 4]
+        [0 0 0 0]
+
     """
 
     if (Q1._name != None) and (Q2._name != None):
