@@ -839,6 +839,11 @@ class Quiver:
 
         """
 
+        # coerce dimension vectors
+        d = vector(d)
+        e = vector(e)
+
+        # TODO helper function
         assert (
             self.number_of_vertices()
             == d.length() & self.number_of_vertices()
@@ -1069,8 +1074,7 @@ class Quiver:
 
     def canonical_stability_parameter(self, d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
-        E = self.euler_matrix()
-        return d * (-self.euler_matrix().transpose() + E)
+        return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
     def has_semistable_representation(self, d, theta):
         r"""Checks if there is a `\theta`-semistable representation of dimension vector `d`
@@ -1116,6 +1120,9 @@ class Quiver:
         False
 
         """
+
+        # coerce dimension vector
+        d = vector(d)
 
         genSubdims = self.all_generic_subdimension_vectors(d)
         genSubdims = list(filter(lambda e: e != self.zero_vector(), genSubdims))
@@ -1698,9 +1705,13 @@ def slope(d, theta, denominator=sum):
 
 
 def is_subdimension_vector(e, d):
+    # coerce dimension vectors
+    d = vector(d)
+    e = vector(e)
+
     assert e.length() == d.length()
-    n = e.length()
-    return all([e[i] <= d[i] for i in range(n)])
+
+    return all(ei <= di for (ei, di) in zip(e, d))
 
 
 def deglex_key(e, b):
