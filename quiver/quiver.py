@@ -36,6 +36,31 @@ class Quiver:
         output += "adjacency matrix:\n" + str(self._adjacency)
         return output
 
+    def __eq__(self, other) -> bool:
+        r"""
+        Checks for equality of quivers.
+
+        Equality here refers to equality of adjacency matrices, but disregarding the name
+        of the quiver.
+
+        INPUT:
+
+        - ``other`` -- Quiver; the quiver to compare against
+
+        OUTPUT: whether the adjacency matrices are the same
+
+        EXAMPLES:
+
+        The 2-Kronecker quiver and the generalized Kronecker quiver are the same::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver() == GeneralizedKroneckerQuiver(2)
+            True
+
+        """
+
+        return self.adjacency_matrix() == other.adjacency_matrix()
+
     """
     Basic graph-theoretic properties of the quiver
     """
