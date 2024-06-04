@@ -1163,8 +1163,12 @@ class Quiver:
         """
 
         assert algorithm in ["schofield", "king", "al"]
-        n = self.number_of_vertices()
-        assert d.length() == n and theta.length() == n
+
+        # coerce dimension vector and stability parameter
+        d = vector(d)
+        theta = vector(theta)
+
+        assert d.length() == self.number_of_vertices() and theta.length() == self.number_of_vertices()
 
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
