@@ -105,13 +105,36 @@ def KroneckerQuiver(m=2):
     return GeneralizedKroneckerQuiver(m)
 
 
+# TODO Pieter wants to change this order
 def ThreeVertexQuiver(m12, m13, m23):
-    """An acyclic quiver with 3 vertices and mij many arrows i --> j for 1 <= i < j <= 3."""
+    r"""
+    Constructs a 3-vertex quiver, with and `m_{ij} arrows from `i` to `j`.
+
+    Thus it is always an acyclic quiver.
+
+    INPUT:
+
+    - ``m12`` -- integer; number of arrows from 1 to 2
+
+    - ``m13`` -- integer; number of arrows from 1 to 3
+
+    - ``m23`` -- integer; number of arrows from 2 to 3
+
+    EXAMPLES::
+
+    A 3-vertex quiver with 5 arrows::
+
+        sage: from quiver import *
+        sage: Q = ThreeVertexQuiver(2, 2, 1)
+        sage: Q.number_of_arrows()
+        5
+
+    """
+
     Q = Quiver(
         matrix([[0, m12, m13], [0, 0, m23], [0, 0, 0]]),
         name="An acyclic 3-vertex quiver",
     )
-    # TODO do Q.rename here
     return Q
 
 
