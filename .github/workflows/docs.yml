@@ -27,13 +27,11 @@ jobs:
         run: |
           make html
           make latexpdf
-      - name: Create .nojekyll
-        run: touch _build/html/.nojekyll
       - name: Create artifact
         run: |
           mkdir -p github-artifacts/docs
           mv _build/latex/quivertools.pdf ./github-artifacts/documentation.pdf
-          mv _build/html/* ./github-artifacts/docs
+          mv _build/html/* ./github-artifacts
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
