@@ -1194,7 +1194,7 @@ class Quiver:
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: d = (2, 3)
-            sage: theta = Q.canonical_stability(d)
+            sage: theta = Q.canonical_stability_parameter(d)
             sage: Q.has_stable_representation(d, theta, algorithm="schofield")
             True
 
