@@ -139,16 +139,37 @@ def ThreeVertexQuiver(m12, m13, m23):
 
 
 def LoopQuiver(m):
-    """A quiver with one vertex and m arrows."""
-    Q = Quiver(matrix([[m]]), name=str(m) + "-loop quiver")
-    # TODO do Q.rename here
+    r"""
+    Return the quiver with 1 vertex and `m` loops.
+
+    This is a synonym for :func:`GeneralizedJordanQuiver`.
+
+    .. SEEALSO::
+
+        :func:`GeneralizedJordanQuiver`
+
+    """
+    Q = GeneralizedJordanQuiver(m)
+    Q.rename("{}-loop quiver".format(m))
+
     return Q
 
 
-# TODO cls?
-def JordanQuiver(cls):
-    Q = loop_quiver(1)
-    # TODO do Q.rename here
+def JordanQuiver(m=1):
+    r"""
+    Return the generalized Jordan quiver with `m` loops, where `m` has default value 1.
+
+    .. SEEALSO::
+
+        :func:`GeneralizedJordanQuiver`
+
+    """
+
+    Q = GeneralizedJordanQuiver(m)
+
+    if m == 1:
+        Q.rename("Jordan quiver")
+
     return Q
 
 
