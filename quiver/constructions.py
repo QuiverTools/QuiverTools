@@ -211,7 +211,7 @@ def SubspaceQuiver(m: int):
 
     EXAMPLES:
 
-    The subspace quiver with `m` arrows has `m+1` vertices::
+    The subspace quiver with `m` sources has `m` arrows and `m+1` vertices::
 
         sage: from quiver import *
         sage: Q = SubspaceQuiver(6)
@@ -220,7 +220,7 @@ def SubspaceQuiver(m: int):
         sage: Q.number_of_arrows()
         6
 
-    The subspace quiver with 2 arrows is also a 3-vertex quiver::
+    The subspace quiver with 2 sources is also a 3-vertex quiver::
 
         sage: SubspaceQuiver(2) == ThreeVertexQuiver(0, 1, 1)
         True
