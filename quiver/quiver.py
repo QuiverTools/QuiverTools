@@ -21,7 +21,7 @@ class Quiver:
 
         INPUT:
 
-        - ``M`` -- arrows for the quiver, either as an adjacency Sage matrix or as a list of strings "i-j-k-...".
+        - ``M`` -- arrows for the quiver, either as an adjacency Sage matrix or as a comma-separated list of chains of the form "i-j-k-...".
         - ``name`` -- optional name for the quiver
 
         EXAMPLES:
@@ -41,7 +41,7 @@ class Quiver:
             [0 1 0]
             [0 0 1]
             [0 0 0]
-            sage: T = Quiver("1-2-3,1-3"); T
+            sage: T = Quiver("1-2-3, 1-3"); T
             A quiver with adjacency matrix:
             [0 1 1]
             [0 0 1]
