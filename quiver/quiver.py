@@ -17,11 +17,49 @@ class Quiver:
     """
 
     def __init__(self, M, name=None):
-        # TODO should we raise an exception/error instead?
-        assert M.is_square()
-        assert all(a >= 0 for a in M.list())
+        r"""Constructor for a quiver.
+        
+        INPUT:
 
-        self._adjacency = M
+        - ``M`` -- arrows for the quiver, either as an adjacency Sage matrix or as a list of strings "i-j-k-...".
+        - ``name`` -- optional name for the quiver
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = Quiver(matrix([[0, 3], [0, 0]])); Q
+            A quiver with adjacency matrix:
+            [0 3]
+            [0 0]
+        
+        A Dynkin quiver of type A_3::
+
+            sage: T = Quiver(["1-2-3"]); T
+            A quiver with adjacency matrix:
+            [0 1 0]
+            [0 0 1]
+            [0 0 0]
+        
+        """
+        # TODO should we raise an exception/error instead?
+        # a better way to check if M is a valid adjacency matrix?
+        if isinstance(M, sage.matrix.matrix_integer_dense.Matrix_integer_dense):
+            assert M.is_square()
+            assert all(a >= 0 for a in M.list())
+
+            self._adjacency = M
+        elif isinstance(M, list):
+            arrows = [[int(v) for v in chain.split('-')] for chain in M] # list of lists of strings
+            n = max(max(chain) for chain in arrows)
+
+            out = Matrix([[0]*n for i in range(n)])
+            for chain in arrows:
+                for i in range(len(chain)-1):
+                    out[chain[i]-1, chain[i+1]-1] += 1
+
+            self._adjacency = out
         self._name = name
 
     def __repr__(self):
