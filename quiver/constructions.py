@@ -200,8 +200,32 @@ def GeneralizedJordanQuiver(m: int):
     return Q
 
 
-def SubspaceQuiver(m):
-    """A quiver with m sources 1,...,m and one sink m+1; one arrow from every source to the sink."""
+def SubspaceQuiver(m: int):
+    r"""
+    Return the subspace quiver with `m` sources
+
+    The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are is one arrow
+    from every source to the sink.
+
+    OUTPUT: the subspace quiver with `m` sources
+
+    EXAMPLES:
+
+    The subspace quiver with `m` arrows has `m+1` vertices::
+
+        sage: from quiver import *
+        sage: Q = SubspaceQuiver(6)
+        sage: Q.number_of_vertices()
+        7
+        sage: Q.number_of_arrows()
+        6
+
+    The subspace quiver with 2 arrows is also a 3-vertex quiver::
+
+        sage: SubspaceQuiver(2) == ThreeVertexQuiver(0, 1, 1)
+        True
+
+    """
     A = zero_matrix(ZZ, m + 1)
     for i in range(m):
         A[i, m] = 1
