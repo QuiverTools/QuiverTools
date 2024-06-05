@@ -261,7 +261,7 @@ def ThickenedSubspaceQuiver(m, k):
         True
 
     """
-    Q = GeneralizedSubspaceQuiver(m, [k]*m)
+    Q = GeneralizedSubspaceQuiver(m, [k] * m)
     # TODO do Q.rename here
     return Q
 
