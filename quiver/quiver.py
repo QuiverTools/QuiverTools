@@ -41,6 +41,11 @@ class Quiver:
             [0 1 0]
             [0 0 1]
             [0 0 0]
+            sage: T = Quiver("1-2-3,1-3"); T
+            A quiver with adjacency matrix:
+            [0 1 1]
+            [0 0 1]
+            [0 0 0]
 
         """
         # TODO should we raise an exception/error instead?
@@ -50,10 +55,17 @@ class Quiver:
             assert all(a >= 0 for a in M.list())
 
             self._adjacency = M
+        elif isinstance(M, str):
+            arrows = [[int(v) for v in chain.split("-")] for chain in M.split(",")]
+            n = max(max(chain) for chain in arrows)
+
+            out = Matrix([[0] * n for i in range(n)])
+            for chain in arrows:
+                for i in range(len(chain) - 1):
+                    out[chain[i] - 1, chain[i + 1] - 1] += 1
+            self._adjacency = out
         elif isinstance(M, list):
-            arrows = [
-                [int(v) for v in chain.split("-")] for chain in M
-            ]  # list of lists of strings
+            arrows = [[int(v) for v in chain.split("-")] for chain in M]
             n = max(max(chain) for chain in arrows)
 
             out = Matrix([[0] * n for i in range(n)])
