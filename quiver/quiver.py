@@ -18,7 +18,7 @@ class Quiver:
 
     def __init__(self, M, name=None):
         r"""Constructor for a quiver.
-        
+
         INPUT:
 
         - ``M`` -- arrows for the quiver, either as an adjacency Sage matrix or as a list of strings "i-j-k-...".
@@ -33,7 +33,7 @@ class Quiver:
             A quiver with adjacency matrix:
             [0 3]
             [0 0]
-        
+
         A Dynkin quiver of type A_3::
 
             sage: T = Quiver(["1-2-3"]); T
@@ -41,7 +41,7 @@ class Quiver:
             [0 1 0]
             [0 0 1]
             [0 0 0]
-        
+
         """
         # TODO should we raise an exception/error instead?
         # a better way to check if M is a valid adjacency matrix?
@@ -51,13 +51,15 @@ class Quiver:
 
             self._adjacency = M
         elif isinstance(M, list):
-            arrows = [[int(v) for v in chain.split('-')] for chain in M] # list of lists of strings
+            arrows = [
+                [int(v) for v in chain.split("-")] for chain in M
+            ]  # list of lists of strings
             n = max(max(chain) for chain in arrows)
 
-            out = Matrix([[0]*n for i in range(n)])
+            out = Matrix([[0] * n for i in range(n)])
             for chain in arrows:
-                for i in range(len(chain)-1):
-                    out[chain[i]-1, chain[i+1]-1] += 1
+                for i in range(len(chain) - 1):
+                    out[chain[i] - 1, chain[i + 1] - 1] += 1
 
             self._adjacency = out
         self._name = name
