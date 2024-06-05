@@ -235,13 +235,70 @@ def SubspaceQuiver(m: int):
     return Q
 
 
-def GeneralizedSubspaceQuiver(m, k):
-    """A quiver with m sources 1,...,m and one sink m+1; k_i many arrows from source i to the sink."""
-    assert k.length() == m
+def ThickenedSubspaceQuiver(m, k):
+    r"""
+    Return the thickened subspace quiver with `m` sources
+
+    The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are are `k` arrows
+    from every source to the sink.
+
+    OUTPUT: the subspace quiver with `m` sources and `k` arrows from each source
+
+    EXAMPLES:
+
+    The `k`-thickened subspace quiver with `m` sources has `km` arrows and `m+1` vertices::
+
+        sage: from quiver import *
+        sage: Q = ThickenedSubspaceQuiver(6, 2)
+        sage: Q.number_of_vertices()
+        7
+        sage: Q.number_of_arrows()
+        12
+
+    The `k`-thickened subspace quiver with 2 sources is also a 3-vertex quiver::
+
+        sage: ThickenedSubspaceQuiver(2, 6) == ThreeVertexQuiver(0, 6, 6)
+        True
+
+    """
+    Q = GeneralizedSubspaceQuiver(m, [k]*m)
+    # TODO do Q.rename here
+    return Q
+
+
+def GeneralizedSubspaceQuiver(m, K):
+    r"""
+    Return the generalized subspace quiver with `m` sources and multiplicities `K`
+
+    The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are are `K_i` arrows
+    from every source `i=1,\ldots,m` to the sink.
+
+    OUTPUT: the subspace quiver with `m` sources and `K_i` arrows from each source
+
+    EXAMPLES:
+
+    The generalized subspace quiver with `m` sources and multiplicities `K` has `\sum_{i=1}^mK_i`
+    arrows and `m+1` vertices::
+
+        sage: from quiver import *
+        sage: Q = GeneralizedSubspaceQuiver(6, (1, 2, 3, 4, 5, 6))
+        sage: Q.number_of_vertices()
+        7
+        sage: Q.number_of_arrows()
+        21
+
+    The generalized subspace quiver with 2 sources is also a 3-vertex quiver::
+
+        sage: GeneralizedSubspaceQuiver(2, (2, 3)) == ThreeVertexQuiver(0, 2, 3)
+        True
+
+    """
+    assert len(K) == m
+
     A = zero_matrix(ZZ, m + 1)
     # I'm sure you can do this without a for loop
     for i in range(m):
-        A[i, m] = k[i]
+        A[i, m] = K[i]
 
     Q = Quiver(A, name="A generalized " + str(m) + "-subspace quiver")
     # TODO do Q.rename here
