@@ -36,10 +36,8 @@ def disjoint_union(Q1, Q2):
 
 """Special quivers"""
 
-# TODO convention for generator functions is capitalise them?
 
-
-def GeneralizedKroneckerQuiver(m):
+def GeneralizedKroneckerQuiver(m: int):
     r"""
     Return the generalized Kronecker quiver
 
@@ -70,7 +68,7 @@ def GeneralizedKroneckerQuiver(m):
 
 
 # TODO if optional parameter is given, call GeneralizedKroneckerQuiver
-def KroneckerQuiver(m=2):
+def KroneckerQuiver(m: int = 2):
     r"""
     Return the Kronecker quiver
 
@@ -106,9 +104,9 @@ def KroneckerQuiver(m=2):
 
 
 # TODO Pieter wants to change this order
-def ThreeVertexQuiver(m12, m13, m23):
+def ThreeVertexQuiver(m12: int, m13: int, m23: int):
     r"""
-    Constructs a 3-vertex quiver, with and `m_{ij} arrows from `i` to `j`.
+    Constructs a 3-vertex quiver, with and `m_{i,j} arrows from `i` to `j`.
 
     Thus it is always an acyclic quiver.
 
@@ -138,7 +136,7 @@ def ThreeVertexQuiver(m12, m13, m23):
     return Q
 
 
-def LoopQuiver(m):
+def LoopQuiver(m: int):
     r"""
     Return the quiver with 1 vertex and `m` loops.
 
@@ -156,7 +154,7 @@ def LoopQuiver(m):
     return Q
 
 
-def JordanQuiver(m=1):
+def JordanQuiver(m: int = 1):
     r"""
     Return the generalized Jordan quiver with `m` loops, where `m` has default value 1.
 
