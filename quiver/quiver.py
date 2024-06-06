@@ -113,6 +113,36 @@ class Quiver:
 
         return self.adjacency_matrix() == other.adjacency_matrix()
 
+    def coerce_dimension_vector(self, d):
+        r"""Coerces d to be a dimension vector of the quiver.
+
+        INPUT:
+
+        - ``d``: vector of Ints
+
+        OUTPUT: Sage vector if d is a dimension vector, otherwise raises a ValueError
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.coerce_dimension_vector([1, 2, 3])
+            (1, 2, 3)
+            sage: Q.coerce_dimension_vector([1, 2, 3, 4])
+            Traceback (most recent call last):
+            ...
+            ValueError: The input is not a dimension vector of the quiver.
+
+        """
+
+        d = vector(d)
+        if d.length() == self.number_of_vertices() and all(di >= 0 for di in d):
+            return d
+        else:
+            raise ValueError("The input is not a dimension vector of the quiver.")
+
     """
     Basic graph-theoretic properties of the quiver
     """
@@ -547,7 +577,9 @@ class Quiver:
         """
 
         """A root is a non-zero vector in Z^n such that the Tits form of x is <= 1."""
-        assert x.length() == self.number_of_vertices()
+        x = self.coerce_dimension_vector(x)
+
+        # TODO any check like e == zero_vector should really be replaced by a all(ei == 0 for ei in e) for performance
         return x != self.zero_vector() and self.tits_form(x) <= 1
 
     def is_real_root(self, x):
@@ -560,7 +592,7 @@ class Quiver:
         """
 
         """A root is called real if its Tits form equals 1."""
-        assert x.length() == self.number_of_vertices()
+        x = self.coerce_dimension_vector(x)
         return self.tits_form(x) == 1
 
     def is_imaginary_root(self, x):
@@ -573,7 +605,7 @@ class Quiver:
         """
 
         """A root is called imaginary if its Tits form is non-positive."""
-        assert x.length() == self.number_of_vertices()
+        x = self.coerce_dimension_vector(x)
         return x != self.zero_vector() and self.tits_form(x) <= 0
 
     def is_schur_root(self, d):
@@ -611,10 +643,7 @@ class Quiver:
 
         """
 
-        d = vector(d)
-
-        # TODO use to-be-written helper function, self._is_dimension_vector
-        assert d.length() == self.number_of_vertices()
+        d = self.coerce_dimension_vector(d)
 
         theta = self.canonical_stability_parameter(d)
         return self.has_stable_representation(d, theta)
@@ -646,6 +675,7 @@ class Quiver:
 
         """
 
+        d = self.coerce_dimension_vector(d)
         supp = list(filter(lambda i: d[i] > 0, range(self.number_of_vertices())))
         return [i + 1 for i in supp]
 
@@ -678,17 +708,7 @@ class Quiver:
 
         """
 
-        # coerce dimension vector
-        # TODO in fact: we don't need to do this here
-        # when the helper function is introduced this is no longer needed
-        d = vector(d)
-
-        # TODO these checks happen all the time
-        # move them to a helper function? e.g.,
-        # assert self._is_dimension_vector(d)
-        assert d.length() == self.number_of_vertices() and all(
-            [di >= 0 for di in list(d)]
-        )
+        d = self.coerce_dimension_vector(d)
 
         # check if `\langle d,e_i\rangle + \langle e_i,d\rangle \leq 0`
         # for all vertices `i\in Q_0`
@@ -926,14 +946,8 @@ class Quiver:
 
         """
 
-        # coerce dimension vectors
-        d = vector(d)
-        e = vector(e)
-
-        # TODO helper function
-        assert self.number_of_vertices() == d.length()
-        assert self.number_of_vertices() == e.length()
-        assert all([di >= 0 for di in d.list()]) and all([ei >= 0 for ei in e.list()])
+        d = self.coerce_dimension_vector(d)
+        e = self.coerce_dimension_vector(e)
 
         if e == d:
             return True
@@ -1059,12 +1073,7 @@ class Quiver:
 
         """
 
-        # coerce dimension vector
-        d = vector(d)
-
-        # TODO helper function
-        assert self.number_of_vertices() == d.length()
-        assert all([di >= 0 for di in d.list()])
+        d = self.coerce_dimension_vector(d)
 
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
         N = len(genSubdims)
@@ -1107,6 +1116,8 @@ class Quiver:
 
         """
 
+        a = self.coerce_dimension_vector(a)
+        b = self.coerce_dimension_vector(b)
         genSubdims = self.all_generic_subdimension_vectors(a)
         return max([-self.euler_form(c, b) for c in genSubdims])
 
@@ -1146,6 +1157,8 @@ class Quiver:
 
         """
 
+        a = self.coerce_dimension_vector(a)
+        b = self.coerce_dimension_vector(b)
         return self.euler_form(a, b) + self.generic_ext(a, b)
 
     # TODO remove
@@ -1170,6 +1183,8 @@ class Quiver:
 
     def canonical_stability_parameter(self, d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
+        d = self.coerce_dimension_vector(d)
+
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
     def has_semistable_representation(self, d, theta):
@@ -1219,8 +1234,7 @@ class Quiver:
 
         """
 
-        # coerce dimension vector
-        d = vector(d)
+        d = self.coerce_dimension_vector(d)
 
         genSubdims = self.all_generic_subdimension_vectors(d)
         genSubdims = list(filter(lambda e: e != self.zero_vector(), genSubdims))
@@ -1301,14 +1315,11 @@ class Quiver:
 
         assert algorithm in ["schofield", "king", "al"]
 
-        # coerce dimension vector and stability parameter
-        d = vector(d)
+        # coerce stability parameter
         theta = vector(theta)
+        assert theta.length() == self.number_of_vertices()
 
-        assert (
-            d.length() == self.number_of_vertices()
-            and theta.length() == self.number_of_vertices()
-        )
+        d = self.coerce_dimension_vector(d)
 
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
@@ -1597,10 +1608,7 @@ class Quiver:
 
             """
 
-            # TODO helper function for d
-
-            # coerce dimension vector
-            d = vector(d)
+            d = self.coerce_dimension_vector(d)
 
             genSubdims = self.all_generic_subdimension_vectors(d)
             genSubdims = list(
@@ -1658,6 +1666,8 @@ class Quiver:
 
         OUTPUT: dimension as Int
         """
+
+        d = self.coerce_dimension_vector(d)
 
         if self.is_acyclic():
             return d.transpose() * self.adjacency_matrix() * d
@@ -1827,7 +1837,7 @@ def is_subdimension_vector(e, d):
 
     assert e.length() == d.length()
 
-    return all(ei <= di for (ei, di) in zip(e, d))
+    return all(0 <= ei and ei <= di for (ei, di) in zip(e, d))
 
 
 def deglex_key(e, b):
