@@ -200,30 +200,27 @@ class Quiver:
 
         EXAMPLES:
 
-        The 4-Kronecker quiver::
+        The n-Kronecker quivers are connected::
 
             sage: from quiver import *
             sage: K = Quiver( matrix(  [[0, 4],
             ....:                       [0, 0]]))
             sage: K.is_connected()
             True
-
-        The doubled 1-Kronecker quiver::
-
             sage: from quiver import *
             sage: C1 = Quiver(matrix(  [[0,1],
             ....:                       [1,0]]))
             sage: C1.is_connected()
             True
 
-        The 3-loop point quiver::
+        The loop quivers are connected::
 
             sage: from quiver import *
             sage: L = Quiver(matrix([[3]]))
             sage: L.is_connected()
             True
 
-        The A_10 quiver::
+        The A_10 quiver is connected::
 
             sage: from quiver import *
             sage: A10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -239,7 +236,7 @@ class Quiver:
             sage: A10.is_connected()
             True
 
-        The A_10 quiver without one arrow::
+        The A_10 quiver without one arrow is no longer connected::
 
             sage: from quiver import *
             sage: discA10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -316,7 +313,7 @@ class Quiver:
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        In the 3-Kronecker quiver the outdegree is either 3 or 0::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -335,7 +332,7 @@ class Quiver:
 
         EXAMPLES
 
-        The 3-Kronecker quiver::
+        The n-Kronecker quiver has one source::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -353,7 +350,7 @@ class Quiver:
 
         EXAMPLES
 
-        The 3-Kronecker quiver::
+        The 3-Kronecker quiver has one sink::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -620,7 +617,7 @@ class Quiver:
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        The root (2, 3) is Schurian for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -661,7 +658,7 @@ class Quiver:
 
         EXAMPLES
 
-        The 3-Kronecker quiver::
+        The support is the set of vertices for which the dimension vector is nonzero::
 
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(2, 0, 4)
@@ -735,7 +732,7 @@ class Quiver:
 
         EXAMPLES
 
-        The 3-Kronecker quiver::
+        Order on some dimension vectors for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -755,7 +752,7 @@ class Quiver:
             sage: Q.division_order(f,e)
             True
 
-        A 3-vertex quiver::
+        Order on some dimension vectors for a 3-vertex quiver::
 
             sage: Q = ThreeVertexQuiver(2,2,2)
             sage: Q
@@ -1202,7 +1199,7 @@ class Quiver:
 
         EXAMPLES:
 
-        The A_2 quiver::
+        Semistables for the A_2 quiver::
 
             sage: from quiver import *
             sage: A2 = GeneralizedKroneckerQuiver(1)
@@ -1220,7 +1217,7 @@ class Quiver:
             sage: A2.has_semistable_representation(d,theta)
             True
 
-        The 3-Kronecker quiver::
+        Semistables for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: K3 = GeneralizedKroneckerQuiver(3)
@@ -1245,11 +1242,14 @@ class Quiver:
         """Computes the list of indexes of all semistable subdimension vectors of d.
 
         EXAMPLES:
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
-        sage: i, s = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta); i, s
-        ([1, 2, 3, 4, 5, 6, 10],
-        [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
+
+        Manual caching for all semistable subdimension vectors of (2,3) for the Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
+            sage: i, s = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta); i, s
+            ([1, 2, 3, 4, 5, 6, 10],
+            [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
 
         """
 
@@ -1284,13 +1284,13 @@ class Quiver:
 
         - ``algorithm``: String
 
-        OUTPUT: statement truth value as Bool
+        OUTPUT: True if there is a `\theta`-stable representation of `d`, False otherwise.
 
         See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d.
 
         EXAMPLES:
 
-        The `\mathrm{A}_2` quiver::
+        Stables for the `\mathrm{A}_2` quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
@@ -1302,7 +1302,7 @@ class Quiver:
             sage: Q.has_stable_representation([0, 0], theta, algorithm="schofield")
             False
 
-        The 3-Kronecker quiver::
+        Stables for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -1349,35 +1349,39 @@ class Quiver:
 
         EXAMPLES:
 
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,0])
-        sage: all_subdimension_vectors(d)
-        [(0, 0),
-        (0, 1),
-        (0, 2),
-        (0, 3),
-        (1, 0),
-        (1, 1),
-        (1, 2),
-        (1, 3),
-        (2, 0),
-        (2, 1),
-        (2, 2),
-        (2, 3),
-        (3, 0),
-        (3, 1),
-        (3, 2),
-        (3, 3)]
-        sage: i, s = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
-        sage: i
-        [4, 11, 15]
-        sage: s
-        [(1, 1), (2, 2), (3, 3)]
+        Manual caching of all stable subdimension vectors of (3,3) for the 3-Kronecker quiver::
 
-        sage: from quiver import *
-        sage: Q, d, theta = GeneralizedKroneckerQuiver(2), vector([3,3]), vector([1,-1])
-        sage: Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
-        ([4], [(1, 1)])
+            sage: from quiver import *
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,0])
+            sage: all_subdimension_vectors(d)
+            [(0, 0),
+            (0, 1),
+            (0, 2),
+            (0, 3),
+            (1, 0),
+            (1, 1),
+            (1, 2),
+            (1, 3),
+            (2, 0),
+            (2, 1),
+            (2, 2),
+            (2, 3),
+            (3, 0),
+            (3, 1),
+            (3, 2),
+            (3, 3)]
+            sage: i, s = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
+            sage: i
+            [4, 11, 15]
+            sage: s
+            [(1, 1), (2, 2), (3, 3)]
+
+        Now for the 2-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(2), vector([3,3]), vector([1,-1])
+            sage: Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
+            ([4], [(1, 1)])
 
         """
 
