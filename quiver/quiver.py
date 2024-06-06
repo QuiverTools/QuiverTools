@@ -133,14 +133,47 @@ class Quiver:
             sage: Q.coerce_dimension_vector([1, 2, 3, 4])
             Traceback (most recent call last):
             ...
+            ValueError: The input is not an element of `\mathbb{Z}A_0`.
+            sage: Q.coerce_dimension_vector([1, -3])
+            Traceback (most recent call last):
+            ...
             ValueError: The input is not a dimension vector of the quiver.
         """
 
-        d = vector(d)
-        if d.length() == self.number_of_vertices() and all(di >= 0 for di in d):
+        d = self.coerce_vector(d)
+        if all(di >= 0 for di in d):
             return d
         else:
             raise ValueError("The input is not a dimension vector of the quiver.")
+
+    def coerce_vector(self, x):
+        r"""Coerces x to be a vector in `\mathbb{Z}Q_0`.
+
+        INPUT:
+
+        - ``x``: vector of Ints
+
+        OUTPUT: Sage vector if x is an element of `\mathbb{Z}Q_0`, otherwise raises a ValueError
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.coerce_vector([-1, 2])
+            (-1, 2)
+            sage: Q.coerce_vector([1, 2, 3, 4])
+            Traceback (most recent call last):
+            ...
+            ValueError: The input is not an element of `\mathbb{Z}A_0`.
+        """
+
+        x = vector(x)
+        if x.length() == self.number_of_vertices():
+            return x
+        else:
+            raise ValueError("The input is not an element of `\mathbb{Z}A_0`.")
 
     """
     Basic graph-theoretic properties of the quiver
@@ -573,7 +606,7 @@ class Quiver:
         """
 
         """A root is a non-zero vector in Z^n such that the Tits form of x is <= 1."""
-        x = self.coerce_dimension_vector(x)
+        x = self.coerce_vector(x)
 
         # TODO any check like e == zero_vector should really be replaced by a all(ei == 0 for ei in e) for performance
         return x != self.zero_vector() and self.tits_form(x) <= 1
@@ -588,7 +621,7 @@ class Quiver:
         """
 
         """A root is called real if its Tits form equals 1."""
-        x = self.coerce_dimension_vector(x)
+        x = self.coerce_vector(x)
         return self.tits_form(x) == 1
 
     def is_imaginary_root(self, x):
@@ -601,7 +634,7 @@ class Quiver:
         """
 
         """A root is called imaginary if its Tits form is non-positive."""
-        x = self.coerce_dimension_vector(x)
+        x = self.coerce_vector(x)
         return x != self.zero_vector() and self.tits_form(x) <= 0
 
     def is_schur_root(self, d):
