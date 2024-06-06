@@ -128,13 +128,12 @@ class Quiver:
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.coerce_dimension_vector([1, 2, 3])
-            (1, 2, 3)
+            sage: Q.coerce_dimension_vector([1, 2])
+            (1, 2)
             sage: Q.coerce_dimension_vector([1, 2, 3, 4])
             Traceback (most recent call last):
             ...
             ValueError: The input is not a dimension vector of the quiver.
-
         """
 
         d = vector(d)
@@ -960,6 +959,7 @@ class Quiver:
                 return all([self.euler_form(f, d - e) >= 0 for f in genSubdims])
 
     # TODO remove this and cache the recursive one instead
+    # This method computes a list of all generic subdimension vectors of e, for all e which are subdimension vectors of d.
     def __all_generic_subdimension_vectors_helper(self, d):
         """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order.
 
