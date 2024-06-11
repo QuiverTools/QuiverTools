@@ -361,9 +361,40 @@ def DynkinQuiver(T):
 
 
 def ExtendedDynkinQuiver(T):
-    # TODO implement this
-    # TODO orientation: have a default (so for A and D: linear, type E?) but make it possible to change the orientation
-    raise NotImplementedError()
+    r"""
+    Return the Dynkin quiver of type `T`
+
+    The type `T` is a string which can be passed onto the Sage method `DynkinDiagram`,
+    and the quiver is oriented lexigraphically in the vertices of the diagram.
+    The special vertex thus comes first.
+
+    INPUT:
+
+    - ``T`` -- string: a Dynkin type, as documented in the Sage method `DynkinDiagram`
+
+    OUTPUT: the extended Dynkin quiver with lexicographic ordering on the vertices
+
+    EXAMPLES:
+
+    The extended `\mathrm{A}_1` quiver is the Kronecker quiver::
+
+        sage: from quiver import *
+        sage: ExtendedDynkinQuiver("A2") == KroneckerQuiver()
+        True
+
+    """
+    # the adjacency matrix of an extended Dynkin diagram ignores multiple arrows
+    # so we modify the Cartan matrix
+    D = WeylCharacterRing(T).extended_dynkin_diagram()
+    M = -D.cartan_matrix()
+
+    # orient the quiver lexicographically
+    for i in range(M.nrows()):
+        M[i, i] = 0
+        for j in range(i):
+            M[i, j] = 0
+
+    return Quiver(M, "Extended Dynkin quiver of type {}".format(T))
 
 
 def CyclicQuiver(n):
