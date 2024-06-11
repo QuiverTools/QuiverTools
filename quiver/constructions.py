@@ -317,23 +317,47 @@ def GeneralizedSubspaceQuiver(m, K):
     return Q
 
 
-def DynkinQuiver(Tn):
-    r"""Returns the Dynkin quiver of type Tn. Uses the standard Sagemath implementation of Dynkin diagrams."""
-    # use https://doc.sagemath.org/html/en/reference/combinat/sage/combinat/root_system/dynkin_diagram.html
-    # TODO: this constructor calls the adjacency_matrix() method many times. Should we call it once and remove lower triangular entries?
+def DynkinQuiver(T):
+    r"""
+    Return the Dynkin quiver of type `T`
 
-    # parse the string Tn
-    T = Tn[:-1]
-    n = int(Tn[-1])
+    The type `T` is to be taken as in the Sage method `DynkinDiagram`,
+    and the quiver is oriented lexigraphically in the vertices of the diagram.
 
-    return Quiver(
-        matrix(
-            n,
-            n,
-            lambda i, j: DynkinDiagram(Tn).adjacency_matrix()[i, j] if i < j else 0,
-        ),
-        "Dynkin quiver of type " + Tn,
-    )
+    INPUT:
+
+    - ``T``: a Dynkin type, as documented in the Sage method `DynkinDiagram`
+
+    OUTPUT: the Dynkin quiver with lexicographic ordering on the vertices
+
+    EXAMPLES:
+
+    The `\mathrm{A}_2` quiver is the generalized Kronecker quiver with 1 arrow::
+
+        sage: from quiver import *
+        sage: DynkinQuiver("A2") == GeneralizedKroneckerQuiver(1)
+        True
+
+    The Dynkin quiver `\mathrm{D}_4` is a different orientation of the 3-subspace quiver::
+
+        sage: DynkinQuiver("D4") == SubspaceQuiver(3)
+        False
+
+    We can also consider disconnected Dynkin quivers::
+
+        sage: Q = DynkinQuiver("A3xA4")
+        sage: Q.is_connected()
+        False
+
+    """
+    M = DynkinDiagram(T).adjacency_matrix()
+
+    # orient the quiver lexicographically
+    for i in range(M.nrows()):
+        for j in range(i):
+            M[i, j] = 0
+
+    return Quiver(M, "Dynkin quiver of type {}".format(T))
 
 
 def ExtendedDynkinQuiver(T):
