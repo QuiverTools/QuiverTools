@@ -398,7 +398,32 @@ def ExtendedDynkinQuiver(T):
 
 
 def CyclicQuiver(n):
-    return ExtendedDynkinQuiver(["A", n])
+    r"""
+    Return the cyclic quiver on `n` vertices
+
+    This is the quiver with `n` vertices and `n` arrows from `i` to `i+1`
+    for `i=1,\ldots,n`, with `n+1=1`.
+
+    INPUT:
+
+    - ``n``-- integer; the number of vertices (and arrows)
+
+    OUTPUT: cyclic quiver on `n` vertices
+
+    EXAMPLES:
+
+    The doubled Dynkin quiver of type `\mathrm{A}_2` is the cyclic quiver on 2 vertices::
+
+        sage: from quiver import *
+        sage: CyclicQuiver(2) == DynkinQuiver("A2").double_quiver()
+        True
+
+    """
+    M = zero_matrix(n)
+    for i in range(n):
+        M[i, (i + 1) % n] = 1
+
+    return Quiver(M, "Cyclic quiver on {} vertices".format(n))
 
 
 def BipartiteQuiver(m, n):
