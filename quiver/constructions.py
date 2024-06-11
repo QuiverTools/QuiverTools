@@ -379,7 +379,7 @@ def ExtendedDynkinQuiver(T):
     The extended `\mathrm{A}_1` quiver is the Kronecker quiver::
 
         sage: from quiver import *
-        sage: ExtendedDynkinQuiver("A2") == KroneckerQuiver()
+        sage: ExtendedDynkinQuiver("A1") == KroneckerQuiver()
         True
 
     """
