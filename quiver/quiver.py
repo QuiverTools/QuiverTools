@@ -21,7 +21,8 @@ class Quiver:
 
         INPUT:
 
-        - ``M`` -- arrows for the quiver, either as an adjacency Sage matrix or as a comma-separated list of chains of the form "i-j-k-...".
+        - ``M`` -- arrows for the quiver, either as an adjacency matrix or as a comma-separated list of chains of the form "i-j-k-...".
+
         - ``name`` -- optional name for the quiver
 
         EXAMPLES:
@@ -48,14 +49,7 @@ class Quiver:
             [0 0 0]
 
         """
-        # TODO should we raise an exception/error instead?
-        # a better way to check if M is a valid adjacency matrix?
-        if isinstance(M, sage.matrix.matrix_integer_dense.Matrix_integer_dense):
-            assert M.is_square()
-            assert all(a >= 0 for a in M.list())
-
-            self._adjacency = M
-        elif isinstance(M, str):
+        if isinstance(M, str):
             arrows = [[int(v) for v in chain.split("-")] for chain in M.split(",")]
             n = max(max(chain) for chain in arrows)
 
@@ -74,6 +68,14 @@ class Quiver:
                     out[chain[i] - 1, chain[i + 1] - 1] += 1
 
             self._adjacency = out
+        # we assume it is a matrix and convert it to one
+        else:
+            M = matrix(M)
+
+            assert M.is_square()
+            assert all(a >= 0 for a in M.list())
+
+            self._adjacency = M
         self._name = name
 
     def __repr__(self):
