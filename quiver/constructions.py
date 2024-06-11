@@ -207,6 +207,10 @@ def SubspaceQuiver(m: int):
     The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are is one arrow
     from every source to the sink.
 
+    INPUT:
+
+    - ``m`` -- integer; the number of sources in the subspace quiver
+
     OUTPUT: the subspace quiver with `m` sources
 
     EXAMPLES:
@@ -242,6 +246,10 @@ def ThickenedSubspaceQuiver(m, k):
     The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are are `k` arrows
     from every source to the sink.
 
+    - ``m`` -- integer; the number of sources in the subspace quiver
+
+    - ``k`` -- integer; the number arrows from a source to the sink
+
     OUTPUT: the subspace quiver with `m` sources and `k` arrows from each source
 
     EXAMPLES:
@@ -272,6 +280,10 @@ def GeneralizedSubspaceQuiver(m, K):
 
     The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are are `K_i` arrows
     from every source `i=1,\ldots,m` to the sink.
+
+    - ``m`` -- integer; the number of sources in the subspace quiver
+
+    - ``K`` -- list of integers; the number arrows from the `i`th source to the sink
 
     OUTPUT: the subspace quiver with `m` sources and `K_i` arrows from each source
 
