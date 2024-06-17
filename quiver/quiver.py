@@ -68,6 +68,31 @@ class Quiver(Element):
         self.rename(name)
 
     @classmethod
+    def from_digraph(cls, G, name=None):
+        r"""Construct a quiver a graph
+
+        INPUT:
+
+        - ``G`` -- directed graph
+
+        - ``name`` -- optional name for the quiver
+
+        OUTPUT: The quiver
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: M = [[0, 3], [0, 0]]
+            sage: Quiver.from_digraph(DiGraph(matrix(M))) == Quiver.from_matrix(M)
+            True
+
+        """
+
+        return cls(G.adjacency_matrix(), name)
+
+    @classmethod
     def from_matrix(cls, M, name=None):
         r"""Construct a quiver from its adjacency matrix
 
