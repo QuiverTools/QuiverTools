@@ -634,7 +634,7 @@ class QuiverModuli(ABC):
         """
 
         """For tau = [(d^1,p^1),...,(d^s,p^s)] the codimension of pi^{-1}(S_tau) is
-        
+
         -<d,d> + sum_{k=1}^s (<d^k,d^k> - l(p^k) + ||p^k||^2) - dim N(Q_tau, d_tau)
 
         where for a partition p = (n_1,...,n_l), we define ||p||^2 = sum_v n_v^2 and N(Q_tau, d_tau) is the nullcone of the local quiver setting.
