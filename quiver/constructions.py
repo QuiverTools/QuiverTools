@@ -60,12 +60,9 @@ def GeneralizedKroneckerQuiver(m: int):
         3
 
     """
-    Q = Quiver(matrix([[0, m], [0, 0]]), name=str(m) + "-Kronecker quiver")
-    # TODO do Q.rename here
-    return Q
+    return Quiver([[0, m], [0, 0]], name="{}-Kronecker quiver".format(m))
 
 
-# TODO if optional parameter is given, call GeneralizedKroneckerQuiver
 def KroneckerQuiver(m: int = 2):
     r"""
     Return the Kronecker quiver
@@ -101,7 +98,6 @@ def KroneckerQuiver(m: int = 2):
     return GeneralizedKroneckerQuiver(m)
 
 
-# TODO Pieter wants to change this order
 def ThreeVertexQuiver(m12: int, m13: int, m23: int):
     r"""
     Constructs a 3-vertex quiver, with and `m_{i,j} arrows from `i` to `j`.
@@ -121,15 +117,18 @@ def ThreeVertexQuiver(m12: int, m13: int, m23: int):
     A 3-vertex quiver with 5 arrows::
 
         sage: from quiver import *
-        sage: Q = ThreeVertexQuiver(2, 2, 1)
+        sage: Q = ThreeVertexQuiver(2, 2, 1); Q
+        an acyclic 3-vertex quiver of type (2, 2, 1)
         sage: Q.number_of_arrows()
         5
 
     """
 
     Q = Quiver(
-        matrix([[0, m12, m13], [0, 0, m23], [0, 0, 0]]),
-        name="An acyclic 3-vertex quiver",
+        [[0, m12, m13], [0, 0, m23], [0, 0, 0]],
+        name="an acyclic 3-vertex quiver of type {}".format(
+            (m12, m13, m23),
+        ),
     )
     return Q
 
@@ -145,11 +144,7 @@ def LoopQuiver(m: int):
         :func:`GeneralizedJordanQuiver`
 
     """
-    Q = GeneralizedJordanQuiver(m)
-    # TODO do rename
-    # Q.rename("{}-loop quiver".format(m))
-
-    return Q
+    return GeneralizedJordanQuiver(m, name="{}-loop quiver".format(m))
 
 
 def JordanQuiver(m: int = 1):
@@ -162,13 +157,7 @@ def JordanQuiver(m: int = 1):
 
     """
 
-    Q = GeneralizedJordanQuiver(m)
-
-    # TODO do rename
-    # if m == 1:
-    #    Q.rename("Jordan quiver")
-
-    return Q
+    return GeneralizedJordanQuiver(m)
 
 
 def GeneralizedJordanQuiver(m: int):
@@ -193,7 +182,10 @@ def GeneralizedJordanQuiver(m: int):
         7
 
     """
-    Q = Quiver(matrix([[m]]), name="generalized Jordan quiver with {} loops".format(m))
+    Q = Quiver([[m]], name="generalized Jordan quiver with {} loops".format(m))
+
+    if m == 1:
+        Q.rename("Jordan quiver")
 
     return Q
 
@@ -228,12 +220,12 @@ def SubspaceQuiver(m: int):
         True
 
     """
-    A = zero_matrix(ZZ, m + 1)
+    M = zero_matrix(ZZ, m + 1)
     for i in range(m):
-        A[i, m] = 1
+        M[i, m] = 1
 
-    Q = Quiver(A, name=str(m) + "-subspace quiver")
-    # TODO do Q.rename here
+    Q = Quiver(M, "{}-subspace quiver".format(m))
+
     return Q
 
 
@@ -268,7 +260,10 @@ def ThickenedSubspaceQuiver(m, k):
 
     """
     Q = GeneralizedSubspaceQuiver(m, [k] * m)
-    # TODO do Q.rename here
+    Q.rename(
+        "thickened subspace quiver with {} sources and multiplicity {}".format(m, k)
+    )
+
     return Q
 
 
@@ -305,13 +300,12 @@ def GeneralizedSubspaceQuiver(m, K):
     """
     assert len(K) == m
 
-    A = zero_matrix(ZZ, m + 1)
-    # I'm sure you can do this without a for loop
+    M = zero_matrix(ZZ, m + 1)
     for i in range(m):
-        A[i, m] = K[i]
+        M[i, m] = K[i]
 
-    Q = Quiver(A, name="A generalized " + str(m) + "-subspace quiver")
-    # TODO do Q.rename here
+    Q = Quiver(M, name="a generalized {}-subspace quiver".format(m))
+
     return Q
 
 
