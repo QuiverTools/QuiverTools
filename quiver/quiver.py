@@ -404,9 +404,18 @@ class Quiver(Element):
         )
 
     def number_of_vertices(self):
-        r"""Returns the amount of vertices that the quiver has.
+        r"""Returns the number of vertices
 
-        OUTPUT: The number of vertices as an Int.
+        OUTPUT: the number of vertices
+
+        EXAMPLES:
+
+        There are 3 vertices in a 3-vertex quiver::
+
+            sage: from quiver import *
+            sage: ThreeVertexQuiver(1, 2, 4).number_of_vertices()
+            3
+
         """
         return self.adjacency_matrix().nrows()
 
