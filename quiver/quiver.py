@@ -40,22 +40,18 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = Quiver([[0, 3], [0, 0]]); Q
-            A quiver with adjacency matrix:
-            [0 3]
-            [0 0]
+            a quiver with 2 vertices and 3 arrows
 
         A Dynkin quiver of type A_3::
 
-            sage: Q = Quiver.from_string("1-2-3"); Q
-            A quiver with adjacency matrix:
+            sage: Q = Quiver.from_string("1-2-3"); Q.adjacency_matrix()
             [0 1 0]
             [0 0 1]
             [0 0 0]
 
         A triangle-shaped quiver::
 
-            sage: Q = Quiver.from_string("1-2-3, 1-3"); Q
-            A quiver with adjacency matrix:
+            sage: Q = Quiver.from_string("1-2-3, 1-3"); Q.adjacency_matrix()
             [0 1 1]
             [0 0 1]
             [0 0 0]
@@ -67,9 +63,16 @@ class Quiver(Element):
         assert all(a >= 0 for a in M.list())
 
         self._adjacency = M
+
+        # TODO don't have this
         self._name = name
-        # TODO fix this
-        self.rename(name)
+
+        if name:
+            self.rename(name)
+        else:
+            self.rename(
+                "a quiver with {} vertices and {} arrows".format(M.nrows(), sum(sum(M)))
+            )
 
     @classmethod
     def from_matrix(cls, M, name=None):
@@ -86,8 +89,7 @@ class Quiver(Element):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q = Quiver.from_matrix([[0, 3], [0, 0]]); Q
-            A quiver with adjacency matrix:
+            sage: Q = Quiver.from_matrix([[0, 3], [0, 0]]); Q.adjacency_matrix()
             [0 3]
             [0 0]
 
@@ -170,18 +172,6 @@ class Quiver(Element):
                     source, target = target, None
 
         return cls(M, name)
-
-    def __repr__(self):
-        # TODO this should be implemented following Sage's methodology
-        # see https://github.com/pbelmans/hodge-diamond-cutter/issues/14 for suggestion
-        # and https://github.com/pbelmans/hodge-diamond-cutter/commit/59cc6d575babe695c6e1668721e6cd5c4f17dba9 for example
-        output = ""
-        if self._name == None:
-            output += "A quiver with "
-        else:
-            output += str(self._name) + "; "
-        output += "adjacency matrix:\n" + str(self._adjacency)
-        return output
 
     def __eq__(self, other) -> bool:
         r"""
@@ -634,17 +624,14 @@ class Quiver(Element):
         The support is the set {i in Q_0 | d_i > 0}.::
 
             sage: from quiver import *
-            sage: Q = ThreeVertexQuiver(2, 3, 4); Q
-            An acyclic 3-vertex quiver; adjacency matrix:
+            sage: Q = ThreeVertexQuiver(2, 3, 4); Q.adjacency_matrix()
             [0 2 3]
             [0 0 4]
             [0 0 0]
-            sage: Q.full_subquiver([1, 2])
-            A quiver with adjacency matrix:
+            sage: Q.full_subquiver([1, 2]).adjacency_matrix()
             [0 2]
             [0 0]
-            sage: Q.full_subquiver([1, 3])
-            A quiver with adjacency matrix:
+            sage: Q.full_subquiver([1, 3]).adjacency_matrix()
             [0 3]
             [0 0]
 
