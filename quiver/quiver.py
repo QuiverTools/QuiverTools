@@ -345,7 +345,7 @@ class Quiver(Element):
 
         - ``x``: a list of integers
 
-        OUTPUT: a Sage vector if `x` is an element of `\mathbb{Z}Q_0`, otherwise raises a ValueError
+        OUTPUT: a Sage vector if `x` is an element of `\mathbb{Z}Q_0`
 
         EXAMPLES:
 
@@ -359,6 +359,7 @@ class Quiver(Element):
             Traceback (most recent call last):
             ...
             ValueError: The input is not an element of `\mathbb{Z}Q_0`.
+
         """
 
         x = vector(x)
@@ -372,9 +373,21 @@ class Quiver(Element):
     """
 
     def adjacency_matrix(self):
-        r"""Returns the adjacency matrix of the quiver.
+        r"""
+        Returns the adjacency matrix of the quiver.
 
-        OUTPUT: A square matrix M whose entry M[i,j] is the number of arrows from the vertex i to the vertex j.
+        OUTPUT: The square matrix `M` whose entry `M[i,j]` is the number of arrows
+        from the vertex `i` to the vertex `j`
+
+        EXAMPLES::
+
+        The adjacency matrix of a quiver construct from an adjacency matrix::
+
+            sage: from quiver import *
+            sage: M = matrix([[0, 3], [0, 0]])
+            sage: M == Quiver(M).adjacency_matrix()
+            True
+
         """
         return self.__adjacency
 
