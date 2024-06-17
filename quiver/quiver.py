@@ -420,9 +420,17 @@ class Quiver(Element):
         return self.adjacency_matrix().nrows()
 
     def number_of_arrows(self):
-        r"""Returns the number of arrows that the quiver has.
+        r"""Returns the number of arrows
 
-        OUTPUT: The number of arrows as an Int.
+        OUTPUT: the number of arrows
+
+        EXAMPLES:
+
+        There are 7 vertices in this 3-vertex quiver::
+
+            sage: from quiver import *
+            sage: ThreeVertexQuiver(1, 2, 4).number_of_arrows()
+            7
 
         """
         thin = self.thin_dimension_vector()
