@@ -214,11 +214,11 @@ class Quiver(Element):
         The output of `Quiver.repr` is that of `Quiver.get_custom_name` if it is set,
         else it is the default specifying the number of vertices and arrows.
 
-        OUTPUT: a basic string description of the quiver
+        OUTPUT: a basic description of the quiver
 
         EXAMPLES:
 
-        A basic quiver::
+        The 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = Quiver.from_string("1---2"); Q
@@ -244,6 +244,31 @@ class Quiver(Element):
         return self.__repr__()
 
     def str(self) -> str:
+        r"""
+        Full description of the quiver
+
+        This combines the output of :meth:`Quiver.repr` with the adjacency matrix.
+
+        OUTPUT: a complete description of the quiver
+
+        EXAMPLES::
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = Quiver.from_string("1---2"); print(Q)
+            a quiver with 2 vertices and 3 arrows
+            adjacency matrix:
+            [0 3]
+            [0 0]
+            sage: Q.rename("3-Kronecker quiver"); print(Q)
+            3-Kronecker quiver
+            adjacency matrix:
+            [0 3]
+            [0 0]
+
+        """
+
         return self.__str__()
 
     def __eq__(self, other) -> bool:
