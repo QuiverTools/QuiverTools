@@ -98,7 +98,7 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``M`` -- arrows for the quiver, either as an adjacency matrix or as a comma-separated list of chains of the form "i-j-k-...".
+        - ``M`` -- adjacency matrix of the quiver
 
         - ``name`` -- optional name for the quiver
 
