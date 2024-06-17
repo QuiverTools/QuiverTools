@@ -19,6 +19,58 @@ class Quiver:
     def __init__(self, M, name=None):
         r"""Constructor for a quiver.
 
+        This takes an adjacency matrix as input.
+        For other constructions, see
+
+        - meth:`Quiver.from_string`
+
+        INPUT:
+
+        - ``M`` -- adjacency matrix of the quiver
+
+        - ``name`` -- optional name for the quiver
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = Quiver([[0, 3], [0, 0]]); Q
+            A quiver with adjacency matrix:
+            [0 3]
+            [0 0]
+
+        A Dynkin quiver of type A_3::
+
+            sage: Q = Quiver.from_string("1-2-3"); Q
+            A quiver with adjacency matrix:
+            [0 1 0]
+            [0 0 1]
+            [0 0 0]
+
+        A triangle-shaped quiver::
+
+            sage: Q = Quiver.from_string("1-2-3, 1-3"); Q
+            A quiver with adjacency matrix:
+            [0 1 1]
+            [0 0 1]
+            [0 0 0]
+
+        """
+        M = matrix(M)
+
+        assert M.is_square()
+        assert all(a >= 0 for a in M.list())
+
+        self._adjacency = M
+        self._name = name
+        # TODO fix this
+        self.rename(name)
+
+    @classmethod
+    def from_matrix(cls, M, name=None):
+        r"""Construct a quiver from its adjacency matrix
+
         INPUT:
 
         - ``M`` -- arrows for the quiver, either as an adjacency matrix or as a comma-separated list of chains of the form "i-j-k-...".
@@ -30,53 +82,90 @@ class Quiver:
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q = Quiver(matrix([[0, 3], [0, 0]])); Q
+            sage: Q = Quiver.from_matrix([[0, 3], [0, 0]]); Q
             A quiver with adjacency matrix:
             [0 3]
             [0 0]
 
-        A Dynkin quiver of type A_3::
+        """
+        return cls(M, name)
 
-            sage: T = Quiver(["1-2-3"]); T
-            A quiver with adjacency matrix:
-            [0 1 0]
+    @classmethod
+    def from_string(cls, Q: str, name=None):
+        r"""Construct a quiver from a comma-separated list of chains of the form "i-j-k-...
+
+        You specify an arrow from `i` to `j` by writing `i-j`.
+        A multiple arrow is specified by repeating the `i`, so that `1--2` is the Kronecker quiver.
+        If you write `i-j-k` then you have 1 arrow from `i` to `j` and one from `j` to `k`.
+        The full quiver is specified by concatenating (multiple) arrows by commas.
+
+        INPUT:
+
+        - ``Q`` -- string; a string of the format described above giving a quiver
+
+        - ``name`` -- optional name for the quiver
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver defined in two different ways::
+
+            sage: from quiver import *
+            sage: Quiver.from_matrix([[0, 3], [0, 0]]) == Quiver.from_string("1---2")
+            True
+
+        A more complicated example::
+
+            sage: Quiver.from_string("1--2-3,1---3,3-1").adjacency_matrix()
+            [0 2 3]
             [0 0 1]
-            [0 0 0]
-            sage: T = Quiver("1-2-3, 1-3"); T
-            A quiver with adjacency matrix:
-            [0 1 1]
-            [0 0 1]
-            [0 0 0]
+            [1 0 0]
+
+        The actual numbers we use don't matter::
+
+            sage: from quiver import *
+            sage: Quiver.from_matrix([[0, 3], [0, 0]]) == Quiver.from_string("12---23")
+            True
 
         """
-        if isinstance(M, str):
-            arrows = [[int(v) for v in chain.split("-")] for chain in M.split(",")]
-            n = max(max(chain) for chain in arrows)
+        # remove all whitespace from the string
+        Q = "".join(Q.split())
 
-            out = Matrix([[0] * n for i in range(n)])
-            for chain in arrows:
-                for i in range(len(chain) - 1):
-                    out[chain[i] - 1, chain[i + 1] - 1] += 1
-            self._adjacency = out
-        elif isinstance(M, list):
-            arrows = [[int(v) for v in chain.split("-")] for chain in M]
-            n = max(max(chain) for chain in arrows)
+        # determine the vertices used in the string
+        vertices = list(
+            set(
+                [
+                    int(vertex)
+                    for chain in Q.split(",")
+                    for vertex in chain.split("-")
+                    if vertex
+                ]
+            )
+        )
 
-            out = Matrix([[0] * n for i in range(n)])
-            for chain in arrows:
-                for i in range(len(chain) - 1):
-                    out[chain[i] - 1, chain[i + 1] - 1] += 1
+        # adjacency matrix
+        M = zero_matrix(len(vertices))
 
-            self._adjacency = out
-        # we assume it is a matrix and convert it to one
-        else:
-            M = matrix(M)
+        for chain in Q.split(","):
+            pieces = chain.split("-")
 
-            assert M.is_square()
-            assert all(a >= 0 for a in M.list())
+            source = vertices.index(int(pieces[0]))
+            number = 1
 
-            self._adjacency = M
-        self._name = name
+            for piece in pieces[1:]:
+                # if the string is empty we increase the number of arrows counter
+                if not piece:
+                    number += 1
+                # if the string is non-empty we treat it as an integer
+                # this means we add the appropriate number of arrows
+                # and make the target the source
+                if piece:
+                    target = vertices.index(int(piece))
+                    M[source, target] += number
+
+                    number = 1
+                    source, target = target, None
+
+        return cls(M, name)
 
     def __repr__(self):
         # TODO this should be implemented following Sage's methodology
