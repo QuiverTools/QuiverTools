@@ -391,17 +391,24 @@ class Quiver(Element):
         """
         return self.__adjacency
 
-    # TODO is there a good reason to call this underlying_graph, and not just graph?
-    def underlying_graph(self):
-        r"""Returns the (necessarily symmetric) adjacency matrix of the underlying graph of the quiver.
+    def graph(self):
+        r"""
+        Return the underlying graph of the quiver
 
-        OUTPUT: A square, symmetric matrix M whose entry M[i,j] = M[j,i] is the number of edges between the vertices i and j.
+        OUTPUT: a DiGraph object
+
+        EXAMPLES:
+
+        The underlying graph of the quiver from a directed graph is that graph::
+
+            sage: from quiver import *
+            sage: G = DiGraph(matrix([[0, 3], [0, 0]]))
+            sage: G == Quiver.from_digraph(G).graph()
+            True
+
         """
-        return (
-            self.adjacency_matrix()
-            + self.adjacency_matrix().transpose()
-            - diagonal_matrix(self.adjacency_matrix().diagonal())
-        )
+
+        return DiGraph(self.adjacency_matrix())
 
     def number_of_vertices(self):
         r"""Returns the number of vertices
@@ -507,18 +514,8 @@ class Quiver(Element):
             sage: discA10.is_connected()
             False
         """
-        # inefficient but functioning method. To improve?
-        # more efficient algorithm: scan the graph in depth and list all reachable vertices.
-        paths = self.underlying_graph()
-        for i in range(2, self.number_of_vertices()):  # -1 ?
-            # add all paths of length i
-            paths += paths * self.underlying_graph()
-        # if every couple of vertices is connected (ij \neq 0 or ji \neq 0) then true, otherwise false.
-        for i in range(self.number_of_vertices()):
-            for j in range(self.number_of_vertices()):
-                if i != j and paths[i, j] == 0 and paths[j, i] == 0:
-                    return False
-        return True
+
+        return self.graph().is_connected()
 
     """
     Some graph-theoretic properties of the quiver
