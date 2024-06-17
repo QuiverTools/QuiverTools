@@ -1,9 +1,13 @@
 # from sage.matrix.constructor import matrix
 from concurrent.futures.process import _threads_wakeups
+
+# TODO don't do this
 from sage.all import *
 
+from sage.structure.element import Element
 
-class Quiver:
+
+class Quiver(Element):
     # TODO this explanation is about implementation details, which don't matter
     # it should be possible to also create a quiver from a DiGraph
     # if so: things like indegree should explicitly refer to the vertices of the graph (and not 1, ..., n)
