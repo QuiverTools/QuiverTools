@@ -419,9 +419,41 @@ def CyclicQuiver(n):
 
 
 def BipartiteQuiver(m, n):
-    # TODO implement this
-    # m is number of sources, n is number of sinks
-    raise NotImplementedError()
+    r"""
+    Return the bipartite quiver with `m` sources and `n` sinks
+
+    This is the quiver with `m+n` vertices, having 1 arrow from each of the first `m` vertices
+    to the each of the last `n` vertices.
+
+    INPUT:
+
+    - ``m`` -- non-negative integer; number of sources
+
+    - ``n`` -- non-negative integer; number of sinks
+
+    OUTPUT: bipartite quiver with `m` sources and `n` sinks
+
+    EXAMPLES:
+
+    When `m=n=1` we get the `\mathrm{A}_2` quiver::
+
+        sage: from quiver import *
+        sage: BipartiteQuiver(1, 1) == DynkinQuiver("A2")
+        True
+
+    When `m=2` and `n=1` we get a 3-vertex quiver::
+
+        sage: BipartiteQuiver(2, 1) == ThreeVertexQuiver(0, 1, 1)
+        True
+
+    """
+
+    M = zero_matrix(m + n)
+    for i in range(m):
+        for j in range(n):
+            M[i, m + j] = 1
+
+    return Quiver(M, "bipartite quiver on {} sources and {} sinks".format(m, n))
 
 
 # Sampling and testing methods
