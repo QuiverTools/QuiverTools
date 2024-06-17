@@ -864,37 +864,35 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: d = vector([1,1])
-            sage: e = vector([2,1])
-            sage: f = vector([2,2])
-            sage: Q.division_order(d,e)
+            sage: d = [1, 1]
+            sage: e = [2, 1]
+            sage: f = [2, 2]
+            sage: Q.division_order(d, e)
             True
-            sage: Q.division_order(e,d)
+            sage: Q.division_order(e, d)
             False
-            sage: Q.division_order(d,f)
+            sage: Q.division_order(d, f)
             False
-            sage: Q.division_order(f,d)
+            sage: Q.division_order(f, d)
             False
-            sage: Q.division_order(e,f)
+            sage: Q.division_order(e, f)
             False
-            sage: Q.division_order(f,e)
+            sage: Q.division_order(f, e)
             True
 
         Order on some dimension vectors for a 3-vertex quiver::
 
-            sage: Q = ThreeVertexQuiver(2,2,2)
-            sage: Q
-            An acyclic 3-vertex quiver; adjacency matrix:
-            [0 2 2]
-            [0 0 2]
-            [0 0 0]
-            sage: d = vector([1,1,1])
-            sage: e = vector([1,2,1])
-            sage: Q.division_order(d,e)
+            sage: Q = ThreeVertexQuiver(2, 2, 2)
+            sage: d = [1, 1, 1]
+            sage: e = [1, 2, 1]
+            sage: Q.division_order(d, e)
             False
-            sage: Q.division_order(e,d)
+            sage: Q.division_order(e, d)
             False
         """
+
+        d = self.__coerce_dimension_vector(d)
+        e = self.__coerce_dimension_vector(e)
 
         n = self.number_of_vertices()
         assert (d.length() == n) and (e.length() == n)
