@@ -62,17 +62,10 @@ class Quiver(Element):
         assert M.is_square()
         assert all(a >= 0 for a in M.list())
 
-        self._adjacency = M
+        self.__adjacency = M
 
-        # TODO don't have this
-        self._name = name
-
-        if name:
-            self.rename(name)
-        else:
-            self.rename(
-                "a quiver with {} vertices and {} arrows".format(M.nrows(), sum(sum(M)))
-            )
+        # if name is None this doesn't do anything
+        self.rename(name)
 
     @classmethod
     def from_matrix(cls, M, name=None):
@@ -173,6 +166,14 @@ class Quiver(Element):
 
         return cls(M, name)
 
+    def __repr__(self) -> str:
+        if self.get_custom_name():
+            return self.get_custom_name()
+        else:
+            return "a quiver with {} vertices and {} arrows".format(
+                self.adjacency_matrix().nrows(), sum(sum(self.adjacency_matrix()))
+            )
+
     def __eq__(self, other) -> bool:
         r"""
         Checks for equality of quivers.
@@ -269,7 +270,7 @@ class Quiver(Element):
 
         OUTPUT: A square matrix M whose entry M[i,j] is the number of arrows from the vertex i to the vertex j.
         """
-        return self._adjacency
+        return self.__adjacency
 
     # TODO is there a good reason to call this underlying_graph, and not just graph?
     def underlying_graph(self):
@@ -414,8 +415,10 @@ class Quiver(Element):
 
         """
 
+        # TODO no: Sage counts from 0 to n-1, so should we!
         assert (j > 0) and (j <= self.number_of_vertices())
-        return sum(self._adjacency.column(j - 1))
+
+        return sum(self.__adjacency.column(j - 1))
 
     def outdegree(self, i):
         r"""Returns the outdegree of a vertex.
@@ -442,8 +445,10 @@ class Quiver(Element):
 
         """
 
+        # TODO no: Sage counts from 0 to n-1, so should we!
         assert (i > 0) and (i <= self.number_of_vertices())
-        return sum(self._adjacency.row(i - 1))
+
+        return sum(self.__adjacency.row(i - 1))
 
     def is_source(self, i):
         """Checks if i is a source of the quiver, i.e. if there are no incoming arrows into i.
@@ -547,8 +552,8 @@ class Quiver(Element):
         """
         A = self.adjacency_matrix().transpose()
 
-        if self._name != None:
-            name = "Opposite of " + self._name
+        if self.get_custom_name():
+            name = "opposite of " + self.get_custom_name()
         else:
             name = None
 
@@ -557,8 +562,8 @@ class Quiver(Element):
     def double_quiver(self):
         """The adjacency matrix of the double of a quiver is the sum of the adjacency matrix of the original quiver and its transpose."""
         A = self.adjacency_matrix() + self.adjacency_matrix().transpose()
-        if self._name != None:
-            name = "Double of " + self._name
+        if self.get_custom_name() != None:
+            name = "double of " + self.get_custom_name()
         else:
             name = None
         return Quiver(A, name)

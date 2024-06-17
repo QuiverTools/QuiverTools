@@ -13,16 +13,14 @@ def disjoint_union(Q1, Q2):
         sage: Q2 = GeneralizedKroneckerQuiver(4)
         sage: Q = disjoint_union(Q1,Q2)
         sage: Q
-        Disjoint union of 3-Kronecker quiver and 4-Kronecker quiver; adjacency matrix:
-        [0 3 0 0]
-        [0 0 0 0]
-        [0 0 0 4]
-        [0 0 0 0]
+        disjoint union of 3-Kronecker quiver and 4-Kronecker quiver
 
     """
 
-    if (Q1._name != None) and (Q2._name != None):
-        name = "Disjoint union of " + Q1._name + " and " + Q2._name
+    if Q1.get_custom_name() and Q2.get_custom_name():
+        name = (
+            "disjoint union of " + Q1.get_custom_name() + " and " + Q2.get_custom_name()
+        )
     else:
         name = None
 
