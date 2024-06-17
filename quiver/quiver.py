@@ -275,8 +275,8 @@ class Quiver(Element):
         r"""
         Checks for equality of quivers.
 
-        Equality here refers to equality of adjacency matrices, but disregarding the name
-        of the quiver.
+        Equality here refers to equality of adjacency matrices,
+        but disregarding the name of the quiver.
 
         INPUT:
 
@@ -296,14 +296,18 @@ class Quiver(Element):
 
         return self.adjacency_matrix() == other.adjacency_matrix()
 
-    def __coerce_dimension_vector(self, d):
-        r"""Coerces d to be a dimension vector of the quiver.
+    def _coerce_dimension_vector(self, d):
+        r"""
+        Coerces `d` to be a dimension vector of the quiver
+
+        It raises a `ValueError` if it is not a list of positive integers of length
+        the number of vertices in the quiver.
 
         INPUT:
 
-        - ``d``: vector of Ints
+        - ``d``: a list of positive integers
 
-        OUTPUT: Sage vector if d is a dimension vector, otherwise raises a ValueError
+        OUTPUT: a Sage vector if `d` is a dimension vector
 
         EXAMPLES:
 
@@ -311,32 +315,37 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q._Quiver__coerce_dimension_vector([1, 2])
+            sage: Q._coerce_dimension_vector([1, 2])
             (1, 2)
-            sage: Q._Quiver__coerce_dimension_vector([1, 2, 3, 4])
+            sage: Q._coerce_dimension_vector([1, 2, 3, 4])
             Traceback (most recent call last):
             ...
-            ValueError: The input is not an element of `\mathbb{Z}A_0`.
-            sage: Q._Quiver__coerce_dimension_vector([1, -3])
+            ValueError: The input is not an element of `\mathbb{Z}Q_0`.
+            sage: Q._coerce_dimension_vector([1, -3])
             Traceback (most recent call last):
             ...
             ValueError: The input is not a dimension vector of the quiver.
+
         """
 
-        d = self.__coerce_vector(d)
+        d = self._coerce_vector(d)
         if all(di >= 0 for di in d):
             return d
         else:
             raise ValueError("The input is not a dimension vector of the quiver.")
 
-    def __coerce_vector(self, x):
-        r"""Coerces x to be a vector in `\mathbb{Z}Q_0`.
+    def _coerce_vector(self, x):
+        r"""
+        Coerces `x` to be a vector in `\mathbb{Z}Q_0`.
+
+        It raises a `ValueError` if it is not a list of integers of length the number
+        of vertices in the quiver.
 
         INPUT:
 
-        - ``x``: vector of Ints
+        - ``x``: a list of integers
 
-        OUTPUT: Sage vector if x is an element of `\mathbb{Z}Q_0`, otherwise raises a ValueError
+        OUTPUT: a Sage vector if `x` is an element of `\mathbb{Z}Q_0`, otherwise raises a ValueError
 
         EXAMPLES:
 
@@ -344,19 +353,19 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q._Quiver__coerce_vector([-1, 2])
+            sage: Q._coerce_vector([-1, 2])
             (-1, 2)
-            sage: Q._Quiver__coerce_vector([1, 2, 3, 4])
+            sage: Q._coerce_vector([1, 2, 3, 4])
             Traceback (most recent call last):
             ...
-            ValueError: The input is not an element of `\mathbb{Z}A_0`.
+            ValueError: The input is not an element of `\mathbb{Z}Q_0`.
         """
 
         x = vector(x)
         if x.length() == self.number_of_vertices():
             return x
         else:
-            raise ValueError("The input is not an element of `\mathbb{Z}A_0`.")
+            raise ValueError("The input is not an element of `\mathbb{Z}Q_0`.")
 
     """
     Basic graph-theoretic properties of the quiver
@@ -790,7 +799,7 @@ class Quiver(Element):
         """
 
         """A root is a non-zero vector in Z^n such that the Tits form of x is <= 1."""
-        x = self.__coerce_vector(x)
+        x = self._coerce_vector(x)
 
         # TODO any check like e == zero_vector should really be replaced by a all(ei == 0 for ei in e) for performance
         return x != self.zero_vector() and self.tits_form(x) <= 1
@@ -805,7 +814,7 @@ class Quiver(Element):
         """
 
         """A root is called real if its Tits form equals 1."""
-        x = self.__coerce_vector(x)
+        x = self._coerce_vector(x)
         return self.tits_form(x) == 1
 
     def is_imaginary_root(self, x):
@@ -818,7 +827,7 @@ class Quiver(Element):
         """
 
         """A root is called imaginary if its Tits form is non-positive."""
-        x = self.__coerce_vector(x)
+        x = self._coerce_vector(x)
         return x != self.zero_vector() and self.tits_form(x) <= 0
 
     def is_schur_root(self, d):
@@ -856,7 +865,7 @@ class Quiver(Element):
 
         """
 
-        d = self.__coerce_dimension_vector(d)
+        d = self._coerce_dimension_vector(d)
 
         theta = self.canonical_stability_parameter(d)
         return self.has_stable_representation(d, theta)
@@ -888,7 +897,7 @@ class Quiver(Element):
 
         """
 
-        d = self.__coerce_dimension_vector(d)
+        d = self._coerce_dimension_vector(d)
         supp = list(filter(lambda i: d[i] > 0, range(self.number_of_vertices())))
         return [i + 1 for i in supp]
 
@@ -921,7 +930,7 @@ class Quiver(Element):
 
         """
 
-        d = self.__coerce_dimension_vector(d)
+        d = self._coerce_dimension_vector(d)
 
         # check if `\langle d,e_i\rangle + \langle e_i,d\rangle \leq 0`
         # for all vertices `i\in Q_0`
@@ -980,8 +989,8 @@ class Quiver(Element):
             False
         """
 
-        d = self.__coerce_dimension_vector(d)
-        e = self.__coerce_dimension_vector(e)
+        d = self._coerce_dimension_vector(d)
+        e = self._coerce_dimension_vector(e)
 
         n = self.number_of_vertices()
         assert (d.length() == n) and (e.length() == n)
@@ -1157,8 +1166,8 @@ class Quiver(Element):
 
         """
 
-        d = self.__coerce_dimension_vector(d)
-        e = self.__coerce_dimension_vector(e)
+        d = self._coerce_dimension_vector(d)
+        e = self._coerce_dimension_vector(e)
 
         if e == d:
             return True
@@ -1285,7 +1294,7 @@ class Quiver(Element):
 
         """
 
-        d = self.__coerce_dimension_vector(d)
+        d = self._coerce_dimension_vector(d)
 
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
         N = len(genSubdims)
@@ -1328,8 +1337,8 @@ class Quiver(Element):
 
         """
 
-        a = self.__coerce_dimension_vector(a)
-        b = self.__coerce_dimension_vector(b)
+        a = self._coerce_dimension_vector(a)
+        b = self._coerce_dimension_vector(b)
         genSubdims = self.all_generic_subdimension_vectors(a)
         return max([-self.euler_form(c, b) for c in genSubdims])
 
@@ -1369,8 +1378,8 @@ class Quiver(Element):
 
         """
 
-        a = self.__coerce_dimension_vector(a)
-        b = self.__coerce_dimension_vector(b)
+        a = self._coerce_dimension_vector(a)
+        b = self._coerce_dimension_vector(b)
         return self.euler_form(a, b) + self.generic_ext(a, b)
 
     # TODO remove
@@ -1395,7 +1404,7 @@ class Quiver(Element):
 
     def canonical_stability_parameter(self, d):
         """The canonical stability parameter is given by <d,_> - <_,d>"""
-        d = self.__coerce_dimension_vector(d)
+        d = self._coerce_dimension_vector(d)
 
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
@@ -1446,7 +1455,7 @@ class Quiver(Element):
 
         """
 
-        d = self.__coerce_dimension_vector(d)
+        d = self._coerce_dimension_vector(d)
 
         genSubdims = self.all_generic_subdimension_vectors(d)
         genSubdims = list(filter(lambda e: e != self.zero_vector(), genSubdims))
@@ -1534,7 +1543,7 @@ class Quiver(Element):
         theta = vector(theta)
         assert theta.length() == self.number_of_vertices()
 
-        d = self.__coerce_dimension_vector(d)
+        d = self._coerce_dimension_vector(d)
 
         # TODO implement this
         # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
@@ -1827,7 +1836,7 @@ class Quiver(Element):
 
             """
 
-            d = self.__coerce_dimension_vector(d)
+            d = self._coerce_dimension_vector(d)
 
             genSubdims = self.all_generic_subdimension_vectors(d)
             genSubdims = list(
@@ -1886,7 +1895,7 @@ class Quiver(Element):
         OUTPUT: dimension as Int
         """
 
-        d = self.__coerce_dimension_vector(d)
+        d = self._coerce_dimension_vector(d)
 
         if self.is_acyclic():
             return d.transpose() * self.adjacency_matrix() * d
