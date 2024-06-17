@@ -144,7 +144,10 @@ def LoopQuiver(m: int):
         :func:`GeneralizedJordanQuiver`
 
     """
-    return GeneralizedJordanQuiver(m, name="{}-loop quiver".format(m))
+    Q = GeneralizedJordanQuiver(m)
+    Q.rename("{}-loop quiver".format(m))
+
+    return Q
 
 
 def JordanQuiver(m: int = 1):
