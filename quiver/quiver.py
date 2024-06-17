@@ -77,7 +77,7 @@ class Quiver(Element):
 
         - ``name`` -- optional name for the quiver
 
-        OUTPUT: The quiver
+        OUTPUT: the quiver
 
         EXAMPLES:
 
@@ -102,6 +102,8 @@ class Quiver(Element):
 
         - ``name`` -- optional name for the quiver
 
+        OUTPUT: the quiver
+
         EXAMPLES:
 
         The 3-Kronecker quiver::
@@ -122,6 +124,8 @@ class Quiver(Element):
         A multiple arrow is specified by repeating the `i`, so that `1--2` is the Kronecker quiver.
         If you write `i-j-k` then you have 1 arrow from `i` to `j` and one from `j` to `k`.
         The full quiver is specified by concatenating (multiple) arrows by commas.
+
+        OUTPUT: the quiver
 
         INPUT:
 
@@ -198,6 +202,49 @@ class Quiver(Element):
             return "a quiver with {} vertices and {} arrows".format(
                 self.adjacency_matrix().nrows(), sum(sum(self.adjacency_matrix()))
             )
+
+    def __str__(self) -> str:
+        return "{}\nadjacency matrix:\n{}".format(self.repr(), self.adjacency_matrix())
+
+    def repr(self) -> str:
+        r"""
+        Basic description of the quiver
+
+        To override the output, one uses `Quiver.rename` from the `Element` class.
+        The output of `Quiver.repr` is that of `Quiver.get_custom_name` if it is set,
+        else it is the default specifying the number of vertices and arrows.
+
+        OUTPUT: a basic string description of the quiver
+
+        EXAMPLES:
+
+        A basic quiver::
+
+            sage: from quiver import *
+            sage: Q = Quiver.from_string("1---2"); Q
+            a quiver with 2 vertices and 3 arrows
+            sage: Q.rename("3-Kronecker quiver"); Q
+            3-Kronecker quiver
+
+        Renaming and resetting the name::
+
+            sage: Q = Quiver.from_string("1---2")
+            sage: Q.get_custom_name()
+
+            sage: Q.rename("3-Kronecker quiver")
+            sage: Q.get_custom_name()
+            '3-Kronecker quiver'
+            sage: Q.reset_name()
+            sage: Q.get_custom_name()
+
+            sage: Q
+            a quiver with 2 vertices and 3 arrows
+
+        """
+        return self.__repr__()
+
+    def str(self) -> str:
+        return self.__str__()
 
     def __eq__(self, other) -> bool:
         r"""
