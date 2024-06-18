@@ -71,6 +71,9 @@ class Quiver(Element):
         # if name is None this doesn't do anything
         self.rename(name)
 
+        # for caching purposes
+        self.__M = self.__G.adjacency_matrix()
+
     @classmethod
     def from_digraph(cls, G, name=None):
         r"""Construct a quiver a graph
@@ -388,7 +391,7 @@ class Quiver(Element):
             True
 
         """
-        return self.graph().adjacency_matrix()
+        return self.__M
 
     def graph(self):
         r"""
