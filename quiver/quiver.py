@@ -22,17 +22,20 @@ class Quiver(Element):
     name = None
     """
 
-    def __init__(self, M, name=None):
+    def __init__(self, G, name=None):
         r"""Constructor for a quiver.
 
-        This takes an adjacency matrix as input.
+        This takes a directed graph as input. If it is not a DiGraph instance,
+        we interpret it as an adjacency matrix.
         For other constructions, see
 
+        - meth:`Quiver.from_digraph`
+        - meth:`Quiver.from_matrix`
         - meth:`Quiver.from_string`
 
         INPUT:
 
-        - ``M`` -- adjacency matrix of the quiver
+        - ``G`` -- directed graph
 
         - ``name`` -- optional name for the quiver
 
@@ -59,12 +62,11 @@ class Quiver(Element):
             [0 0 0]
 
         """
-        M = matrix(M)
 
-        assert M.is_square()
-        assert all(a >= 0 for a in M.list())
-
-        self.__adjacency = M
+        if isinstance(G, DiGraph):
+            self.__G = G
+        else:
+            self.__G = DiGraph(matrix(G))
 
         # if name is None this doesn't do anything
         self.rename(name)
@@ -115,7 +117,7 @@ class Quiver(Element):
             [0 0]
 
         """
-        return cls(M, name)
+        return cls(DiGraph(matrix(M)), name)
 
     @classmethod
     def from_string(cls, Q: str, name=None):
@@ -194,7 +196,7 @@ class Quiver(Element):
                     number = 1
                     source, target = target, None
 
-        return cls(M, name)
+        return cls.from_matrix(M, name)
 
     def __repr__(self) -> str:
         if self.get_custom_name():
@@ -386,7 +388,7 @@ class Quiver(Element):
             True
 
         """
-        return self.__adjacency
+        return self.graph().adjacency_matrix()
 
     def graph(self):
         r"""
@@ -404,7 +406,7 @@ class Quiver(Element):
             True
 
         """
-        return DiGraph(self.adjacency_matrix())
+        return self.__G
 
     def number_of_vertices(self):
         r"""Returns the number of vertices
@@ -544,7 +546,7 @@ class Quiver(Element):
         # TODO no: Sage counts from 0 to n-1, so should we!
         assert (j > 0) and (j <= self.number_of_vertices())
 
-        return sum(self.__adjacency.column(j - 1))
+        return sum(self.adjacency_matrix().column(j - 1))
 
     def outdegree(self, i):
         r"""Returns the outdegree of a vertex.
@@ -573,7 +575,7 @@ class Quiver(Element):
         # TODO no: Sage counts from 0 to n-1, so should we!
         assert (i > 0) and (i <= self.number_of_vertices())
 
-        return sum(self.__adjacency.row(i - 1))
+        return sum(self.adjacency_matrix().row(i - 1))
 
     def is_source(self, i):
         """Checks if i is a source of the quiver, i.e. if there are no incoming arrows into i.
