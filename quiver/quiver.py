@@ -397,7 +397,7 @@ class Quiver(Element):
         r"""
         Return the underlying graph of the quiver
 
-        OUTPUT: a DiGraph object
+        OUTPUT: the underlying quiver as a DiGraph object
 
         EXAMPLES:
 
@@ -488,18 +488,20 @@ class Quiver(Element):
     Some graph-theoretic properties of the quiver
     """
 
-    def indegree(self, j):
-        r"""Returns the indegree of a vertex.
+    def in_degree(self, i):
+        r"""Returns the in-degree of a vertex.
+
+        The parameter `i` must be an element of the vertices of the underlying graph.
+        If constructed from a matrix or string, one has that `i` can go from `0` to `n-1`
+        where `n` is the number of vertices in the graph.
+
+        The indegree of `i` is the number of incoming arrows at `i`.
 
         INPUT:
-        ``j`` -- An Int between 1 and self.number_of_vertices()
 
-        OUTPUT:
-        The indegree as an Int
+        ``i`` -- a vertex of the underlying graph
 
-        The indegree of j is the number of incoming arrows into j.
-        indeg(j) = sum_i a_{ij} where (a_{ij}) is the adjacency matrix.
-        # TODO Question: Should we number the vertices 1,...,n or 0,...,n-1?
+        OUTPUT: The indegree of the vertex `i`
 
         EXAMPLES:
 
@@ -507,28 +509,26 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.indegree(1)
+            sage: Q.in_degree(0)
             0
-            sage: Q.indegree(2)
+            sage: Q.in_degree(1)
             3
 
         """
-        # TODO no: Sage counts from 0 to n-1, so should we!
-        assert (j > 0) and (j <= self.number_of_vertices())
+        return self.graph().in_degree(i)
 
-        return sum(self.adjacency_matrix().column(j - 1))
+    def out_degree(self, i):
+        r"""Returns the out-degree of a vertex.
 
-    def outdegree(self, i):
-        r"""Returns the outdegree of a vertex.
+        The parameter `i` must be an element of the vertices of the underlying graph.
+        If constructed from a matrix or string, one has that `i` can go from `0` to `n-1`
+        where `n` is the number of vertices in the graph.
 
-        INPUT:
-        ``i`` -- An Int between 1 and self.number_of_vertices()
+        The out-degree of `i` is the number of outgoing arrows at `i`.
 
-        OUTPUT:
-        The outdegree as an Int
+        ``i`` -- a vertex of the underlying graph
 
-        The outdegree of i is the number of outgoing arrows from i.
-        outdeg(i) = sum_j a_{ij} where (a_{ij}) is the adjacency matrix.
+        OUTPUT: The out-degree of the vertex `i`
 
         EXAMPLES:
 
@@ -536,36 +536,33 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.outdegree(1)
+            sage: Q.out_degree(0)
             3
-            sage: Q.outdegree(2)
+            sage: Q.out_degree(1)
             0
 
         """
-        # TODO no: Sage counts from 0 to n-1, so should we!
-        assert (i > 0) and (i <= self.number_of_vertices())
-
-        return sum(self.adjacency_matrix().row(i - 1))
+        return self.graph().out_degree(i)
 
     def is_source(self, i) -> bool:
-        """Checks if i is a source of the quiver, i.e. if there are no incoming arrows into i.
+        """Checks if `i` is a source of the quiver, i.e. if there are no incoming arrows at `i`.
 
-        EXAMPLES
+        EXAMPLES:
 
-        The n-Kronecker quiver has one source::
+        The 3-Kronecker quiver has one source::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.is_source(1)
+            sage: Q.is_source(0)
             True
-            sage: Q.is_source(2)
+            sage: Q.is_source(1)
             False
-        """
-        assert (i > 0) and (i <= self.number_of_vertices())
-        return self.indegree(i) == 0
 
-    def is_sink(self, j) -> bool:
-        """Checks if j is a sink of the quiver, i.e. if there are no outgoing arrows out of j.
+        """
+        return self.in_degree(i) == 0
+
+    def is_sink(self, i) -> bool:
+        """Checks if `i` is a sink of the quiver, i.e. if there are no outgoing arrows out of `i`.
 
         EXAMPLES
 
@@ -573,13 +570,13 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.is_sink(1)
+            sage: Q.is_sink(0)
             False
-            sage: Q.is_sink(2)
+            sage: Q.is_sink(1)
             True
+
         """
-        assert (j > 0) and (j <= self.number_of_vertices())
-        return self.outdegree(j) == 0
+        return self.out_degree(i) == 0
 
     """
     Basic representation-theoretical properties of the quiver
@@ -983,25 +980,22 @@ class Quiver(Element):
         # TODO isn't this redundant? coerce dimension vector already checks this
         assert (d.length() == n) and (e.length() == n)
 
+        # TODO instead of range(n) we need to iterate over the vertices!
+        # TODO indexing dimension vectors by vertices requires some additional care...
+        # TODO make this cleaner
         less = all(
-            [
-                d[i - 1] <= e[i - 1]
-                for i in list(filter(lambda i: self.is_source(i), range(1, n + 1)))
-            ]
+            [d[i] <= e[i] for i in list(filter(lambda i: self.is_source(i), range(n)))]
+        )
+        less = less and all(
+            [d[j] >= e[j] for j in list(filter(lambda j: self.is_sink(j), range(n)))]
         )
         less = less and all(
             [
-                d[j - 1] >= e[j - 1]
-                for j in list(filter(lambda j: self.is_sink(j), range(1, n + 1)))
-            ]
-        )
-        less = less and all(
-            [
-                d[k - 1] == e[k - 1]
+                d[k] == e[k]
                 for k in list(
                     filter(
                         lambda k: (not self.is_source(k)) and (not self.is_sink(k)),
-                        range(1, n + 1),
+                        range(n),
                     )
                 )
             ]
