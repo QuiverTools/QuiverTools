@@ -462,7 +462,6 @@ class Quiver(Element):
         """
         return self.graph().is_directed_acyclic()
 
-    # TODO some of the examples should really be tests (so they don't clutter the docs as much)
     def is_connected(self):
         r"""Returns whether the underlying graph of the quiver is connected or not.
 
@@ -473,54 +472,13 @@ class Quiver(Element):
         The n-Kronecker quivers are connected::
 
             sage: from quiver import *
-            sage: K = Quiver( matrix(  [[0, 4],
-            ....:                       [0, 0]]))
-            sage: K.is_connected()
-            True
-            sage: from quiver import *
-            sage: C1 = Quiver(matrix(  [[0,1],
-            ....:                       [1,0]]))
-            sage: C1.is_connected()
+            sage: KroneckerQuiver(4).is_connected()
             True
 
         The loop quivers are connected::
 
-            sage: from quiver import *
-            sage: L = Quiver(matrix([[3]]))
-            sage: L.is_connected()
+            sage: GeneralizedJordanQuiver(3).is_connected()
             True
-
-        The A_10 quiver is connected::
-
-            sage: from quiver import *
-            sage: A10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            ....:                           [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-            ....:                           [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-            ....:                           [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            ....:                           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-            ....:                           [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-            ....:                           [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-            ....:                           [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-            ....:                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            ....:                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]))
-            sage: A10.is_connected()
-            True
-
-        The A_10 quiver without one arrow is no longer connected::
-
-            sage: from quiver import *
-            sage: discA10 = Quiver(matrix(     [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            ....:                               [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-            ....:                               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-            ....:                               [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            ....:                               [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-            ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ....:                               [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-            ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-            ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            ....:                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]))
-            sage: discA10.is_connected()
-            False
         """
         return self.graph().is_connected()
 
