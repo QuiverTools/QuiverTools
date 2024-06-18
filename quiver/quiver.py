@@ -425,7 +425,7 @@ class Quiver(Element):
             3
 
         """
-        return self.adjacency_matrix().nrows()
+        return self.graph().order()
 
     def number_of_arrows(self):
         r"""Returns the number of arrows
@@ -441,8 +441,7 @@ class Quiver(Element):
             7
 
         """
-        thin = self.thin_dimension_vector()
-        return thin * self.adjacency_matrix() * thin
+        return self.graph().size()
 
     def is_acyclic(self):
         r"""Returns whether the quiver is acyclic.
