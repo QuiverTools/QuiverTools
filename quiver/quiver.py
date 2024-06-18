@@ -1,9 +1,11 @@
-# from sage.matrix.constructor import matrix
-from concurrent.futures.process import _threads_wakeups
-
-# TODO don't do this
-from sage.all import *
-
+from sage.arith.misc import gcd
+from sage.categories.cartesian_product import cartesian_product
+from sage.graphs.digraph import DiGraph
+from sage.graphs.graph import Graph
+from sage.matrix.constructor import matrix
+from sage.matrix.special import zero_matrix
+from sage.modules.free_module_element import vector, zero_vector
+from sage.rings.integer_ring import ZZ
 from sage.structure.element import Element
 
 
@@ -695,7 +697,7 @@ class Quiver(Element):
     def double_quiver(self):
         """The adjacency matrix of the double of a quiver is the sum of the adjacency matrix of the original quiver and its transpose."""
         A = self.adjacency_matrix() + self.adjacency_matrix().transpose()
-        if self.get_custom_name() != None:
+        if self.get_custom_name():
             name = "double of " + self.get_custom_name()
         else:
             name = None
@@ -1895,7 +1897,8 @@ class Quiver(Element):
             subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
             N = len(subdims)
 
-            idx_diff = lambda j, i: subdims.index(subdims[j] - subdims[i])
+            def idx_diff(j, i):
+                return subdims.index(subdims[j] - subdims[i])
 
             genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
 
