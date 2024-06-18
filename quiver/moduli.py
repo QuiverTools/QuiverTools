@@ -1,6 +1,35 @@
-from quiver import *
-from sage.combinat.permutation import *
+from quiver import Quiver
+
+# from quiver import GeneralizedKroneckerQuiver, KroneckerQuiver, LoopQuiver
+from quiver import (
+    all_subdimension_vectors,
+    deglex_key,
+    is_coprime_for_stability_parameter,
+    is_subdimension_vector,
+    slope,
+)
+
+from sage.arith.misc import bernoulli, factorial, gcd, xgcd
+from sage.categories.cartesian_product import cartesian_product
+from sage.combinat.partition import Partitions
+from sage.combinat.permutation import Permutations
+from sage.combinat.schubert_polynomial import SchubertPolynomialRing
+from sage.combinat.sf.sf import SymmetricFunctions
+from sage.matrix.constructor import matrix
+from sage.misc.misc_c import prod
+from sage.modules.free_module_element import vector
+from sage.rings.infinity import Infinity
+from sage.rings.integer_ring import ZZ
+from sage.rings.function_field.constructor import FunctionField
+from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
+from sage.rings.polynomial.term_order import TermOrder
+from sage.rings.quotient_ring import QuotientRing
+from sage.rings.rational_field import QQ
+from sage.structure.element import Element
+
 import copy
+
+from abc import ABC, abstractmethod
 
 
 """Defines how permutations are multiplied."""
@@ -27,9 +56,6 @@ Something like enumerating Harder-Narasimhan strata is then a method of QuiverMo
 Something like computing Betti numbers is then only implemented for QuiverModuliSpace.
 
 """
-
-
-from abc import ABC, abstractmethod
 
 
 class QuiverModuli(ABC):
@@ -193,8 +219,10 @@ class QuiverModuli(ABC):
             d, theta
         )
 
+        # TODO this helper function already appeared elsewhere?
         # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
-        idx_diff = lambda j, i: subdimensions.index(subdimensions[j] - subdimensions[i])
+        def idx_diff(j, i):
+            return subdimensions.index(subdimensions[j] - subdimensions[i])
 
         hn = [[[]] for j in range(N)]
 
@@ -448,20 +476,25 @@ class QuiverModuli(ABC):
             subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
             N = len(subdims)
             # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
-            slopeIndexes = list(
-                filter(
-                    lambda j: slope(subdims[j], theta, denominator=denominator)
-                    == slope(d, theta, denominator=denominator),
-                    range(1, N),
-                )
-            )
+            # TODO this is unused?
+            # slopeIndexes = list(
+            #    filter(
+            #        lambda j: slope(subdims[j], theta, denominator=denominator)
+            #        == slope(d, theta, denominator=denominator),
+            #        range(1, N),
+            #    )
+            # )
+
             # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
             # They're in deglex order by the way the helper function works.
             stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
                 d, theta, denominator=denominator
             )
+
             # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
-            idx_diff = lambda j, i: subdims.index(subdims[j] - subdims[i])
+            # TODO another time this one is used
+            def idx_diff(j, i):
+                return subdims.index(subdims[j] - subdims[i])
 
             # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
             partialLunaTypes = [[] for j in range(N)]
@@ -664,10 +697,9 @@ class QuiverModuli(ABC):
 
         """The codimension of the properly semistable locus is the minimal codimension of the inverse image of the non-stable Luna strata."""
 
-        Q, d = self._Q, self._d
         L = self.all_luna_types()
         # This is the stable Luna type; remove it if it occurs
-        dstable = [tuple([d, [1]])]
+        dstable = [tuple([self._d, [1]])]
         L = list(filter(lambda tau: tau != dstable, L))
         return min([self.__codimension_inverse_image_luna_stratum(tau) for tau in L])
 
@@ -771,10 +803,8 @@ class QuiverModuli(ABC):
 
         """
 
-        Q, d, theta = self._Q, self._d, self._theta
-
         # It's currently only possible with this distinction
-        if is_coprime_for_stability_parameter(d, theta):
+        if is_coprime_for_stability_parameter(self._d, self._theta):
             return self.codimension_unstable_locus() >= 2
         else:
             return (
@@ -942,28 +972,26 @@ class QuiverModuli(ABC):
 
         # TODO
         """
-        Q, d, theta = self._Q, self._d, self._theta
-        n = Q.number_of_vertices()
-        a = Q.adjacency_matrix()
+        n = self._Q.number_of_vertices()
 
-        if chernClasses == None:
+        if chernClasses is None:
             chernClasses = [
                 "x%s_%s" % (i, r)
-                for i in range(1, n + 1)
-                for r in range(1, d[i - 1] + 1)
+                for i in range(1, self._Q.number_of_vertices() + 1)
+                for r in range(1, self._d[i - 1] + 1)
             ]
-        if chernRoots == None:
+        if chernRoots is None:
             chernRoots = [
                 "t%s_%s" % (i, r)
-                for i in range(1, n + 1)
-                for r in range(1, d[i - 1] + 1)
+                for i in range(1, self._Q.number_of_vertices() + 1)
+                for r in range(1, self._d[i - 1] + 1)
             ]
 
         R = PolynomialRing(QQ, chernRoots)
 
         def generator(R, i, r):
             r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
-            return R.gen(r + sum([d[j] for j in range(i)]))
+            return R.gen(r + sum([self._d[j] for j in range(i)]))
 
         """Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T]).
         For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
@@ -972,9 +1000,10 @@ class QuiverModuli(ABC):
                 [
                     prod(
                         [
-                            (generator(R, j, s) - generator(R, i, r)) ** a[i, j]
+                            (generator(R, j, s) - generator(R, i, r))
+                            ** self._Q.adjacency_matrix()[i, j]
                             for r in range(e[i])
-                            for s in range(e[j], d[j])
+                            for s in range(e[j], self._d[j])
                         ]
                     )
                     for i in range(n)
@@ -997,20 +1026,20 @@ class QuiverModuli(ABC):
                     prod(
                         [
                             generator(R, i, l) - generator(R, i, k)
-                            for k in range(d[i])
-                            for l in range(k + 1, d[i])
+                            for k in range(self._d[i])
+                            for l in range(k + 1, self._d[i])
                         ]
                     )
-                    for i in range(n)
+                    for i in range(self._Q.number_of_vertices())
                 ]
             )
 
             """longest is the longest Weyl group element when regarding W as a subgroup of S_{sum d_i}"""
             longest = []
             r = 0
-            for i in range(n):
-                longest = longest + list(reversed(range(r + 1, r + d[i] + 1)))
-                r += d[i]
+            for i in range(self._Q.number_of_vertices()):
+                longest = longest + list(reversed(range(r + 1, r + self._d[i] + 1)))
+                r += self._d[i]
             W = Permutations(bruhat_smaller=longest)
 
             def antisymmetrization(f):
@@ -1025,8 +1054,11 @@ class QuiverModuli(ABC):
 
             """Schubert basis of A^*([R/T]) over A^*([R/G])"""
             X = SchubertPolynomialRing(ZZ)
-            supp = list(filter(lambda i: d[i] > 0, range(n)))
-            B = lambda i: [X(p).expand() for p in Permutations(d[i])]
+            supp = list(filter(lambda i: self._d[i] > 0, range(n)))
+
+            def B(i):
+                return [X(p).expand() for p in Permutations(self._d[i])]
+
             Bprime = [
                 [
                     f.parent().hom(
@@ -1037,6 +1069,7 @@ class QuiverModuli(ABC):
                 for i in supp
             ]
 
+            # TODO is this not something already implemented? if not, explain what it does!
             def product_lists(L):
                 n = len(L)
                 assert n > 0
@@ -1050,8 +1083,8 @@ class QuiverModuli(ABC):
 
             """Define A = A*([R/G])."""
             degrees = []
-            for i in range(n):
-                degrees = degrees + list(range(1, d[i] + 1))
+            for i in range(self._Q.number_of_vertices()):
+                degrees = degrees + list(range(1, self._d[i] + 1))
             A = PolynomialRing(QQ, chernClasses, order=TermOrder("wdegrevlex", degrees))
 
             E = SymmetricFunctions(ZZ).e()
@@ -1060,9 +1093,10 @@ class QuiverModuli(ABC):
             for i in range(n):
                 elementarySymmetric = elementarySymmetric + [
                     E([k]).expand(
-                        d[i], alphabet=[generator(R, i, r) for r in range(d[i])]
+                        self._d[i],
+                        alphabet=[generator(R, i, r) for r in range(self._d[i])],
                     )
-                    for k in range(1, d[i] + 1)
+                    for k in range(1, self._d[i] + 1)
                 ]
             """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
             inclusion = A.hom(elementarySymmetric, R)
@@ -1221,10 +1255,10 @@ class QuiverModuliSpace(QuiverModuli):
                     )
                 else:
                     # I somehow like the convention that the dimension of the empty set is -Infinity
-                    return -oo
+                    return -Infinity
             else:
                 # self._condition == "stable"
-                return -oo
+                return -Infinity
 
     def poincare_polynomial(self):
         r"""Returns the Poincare polynomial of the moduli space.
@@ -1259,16 +1293,13 @@ class QuiverModuliSpace(QuiverModuli):
         assert is_coprime_for_stability_parameter(d, theta)
 
         k = FunctionField(QQ, "L")
-        L = k.gen(0)
         K = FunctionField(QQ, "q")
         q = K.gen(0)
-
-        X = QuiverModuliStack(Q, d, theta, condition="semistable")
-        mot = X.motive()
-
         f = k.hom(q, K)
 
-        return (1 - q) * f(mot)
+        X = QuiverModuliStack(Q, d, theta, condition="semistable")
+
+        return (1 - q) * f(X.motive())
 
     def betti_numbers(self):
         r"""Returns the Betti numbers of the moduli space.
@@ -1293,12 +1324,10 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
 
-        Q, d, theta = self._Q, self._d, self._theta
-        assert is_coprime_for_stability_parameter(d, theta)
+        assert is_coprime_for_stability_parameter(self._d, self._theta)
         N = self.dimension()
 
         K = FunctionField(QQ, "q")
-        q = K.gen(0)
         L = FunctionField(QQ, "v")
         v = L.gen(0)
         ext = K.hom(v**2, L)
@@ -1413,7 +1442,7 @@ class QuiverModuliSpace(QuiverModuli):
         # This implementation only works if d is theta-coprime which implies that d is indivisible.
         assert is_coprime_for_stability_parameter(d, theta)
 
-        if chernClasses == None:
+        if chernClasses is None:
             chernClasses = [
                 "x%s_%s" % (i, r)
                 for i in range(1, n + 1)
@@ -1425,7 +1454,7 @@ class QuiverModuliSpace(QuiverModuli):
         )
         A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
-        if chi == None:
+        if chi is None:
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
 
@@ -1451,7 +1480,6 @@ class QuiverModuliSpace(QuiverModuli):
         The Chern character of a line bundle L with first Chern class x is given by e^x = 1 + x + x^2/2 + x^3/6 + ...
         """
 
-        A = self.chow_ring(chi=None, chernClasses=chernClasses)
         N = self.dimension()
         x = self.chern_class_line_bundle(eta, chernClasses=chernClasses)
         return sum([x**i / factorial(i) for i in range(N + 1)])
@@ -1517,7 +1545,7 @@ class QuiverModuliSpace(QuiverModuli):
         pi = A.cover()  # The quotient map
         sect = A.lifting_map()  # A choice of a section of pi
 
-        if chi == None:
+        if chi is None:
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
 
@@ -1544,13 +1572,13 @@ class QuiverModuliSpace(QuiverModuli):
         r"""Computes the degree of the ample line bundle given by eta."""
         # TODO: Need check for ampleness first
 
-        if eta == None:
+        if eta is None:
             eta = self._Q.canonical_stability_parameter(self._d)
 
-        A = self.chow_ring(chi=None, chernClasses=chernClasses)
         N = self.dimension()
         c = self.chern_class_line_bundle(eta, chernClasses=chernClasses)
         p = self.point_class(chernClasses=chernClasses)
+
         return c**N / p
 
     def todd_class(self):
@@ -1680,7 +1708,7 @@ class QuiverModuliStack(QuiverModuli):
         ):
             return -self._Q.euler_form(self._d, self._d)
         else:
-            return -oo
+            return -Infinity
 
     def is_smooth(self):
         # TODO think about the empty case, should it be smooth?
@@ -1742,16 +1770,18 @@ class QuiverModuliStack(QuiverModuli):
             L = K.gen(0)
 
             # Now define a matrix T of size NxN whose entry at position (i,j) is L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j] and 0 otherwise
-            mot = lambda e: QuiverModuliStack(
-                Q, e, Q.zero_vector(), condition="semistable"
-            ).motive()
+            def motive(e):
+                return QuiverModuliStack(
+                    Q, e, Q.zero_vector(), condition="semistable"
+                ).motive()
+
             N = len(I)
             T = matrix(K, N)
             for i in range(N):
                 for j in range(i, N):
                     e, f = I[i], I[j]
                     if is_subdimension_vector(e, f):
-                        T[i, j] = L ** (Q.euler_form(e - f, e)) * mot(f - e)
+                        T[i, j] = L ** (Q.euler_form(e - f, e)) * motive(f - e)
 
             # Solve system of linear equations T*x = e_N and extract entry 0 of the solution x.
             y = vector([0 for i in range(N)])
@@ -1772,7 +1802,7 @@ class QuiverModuliStack(QuiverModuli):
         Q, d = self._Q, self._d
         n = Q.number_of_vertices()
 
-        if chernClasses == None:
+        if chernClasses is None:
             chernClasses = [
                 "x%s_%s" % (i, r)
                 for i in range(1, n + 1)
@@ -1782,7 +1812,7 @@ class QuiverModuliStack(QuiverModuli):
         taut = self._QuiverModuli__tautological_presentation(
             inRoots=False, chernClasses=chernClasses
         )
-        A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
+        A, _, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
         return QuotientRing(A, A.ideal(rels), names=chernClasses)
 
