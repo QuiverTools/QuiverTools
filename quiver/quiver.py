@@ -442,15 +442,25 @@ class Quiver(Element):
         return thin * self.adjacency_matrix() * thin
 
     def is_acyclic(self):
-        r"""Returns the truth value of wether the quiver is acyclic.
+        r"""Returns whether the quiver is acyclic.
 
         OUTPUT: True if the quiver is acyclic, False otherwise.
-        """
-        A = self.adjacency_matrix()
-        n = self.number_of_vertices()
 
-        # a quiver is acyclic if and only if its adjacency matrix is nilpotent
-        return A**n == zero_matrix(ZZ, n)
+        EXAMPLES:
+
+        An acyclic graph::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).is_acyclic()
+            True
+
+        A non-acyclic graph::
+
+            sage: GeneralizedJordanQuiver(5).is_acyclic()
+            False
+
+        """
+        return self.graph().is_directed_acyclic()
 
     # TODO some of the examples should really be tests (so they don't clutter the docs as much)
     def is_connected(self):
