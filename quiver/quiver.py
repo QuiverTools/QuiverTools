@@ -411,7 +411,7 @@ class Quiver(Element):
         """
         return self.__G
 
-    def number_of_vertices(self):
+    def number_of_vertices(self) -> int:
         r"""Returns the number of vertices
 
         OUTPUT: the number of vertices
@@ -427,7 +427,7 @@ class Quiver(Element):
         """
         return self.graph().order()
 
-    def number_of_arrows(self):
+    def number_of_arrows(self) -> int:
         r"""Returns the number of arrows
 
         OUTPUT: the number of arrows
@@ -443,7 +443,7 @@ class Quiver(Element):
         """
         return self.graph().size()
 
-    def is_acyclic(self):
+    def is_acyclic(self) -> bool:
         r"""Returns whether the quiver is acyclic.
 
         OUTPUT: True if the quiver is acyclic, False otherwise.
@@ -464,7 +464,7 @@ class Quiver(Element):
         """
         return self.graph().is_directed_acyclic()
 
-    def is_connected(self):
+    def is_connected(self) -> bool:
         r"""Returns whether the underlying graph of the quiver is connected or not.
 
         OUTPUT: True if the quiver is connected, False otherwise.
@@ -547,7 +547,7 @@ class Quiver(Element):
 
         return sum(self.adjacency_matrix().row(i - 1))
 
-    def is_source(self, i):
+    def is_source(self, i) -> bool:
         """Checks if i is a source of the quiver, i.e. if there are no incoming arrows into i.
 
         EXAMPLES
@@ -564,7 +564,7 @@ class Quiver(Element):
         assert (i > 0) and (i <= self.number_of_vertices())
         return self.indegree(i) == 0
 
-    def is_sink(self, j):
+    def is_sink(self, j) -> bool:
         """Checks if j is a sink of the quiver, i.e. if there are no outgoing arrows out of j.
 
         EXAMPLES
@@ -592,7 +592,7 @@ class Quiver(Element):
         """
         return matrix.identity(self.number_of_vertices()) - self.adjacency_matrix()
 
-    def euler_form(self, x, y):
+    def euler_form(self, x, y) -> int:
         r"""The Euler bilinear form of the quiver.
 
         INPUT:
@@ -602,13 +602,14 @@ class Quiver(Element):
         OUTPUT: the multiplication of ``x * self.euler_matrix() * y`` as an  Int.
 
         """
+        # TODO coercion
         assert (
             x.length() == self.number_of_vertices()
             and y.length() == self.number_of_vertices()
         )
         return x * self.euler_matrix() * y
 
-    def symmetrized_euler_form(self, x, y):
+    def symmetrized_euler_form(self, x, y) -> int:
         r"""The symmetrization of the Euler bilinear form of the quiver.
 
         INPUT:
@@ -618,13 +619,14 @@ class Quiver(Element):
         OUTPUT: the sum ``self.euler_form(x,y) + self.euler_form(y,x)`` as an  Int.
 
         """
+        # TODO coercion
         assert (
             x.length() == self.number_of_vertices()
             and y.length() == self.number_of_vertices()
         )
         return self.euler_form(x, y) + self.euler_form(y, x)
 
-    def tits_form(self, x):
+    def tits_form(self, x) -> int:
         r"""The Tits quadratic form of the quiver.
 
         INPUT:
@@ -633,6 +635,7 @@ class Quiver(Element):
         OUTPUT: the expression ``self.euler_form(x,x)`` as an  Int.
 
         """
+        # TODO coercion
         assert x.length() == self.number_of_vertices()
         return self.euler_form(x, x)
 
@@ -770,6 +773,7 @@ class Quiver(Element):
         """
         n = self.number_of_vertices()
         # Our convention is that vertices are numbered 1,...,n
+        # TODO no it shouldn't
         assert i >= 1 and i <= n
         ei = vector([0 for i in range(n)])
         ei[i - 1] = 1
@@ -1970,10 +1974,6 @@ class Quiver(Element):
         )
 
         return all([weights[i] > tensorWeights[i] for i in range(len(HN))])
-
-    """
-    Hochschild cohomology
-    """
 
     def first_hochschild_cohomology(self):
         r"""
