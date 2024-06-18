@@ -1,4 +1,11 @@
-from quiver import *
+from quiver import Quiver
+
+from sage.combinat.root_system.dynkin_diagram import DynkinDiagram
+from sage.combinat.root_system.weyl_characters import WeylCharacterRing
+from sage.matrix.special import block_diagonal_matrix, random_matrix, zero_matrix
+from sage.misc.prandom import randint
+from sage.modules.free_module_element import vector
+from sage.rings.integer_ring import ZZ
 
 
 def disjoint_union(Q1, Q2):
