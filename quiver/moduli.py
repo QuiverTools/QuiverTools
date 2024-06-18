@@ -1,6 +1,5 @@
 from quiver import Quiver
 
-# from quiver import GeneralizedKroneckerQuiver, KroneckerQuiver, LoopQuiver
 from quiver import (
     all_subdimension_vectors,
     deglex_key,

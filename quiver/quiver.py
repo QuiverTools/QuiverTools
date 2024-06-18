@@ -91,7 +91,6 @@ class Quiver(Element):
             True
 
         """
-
         return cls(G.adjacency_matrix(), name)
 
     @classmethod
@@ -187,7 +186,7 @@ class Quiver(Element):
                     number += 1
                 # if the string is non-empty we treat it as an integer
                 # this means we add the appropriate number of arrows
-                # and make the target the source
+                # and make the target the source to start the process again
                 if piece:
                     target = vertices.index(int(piece))
                     M[source, target] += number
@@ -270,7 +269,6 @@ class Quiver(Element):
             [0 0]
 
         """
-
         return self.__str__()
 
     def __eq__(self, other) -> bool:
@@ -295,7 +293,6 @@ class Quiver(Element):
             True
 
         """
-
         return self.adjacency_matrix() == other.adjacency_matrix()
 
     def _coerce_dimension_vector(self, d):
@@ -329,7 +326,6 @@ class Quiver(Element):
             ValueError: The input is not a dimension vector of the quiver.
 
         """
-
         d = self._coerce_vector(d)
         if all(di >= 0 for di in d):
             return d
@@ -363,7 +359,6 @@ class Quiver(Element):
             ValueError: The input is not an element of `\mathbb{Z}Q_0`.
 
         """
-
         x = vector(x)
         if x.length() == self.number_of_vertices():
             return x
@@ -409,7 +404,6 @@ class Quiver(Element):
             True
 
         """
-
         return DiGraph(self.adjacency_matrix())
 
     def number_of_vertices(self):
@@ -516,14 +510,12 @@ class Quiver(Element):
             sage: discA10.is_connected()
             False
         """
-
         return self.graph().is_connected()
 
     """
     Some graph-theoretic properties of the quiver
     """
 
-    # TODO docstrings are split into pieces
     def indegree(self, j):
         r"""Returns the indegree of a vertex.
 
@@ -549,7 +541,6 @@ class Quiver(Element):
             3
 
         """
-
         # TODO no: Sage counts from 0 to n-1, so should we!
         assert (j > 0) and (j <= self.number_of_vertices())
 
@@ -579,7 +570,6 @@ class Quiver(Element):
             0
 
         """
-
         # TODO no: Sage counts from 0 to n-1, so should we!
         assert (i > 0) and (i <= self.number_of_vertices())
 
@@ -599,7 +589,6 @@ class Quiver(Element):
             sage: Q.is_source(2)
             False
         """
-
         assert (i > 0) and (i <= self.number_of_vertices())
         return self.indegree(i) == 0
 
@@ -617,7 +606,6 @@ class Quiver(Element):
             sage: Q.is_sink(2)
             True
         """
-
         assert (j > 0) and (j <= self.number_of_vertices())
         return self.outdegree(j) == 0
 
@@ -713,7 +701,6 @@ class Quiver(Element):
 
         The framed quiver has one additional vertex 0 and f_i many arrows from 0 to i.
         """
-
         # TODO tests are missing
 
         n = self.number_of_vertices()
@@ -738,7 +725,6 @@ class Quiver(Element):
 
         The coframed quiver has one additional vertex oo and f_i many arrows from i to oo.
         """
-
         n = self.number_of_vertices()
         assert f.length() == n
         A = self.adjacency_matrix()
@@ -776,7 +762,6 @@ class Quiver(Element):
             [0 0]
 
         """
-
         assert all([i in range(1, self.number_of_vertices() + 1) for i in I])
         A = self.adjacency_matrix()
         return Quiver(A[[i - 1 for i in I], [i - 1 for i in I]])
@@ -795,22 +780,22 @@ class Quiver(Element):
     def thin_dimension_vector(self):
         r"""Returns the thin dimension vector.
 
+        The thin dimension vector is [1,...,1].
+
         OUTPUT: vector of Ints
         """
-
-        """The thin dimension vector is [1,...,1]."""
         return vector([1 for i in range(self.number_of_vertices())])
 
     def simple_root(self, i):
         r"""Returns the simple root at the vertex.
+
+        The simple root at i is e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i.
 
         INPUT:
         - ``i``: Int
 
         OUTPUT: vector of Ints
         """
-
-        """The simple root at i is e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i."""
         n = self.number_of_vertices()
         # Our convention is that vertices are numbered 1,...,n
         assert i >= 1 and i <= n
@@ -821,13 +806,13 @@ class Quiver(Element):
     def is_root(self, x):
         r"""Checks if x is a root of the underlying diagram of the quiver.
 
+        A root is a non-zero vector in Z^n such that the Tits form of x is <= 1.
+
         INPUT:
         - ``x``: vector of Ints
 
         OUTPUT: statement truth value as bool
         """
-
-        """A root is a non-zero vector in Z^n such that the Tits form of x is <= 1."""
         x = self._coerce_vector(x)
 
         # TODO any check like e == zero_vector should really be replaced by a all(ei == 0 for ei in e) for performance
@@ -836,26 +821,26 @@ class Quiver(Element):
     def is_real_root(self, x):
         r"""Checks if x is a real root of the underlying diagram of the quiver.
 
+        A root is called real if its Tits form equals 1.
+
         INPUT:
         - ``x``: vector of Ints
 
         OUTPUT: statement truth value as bool
         """
-
-        """A root is called real if its Tits form equals 1."""
         x = self._coerce_vector(x)
         return self.tits_form(x) == 1
 
     def is_imaginary_root(self, x):
         r"""Checks if x is an imaginary root of the underlying diagram of the quiver.
 
+        A root is called imaginary if its Tits form is non-positive.
+
         INPUT:
         - ``x``: vector of Ints
 
         OUTPUT: statement truth value as bool
         """
-
-        """A root is called imaginary if its Tits form is non-positive."""
         x = self._coerce_vector(x)
         return x != self.zero_vector() and self.tits_form(x) <= 0
 
@@ -893,10 +878,9 @@ class Quiver(Element):
             False
 
         """
-
         d = self._coerce_dimension_vector(d)
-
         theta = self.canonical_stability_parameter(d)
+
         return self.has_stable_representation(d, theta)
 
     def support(self, d):
@@ -925,9 +909,9 @@ class Quiver(Element):
             [1, 3]
 
         """
-
         d = self._coerce_dimension_vector(d)
         supp = list(filter(lambda i: d[i] > 0, range(self.number_of_vertices())))
+
         return [i + 1 for i in supp]
 
     def in_fundamental_domain(self, d):
@@ -958,7 +942,6 @@ class Quiver(Element):
             True
 
         """
-
         d = self._coerce_dimension_vector(d)
 
         # check if `\langle d,e_i\rangle + \langle e_i,d\rangle \leq 0`
@@ -1017,12 +1000,13 @@ class Quiver(Element):
             sage: Q.division_order(e, d)
             False
         """
-
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
-
         n = self.number_of_vertices()
+
+        # TODO isn't this redundant? coerce dimension vector already checks this
         assert (d.length() == n) and (e.length() == n)
+
         less = all(
             [
                 d[i - 1] <= e[i - 1]
@@ -1194,7 +1178,6 @@ class Quiver(Element):
             (2, 2) gen. subdim of (2, 2)?: True
 
         """
-
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
 
@@ -1213,39 +1196,38 @@ class Quiver(Element):
     def __all_generic_subdimension_vectors_helper(self, d):
         """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order.
 
-        EXAMPLES
+        EXAMPLES:
 
-        sage: from quiver import *
-        sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
-        sage: i, s = Q._Quiver__all_generic_subdimension_vectors_helper(d)
-        sage: i, s
-        ([[0],
-        [0, 1],
-        [0, 2],
-        [0, 1, 3],
-        [0, 1, 4],
-        [0, 2, 5],
-        [0, 1, 3, 6],
-        [0, 1, 3, 7],
-        [0, 1, 4, 8],
-        [0, 1, 3, 6, 9],
-        [0, 1, 3, 7, 10],
-        [0, 1, 3, 6, 7, 9, 11]],
-        [[(0, 0)],
-        [(0, 0), (0, 1)],
-        [(0, 0), (1, 0)],
-        [(0, 0), (0, 1), (0, 2)],
-        [(0, 0), (0, 1), (1, 1)],
-        [(0, 0), (1, 0), (2, 0)],
-        [(0, 0), (0, 1), (0, 2), (0, 3)],
-        [(0, 0), (0, 1), (0, 2), (1, 2)],
-        [(0, 0), (0, 1), (1, 1), (2, 1)],
-        [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3)],
-        [(0, 0), (0, 1), (0, 2), (1, 2), (2, 2)],
-        [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]])
+            sage: from quiver import *
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
+            sage: i, s = Q._Quiver__all_generic_subdimension_vectors_helper(d)
+            sage: i, s
+            ([[0],
+            [0, 1],
+            [0, 2],
+            [0, 1, 3],
+            [0, 1, 4],
+            [0, 2, 5],
+            [0, 1, 3, 6],
+            [0, 1, 3, 7],
+            [0, 1, 4, 8],
+            [0, 1, 3, 6, 9],
+            [0, 1, 3, 7, 10],
+            [0, 1, 3, 6, 7, 9, 11]],
+            [[(0, 0)],
+            [(0, 0), (0, 1)],
+            [(0, 0), (1, 0)],
+            [(0, 0), (0, 1), (0, 2)],
+            [(0, 0), (0, 1), (1, 1)],
+            [(0, 0), (1, 0), (2, 0)],
+            [(0, 0), (0, 1), (0, 2), (0, 3)],
+            [(0, 0), (0, 1), (0, 2), (1, 2)],
+            [(0, 0), (0, 1), (1, 1), (2, 1)],
+            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3)],
+            [(0, 0), (0, 1), (0, 2), (1, 2), (2, 2)],
+            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]])
 
         """
-
         subdims = all_subdimension_vectors(d)
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
@@ -1322,7 +1304,6 @@ class Quiver(Element):
             [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
 
         """
-
         d = self._coerce_dimension_vector(d)
 
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
@@ -1365,7 +1346,6 @@ class Quiver(Element):
             ext((1, 1),(1, 1)) = 0
 
         """
-
         a = self._coerce_dimension_vector(a)
         b = self._coerce_dimension_vector(b)
         genSubdims = self.all_generic_subdimension_vectors(a)
@@ -1406,9 +1386,9 @@ class Quiver(Element):
             hom((1, 1),(1, 1)) = 1
 
         """
-
         a = self._coerce_dimension_vector(a)
         b = self._coerce_dimension_vector(b)
+
         return self.euler_form(a, b) + self.generic_ext(a, b)
 
     # TODO remove
@@ -1483,7 +1463,6 @@ class Quiver(Element):
             False
 
         """
-
         d = self._coerce_dimension_vector(d)
 
         genSubdims = self.all_generic_subdimension_vectors(d)
@@ -1505,7 +1484,6 @@ class Quiver(Element):
             [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
 
         """
-
         subdims = all_subdimension_vectors(d)
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
@@ -1565,7 +1543,6 @@ class Quiver(Element):
             True
 
         """
-
         assert algorithm in ["schofield", "king", "al"]
 
         # coerce stability parameter
@@ -1637,7 +1614,6 @@ class Quiver(Element):
             ([4], [(1, 1)])
 
         """
-
         subdims = all_subdimension_vectors(d)
         subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
@@ -1864,7 +1840,6 @@ class Quiver(Element):
                 True
 
             """
-
             d = self._coerce_dimension_vector(d)
 
             genSubdims = self.all_generic_subdimension_vectors(d)
@@ -1924,7 +1899,6 @@ class Quiver(Element):
 
         OUTPUT: dimension as Int
         """
-
         d = self._coerce_dimension_vector(d)
 
         if self.is_acyclic():
@@ -1988,7 +1962,6 @@ class Quiver(Element):
         are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$,
         then the resulting moduli space is infinitesimally rigid.
         """
-
         # This is only relevant on the unstable locus
         HN = list(
             filter(
@@ -2129,7 +2102,6 @@ def is_coprime_for_stability_parameter(d, theta):
         sage: is_coprime_for_stability_parameter(d,theta)
         False
     """
-
     assert d.length() == theta.length()
     zeroVector = vector([0 for i in range(d.length())])
     properSubdimensions = list(
