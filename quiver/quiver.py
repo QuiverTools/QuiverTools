@@ -96,7 +96,7 @@ class Quiver(Element):
             True
 
         """
-        return cls(G.adjacency_matrix(), name)
+        return cls(G, name)
 
     @classmethod
     def from_matrix(cls, M, name=None):
