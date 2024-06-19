@@ -877,12 +877,11 @@ class Quiver(Element):
         """
         A = self.adjacency_matrix().transpose()
 
+        name = None
         if self.get_custom_name():
             name = "opposite of " + self.get_custom_name()
-        else:
-            name = None
 
-        return Quiver(A, name)
+        return Quiver.from_digraph(self.graph().reverse(), name)
 
     def double_quiver(self):
         """The adjacency matrix of the double of a quiver is the sum of the adjacency matrix of the original quiver and its transpose."""
