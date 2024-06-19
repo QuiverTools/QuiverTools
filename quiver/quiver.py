@@ -910,11 +910,14 @@ class Quiver(Element):
     def double_quiver(self):
         """The adjacency matrix of the double of a quiver is the sum of the adjacency matrix of the original quiver and its transpose."""
         A = self.adjacency_matrix() + self.adjacency_matrix().transpose()
+        G = DiGraph(self.graph())
+        G.add_edges(self.opposite_quiver().graph().edges())
+
+        name = None
         if self.get_custom_name():
             name = "double of " + self.get_custom_name()
-        else:
-            name = None
-        return Quiver(A, name)
+
+        return Quiver.from_digraph(G, name)
 
     # TODO optional parameter for name of the vertex
     def framed_quiver(self, f):
