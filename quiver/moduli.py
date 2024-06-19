@@ -1,12 +1,5 @@
-from quiver import Quiver
-
-from quiver import (
-    all_subdimension_vectors,
-    deglex_key,
-    is_coprime_for_stability_parameter,
-    is_subdimension_vector,
-    slope,
-)
+import copy
+from abc import ABC, abstractmethod
 
 from sage.arith.misc import bernoulli, factorial, gcd, xgcd
 from sage.categories.cartesian_product import cartesian_product
@@ -17,19 +10,23 @@ from sage.combinat.sf.sf import SymmetricFunctions
 from sage.matrix.constructor import matrix
 from sage.misc.misc_c import prod
 from sage.modules.free_module_element import vector
+from sage.rings.function_field.constructor import FunctionField
 from sage.rings.infinity import Infinity
 from sage.rings.integer_ring import ZZ
-from sage.rings.function_field.constructor import FunctionField
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.polynomial.term_order import TermOrder
 from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
 from sage.structure.element import Element
 
-import copy
-
-from abc import ABC, abstractmethod
-
+from quiver import (
+    Quiver,
+    all_subdimension_vectors,
+    deglex_key,
+    is_coprime_for_stability_parameter,
+    is_subdimension_vector,
+    slope,
+)
 
 """Defines how permutations are multiplied."""
 Permutations.options(mult="r2l")
