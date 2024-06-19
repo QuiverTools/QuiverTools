@@ -1212,6 +1212,7 @@ class Quiver(Element):
                     + self.euler_form(self.simple_root(i + 1), d)
                     <= 0
                 )
+                # TODO should be looping over self.vertices()
                 for i in range(self.number_of_vertices())
             ]
         )
@@ -1261,7 +1262,6 @@ class Quiver(Element):
         """
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
-        n = self.number_of_vertices()
 
         return (
             all([d[i] <= e[i] for i in self.sources()])
