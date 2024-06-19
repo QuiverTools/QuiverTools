@@ -304,14 +304,17 @@ class Quiver(Element):
         r"""
         Coerces `d` to be a dimension vector of the quiver
 
-        It raises a `ValueError` if it is not a list of positive integers of length
-        the number of vertices in the quiver.
+        It must be a data structure that is indexed by the vertices of the quiver,
+        so most likely a dict, list, or vector.
+        If it is a list it is coerced to a vector.
+
+        As a consistency check we verify whether the length is the number of vertices.
 
         INPUT:
 
-        - ``d``: a list of positive integers
+        - ``d``: a candidate dimension vector
 
-        OUTPUT: a Sage vector if `d` is a dimension vector
+        OUTPUT: either a dict or vector
 
         EXAMPLES:
 
@@ -364,8 +367,10 @@ class Quiver(Element):
             ValueError: The input is not an element of `\mathbb{Z}Q_0`.
 
         """
-        x = vector(x)
-        if x.length() == self.number_of_vertices():
+        if isinstance(x, list) or isinstance(x, tuple):
+            x = vector(x)
+
+        if len(x) == self.number_of_vertices():
             return x
         else:
             raise ValueError("The input is not an element of `\mathbb{Z}Q_0`.")
@@ -663,6 +668,7 @@ class Quiver(Element):
             name = None
         return Quiver(A, name)
 
+    # TODO optional parameter for name of the vertex
     def framed_quiver(self, f):
         r"""Returns the framed quiver with framing vector f.
 
