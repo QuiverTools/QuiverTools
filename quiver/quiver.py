@@ -837,12 +837,31 @@ class Quiver(Element):
         return self.euler_form(x, y) + self.euler_form(y, x)
 
     def tits_form(self, x) -> int:
-        r"""The Tits quadratic form of the quiver.
+        r"""The value of the Tits quadratic form of the quiver at `x`
+
+        This is really just the value `\langle x,x\rangle` of the Euler form,
+        or half of the value `(x,x)` of the symmetrized Euler form.
 
         INPUT:
-        - ``x`` -- vector of integers
 
-        OUTPUT: the expression ``self.euler_form(x,x)`` as an  Int.
+        - ``x`` -- an element of `\mathbb{Z}Q_0`
+
+        OUTPUT: the value of the Tits form applied to `x`
+        EXAMPLES:
+
+        An example using the Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.tits_form([2, 3])
+            -5
+
+        It uses the basis of the vertices, so we specify the entries of elements of
+        `\mathbb{Z}Q_0` in this order, thus the same example as before::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Q.tits_form([2, 3])
+            -5
 
         """
         return self.euler_form(x, x)
