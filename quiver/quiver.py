@@ -759,6 +759,26 @@ class Quiver(Element):
 
         return x * self.euler_matrix() * y
 
+    def cartan_matrix(self):
+        r"""Returns the Cartan matrix of the quiver
+
+        This is the matrix representing the symmetrization of the Euler form,
+        see :meth:`Quiver.euler_matrix`
+
+        OUTPUT: the Cartan matrix of the quiver
+
+        EXAMPLES::
+
+        The Kronecker 3-quiver::
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(3).cartan_matrix()
+            [ 2 -3]
+            [-3  2]
+
+        """
+        return self.euler_matrix() + self.euler_matrix().transpose()
+
     def symmetrized_euler_form(self, x, y) -> int:
         r"""The symmetrization of the Euler bilinear form of the quiver.
 
