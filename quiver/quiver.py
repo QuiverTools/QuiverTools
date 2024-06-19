@@ -884,8 +884,7 @@ class Quiver(Element):
         The opposite of the 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q = GeneralizedKroneckerQuiver(3).opposite_quiver()
-            sage: print(Q)
+            sage: print(GeneralizedKroneckerQuiver(3).opposite_quiver())
             opposite of 3-Kronecker quiver
             adjacency matrix:
             [0 0]
@@ -907,9 +906,39 @@ class Quiver(Element):
 
         return Quiver.from_digraph(self.graph().reverse(), name)
 
-    def double_quiver(self):
-        """The adjacency matrix of the double of a quiver is the sum of the adjacency matrix of the original quiver and its transpose."""
-        A = self.adjacency_matrix() + self.adjacency_matrix().transpose()
+    def doubled_quiver(self):
+        r"""
+        Returns the doubled quiver
+
+        The double of a quiver is the quiver where for each arrow we add an arrow in
+        the opposite direction.
+
+        Its adjacency matrix is the sum of the adjacency matrix of the original quiver
+        and its transpose.
+
+        OUTPUT: the doubled quiver
+
+        EXAMPLES:
+
+        The double of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: print(GeneralizedKroneckerQuiver(3).doubled_quiver())
+            double of 3-Kronecker quiver
+            adjacency matrix:
+            [0 3]
+            [3 0]
+
+        It preserves the labelling of the vertices::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False).doubled_quiver()
+            sage: Q.vertices()
+            ['foo', 'bar']
+            sage: Q.adjacency_matrix()
+            [0 3]
+            [3 0]
+
+        """
         G = DiGraph(self.graph())
         G.add_edges(self.opposite_quiver().graph().edges())
 

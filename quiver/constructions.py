@@ -417,7 +417,7 @@ def CyclicQuiver(n):
     The doubled Dynkin quiver of type `\mathrm{A}_2` is the cyclic quiver on 2 vertices::
 
         sage: from quiver import *
-        sage: CyclicQuiver(2) == DynkinQuiver("A2").double_quiver()
+        sage: CyclicQuiver(2) == DynkinQuiver("A2").doubled_quiver()
         True
 
     """
