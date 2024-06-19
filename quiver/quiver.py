@@ -123,19 +123,27 @@ class Quiver(Element):
         return cls(DiGraph(matrix(M)), name)
 
     @classmethod
-    def from_string(cls, Q: str, name=None):
+    def from_string(cls, Q: str, forget_labels=True, name=None):
         r"""Construct a quiver from a comma-separated list of chains of the form "i-j-k-...
 
         You specify an arrow from `i` to `j` by writing `i-j`.
-        A multiple arrow is specified by repeating the `i`, so that `1--2` is the Kronecker quiver.
-        If you write `i-j-k` then you have 1 arrow from `i` to `j` and one from `j` to `k`.
-        The full quiver is specified by concatenating (multiple) arrows by commas.
+        A multiple arrow is specified by repeating the `i`, so that `1--2` is the Kronecker
+        quiver. If you write `i-j-k` then you have 1 arrow from `i` to `j` and one from `j`
+        to `k`. The full quiver is specified by concatenating (multiple) arrows by commas.
+
+        The values for a vertex can be anything, and the chosen names will be used for
+        the vertices in the underlying graph. Labels are cast to an integer, if possible,
+        and otherwise to strings.
 
         OUTPUT: the quiver
 
         INPUT:
 
         - ``Q`` -- string; a string of the format described above giving a quiver
+
+        - ``forget_labels`` -- boolean (default: True): specifies whether to use the
+          names for vertices, or whether to use the integers `0,...,n-1` where `n` is
+          the number of vertices
 
         - ``name`` -- optional name for the quiver
 
@@ -144,62 +152,82 @@ class Quiver(Element):
         The 3-Kronecker quiver defined in two different ways::
 
             sage: from quiver import *
-            sage: Quiver.from_matrix([[0, 3], [0, 0]]) == Quiver.from_string("1---2")
+            sage: Quiver.from_matrix([[0, 3], [0, 0]]) == Quiver.from_string("a---b")
             True
 
         A more complicated example::
 
-            sage: Quiver.from_string("1--2-3,1---3,3-1").adjacency_matrix()
+            sage: Q = Quiver.from_string("a--b-3,a---3,3-a")
+            sage: Q.adjacency_matrix()
             [0 2 3]
             [0 0 1]
             [1 0 0]
+            sage: Q.vertices()
+            [0, 1, 2]
 
-        The actual numbers we use don't matter::
+        The actual labeling we use doesn't matter for the isomorphism type of the quiver::
 
             sage: from quiver import *
-            sage: Quiver.from_matrix([[0, 3], [0, 0]]) == Quiver.from_string("12---23")
+            sage: Quiver.from_matrix([[0, 3], [0, 0]]) == Quiver.from_string("12---b")
             True
+
+        However, it does influence the labels of the vertex if we choose so::
+
+            sage: Quiver.from_string("12---b", forget_labels=False).vertices()
+            [12, 'b']
+            sage: Quiver.from_string("foo---bar", forget_labels=False).vertices()
+            ['foo', 'bar']
 
         """
         # remove all whitespace from the string
         Q = "".join(Q.split())
 
-        # determine the vertices used in the string
+        # determine the vertices used in the string, preserving the order
         vertices = list(
-            set(
-                [
-                    int(vertex)
-                    for chain in Q.split(",")
-                    for vertex in chain.split("-")
-                    if vertex
-                ]
+            dict.fromkeys(
+                vertex
+                for chain in Q.split(",")
+                for vertex in chain.split("-")
+                if vertex  # this filters out "" from chained hyphens
             )
         )
 
-        # adjacency matrix
+        # adjacency matrix to be built
         M = zero_matrix(len(vertices))
 
         for chain in Q.split(","):
             pieces = chain.split("-")
 
-            source = vertices.index(int(pieces[0]))
+            source = vertices.index(pieces[0])
             number = 1
 
             for piece in pieces[1:]:
                 # if the string is empty we increase the number of arrows counter
                 if not piece:
                     number += 1
-                # if the string is non-empty we treat it as an integer
+                # if the string is non-empty we treat it as a label
                 # this means we add the appropriate number of arrows
                 # and make the target the source to start the process again
                 if piece:
-                    target = vertices.index(int(piece))
+                    target = vertices.index(piece)
                     M[source, target] += number
 
                     number = 1
                     source, target = target, None
 
-        return cls.from_matrix(M, name)
+        G = DiGraph(M)
+
+        # attempt to cast vertex labels to integers, otherwise to strings
+        if not forget_labels:
+            labels = []
+            for vertex in vertices:
+                try:
+                    labels.append(int(vertex))
+                except ValueError:
+                    labels.append(str(vertex))
+            G.relabel(perm=labels, inplace=True)
+
+        return cls.from_digraph(G, name)
 
     def __repr__(self) -> str:
         if self.get_custom_name():
