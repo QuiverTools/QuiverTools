@@ -1263,9 +1263,6 @@ class Quiver(Element):
         e = self._coerce_dimension_vector(e)
         n = self.number_of_vertices()
 
-        # TODO isn't this redundant? coerce dimension vector already checks this
-        assert (d.length() == n) and (e.length() == n)
-
         return (
             all([d[i] <= e[i] for i in self.sources()])
             and all([d[i] >= e[i] for i in self.sinks()])
@@ -1277,8 +1274,6 @@ class Quiver(Element):
                 ]
             )
         )
-
-        return less
 
     """
     Generic subdimension vectors and generic Hom and Ext
