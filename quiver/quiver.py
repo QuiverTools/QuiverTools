@@ -751,13 +751,30 @@ class Quiver(Element):
         return matrix.identity(self.number_of_vertices()) - self.adjacency_matrix()
 
     def euler_form(self, x, y) -> int:
-        r"""The Euler bilinear form of the quiver.
+        r"""The value `\langle x,y\rangle` of the Euler form
 
         INPUT:
-        - ``x`` -- vector of integers
-        - ``y`` -- vector of integers
+        - ``x`` -- an element of `\mathbb{Z}Q_0`
 
-        OUTPUT: the multiplication of ``x * self.euler_matrix() * y`` as an  Int.
+        - ``y`` -- an element of `\mathbb{Z}Q_0`
+
+        OUTPUT: the value of the Euler form, i.e., `x * self.euler_matrix() * y`
+
+        EXAMPLES:
+
+        An example using the Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.euler_form([1, 3], [2, -2])
+            2
+
+        It uses the basis of the vertices, so we specify the entries of elements of
+        `\mathbb{Z}Q_0` in this order, thus the same example as before::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Q.euler_form([1, 3], [2, -2])
+            2
 
         """
         x = self._coerce_vector(x)
