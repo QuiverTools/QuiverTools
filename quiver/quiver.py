@@ -754,6 +754,7 @@ class Quiver(Element):
         r"""The value `\langle x,y\rangle` of the Euler form
 
         INPUT:
+
         - ``x`` -- an element of `\mathbb{Z}Q_0`
 
         - ``y`` -- an element of `\mathbb{Z}Q_0`
@@ -812,11 +813,9 @@ class Quiver(Element):
         OUTPUT: the sum ``self.euler_form(x,y) + self.euler_form(y,x)`` as an  Int.
 
         """
-        # TODO coercion
-        assert (
-            x.length() == self.number_of_vertices()
-            and y.length() == self.number_of_vertices()
-        )
+        x = self._coerce_vector(x)
+        y = self._coerce_vector(y)
+
         return self.euler_form(x, y) + self.euler_form(y, x)
 
     def tits_form(self, x) -> int:
