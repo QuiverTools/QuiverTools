@@ -671,6 +671,48 @@ class Quiver(Element):
         """
         return self.out_degree(i) == 0
 
+    def sources(self):
+        r"""Return the vertices which are sources in the quiver
+
+        OUTPUT: the list of vertices without incoming edges
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver has one source::
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(3).sources()
+            [0]
+
+        It is possible that a quiver has no sources::
+
+            sage: JordanQuiver().sources()
+            []
+
+        """
+        return list(filter(lambda i: self.is_source(i), self.vertices()))
+
+    def sinks(self):
+        r"""Return the vertices which are sinks in the quiver
+
+        OUTPUT: the list of vertices without incoming edges
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver has one source::
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(3).sources()
+            [0]
+
+        It is possible that a quiver has no sinks::
+
+            sage: JordanQuiver().sinks()
+            []
+
+        """
+        return list(filter(lambda i: self.is_sink(i), self.vertices()))
+
     """
     Basic representation-theoretical properties of the quiver
     """
