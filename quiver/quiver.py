@@ -575,6 +575,14 @@ class Quiver(Element):
             sage: Q.in_degree(1)
             3
 
+        If we specified a non-standard labeling on the vertices we must use it::
+
+            sage: Q = Quiver.from_string("a---b", forget_labels=False)
+            sage: Q.in_degree("a")
+            0
+            sage: Q.in_degree("b")
+            3
+
         """
         return self.graph().in_degree(i)
 
@@ -602,6 +610,14 @@ class Quiver(Element):
             sage: Q.out_degree(1)
             0
 
+        If we specified a non-standard labeling on the vertices we must use it::
+
+            sage: Q = Quiver.from_string("a---b", forget_labels=False)
+            sage: Q.out_degree("a")
+            3
+            sage: Q.out_degree("b")
+            0
+
         """
         return self.graph().out_degree(i)
 
@@ -619,6 +635,14 @@ class Quiver(Element):
             sage: Q.is_source(1)
             False
 
+        If we specified a non-standard labeling on the vertices we must use it::
+
+            sage: Q = Quiver.from_string("a---b", forget_labels=False)
+            sage: Q.is_source("a")
+            True
+            sage: Q.is_source("b")
+            False
+
         """
         return self.in_degree(i) == 0
 
@@ -634,6 +658,14 @@ class Quiver(Element):
             sage: Q.is_sink(0)
             False
             sage: Q.is_sink(1)
+            True
+
+        If we specified a non-standard labeling on the vertices we must use it::
+
+            sage: Q = Quiver.from_string("a---b", forget_labels=False)
+            sage: Q.is_sink("a")
+            False
+            sage: Q.is_sink("b")
             True
 
         """
