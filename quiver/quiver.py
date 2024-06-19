@@ -71,8 +71,8 @@ class Quiver(Element):
         # if name is None this doesn't do anything
         self.rename(name)
 
-        # for caching purposes
-        self.__M = self.__G.adjacency_matrix()
+        # for caching purposes: order along the specified order of vertices
+        self.__M = self.__G.adjacency_matrix(vertices=self.__G.vertices(sort=False))
 
     @classmethod
     def from_digraph(cls, G, name=None):
