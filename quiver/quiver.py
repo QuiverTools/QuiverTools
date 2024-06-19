@@ -1116,25 +1116,16 @@ class Quiver(Element):
         # TODO isn't this redundant? coerce dimension vector already checks this
         assert (d.length() == n) and (e.length() == n)
 
-        # TODO instead of range(n) we need to iterate over the vertices!
-        # TODO indexing dimension vectors by vertices requires some additional care...
-        # TODO make this cleaner
-        less = all(
-            [d[i] <= e[i] for i in list(filter(lambda i: self.is_source(i), range(n)))]
-        )
-        less = less and all(
-            [d[j] >= e[j] for j in list(filter(lambda j: self.is_sink(j), range(n)))]
-        )
-        less = less and all(
-            [
-                d[k] == e[k]
-                for k in list(
-                    filter(
-                        lambda k: (not self.is_source(k)) and (not self.is_sink(k)),
-                        range(n),
-                    )
-                )
-            ]
+        return (
+            all([d[i] <= e[i] for i in self.sources()])
+            and all([d[i] >= e[i] for i in self.sinks()])
+            and all(
+                [
+                    d[i] == e[i]
+                    for i in self.vertices()
+                    if i not in self.sources() and i not in self.sinks()
+                ]
+            )
         )
 
         return less
