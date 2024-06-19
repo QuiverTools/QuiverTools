@@ -734,11 +734,9 @@ class Quiver(Element):
         OUTPUT: the multiplication of ``x * self.euler_matrix() * y`` as an  Int.
 
         """
-        # TODO coercion
-        assert (
-            x.length() == self.number_of_vertices()
-            and y.length() == self.number_of_vertices()
-        )
+        x = self._coerce_dimension_vector(x)
+        y = self._coerce_dimension_vector(y)
+
         return x * self.euler_matrix() * y
 
     def symmetrized_euler_form(self, x, y) -> int:
@@ -767,8 +765,6 @@ class Quiver(Element):
         OUTPUT: the expression ``self.euler_form(x,x)`` as an  Int.
 
         """
-        # TODO coercion
-        assert x.length() == self.number_of_vertices()
         return self.euler_form(x, x)
 
     """
