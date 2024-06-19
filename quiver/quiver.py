@@ -718,9 +718,29 @@ class Quiver(Element):
     """
 
     def euler_matrix(self):
-        r"""Returns the Euler matrix of the quiver.
+        r"""Returns the Euler matrix of the quiver
 
-        OUTPUT: Sage matrix.
+        This is the matrix representing the Euler form, defined by
+
+        \begin{equation}
+            \langle\mathbf{d},\mathbf{e}\rangle=
+            \sum_{i\in Q_0}d_ie_i-\sum_{\alpha\in Q_1}d_{s(\alpha)}e_{t(\alpha)}
+        \end{equation}
+
+        In the basis given by the vertices, it can be written as the difference
+        of the identity matrix and the adjacency matrix.
+
+        OUTPUT: the Euler matrix of the quiver
+
+        EXAMPLES::
+
+        The Kronecker 3-quiver::
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(3).euler_matrix()
+            [ 1 -3]
+            [ 0  1]
+
         """
         return matrix.identity(self.number_of_vertices()) - self.adjacency_matrix()
 
