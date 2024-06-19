@@ -732,12 +732,18 @@ class Quiver(Element):
 
         OUTPUT: the Euler matrix of the quiver
 
-        EXAMPLES::
+        EXAMPLES:
 
         The Kronecker 3-quiver::
 
             sage: from quiver import *
             sage: GeneralizedKroneckerQuiver(3).euler_matrix()
+            [ 1 -3]
+            [ 0  1]
+
+        It uses the basis of the vertices, so it agrees with this alternative definition::
+
+            sage: Quiver.from_string("foo---bar", forget_labels=False).euler_matrix()
             [ 1 -3]
             [ 0  1]
 
