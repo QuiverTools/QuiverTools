@@ -804,13 +804,31 @@ class Quiver(Element):
         return self.euler_matrix() + self.euler_matrix().transpose()
 
     def symmetrized_euler_form(self, x, y) -> int:
-        r"""The symmetrization of the Euler bilinear form of the quiver.
+        r"""The value `(x,y)` of the Euler form
 
         INPUT:
-        - ``x`` -- vector of integers
-        - ``y`` -- vector of integers
 
-        OUTPUT: the sum ``self.euler_form(x,y) + self.euler_form(y,x)`` as an  Int.
+        - ``x`` -- an element of `\mathbb{Z}Q_0`
+
+        - ``y`` -- an element of `\mathbb{Z}Q_0`
+
+        OUTPUT: the value of the symmetrized Euler form applied to `x` and `y`
+
+        EXAMPLES:
+
+        An example using the Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.symmetrized_euler_form([1, 3], [2, -2])
+            -20
+
+        It uses the basis of the vertices, so we specify the entries of elements of
+        `\mathbb{Z}Q_0` in this order, thus the same example as before::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Q.symmetrized_euler_form([1, 3], [2, -2])
+            -20
 
         """
         x = self._coerce_vector(x)
