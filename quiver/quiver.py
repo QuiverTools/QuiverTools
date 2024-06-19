@@ -416,6 +416,34 @@ class Quiver(Element):
         """
         return self.__G
 
+    def vertices(self):
+        r"""
+        Return the vertices of the quiver
+
+        If the quiver is created from a DiGraph or string, the vertices are labelled
+        using the data in the DiGraph of string, as explained in :meth:`Quiver.from_graph`
+        or :meth:`Quiver.from_string`.
+        If the quiver is created from a matrix, the vertices are labelled from `0`
+        to `n-1`, where `n` is the number of rows or columns in the matrix.
+
+        OUTPUT: the vertices in the underlying graph
+
+        EXAMPLES:
+
+        Usually the vertices will be just integers::
+
+            sage: from quiver import *
+            sage: Quiver([[0, 3], [0, 0]]).vertices()
+            [0, 1]
+
+        We can have non-trivial labels for a quiver::
+
+            sage: Quiver.from_string("foo---bar", forget_labels=False).vertices()
+            ['foo', 'bar']
+
+        """
+        return self.graph().vertices(sort=False)
+
     def number_of_vertices(self) -> int:
         r"""Returns the number of vertices
 
