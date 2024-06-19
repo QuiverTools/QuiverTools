@@ -871,12 +871,36 @@ class Quiver(Element):
     """
 
     def opposite_quiver(self):
-        """The opposite quiver is given by the transpose of the adjacency matrix of the original quiver.
+        r"""
+        Returns the opposite quiver
 
-        OUTPUT: a Quiver object the same vertices and an arrow from j to i for every arrow from i to j in the original quiver.
+        The opposite quiver is the quiver with all arrows reversed.
+        Its adjacency matrix is given by the transpose of the adjacency matrix.
+
+        OUTPUT: the opposite quiver
+
+        EXAMPLES:
+
+        The opposite of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3).opposite_quiver()
+            sage: print(Q)
+            opposite of 3-Kronecker quiver
+            adjacency matrix:
+            [0 0]
+            [3 0]
+
+        It preserves the labelling of the vertices::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False).opposite_quiver()
+            sage: Q.vertices()
+            ['foo', 'bar']
+            sage: Q.adjacency_matrix()
+            [0 0]
+            [3 0]
+
         """
-        A = self.adjacency_matrix().transpose()
-
         name = None
         if self.get_custom_name():
             name = "opposite of " + self.get_custom_name()
