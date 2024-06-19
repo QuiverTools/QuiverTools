@@ -734,8 +734,8 @@ class Quiver(Element):
         OUTPUT: the multiplication of ``x * self.euler_matrix() * y`` as an  Int.
 
         """
-        x = self._coerce_dimension_vector(x)
-        y = self._coerce_dimension_vector(y)
+        x = self._coerce_vector(x)
+        y = self._coerce_vector(y)
 
         return x * self.euler_matrix() * y
 
