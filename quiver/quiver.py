@@ -948,30 +948,71 @@ class Quiver(Element):
 
         return Quiver.from_digraph(G, name)
 
-    # TODO optional parameter for name of the vertex
-    def framed_quiver(self, f):
-        r"""Returns the framed quiver with framing vector f.
+    def framed_quiver(self, framing, vertex=None):
+        r"""
+        Returns the framed quiver with framing vector `f`
+
+        The optional parameter `vertex` determines the name of the framed vertex.
+        If none is given, then it will check if `-oo` is already a vertex
+        and if not, use `-oo`, otherwise it will use `n+1` where `n` is the number
+        of vertices in the quiver
+
+        The framed quiver has one additional vertex, and `f_i` many arrows from
+        the framing vertex to `i`, for every `i\in Q_0`.
 
         INPUT:
-        - ``f``: vector of Ints
 
-        OUTPUT: Quiver object
+        - ``framing`` -- list of non-negative integers saying how many arrows from the
+                         framed vertex to `i`
 
-        The framed quiver has one additional vertex 0 and f_i many arrows from 0 to i.
+        - ``vertex`` (default: None) -- name of the framing vertex
+
+        OUTPUT: the framed quiver
+
+        EXAMPLES:
+
+        Framing the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3).framed_quiver([1, 0])
+            sage: print(Q)
+            framing of 3-Kronecker quiver
+            adjacency matrix:
+            [0 1 0]
+            [0 0 3]
+            [0 0 0]
+            sage: Q.vertices()
+            ['-oo', 0, 1]
+            sage: print(GeneralizedKroneckerQuiver(3).framed_quiver([2, 2]))
+            framing of 3-Kronecker quiver
+            adjacency matrix:
+            [0 2 2]
+            [0 0 3]
+            [0 0 0]
+
         """
-        # TODO tests are missing
+        framing = self._coerce_dimension_vector(framing)
 
-        n = self.number_of_vertices()
-        assert f.length() == n
-        A = self.adjacency_matrix()
-        # Adjacency matrix of the framed quiver looks like this (block shape):
-        # [[0 f]
-        #  [0 A]]
-        # Add f as a first row
-        A = A.insert_row(0, f)
-        # Add a zero column
-        A = A.transpose().insert_row(0, zero_vector(n + 1)).transpose()
-        return Quiver(A)
+        if not vertex:
+            if "-oo" not in self.vertices():
+                vertex = "-oo"
+            else:
+                vertex = self.number_of_vertices()
+
+        G = DiGraph(self.graph())
+
+        # adding the vertex as the _first_ vertex
+        G.add_vertex(vertex)
+
+        # adding the arrows according to the framing vector
+        for i in self.vertices():
+            G.add_edges([(vertex, i)] * framing[i])
+
+        name = None
+        if self.get_custom_name():
+            name = "framing of " + self.get_custom_name()
+
+        return Quiver.from_digraph(G, name)
 
     def coframed_quiver(self, f):
         r"""Returns the coframed quiver with framing vector f.
