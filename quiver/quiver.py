@@ -375,6 +375,7 @@ class Quiver(Element):
 
         It must be a data structure that is indexed by the vertices of the quiver,
         so most likely a dict, list, or vector.
+
         It raises a `ValueError` if it is not a data structure of length the number
         of vertices in the quiver.
 
@@ -1005,8 +1006,8 @@ class Quiver(Element):
         G.add_vertex(vertex)
 
         # adding the arrows according to the framing vector
-        for i in self.vertices():
-            G.add_edges([(vertex, i)] * framing[i])
+        for i, v in enumerate(self.vertices()):
+            G.add_edges([(vertex, v)] * framing[i])
 
         name = None
         if self.get_custom_name():
@@ -1074,8 +1075,8 @@ class Quiver(Element):
         G.add_edges(self.graph().edges())
 
         # adding the arrows according to the framing vector
-        for i in self.vertices():
-            G.add_edges([(i, vertex)] * coframing[i])
+        for i, v in enumerate(self.vertices()):
+            G.add_edges([(v, vertex)] * coframing[i])
 
         name = None
         if self.get_custom_name():
