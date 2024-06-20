@@ -996,7 +996,7 @@ class Quiver(Element):
 
         G = DiGraph(self.graph())
 
-        # adding the vertex as the _first_ vertex
+        # adding framing the vertex (as the _first_ vertex by default)
         G.add_vertex(vertex)
 
         # adding the arrows according to the framing vector
@@ -1022,23 +1022,61 @@ class Quiver(Element):
         the vertex `i` to the coframed vertex, for every `i\in Q_0`.
 
         INPUT:
-        - ``f``: vector of Ints
 
-        OUTPUT: Quiver object
+        - ``coframing`` -- list of non-negative integers saying how many arrows from the
+                         framed vertex to `i`
 
-        The coframed quiver has one additional vertex oo and f_i many arrows from i to oo.
+        - ``vertex`` (default: None) -- name of the framing vertex
+
+        OUTPUT: the framed quiver
+
+        EXAMPLES:
+
+        Coframing the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3).coframed_quiver([1, 0])
+            sage: print(Q)
+            coframing of 3-Kronecker quiver
+            adjacency matrix:
+            [0 3 1]
+            [0 0 0]
+            [0 0 0]
+            sage: Q.vertices()
+            [0, 1, '+oo']
+            sage: Q = GeneralizedKroneckerQuiver(3).coframed_quiver([2, 2], vertex="a")
+            sage: print(Q)
+            coframing of 3-Kronecker quiver
+            adjacency matrix:
+            [0 3 2]
+            [0 0 2]
+            [0 0 0]
+            sage: Q.vertices()
+            [0, 1, 'a']
+
         """
-        n = self.number_of_vertices()
-        assert f.length() == n
-        A = self.adjacency_matrix()
-        # Adjacency matrix of the coframed quiver looks like this (block shape):
-        # [[A f]
-        #  [0 0]]
-        # Add f as a last column
-        A = A.transpose().insert_row(n, f).transpose()
-        # Add a zero row as last row
-        A = A.insert_row(n, zero_vector(n + 1))
-        return Quiver(A)
+        coframing = self._coerce_dimension_vector(coframing)
+
+        # build the graph from the ground up
+        # there doesn't seem to be a way to save the order of vertices otherwise
+        G = DiGraph([self.vertices() + [vertex], []], multiedges=True)
+
+        # make sure the coframing vertex appears last
+        permutation = dict(zip([vertex] + self.vertices(), self.vertices() + [vertex]))
+        G.relabel(perm=permutation, inplace=True)
+
+        # adding the existing arrows
+        G.add_edges(self.graph().edges())
+
+        # adding the arrows according to the framing vector
+        for i in self.vertices():
+            G.add_edges([(i, vertex)] * coframing[i])
+
+        name = None
+        if self.get_custom_name():
+            name = "coframing of " + self.get_custom_name()
+
+        return Quiver.from_digraph(G, name)
 
     def full_subquiver(self, I):
         r"""Returns the full subquiver supported on the given set of vertices.
