@@ -2377,24 +2377,25 @@ class Quiver(Element):
 
 def slope(d, theta, denominator=sum):
     """For denominator = sum, the slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that sum(d) is positive."""
-    assert d.length() == theta.length()
+    assert len(d) == len(theta)
     assert denominator(d) > 0
     return (theta * d) / (denominator(d))
 
 
 def is_subdimension_vector(e, d):
     # coerce dimension vectors
+    # TODO bad: it could be dicts!
     d = vector(d)
     e = vector(e)
 
-    assert e.length() == d.length()
+    assert len(e) == len(d)
 
     return all(0 <= ei and ei <= di for (ei, di) in zip(e, d))
 
 
 def deglex_key(e, b):
     """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d), provided that b >> 0."""
-    n = e.length()
+    n = len(e)
     return sum([e[i] * b ** (n - i - 1) for i in range(n)]) + sum(e) * b**n
 
 
@@ -2423,8 +2424,8 @@ def is_coprime_for_stability_parameter(d, theta):
         sage: is_coprime_for_stability_parameter(d,theta)
         False
     """
-    assert d.length() == theta.length()
-    zeroVector = vector([0 for i in range(d.length())])
+    assert len(d) == len(theta)
+    zeroVector = vector([0 for i in range(len(d))])
     properSubdimensions = list(
         filter(lambda e: e != d and e != zeroVector, all_subdimension_vectors(d))
     )
