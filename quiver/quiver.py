@@ -334,9 +334,10 @@ class Quiver(Element):
 
         It must be a data structure that is indexed by the vertices of the quiver,
         so most likely a dict, list, or vector.
-        If it is a list it is coerced to a vector.
+        It is coerced to a vector, see :meth:`Quiver._coerce_vector`.
 
-        As a consistency check we verify whether the length is the number of vertices.
+        As a consistency check we verify that all entries are non-negative,
+        raising a `ValueError` if it isn't.
 
         INPUT:
 
@@ -372,12 +373,14 @@ class Quiver(Element):
         r"""
         Coerces `x` to be a vector in `\mathbb{Z}Q_0`.
 
-        It raises a `ValueError` if it is not a list of integers of length the number
+        It must be a data structure that is indexed by the vertices of the quiver,
+        so most likely a dict, list, or vector.
+        It raises a `ValueError` if it is not a data structure of length the number
         of vertices in the quiver.
 
         INPUT:
 
-        - ``x``: a list of integers
+        - ``x``: a list, tuple, or dict of integers
 
         OUTPUT: a Sage vector if `x` is an element of `\mathbb{Z}Q_0`
 
@@ -395,13 +398,15 @@ class Quiver(Element):
             ValueError: The input is not an element of `\mathbb{Z}Q_0`.
 
         """
+        if len(x) != self.number_of_vertices():
+            raise ValueError("The input is not an element of `\mathbb{Z}Q_0`.")
+
         if isinstance(x, list) or isinstance(x, tuple):
             x = vector(x)
+        if isinstance(x, dict):
+            x = vector(x[i] for i in self.vertices())
 
-        if len(x) == self.number_of_vertices():
-            return x
-        else:
-            raise ValueError("The input is not an element of `\mathbb{Z}Q_0`.")
+        return x
 
     """
     Basic graph-theoretic properties of the quiver
