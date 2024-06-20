@@ -948,14 +948,12 @@ class Quiver(Element):
 
         return Quiver.from_digraph(G, name)
 
-    def framed_quiver(self, framing, vertex=None):
+    def framed_quiver(self, framing, vertex="-oo"):
         r"""
-        Returns the framed quiver with framing vector `f`
+        Returns the framed quiver with framing vector `framing`
 
         The optional parameter `vertex` determines the name of the framed vertex.
-        If none is given, then it will check if `-oo` is already a vertex
-        and if not, use `-oo`, otherwise it will use `n+1` where `n` is the number
-        of vertices in the quiver
+        If none is given, then it will use `-oo`.
 
         The framed quiver has one additional vertex, and `f_i` many arrows from
         the framing vertex to `i`, for every `i\in Q_0`.
@@ -965,7 +963,7 @@ class Quiver(Element):
         - ``framing`` -- list of non-negative integers saying how many arrows from the
                          framed vertex to `i`
 
-        - ``vertex`` (default: None) -- name of the framing vertex
+        - ``vertex`` (default: "-oo") -- name of the framing vertex
 
         OUTPUT: the framed quiver
 
@@ -983,21 +981,18 @@ class Quiver(Element):
             [0 0 0]
             sage: Q.vertices()
             ['-oo', 0, 1]
-            sage: print(GeneralizedKroneckerQuiver(3).framed_quiver([2, 2]))
+            sage: Q = GeneralizedKroneckerQuiver(3).framed_quiver([2, 2], vertex="a")
+            sage: print(Q)
             framing of 3-Kronecker quiver
             adjacency matrix:
             [0 2 2]
             [0 0 3]
             [0 0 0]
+            sage: Q.vertices()
+            ['a', 0, 1]
 
         """
         framing = self._coerce_dimension_vector(framing)
-
-        if not vertex:
-            if "-oo" not in self.vertices():
-                vertex = "-oo"
-            else:
-                vertex = self.number_of_vertices()
 
         G = DiGraph(self.graph())
 
@@ -1014,8 +1009,17 @@ class Quiver(Element):
 
         return Quiver.from_digraph(G, name)
 
-    def coframed_quiver(self, f):
-        r"""Returns the coframed quiver with framing vector f.
+    def coframed_quiver(self, coframing, vertex="+oo"):
+        r"""
+        Returns the coframed quiver with coframing vector `coframing`
+
+        The optional parameter `vertex` determines the name of the coframed vertex.
+        If none is given, then it will check if `+oo` is already a vertex
+        and if not, use `+oo`, otherwise it will use `n+1` where `n` is the number
+        of vertices in the quiver
+
+        The coframed quiver has one additional vertex, and `f_i` many arrows from
+        the vertex `i` to the coframed vertex, for every `i\in Q_0`.
 
         INPUT:
         - ``f``: vector of Ints
