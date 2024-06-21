@@ -404,7 +404,7 @@ class Quiver(Element):
 
         if isinstance(x, list) or isinstance(x, tuple):
             x = vector(x)
-        if isinstance(x, dict):
+        elif isinstance(x, dict):
             x = vector(x[i] for i in self.vertices())
 
         return x
