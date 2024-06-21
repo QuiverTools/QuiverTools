@@ -1859,9 +1859,10 @@ class Quiver(Element):
 
         """
         d = self._coerce_dimension_vector(d)
+        zero_vector = self._coerce_dimension_vector(self.zero_vector())
 
         genSubdims = self.all_generic_subdimension_vectors(d)
-        genSubdims = list(filter(lambda e: e != self.zero_vector(), genSubdims))
+        genSubdims = list(filter(lambda e: e != zero_vector, genSubdims))
         return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
 
     # TODO remove and cache the recursive one instead
