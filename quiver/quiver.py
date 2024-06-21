@@ -1219,22 +1219,34 @@ class Quiver(Element):
             return vector([1] * self.number_of_vertices())
 
     def simple_root(self, i):
-        r"""Returns the simple root at the vertex.
+        r"""
+        Returns the simple root at the vertex `i`
 
-        The simple root at i is e_i = [0,...,1,...,0], i.e. the unit vector with a one in position i.
+        The output is adapted to the vertices.
 
-        INPUT:
-        - ``i``: Int
+        OUTPUT: the simple root at the vertex `i`
 
-        OUTPUT: vector of Ints
+        EXAMPLES:
+
+        Usually it is an actual vector::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).simple_root(1)
+            (0, 1)
+            sage: type(KroneckerQuiver(3).simple_root(1))
+            <class 'sage.modules.vector_integer_dense.Vector_integer_dense'>
+
+        But if the quiver has custom vertex labels it is a dict::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.simple_root("b")
+            {'a': 0, 'b': 1, 'c': 0}
+
         """
-        n = self.number_of_vertices()
-        # Our convention is that vertices are numbered 1,...,n
-        # TODO no it shouldn't
-        assert i >= 1 and i <= n
-        ei = vector([0 for i in range(n)])
-        ei[i - 1] = 1
-        return ei
+        root = self.zero_vector()
+        root[i] = 1
+
+        return root
 
     def is_root(self, x):
         r"""Checks if x is a root of the underlying diagram of the quiver.
@@ -1343,6 +1355,7 @@ class Quiver(Element):
 
         """
         d = self._coerce_dimension_vector(d)
+        # TODO range over self.vertices() instead
         supp = list(filter(lambda i: d[i] > 0, range(self.number_of_vertices())))
 
         return [i + 1 for i in supp]
@@ -1382,8 +1395,8 @@ class Quiver(Element):
         inequality = all(
             [
                 (
-                    self.euler_form(d, self.simple_root(i + 1))
-                    + self.euler_form(self.simple_root(i + 1), d)
+                    self.euler_form(d, self.simple_root(i))
+                    + self.euler_form(self.simple_root(i), d)
                     <= 0
                 )
                 # TODO should be looping over self.vertices()
@@ -1746,7 +1759,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: R = [Q.simple_root(1), Q.simple_root(2), vector([1, 1])]
+            sage: R = [Q.simple_root(0), Q.simple_root(1), vector([1, 1])]
             sage: for a in R:
             ....:     for b in R:
             ....:         print('ext(' + str(a) + ',' + str(b) + ') = ' + str(Q.generic_ext(a, b)))
@@ -1786,7 +1799,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: R = [Q.simple_root(1), Q.simple_root(2), vector([1,1])]
+            sage: R = [Q.simple_root(0), Q.simple_root(1), vector([1,1])]
             sage: for a in R:
             ....:     for b in R:
             ....:         print('hom('+str(a)+','+str(b)+') = '+str(Q.generic_hom(a,b)))
@@ -2114,7 +2127,8 @@ class Quiver(Element):
         # TODO this implementation needs to be documented (much better)
         if algorithm == "derksen-weyman":
             decomposition = [
-                [d[i], self.simple_root(i + 1)]
+                [d[i], self.simple_root(i)]
+                # TODO range over self.vertices() instead
                 for i in range(self.number_of_vertices())
             ]
             while True:
