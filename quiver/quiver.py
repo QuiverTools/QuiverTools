@@ -1189,13 +1189,34 @@ class Quiver(Element):
             return vector([0] * self.number_of_vertices())
 
     def thin_dimension_vector(self):
-        r"""Returns the thin dimension vector.
+        r"""
+        Returns the thin dimension vector, i.e., all ones
 
-        The thin dimension vector is [1,...,1].
+        The output is adapted to the vertices.
 
-        OUTPUT: vector of Ints
+        OUTPUT: the thin dimension vector
+
+        EXAMPLES:
+
+        Usually it is an actual vector::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).thin_dimension_vector()
+            (1, 1)
+            sage: type(KroneckerQuiver(3).thin_dimension_vector())
+            <class 'sage.modules.vector_integer_dense.Vector_integer_dense'>
+
+        But if the quiver has custom vertex labels it is a dict::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.thin_dimension_vector()
+            {'a': 1, 'b': 1, 'c': 1}
+
         """
-        return vector([1 for i in range(self.number_of_vertices())])
+        if self.__has_vertex_labels():
+            return {i: 1 for i in self.vertices()}
+        else:
+            return vector([1] * self.number_of_vertices())
 
     def simple_root(self, i):
         r"""Returns the simple root at the vertex.
