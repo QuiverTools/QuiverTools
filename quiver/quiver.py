@@ -1082,6 +1082,8 @@ class Quiver(Element):
             [0, 1, 'a']
 
         """
+        # TODO check the vertex order in coframing of framing of a quiver
+
         coframing = self._coerce_dimension_vector(coframing)
 
         # build the graph from the ground up
@@ -2481,13 +2483,16 @@ class Quiver(Element):
 """Auxiliary methods"""
 
 
+# TODO should probably be part of Quiver class, so that we don't need to coerce outside Quiver
 def slope(d, theta, denominator=sum):
     """For denominator = sum, the slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that sum(d) is positive."""
     assert len(d) == len(theta)
     assert denominator(d) > 0
-    return (theta * d) / (denominator(d))
+
+    return (theta * d) / denominator(d)
 
 
+# TODO should also be part of Quiver class
 def is_subdimension_vector(e, d):
     # coerce dimension vectors
     # TODO bad: it could be dicts!
@@ -2499,18 +2504,21 @@ def is_subdimension_vector(e, d):
     return all(0 <= ei and ei <= di for (ei, di) in zip(e, d))
 
 
+# TODO should be part of Quiver class (?)
 def deglex_key(e, b):
     """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d), provided that b >> 0."""
     n = len(e)
     return sum([e[i] * b ** (n - i - 1) for i in range(n)]) + sum(e) * b**n
 
 
+# TODO should be part of Quiver class
 def all_subdimension_vectors(d):
     """Returns the list of all subdimension vectors of d."""
     return list(map(vector, cartesian_product([range(di + 1) for di in d])))
 
 
 # TODO: This method has a stupid name (my own fault). Think of a better one.
+# TODO should also be part of Quiver class?
 def is_coprime_for_stability_parameter(d, theta):
     """Checks if d is theta-coprime.
 
@@ -2538,6 +2546,7 @@ def is_coprime_for_stability_parameter(d, theta):
     return all([slope(d, theta) != slope(e, theta) for e in properSubdimensions])
 
 
+# TODO should be part of Quiver class
 def is_indivisible(d):
     """Checks if the gcd of all entries is 1 or not."""
     return gcd(d) == 1
