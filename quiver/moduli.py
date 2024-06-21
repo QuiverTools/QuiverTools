@@ -64,7 +64,13 @@ class QuiverModuli(ABC):
             == theta.length()
         )
         assert condition in ["semistable", "stable"]
-        assert all([denominator(Q.simple_root(i)) > 0 for i in range(1, n + 1)])
+        # TODO this effectivity condition needs to be documented, and maybe be part of Quiver?
+        assert all(
+            [
+                denominator(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
+                for i in Q.vertices()
+            ]
+        )
         self._Q = Q
         self._d = d
         self._theta = theta
@@ -973,14 +979,14 @@ class QuiverModuli(ABC):
         if chernClasses is None:
             chernClasses = [
                 "x%s_%s" % (i, r)
-                for i in range(1, self._Q.number_of_vertices() + 1)
-                for r in range(1, self._d[i - 1] + 1)
+                for i in range(self._Q.number_of_vertices())
+                for r in range(1, self._d[i] + 1)
             ]
         if chernRoots is None:
             chernRoots = [
                 "t%s_%s" % (i, r)
-                for i in range(1, self._Q.number_of_vertices() + 1)
-                for r in range(1, self._d[i - 1] + 1)
+                for i in range(self._Q.number_of_vertices())
+                for r in range(1, self._d[i] + 1)
             ]
 
         R = PolynomialRing(QQ, chernRoots)
@@ -1400,7 +1406,7 @@ class QuiverModuliSpace(QuiverModuli):
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
             sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
-            [[1], [x2_1]]
+            [[1], [x1_1]]
 
 
         The 3-Kronecker quiver::
@@ -1413,12 +1419,12 @@ class QuiverModuliSpace(QuiverModuli):
             sage: I = A.defining_ideal()
             sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
             [[1],
-            [x2_1],
-            [x1_2, x2_1^2, x2_2],
-            [x2_1^3, x2_1*x2_2, x2_3],
-            [x2_1^2*x2_2, x2_2^2, x2_1*x2_3],
-            [x2_2*x2_3],
-            [x2_3^2]]
+            [x1_1],
+            [x0_2, x1_1^2, x1_2],
+            [x1_1^3, x1_1*x1_2, x1_3],
+            [x1_1^2*x1_2, x1_2^2, x1_1*x1_3],
+            [x1_2*x1_3],
+            [x1_3^2]]
 
         The 5-subspaces quiver::
 
@@ -1429,7 +1435,7 @@ class QuiverModuliSpace(QuiverModuli):
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
             sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
-            [[1], [x2_1, x3_1, x4_1, x5_1, x6_1], [x6_2]]
+            [[1], [x1_1, x2_1, x3_1, x4_1, x5_1], [x5_2]]
 
         """
         Q, d, theta = self._Q, self._d, self._theta
@@ -1440,9 +1446,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         if chernClasses is None:
             chernClasses = [
-                "x%s_%s" % (i, r)
-                for i in range(1, n + 1)
-                for r in range(1, d[i - 1] + 1)
+                "x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)
             ]
 
         taut = self._QuiverModuli__tautological_presentation(
@@ -1798,11 +1802,10 @@ class QuiverModuliStack(QuiverModuli):
         Q, d = self._Q, self._d
         n = Q.number_of_vertices()
 
+        # TODO there is very similar code earlier
         if chernClasses is None:
             chernClasses = [
-                "x%s_%s" % (i, r)
-                for i in range(1, n + 1)
-                for r in range(1, d[i - 1] + 1)
+                "x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)
             ]
 
         taut = self._QuiverModuli__tautological_presentation(
