@@ -494,6 +494,27 @@ class Quiver(Element):
         """
         return self.graph().order()
 
+    def __has_vertex_labels(self) -> bool:
+        r"""Check whether vertex labels are used
+
+        EXAMPLES:
+
+        With vertex labels::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(2)
+            sage: Q._Quiver__has_vertex_labels()
+            False
+
+        With vertex labels::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Q._Quiver__has_vertex_labels()
+            True
+
+        """
+        return self.vertices() != list(range(self.number_of_vertices()))
+
     def number_of_arrows(self) -> int:
         r"""Returns the number of arrows
 
