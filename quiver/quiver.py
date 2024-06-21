@@ -1084,34 +1084,54 @@ class Quiver(Element):
 
         return Quiver.from_digraph(G, name)
 
-    def full_subquiver(self, I):
-        r"""Returns the full subquiver supported on the given set of vertices.
+    def full_subquiver(self, vertices):
+        r"""Returns the full subquiver supported on the given set of vertices
 
         INPUT:
-        - ``I``: List
 
-        OUTPUT: Quiver object
+        - ``vertices``: list of vertices for the subquiver
+
+        OUTPUT: the full subquiver on the specified vertices
 
         EXAMPLES:
 
-        The support is the set {i in Q_0 | d_i > 0}.::
+        Some basic examples::
 
             sage: from quiver import *
-            sage: Q = ThreeVertexQuiver(2, 3, 4); Q.adjacency_matrix()
-            [0 2 3]
-            [0 0 4]
-            [0 0 0]
-            sage: Q.full_subquiver([1, 2]).adjacency_matrix()
+            sage: Q = ThreeVertexQuiver(2, 3, 4)
+            sage: print(Q.full_subquiver([0, 1]))
+            full subquiver of an acyclic 3-vertex quiver of type (2, 3, 4)
+            adjacency matrix:
             [0 2]
             [0 0]
-            sage: Q.full_subquiver([1, 3]).adjacency_matrix()
+            sage: print(Q.full_subquiver([0, 2]))
+            full subquiver of an acyclic 3-vertex quiver of type (2, 3, 4)
+            adjacency matrix:
+            [0 3]
+            [0 0]
+
+        If we specified a non-standard labeling on the vertices we must use it::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q == ThreeVertexQuiver(2, 3, 4)
+            True
+            sage: print(Q.full_subquiver(["a", "b"]))
+            a quiver with 2 vertices and 2 arrows
+            adjacency matrix:
+            [0 2]
+            [0 0]
+            sage: print(Q.full_subquiver(["a", "c"]))
+            a quiver with 2 vertices and 3 arrows
+            adjacency matrix:
             [0 3]
             [0 0]
 
         """
-        assert all([i in range(1, self.number_of_vertices() + 1) for i in I])
-        A = self.adjacency_matrix()
-        return Quiver(A[[i - 1 for i in I], [i - 1 for i in I]])
+        name = None
+        if self.get_custom_name():
+            name = "full subquiver of " + self.get_custom_name()
+
+        return Quiver.from_digraph(self.graph().subgraph(vertices=vertices), name)
 
     """
     Dimension vectors and roots
