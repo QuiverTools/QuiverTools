@@ -1159,11 +1159,34 @@ class Quiver(Element):
     """
 
     def zero_vector(self):
-        r"""Returns the zero vector.
+        r"""
+        Returns the zero dimension vector
 
-        OUTPUT: vector of Ints
+        The output is adapted to the vertices.
+
+        OUTPUT: the zero dimension vector
+
+        EXAMPLES:
+
+        Usually it is an actual vector::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).zero_vector()
+            (0, 0)
+            sage: type(KroneckerQuiver(3).zero_vector())
+            <class 'sage.modules.vector_integer_dense.Vector_integer_dense'>
+
+        But if the quiver has custom vertex labels it is a dict::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.zero_vector()
+            {'a': 0, 'b': 0, 'c': 0}
+
         """
-        return vector([0 for i in range(self.number_of_vertices())])
+        if self.__has_vertex_labels():
+            return {i: 0 for i in self.vertices()}
+        else:
+            return vector([0] * self.number_of_vertices())
 
     def thin_dimension_vector(self):
         r"""Returns the thin dimension vector.
