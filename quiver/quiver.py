@@ -1325,18 +1325,33 @@ class Quiver(Element):
 
         return self.tits_form(x) == 1
 
-    def is_imaginary_root(self, x):
-        r"""Checks if x is an imaginary root of the underlying diagram of the quiver.
+    def is_imaginary_root(self, x) -> bool:
+        r"""Checks whether `x` is a imaginary root of the underlying diagram of the quiver.
 
         A root is called imaginary if its Tits form is non-positive.
 
         INPUT:
-        - ``x``: vector of Ints
+        - ``x``: integer vector
 
-        OUTPUT: statement truth value as bool
+        OUTPUT: whether `x` is an imaginary root
+
+        EXAMPLES:
+
+        Some imaginary roots and non imaginary roots for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.is_imaginary_root([2, 3])
+            True
+            sage: Q.is_imaginary_root(Q.zero_vector())
+            False
+            sage: Q.is_imaginary_root([4, 1])
+            False
+
         """
         x = self._coerce_vector(x)
-        return x != self.zero_vector() and self.tits_form(x) <= 0
+
+        return any(x) and self.tits_form(x) <= 0
 
     def is_schur_root(self, d):
         r"""Checks if d is a Schur root.
