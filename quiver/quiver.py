@@ -1297,7 +1297,7 @@ class Quiver(Element):
 
         return any(x) and self.tits_form(x) <= 1
 
-    def is_real_root(self, x):
+    def is_real_root(self, x) -> bool:
         r"""Checks whether `x` is a real root of the underlying diagram of the quiver.
 
         A root is called real if its Tits form equals 1.
@@ -1309,16 +1309,16 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        Some roots and non-roots for the 3-Kronecker quiver::
+        Some real and non-real for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
             sage: Q.is_real_root([2, 3])
             False
-            sage: Q.is_root(Q.zero_vector())
+            sage: Q.is_real_root(Q.zero_vector())
             False
-            sage: Q.is_root([3, 1])
-            False
+            sage: Q.is_real_root([3, 1])
+            True
 
         """
         x = self._coerce_vector(x)
