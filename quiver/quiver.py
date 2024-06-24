@@ -1305,7 +1305,21 @@ class Quiver(Element):
         INPUT:
         - ``x``: integer vector
 
-        OUTPUT: statement truth value as bool
+        OUTPUT: whether `x` is a real root
+
+        EXAMPLES:
+
+        Some roots and non-roots for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.is_real_root([2, 3])
+            False
+            sage: Q.is_root(Q.zero_vector())
+            False
+            sage: Q.is_root([3, 1])
+            False
+
         """
         x = self._coerce_vector(x)
 
