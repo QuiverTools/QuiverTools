@@ -1353,7 +1353,7 @@ class Quiver(Element):
 
         return any(x) and self.tits_form(x) <= 0
 
-    def is_schur_root(self, d):
+    def is_schur_root(self, d) -> bool:
         r"""Checks if d is a Schur root.
 
         INPUT:
@@ -1532,7 +1532,7 @@ class Quiver(Element):
 
     # taken from code/snippets/canonical.sage
     # TODO still need testing code from there
-    def is_generic_subdimension_vector(self, e, d):
+    def is_generic_subdimension_vector(self, e, d) -> bool:
         r"""Checks if e is a generic subdimension vector of d.
 
         INPUT:
@@ -1894,7 +1894,7 @@ class Quiver(Element):
         # How about this:
         return self.generic_hom(a, b) == 0
 
-    def is_left_orthogonal(self, a, b):
+    def is_left_orthogonal(self, a, b) -> bool:
         if self.generic_ext_vanishing(a, b):
             return self.euler_form(a, b) == 0
         else:
@@ -2531,7 +2531,7 @@ class Quiver(Element):
     Some things that don't below anywhere else yet?
     """
 
-    def is_cofree(self, d):
+    def is_cofree(self, d) -> bool:
         # https://mathscinet.ams.org/mathscinet-getitem?mr=2394691
         # we don't really know what this means
         raise NotImplementedError()
@@ -2581,7 +2581,7 @@ def all_subdimension_vectors(d):
 
 # TODO: This method has a stupid name (my own fault). Think of a better one.
 # TODO should also be part of Quiver class?
-def is_coprime_for_stability_parameter(d, theta):
+def is_coprime_for_stability_parameter(d, theta) -> bool:
     """Checks if d is theta-coprime.
 
     A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d.
@@ -2609,7 +2609,7 @@ def is_coprime_for_stability_parameter(d, theta):
 
 
 # TODO should be part of Quiver class
-def is_indivisible(d):
+def is_indivisible(d) -> bool:
     """Checks if the gcd of all entries is 1 or not."""
     return gcd(d) == 1
 

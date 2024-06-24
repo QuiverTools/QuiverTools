@@ -89,7 +89,7 @@ class QuiverModuli(ABC):
     def denominator(self):
         return self._denominator
 
-    def is_nonempty(self):
+    def is_nonempty(self) -> bool:
         if self._condition == "stable":
             return self._Q.has_stable_representation(self._d, self._theta)
         elif self._condition == "semistable":
@@ -258,7 +258,7 @@ class QuiverModuli(ABC):
 
         return [[subdimensions[r] for r in fstar] for fstar in hn[N - 1]]
 
-    def is_harder_narasimhan_type(self, dstar):
+    def is_harder_narasimhan_type(self, dstar) -> bool:
         r"""Checks if dstar is a HN type.
 
         INPUT:
@@ -545,7 +545,7 @@ class QuiverModuli(ABC):
                 ]
             return allLunaTypes
 
-    def is_luna_type(self, tau):
+    def is_luna_type(self, tau) -> bool:
         r"""Checks if tau is a Luna type for theta.
 
         INPUT:
@@ -768,7 +768,7 @@ class QuiverModuli(ABC):
     # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
     # Is this comment now obsolete?
     # TODO reimplement this with HN strata computation.
-    def is_amply_stable(self):
+    def is_amply_stable(self) -> bool:
         r"""Checks if d is amply stable for theta.
 
         OUTPUT: statement truth value as Bool
@@ -819,7 +819,7 @@ class QuiverModuli(ABC):
                 >= 2
             )
 
-    def is_strongly_amply_stable(self):
+    def is_strongly_amply_stable(self) -> bool:
         r"""Checks if d is strongly amply stable for theta.
 
         OUTPUT: statement truth value as Bool
@@ -1134,11 +1134,11 @@ class QuiverModuli(ABC):
         return taut["Relations"]
 
     @abstractmethod
-    def dimension(self):
+    def dimension(self) -> int:
         pass
 
     @abstractmethod
-    def is_smooth(self):
+    def is_smooth(self) -> bool:
         pass
 
     @abstractmethod
@@ -1344,7 +1344,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         return betti
 
-    def is_smooth(self):
+    def is_smooth(self) -> bool:
         # if theta-coprime then you can shortcut everything
         # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
@@ -1710,7 +1710,7 @@ class QuiverModuliStack(QuiverModuli):
         else:
             return -Infinity
 
-    def is_smooth(self):
+    def is_smooth(self) -> bool:
         # TODO think about the empty case, should it be smooth?
         return True
 
