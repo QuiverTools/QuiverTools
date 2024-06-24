@@ -1082,8 +1082,6 @@ class Quiver(Element):
             [0, 1, 'a']
 
         """
-        # TODO check the vertex order in coframing of framing of a quiver
-
         coframing = self._coerce_dimension_vector(coframing)
 
         # build the graph from the ground up
@@ -1091,8 +1089,11 @@ class Quiver(Element):
         G = DiGraph([self.vertices() + [vertex], []], multiedges=True)
 
         # make sure the coframing vertex appears last
-        permutation = dict(zip([vertex] + self.vertices(), self.vertices() + [vertex]))
-        G.relabel(perm=permutation, inplace=True)
+        if vertex != G.vertices()[-1]:
+            permutation = dict(
+                zip([vertex] + self.vertices(), self.vertices() + [vertex])
+            )
+            G.relabel(perm=permutation, inplace=True)
 
         # adding the existing arrows
         G.add_edges(self.graph().edges())
