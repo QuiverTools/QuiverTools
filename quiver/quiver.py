@@ -979,8 +979,8 @@ class Quiver(Element):
         r"""
         Returns the framed quiver with framing vector `framing`
 
-        The optional parameter `vertex` determines the name of the framed vertex.
-        If none is given, then it will use `-oo`.
+        The optional parameter `vertex` determines the name of the framing vertex,
+        which defaults to `-oo`.
 
         The framed quiver has one additional vertex, and `f_i` many arrows from
         the framing vertex to `i`, for every `i\in Q_0`.
@@ -1018,7 +1018,18 @@ class Quiver(Element):
             sage: Q.vertices()
             ['a', 0, 1]
 
+        If you frame twice it will have to use a different vertex label::
+
+            sage: Q = GeneralizedKroneckerQuiver(3).framed_quiver([2, 2])
+            sage: Q.framed_quiver([1, 1, 1]).vertices()
+            Traceback (most recent call last):
+            ...
+            ValueError: -oo is already a vertex
+
         """
+        if vertex in self.vertices():
+            raise ValueError("{} is already a vertex".format(vertex))
+
         framing = self._coerce_dimension_vector(framing)
 
         G = DiGraph(self.graph())
@@ -1040,10 +1051,8 @@ class Quiver(Element):
         r"""
         Returns the coframed quiver with coframing vector `coframing`
 
-        The optional parameter `vertex` determines the name of the coframed vertex.
-        If none is given, then it will check if `+oo` is already a vertex
-        and if not, use `+oo`, otherwise it will use `n+1` where `n` is the number
-        of vertices in the quiver
+        The optional parameter `vertex` determines the name of the coframing vertex,
+        which defaults to `+oo`.
 
         The coframed quiver has one additional vertex, and `f_i` many arrows from
         the vertex `i` to the coframed vertex, for every `i\in Q_0`.
@@ -1081,19 +1090,27 @@ class Quiver(Element):
             sage: Q.vertices()
             [0, 1, 'a']
 
+        If you coframe twice it will have to use a different vertex label::
+
+            sage: Q = GeneralizedKroneckerQuiver(3).coframed_quiver([2, 2])
+            sage: Q.coframed_quiver([1, 1, 1]).vertices()
+            Traceback (most recent call last):
+            ...
+            ValueError: +oo is already a vertex
+
         """
+        if vertex in self.vertices():
+            raise ValueError("{} is already a vertex".format(vertex))
+
         coframing = self._coerce_dimension_vector(coframing)
 
         # build the graph from the ground up
-        # there doesn't seem to be a way to save the order of vertices otherwise
-        G = DiGraph([self.vertices() + [vertex], []], multiedges=True)
+        G = DiGraph([self.vertices() + [vertex], []], multiedges=True, loops=True)
 
-        # make sure the coframing vertex appears last
-        if vertex != G.vertices()[-1]:
-            permutation = dict(
-                zip([vertex] + self.vertices(), self.vertices() + [vertex])
-            )
-            G.relabel(perm=permutation, inplace=True)
+        # there doesn't seem to be a way to save the order of vertices otherwise
+        # so make sure the coframing vertex appears last
+        permutation = dict(zip(G.vertices(), self.vertices() + [vertex]))
+        G.relabel(perm=permutation, inplace=True)
 
         # adding the existing arrows
         G.add_edges(self.graph().edges())
