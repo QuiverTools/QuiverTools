@@ -1268,32 +1268,47 @@ class Quiver(Element):
 
         return root
 
-    def is_root(self, x):
-        r"""Checks if x is a root of the underlying diagram of the quiver.
+    def is_root(self, x) -> bool:
+        r"""Checks whether `x` is a root of the underlying diagram of the quiver.
 
-        A root is a non-zero vector in Z^n such that the Tits form of x is <= 1.
+        A root is a non-zero vector in `\mathbb{Z}Q_0` such that
+        the Tits form of `x` is bounded above by 1..
 
         INPUT:
-        - ``x``: vector of Ints
+        - ``x``: integer vector
 
-        OUTPUT: statement truth value as bool
+        OUTPUT: whether `x` is a root
+
+        EXAMPLES:
+
+        Some roots and non-roots for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.is_root([2, 3])
+            True
+            sage: Q.is_root(Q.zero_vector())
+            False
+            sage: Q.is_root([4, 1])
+            False
+
         """
         x = self._coerce_vector(x)
 
-        # TODO any check like e == zero_vector should really be replaced by a all(ei == 0 for ei in e) for performance
-        return x != self.zero_vector() and self.tits_form(x) <= 1
+        return any(x) and self.tits_form(x) <= 1
 
     def is_real_root(self, x):
-        r"""Checks if x is a real root of the underlying diagram of the quiver.
+        r"""Checks whether `x` is a real root of the underlying diagram of the quiver.
 
         A root is called real if its Tits form equals 1.
 
         INPUT:
-        - ``x``: vector of Ints
+        - ``x``: integer vector
 
         OUTPUT: statement truth value as bool
         """
         x = self._coerce_vector(x)
+
         return self.tits_form(x) == 1
 
     def is_imaginary_root(self, x):
