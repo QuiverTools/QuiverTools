@@ -1382,13 +1382,13 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(1, 1, 1)
-            sage: Q.is_schur_root((1, 1, 2))
+            sage: Q.is_schur_root([1, 1, 2])
             True
-            sage: Q.is_schur_root((1, 2, 1))
+            sage: Q.is_schur_root([1, 2, 1])
             False
-            sage: Q.is_schur_root((1, 1, 1))
+            sage: Q.is_schur_root([1, 1, 1])
             True
-            sage: Q.is_schur_root((2, 2, 2))
+            sage: Q.is_schur_root([2, 2, 2])
             False
 
         """
