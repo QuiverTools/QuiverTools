@@ -1404,10 +1404,9 @@ class Quiver(Element):
 
         - ``d``: dimension vector
 
-        OUTPUT: List
+        OUTPUT: subset of vertices in the underlying graph in the support
 
-        The support is the set {i in Q_0 | d_i > 0}.
-        # I know it doesn't actually depend on Q, but I think I want to make it a method of the object. The reason is that I might want to introduce the possibility to give names to the vertices and arrows. Then support() should return the subset {i in Q_0 | d_i > 0} (as a list) and not the list of indexes of the vector.
+        The support is the set `\{ i \in Q_0 \mid d_i > 0 \}`.
 
         EXAMPLES
 
