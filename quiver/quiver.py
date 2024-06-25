@@ -1354,23 +1354,28 @@ class Quiver(Element):
         return any(x) and self.tits_form(x) <= 0
 
     def is_schur_root(self, d) -> bool:
-        r"""Checks if d is a Schur root.
+        r"""Checks if `d` is a Schur root.
 
         INPUT:
-        - ``d``: vector of Ints
+        - ``d``: dimension vector
 
-        OUTPUT: statement truth value as Bool
+        OUTPUT: whether `d` is an imaginary root
 
-        A Schur root is a dimension vector which admits a Schurian representation, i.e. a representation whose endomorphism ring is k. It's necessarily indecomposable.
-        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487) d is a Schur root if and only if d admits a stable representation for the canonical stability parameter.
+        A Schur root is a dimension vector which admits a Schurian representation,
+        i.e., a representation whose endomorphism ring is the field itself.
+        It is necessarily indecomposable.
+
+        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487)
+        `d` is a Schur root if and only if `d` admits a stable representation for
+        the canonical stability parameter.
 
         EXAMPLES:
 
-        The root (2, 3) is Schurian for the 3-Kronecker quiver::
+        The dimension vector `(2, 3)` is Schurian for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.is_schur_root((2, 3))
+            sage: Q.is_schur_root([2, 3])
             True
 
         Examples from Derksen--Weyman's book (Example 11.1.4)::
