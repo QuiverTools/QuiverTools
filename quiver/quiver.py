@@ -1411,23 +1411,30 @@ class Quiver(Element):
 
         EXAMPLES
 
-        The support is the set of vertices for which the dimension vector is nonzero::
+        The support is the set of vertices for which the value of the dimension
+        vector is nonzero::
 
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(2, 0, 4)
             sage: d = vector([1, 1, 1])
             sage: Q.support(d)
-            [1, 2, 3]
+            [0, 1, 2]
             sage: d = vector([1, 0, 1])
             sage: Q.support(d)
-            [1, 3]
+            [0, 2]
+
+        It takes into account vertex labels::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: d = {"a": 2, "b": 3, "c": 0}
+            sage: Q.support(d)
+            ['a', 'b']
 
         """
-        d = self._coerce_dimension_vector(d)
-        # TODO range over self.vertices() instead
-        supp = list(filter(lambda i: d[i] > 0, range(self.number_of_vertices())))
+        # TODO we need also a Quiver._is_dimension_vector(d) method?
+        # TODO if d is a dict, should we have defaultdict behavior for zeroes?
 
-        return [i + 1 for i in supp]
+        return [i for i in self.vertices() if d[i] > 0]
 
     def in_fundamental_domain(self, d):
         # TODO optional parameter for strict interior? maybe even specify how deep into the strict interior?
