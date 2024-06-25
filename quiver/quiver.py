@@ -1435,15 +1435,8 @@ class Quiver(Element):
 
         return [i for i in self.vertices() if d[i] > 0]
 
-    def in_fundamental_domain(self, d):
-        # TODO optional parameter for strict interior? maybe even specify how deep into the strict interior?
+    def in_fundamental_domain(self, d, depth=0):
         r"""Checks if a dimension vector is in the fundamental domain.
-
-        INPUT:
-
-        - ``d``: dimension vector
-
-        OUTPUT: statement truth value as Bool
 
         The fundamental domain of `Q` is the set of dimension vectors `d` such that
 
@@ -1454,6 +1447,16 @@ class Quiver(Element):
         imaginary roots is the Weyl group saturation of the fundamental domain.
         If `d` is in the fundamental domain then it is Schurian and a general
         representation of dimension vector `d` is stable for the canonical stability parameter.
+
+        The optional parameter `depth` allows to make the inequality stricter.
+
+        INPUT:
+
+        - ``d``: dimension vector
+
+        - ``depth`` (default: 0) -- how deep the vector should be in the domain
+
+        OUTPUT: whether `d` is in the (interior of) the fundamental domain
 
         EXAMPLES:
 
@@ -1478,6 +1481,16 @@ class Quiver(Element):
             sage: Q.in_fundamental_domain({"a" : 2, "b" : 3})
             True
 
+        We test for dimension vectors in the strict interior, where the depth is
+        equal to 1::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.in_fundamental_domain([1, 1], depth=1)
+            True
+            sage: Q.in_fundamental_domain([2, 3], depth=1)
+            False
+
         """
         # TODO we need also a Quiver._is_dimension_vector(d) method?
         # TODO we don't want to coerce here!
@@ -1485,7 +1498,7 @@ class Quiver(Element):
         # check if `\langle d,e_i\rangle + \langle e_i,d\rangle \leq 0`
         # for all vertices `i\in Q_0`
         inequality = all(
-            self.symmetrized_euler_form(d, self.simple_root(i)) <= 0
+            self.symmetrized_euler_form(d, self.simple_root(i)) <= -depth
             for i in self.vertices()
         )
 
