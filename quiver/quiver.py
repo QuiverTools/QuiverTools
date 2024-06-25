@@ -1445,9 +1445,15 @@ class Quiver(Element):
 
         OUTPUT: statement truth value as Bool
 
-        The fundamental domain of Q is the set of dimension vectors d such that supp(d) is connected and <d,e_i> + <e_i,d> <= 0 for all simple roots e_i.
-        Every d in the fundamental domain is an imaginary root and the set of imaginary roots is the Weyl group saturation of the fundamental domain.
-        If d is in the fundamental domain then it is Schurian and a general representation of dimension vector d is stable for the canonical stability parameter.
+        The fundamental domain of `Q` is the set of dimension vectors `d` such that
+
+        * `\operatorname{supp}(\mathbf{d})` is connected
+        * `\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for every simple root `e_i`.
+
+        Every `d` in the fundamental domain is an imaginary root and the set of
+        imaginary roots is the Weyl group saturation of the fundamental domain.
+        If `d` is in the fundamental domain then it is Schurian and a general
+        representation of dimension vector `d` is stable for the canonical stability parameter.
 
         EXAMPLES:
 
@@ -1455,28 +1461,32 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.in_fundamental_domain((1, 1))
+            sage: Q.in_fundamental_domain([1, 1])
             True
-            sage: Q.in_fundamental_domain((1, 2))
+            sage: Q.in_fundamental_domain([1, 2])
             False
-            sage: Q.in_fundamental_domain((2, 3))
+            sage: Q.in_fundamental_domain([2, 3])
+            True
+
+        The same calculation now with vertex labels::
+
+            sage: Q = Quiver.from_string("a---b", forget_labels=False)
+            sage: Q.in_fundamental_domain({"a" : 1, "b" : 1})
+            True
+            sage: Q.in_fundamental_domain({"a" : 1, "b" : 2})
+            False
+            sage: Q.in_fundamental_domain({"a" : 2, "b" : 3})
             True
 
         """
-        d = self._coerce_dimension_vector(d)
+        # TODO we need also a Quiver._is_dimension_vector(d) method?
+        # TODO we don't want to coerce here!
 
         # check if `\langle d,e_i\rangle + \langle e_i,d\rangle \leq 0`
         # for all vertices `i\in Q_0`
         inequality = all(
-            [
-                (
-                    self.euler_form(d, self.simple_root(i))
-                    + self.euler_form(self.simple_root(i), d)
-                    <= 0
-                )
-                # TODO should be looping over self.vertices()
-                for i in range(self.number_of_vertices())
-            ]
+            self.symmetrized_euler_form(d, self.simple_root(i)) <= 0
+            for i in self.vertices()
         )
 
         # check if the support is connected
