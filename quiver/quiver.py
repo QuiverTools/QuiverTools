@@ -2330,15 +2330,14 @@ class Quiver(Element):
         sstSubdims = [subdims[j] for j in sstIndexes]
         return sstIndexes, sstSubdims
 
-    def has_stable_representation(self, d, theta=None, algorithm="schofield"):
+    # TODO make a GitHub issue for King algorithm (is there actually one?) and Andriaenssens--Le Bruyn algorithm
+    def has_stable_representation(self, d, theta=None):
         r"""Checks if there is a `\theta`-stable representation of this dimension vector.
 
         INPUT:
         - ``d``: dimension vector
 
         - ``theta`` (default: canonical stability parameter): stability parameter
-
-        - ``algorithm``: string
 
         OUTPUT: True if there is a `\theta`-stable representation of `d`, False otherwise.
 
@@ -2351,11 +2350,11 @@ class Quiver(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
             sage: theta = (1, -1)
-            sage: Q.has_stable_representation([1, 1], theta, algorithm="schofield")
+            sage: Q.has_stable_representation([1, 1], theta)
             True
-            sage: Q.has_stable_representation([2, 2], theta, algorithm="schofield")
+            sage: Q.has_stable_representation([2, 2], theta)
             False
-            sage: Q.has_stable_representation([0, 0], theta, algorithm="schofield")
+            sage: Q.has_stable_representation([0, 0], theta)
             False
 
         Stables for the 3-Kronecker quiver::
@@ -2364,46 +2363,25 @@ class Quiver(Element):
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: d = (2, 3)
             sage: theta = Q.canonical_stability_parameter(d)
-            sage: Q.has_stable_representation(d, theta, algorithm="schofield")
+            sage: Q.has_stable_representation(d, theta)
             True
-            sage: Q.has_stable_representation(d, algorithm="schofield")
+            sage: Q.has_stable_representation(d)
             True
 
         """
-        assert algorithm in ["schofield", "king", "al"]
-
         if theta is None:
             theta = self.canonical_stability_parameter(d)
 
-        # coerce stability parameter
-        theta = vector(theta)
-        assert theta.length() == self.number_of_vertices()
-
         d = self._coerce_dimension_vector(d)
+        theta = self._coerce_vector(theta)
 
-        # TODO implement this
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1315461
-        # Question concerning above TODO: What is King's algorithm for checking for existence of stable representations supposed to be? I can't find one in the paper.
-        if algorithm == "king":
-            raise NotImplementedError()
+        if d == self.zero_vector():
+            return False
 
-        # TODO implement this
-        # al stands for Adriaenssens--Le Bruyn
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1972892
-        if algorithm == "al":
-            raise NotImplementedError()
-
-        if algorithm == "schofield":
-            if d == self.zero_vector():
-                return False
-            else:
-                genSubdims = self.all_generic_subdimension_vectors(d)
-                genSubdims = list(
-                    filter(lambda e: e != self.zero_vector() and e != d, genSubdims)
-                )
-                return all(
-                    [self.slope(e, theta) < self.slope(d, theta) for e in genSubdims]
-                )
+        return all(
+            self.slope(e, theta) < self.slope(d, theta)
+            for e in self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
+        )
 
     # TODO remove and cache the recursive one instead
     def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
