@@ -1671,6 +1671,7 @@ class Quiver(Element):
             False
             sage: Q.division_order(e, d)
             False
+
         """
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
@@ -2623,6 +2624,7 @@ class Quiver(Element):
         then the resulting moduli space is infinitesimally rigid.
         """
         # This is only relevant on the unstable locus
+        # TODO Quiver.all_harder_narasimhan_types needs way to filter out [d]
         HN = list(
             filter(
                 lambda hntype: hntype != [d],
@@ -2684,7 +2686,6 @@ class Quiver(Element):
         """
         assert self.is_acyclic()
 
-        # see Proposition 1.6 in Happel's "Hochschild cohomology of finite-dimensional algebras"
         return (
             1
             - self.number_of_vertices()
