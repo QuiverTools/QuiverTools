@@ -1840,8 +1840,6 @@ class Quiver(Element):
     Generic subdimension vectors and generic Hom and Ext
     """
 
-    # taken from code/snippets/canonical.sage
-    # TODO still need testing code from there
     def is_generic_subdimension_vector(self, e, d) -> bool:
         r"""Checks if e is a generic subdimension vector of d.
 

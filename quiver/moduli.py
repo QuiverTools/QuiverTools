@@ -399,18 +399,13 @@ class QuiverModuli(ABC):
             0
 
         """
-        d = self._d
+        HNs = self.all_harder_narasimhan_types(proper=True)
 
-        hn = list(
-            filter(lambda dstar: dstar != [d], self.all_harder_narasimhan_types())
-        )
-        # Note that while the HN types and strata depend on the denominator, the list of all their codimensions does not.
-
+        # note that while the HN types and strata depend on the denominator
+        # the list of all their codimensions does not
         return min(
-            [
-                self.codimension_of_harder_narasimhan_stratum(dstar, secure=False)
-                for dstar in hn
-            ]
+            self.codimension_of_harder_narasimhan_stratum(dstar, secure=False)
+            for dstar in HNs
         )
 
     """
