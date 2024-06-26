@@ -882,6 +882,92 @@ class QuiverModuli(ABC):
         return all(Q.euler_form(e, d - e) <= -2 for e in es)
 
     """
+    Teleman quantization
+    """
+
+    # TODO return weights as dictionaries with HN types as keys.
+    def all_weight_bounds(self):
+        """
+        Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
+        For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight. Teleman quantization gives a numerical condition involving these weights to compute cohmology on the quotient.
+        """
+        # TODO return the Hn type as well?
+        # setup shorthand
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+
+        # this is only relevant on the unstable locus
+        HN = list(
+            filter(
+                lambda hntype: hntype != [d],
+                self.all_harder_narasimhan_types(),
+            )
+        )
+
+        return list(
+            map(
+                lambda hntype: -sum(
+                    [
+                        (
+                            Q.slope(hntype[s], theta, denominator=denominator)
+                            - Q.slope(hntype[t], theta, denominator=denominator)
+                        )
+                        * Q.euler_form(hntype[s], hntype[t])
+                        for s in range(len(hntype) - 1)
+                        for t in range(s + 1, len(hntype))
+                    ]
+                ),
+                HN,
+            )
+        )
+
+    def does_rigidity_inequality_hold(self) -> bool:
+        r"""
+
+        OUTPUT: True if the rigidity inequality holds for d and theta, False otherwise.
+
+        If the weights of the 1-PS lambda on $\det(N_{S/R}|_Z)$ for each HN type
+        are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$,
+        then the resulting moduli space is infinitesimally rigid.
+        """
+        # This is only relevant on the unstable locus
+        # TODO Quiver.all_harder_narasimhan_types needs way to filter out [d]
+        HN = list(
+            filter(
+                lambda hntype: hntype != [d],
+                self.all_harder_narasimhan_types(d, theta, denominator=denominator),
+            )
+        )
+
+        # We compute the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type
+        weights = list(
+            map(
+                lambda hntype: -sum(
+                    [
+                        (
+                            self.slope(hntype[s], theta, denominator=denominator)
+                            - self.slope(hntype[t], theta, denominator=denominator)
+                        )
+                        * self.euler_form(hntype[s], hntype[t])
+                        for s in range(len(hntype) - 1)
+                        for t in range(s + 1, len(hntype))
+                    ]
+                ),
+                HN,
+            )
+        )
+
+        # We compute the maximum weight of the tensors of the universal bundles U_i^\vee \otimes U_j
+        tensorWeights = list(
+            map(
+                lambda hntype: self.slope(hntype[0], theta, denominator=denominator)
+                - self.slope(hntype[-1], theta, denominator=denominator),
+                HN,
+            )
+        )
+
+        return all(weights[i] > tensorWeights[i] for i in range(len(HN)))
+
+    """
     Tautological relations
     """
 
