@@ -1397,6 +1397,69 @@ class Quiver(Element):
 
         return self.has_stable_representation(d, theta)
 
+    def slope(self, d, theta, denominator=sum):
+        """For denominator = sum, the slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that sum(d) is positive."""
+        assert denominator(d) > 0
+
+        d = self._coerce_dimension_vector(d)
+        theta = self._coerce_vector(theta)
+
+        return (theta * d) / denominator(d)
+
+    def is_subdimension_vector(self, e, d):
+        # coerce dimension vectors
+        # TODO bad: it could be dicts!
+        d = vector(d)
+        e = vector(e)
+
+        assert len(e) == len(d)
+
+        return all(0 <= ei and ei <= di for (ei, di) in zip(e, d))
+
+    def deglex_key(self, e, b):
+        """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d), provided that b >> 0."""
+        n = len(e)
+        return sum([e[i] * b ** (n - i - 1) for i in range(n)]) + sum(e) * b**n
+
+    def all_subdimension_vectors(self, d, proper=False, nonzero=False):
+        """Returns the list of all subdimension vectors of d."""
+        vectors = list(map(vector, cartesian_product([range(di + 1) for di in d])))
+        # TODO clean this up: what if d is zero?
+        if proper:
+            vectors = vectors[:-1]
+        if nonzero:
+            vectors = vectors[1:]
+        return vectors
+
+    # TODO: This method has a stupid name (my own fault). Think of a better one.
+    # TODO whenever a theta needs to be provided, we should default to the canonical one?
+    def is_coprime_for_stability_parameter(self, d, theta) -> bool:
+        """Checks if d is theta-coprime.
+
+        A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d.
+
+        EXAMPLES
+
+        Examples of coprimality::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: d = [2, 3]
+            sage: Q.is_coprime_for_stability_parameter(d, Q.canonical_stability_parameter(d))
+            True
+            sage: Q.is_coprime_for_stability_parameter([3, 3], [1, -1])
+            False
+
+        """
+        # TODO test the d and theta, but don't coerce
+        vectors = self.all_subdimension_vectors(d, proper=True, nonzero=True)
+
+        return all([self.slope(d, theta) != self.slope(e, theta) for e in vectors])
+
+    def is_indivisible(self, d) -> bool:
+        """Checks if the gcd of all entries is 1 or not."""
+        return gcd(d) == 1
+
     def support(self, d):
         r"""Returns the support of the dimension vector.
 
@@ -1507,6 +1570,7 @@ class Quiver(Element):
 
         return inequality and connected
 
+    # TODO what is the use case?
     def division_order(self, d, e):
         """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink.
 
@@ -1623,7 +1687,7 @@ class Quiver(Element):
             sage: dims = Tuples(range(3), 2)
             sage: for e in dims:
             ....:     for d in dims:
-            ....:         if is_subdimension_vector(e,d):
+            ....:         if Q.is_subdimension_vector(e,d):
             ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
             (0, 0) gen. subdim of (0, 0)?: True
             (0, 0) gen. subdim of (1, 0)?: True
@@ -1664,7 +1728,7 @@ class Quiver(Element):
             sage: Q = GeneralizedKroneckerQuiver(2)
             sage: for e in dims:
             ....:     for d in dims:
-            ....:         if is_subdimension_vector(e,d):
+            ....:         if Q.is_subdimension_vector(e,d):
             ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
             ....:
             (0, 0) gen. subdim of (0, 0)?: True
@@ -1711,7 +1775,7 @@ class Quiver(Element):
         if e == d:
             return True
         else:
-            if not is_subdimension_vector(e, d):
+            if not self.is_subdimension_vector(e, d):
                 return False
             else:  # e is subdimension vector of d
                 # List of all generic subdimension vectors of e
@@ -1755,8 +1819,8 @@ class Quiver(Element):
             [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]])
 
         """
-        subdims = all_subdimension_vectors(d)
-        subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
+        subdims = self.all_subdimension_vectors(d)
+        subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
 
@@ -1764,7 +1828,8 @@ class Quiver(Element):
         genIndexes = [
             list(
                 filter(
-                    lambda i: is_subdimension_vector(subdims[i], subdims[j]), range(N)
+                    lambda i: self.is_subdimension_vector(subdims[i], subdims[j]),
+                    range(N),
                 )
             )
             for j in range(N)
@@ -1993,9 +2058,10 @@ class Quiver(Element):
         d = self._coerce_dimension_vector(d)
         zero_vector = self._coerce_dimension_vector(self.zero_vector())
 
+        # TODO exclude_zero parameter in all_generic_subdimension_vectors?
         genSubdims = self.all_generic_subdimension_vectors(d)
         genSubdims = list(filter(lambda e: e != zero_vector, genSubdims))
-        return all([slope(e, theta) <= slope(d, theta) for e in genSubdims])
+        return all([self.slope(e, theta) <= self.slope(d, theta) for e in genSubdims])
 
     # TODO remove and cache the recursive one instead
     def __all_semistable_subdimension_vectors_helper(self, d, theta):
@@ -2012,8 +2078,8 @@ class Quiver(Element):
             [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
 
         """
-        subdims = all_subdimension_vectors(d)
-        subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
+        subdims = self.all_subdimension_vectors(d)
+        subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
@@ -2021,7 +2087,7 @@ class Quiver(Element):
             filter(
                 lambda j: all(
                     [
-                        slope(subdims[i], theta) <= slope(subdims[j], theta)
+                        self.slope(subdims[i], theta) <= self.slope(subdims[j], theta)
                         for i in list(filter(lambda i: i != 0, genIndexes[j]))
                     ]
                 ),
@@ -2099,7 +2165,9 @@ class Quiver(Element):
                 genSubdims = list(
                     filter(lambda e: e != self.zero_vector() and e != d, genSubdims)
                 )
-                return all([slope(e, theta) < slope(d, theta) for e in genSubdims])
+                return all(
+                    [self.slope(e, theta) < self.slope(d, theta) for e in genSubdims]
+                )
 
     # TODO remove and cache the recursive one instead
     def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
@@ -2111,7 +2179,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,0])
-            sage: all_subdimension_vectors(d)
+            sage: Q.all_subdimension_vectors(d)
             [(0, 0),
             (0, 1),
             (0, 2),
@@ -2142,16 +2210,16 @@ class Quiver(Element):
             ([4], [(1, 1)])
 
         """
-        subdims = all_subdimension_vectors(d)
-        subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
+        subdims = self.all_subdimension_vectors(d)
+        subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
         # slopeIndexes is the list of subdimension vectors of d of the same slope as d (in particular != 0)
         slopeIndexes = list(
             filter(
-                lambda j: slope(subdims[j], theta, denominator=denominator)
-                == slope(d, theta, denominator=denominator),
+                lambda j: self.slope(subdims[j], theta, denominator=denominator)
+                == self.slope(d, theta, denominator=denominator),
                 range(1, N),
             )
         )
@@ -2161,8 +2229,8 @@ class Quiver(Element):
             filter(
                 lambda j: all(
                     [
-                        slope(subdims[i], theta, denominator=denominator)
-                        < slope(subdims[j], theta, denominator=denominator)
+                        self.slope(subdims[i], theta, denominator=denominator)
+                        < self.slope(subdims[j], theta, denominator=denominator)
                         for i in list(
                             filter(lambda i: i != 0 and i != j, genIndexes[j])
                         )
@@ -2397,8 +2465,8 @@ class Quiver(Element):
             True
 
             """
-            subdims = all_subdimension_vectors(d)
-            subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
+            subdims = self.all_subdimension_vectors(d)
+            subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
             N = len(subdims)
 
             def idx_diff(j, i):
@@ -2462,8 +2530,8 @@ class Quiver(Element):
                 lambda hntype: -sum(
                     [
                         (
-                            slope(hntype[s], theta, denominator=denominator)
-                            - slope(hntype[t], theta, denominator=denominator)
+                            self.slope(hntype[s], theta, denominator=denominator)
+                            - self.slope(hntype[t], theta, denominator=denominator)
                         )
                         * self.euler_form(hntype[s], hntype[t])
                         for s in range(len(hntype) - 1)
@@ -2505,8 +2573,8 @@ class Quiver(Element):
                 lambda hntype: -sum(
                     [
                         (
-                            slope(hntype[s], theta, denominator=denominator)
-                            - slope(hntype[t], theta, denominator=denominator)
+                            self.slope(hntype[s], theta, denominator=denominator)
+                            - self.slope(hntype[t], theta, denominator=denominator)
                         )
                         * self.euler_form(hntype[s], hntype[t])
                         for s in range(len(hntype) - 1)
@@ -2520,8 +2588,8 @@ class Quiver(Element):
         # We compute the maximum weight of the tensors of the universal bundles U_i^\vee \otimes U_j
         tensorWeights = list(
             map(
-                lambda hntype: slope(hntype[0], theta, denominator=denominator)
-                - slope(hntype[-1], theta, denominator=denominator),
+                lambda hntype: self.slope(hntype[0], theta, denominator=denominator)
+                - self.slope(hntype[-1], theta, denominator=denominator),
                 HN,
             )
         )
@@ -2579,75 +2647,6 @@ class Quiver(Element):
 
 
 """Auxiliary methods"""
-
-
-# TODO should probably be part of Quiver class, so that we don't need to coerce outside Quiver
-def slope(d, theta, denominator=sum):
-    """For denominator = sum, the slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that sum(d) is positive."""
-    assert len(d) == len(theta)
-    assert denominator(d) > 0
-
-    return (theta * d) / denominator(d)
-
-
-# TODO should also be part of Quiver class
-def is_subdimension_vector(e, d):
-    # coerce dimension vectors
-    # TODO bad: it could be dicts!
-    d = vector(d)
-    e = vector(e)
-
-    assert len(e) == len(d)
-
-    return all(0 <= ei and ei <= di for (ei, di) in zip(e, d))
-
-
-# TODO should be part of Quiver class (?)
-def deglex_key(e, b):
-    """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d), provided that b >> 0."""
-    n = len(e)
-    return sum([e[i] * b ** (n - i - 1) for i in range(n)]) + sum(e) * b**n
-
-
-# TODO should be part of Quiver class
-def all_subdimension_vectors(d):
-    """Returns the list of all subdimension vectors of d."""
-    return list(map(vector, cartesian_product([range(di + 1) for di in d])))
-
-
-# TODO: This method has a stupid name (my own fault). Think of a better one.
-# TODO should also be part of Quiver class?
-def is_coprime_for_stability_parameter(d, theta) -> bool:
-    """Checks if d is theta-coprime.
-
-    A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d.
-
-    EXAMPLES
-
-    Examples of coprimality::
-
-        sage: from quiver import *
-        sage: d = vector([2,3])
-        sage: theta = vector([3,-2])
-        sage: is_coprime_for_stability_parameter(d,theta)
-        True
-        sage: d = vector([3,3])
-        sage: theta = vector([1,-1])
-        sage: is_coprime_for_stability_parameter(d,theta)
-        False
-    """
-    assert len(d) == len(theta)
-    zeroVector = vector([0 for i in range(len(d))])
-    properSubdimensions = list(
-        filter(lambda e: e != d and e != zeroVector, all_subdimension_vectors(d))
-    )
-    return all([slope(d, theta) != slope(e, theta) for e in properSubdimensions])
-
-
-# TODO should be part of Quiver class
-def is_indivisible(d) -> bool:
-    """Checks if the gcd of all entries is 1 or not."""
-    return gcd(d) == 1
 
 
 """Class methods"""

@@ -19,14 +19,7 @@ from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
 from sage.structure.element import Element
 
-from quiver import (
-    Quiver,
-    all_subdimension_vectors,
-    deglex_key,
-    is_coprime_for_stability_parameter,
-    is_subdimension_vector,
-    slope,
-)
+from quiver import *
 
 """Defines how permutations are multiplied."""
 Permutations.options(mult="r2l")
@@ -212,8 +205,8 @@ class QuiverModuli(ABC):
         """
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
-        subdimensions = all_subdimension_vectors(d)
-        subdimensions.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
+        subdimensions = Q.all_subdimension_vectors(d)
+        subdimensions.sort(key=(lambda e: Q.deglex_key(e, b=max(d) + 1)))
         N = len(subdimensions)
 
         # sstIndexes is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
@@ -232,7 +225,7 @@ class QuiverModuli(ABC):
             # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
             sstSub = list(
                 filter(
-                    lambda i: is_subdimension_vector(
+                    lambda i: Q.is_subdimension_vector(
                         subdimensions[i], subdimensions[j]
                     ),
                     sstIndexes,
@@ -245,8 +238,8 @@ class QuiverModuli(ABC):
                 for fstar in list(
                     filter(
                         lambda fstar: fstar == []
-                        or slope(subdimensions[i], theta, denominator=denominator)
-                        > slope(
+                        or Q.slope(subdimensions[i], theta, denominator=denominator)
+                        > Q.slope(
                             subdimensions[fstar[0]], theta, denominator=denominator
                         ),
                         hn[idx_diff(j, i)],
@@ -294,8 +287,8 @@ class QuiverModuli(ABC):
             slopeDecreasing = all(
                 [
                     (
-                        slope(dstar[i], theta, denominator=denominator)
-                        > slope(dstar[i + 1], theta, denominator=denominator)
+                        Q.slope(dstar[i], theta, denominator=denominator)
+                        > Q.slope(dstar[i + 1], theta, denominator=denominator)
                     )
                     for i in range(len(dstar) - 1)
                 ]
@@ -474,8 +467,8 @@ class QuiverModuli(ABC):
         if d == Q.zero_vector():
             return [tuple([Q.zero_vector(), [1]])]
         else:
-            subdims = all_subdimension_vectors(d)
-            subdims.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
+            subdims = Q.all_subdimension_vectors(d)
+            subdims.sort(key=(lambda e: Q.deglex_key(e, b=max(d) + 1)))
             N = len(subdims)
             # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
             # TODO this is unused?
@@ -503,7 +496,7 @@ class QuiverModuli(ABC):
             for j in range(N):
                 stSub = list(
                     filter(
-                        lambda i: is_subdimension_vector(subdims[i], subdims[j])
+                        lambda i: Q.is_subdimension_vector(subdims[i], subdims[j])
                         and i != j,
                         stIndexes,
                     )
@@ -736,7 +729,7 @@ class QuiverModuli(ABC):
             sage: Q = GeneralizedKroneckerQuiver(3).framed_quiver(vector([1,0])).coframed_quiver(vector([0,0,1]))
             sage: d = vector([1,2,3,1])
             sage: theta = vector([1,300,-200,-1])
-            sage: is_coprime_for_stability_parameter(d, theta)
+            sage: Q.is_coprime_for_stability_parameter(d, theta)
             False
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.semistable_equals_stable()
@@ -748,7 +741,7 @@ class QuiverModuli(ABC):
         Q, d, theta = self._Q, self._d, self._theta
 
         # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
-        if is_coprime_for_stability_parameter(d, theta):
+        if Q.is_coprime_for_stability_parameter(d, theta):
             return True
         else:
             # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation is a bit slower
@@ -806,7 +799,7 @@ class QuiverModuli(ABC):
         """
 
         # It's currently only possible with this distinction
-        if is_coprime_for_stability_parameter(self._d, self._theta):
+        if self._Q.is_coprime_for_stability_parameter(self._d, self._theta):
             return self.codimension_unstable_locus() >= 2
         else:
             return (
@@ -851,15 +844,15 @@ class QuiverModuli(ABC):
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
         # All subdimension vectors of d
-        es = all_subdimension_vectors(d)
+        es = Q.all_subdimension_vectors(d)
         # Remove 0 and d
         es.remove(Q.zero_vector())
         es.remove(d)
         # Filter out those of bigger slope
         es = list(
             filter(
-                lambda e: slope(e, theta, denominator=denominator)
-                >= slope(d, theta, denominator=denominator),
+                lambda e: Q.slope(e, theta, denominator=denominator)
+                >= Q.slope(d, theta, denominator=denominator),
                 es,
             )
         )
@@ -893,18 +886,21 @@ class QuiverModuli(ABC):
 
         properSubdimensions = list(
             filter(
-                lambda e: e != d and e != Q.zero_vector(), all_subdimension_vectors(d)
+                lambda e: e != d and e != Q.zero_vector(), Q.all_subdimension_vectors(d)
             )
         )
 
         if condition == "semistable":
             return list(
-                filter(lambda e: slope(e, theta) > slope(d, theta), properSubdimensions)
+                filter(
+                    lambda e: Q.slope(e, theta) > Q.slope(d, theta), properSubdimensions
+                )
             )
         elif condition == "stable":
             return list(
                 filter(
-                    lambda e: slope(e, theta) >= slope(d, theta), properSubdimensions
+                    lambda e: Q.slope(e, theta) >= Q.slope(d, theta),
+                    properSubdimensions,
                 )
             )
 
@@ -1292,7 +1288,7 @@ class QuiverModuliSpace(QuiverModuli):
         """
 
         Q, d, theta = self._Q, self._d, self._theta
-        assert is_coprime_for_stability_parameter(d, theta)
+        assert Q.is_coprime_for_stability_parameter(d, theta)
 
         k = FunctionField(QQ, "L")
         K = FunctionField(QQ, "q")
@@ -1326,7 +1322,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
 
-        assert is_coprime_for_stability_parameter(self._d, self._theta)
+        assert self._Q.is_coprime_for_stability_parameter(self._d, self._theta)
         N = self.dimension()
 
         K = FunctionField(QQ, "q")
@@ -1349,7 +1345,7 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
         if (self._condition == "stable") or (
-            is_coprime_for_stability_parameter(self._d, self._theta)
+            self._Q.is_coprime_for_stability_parameter(self._d, self._theta)
         ):
             return True
         else:
@@ -1359,7 +1355,7 @@ class QuiverModuliSpace(QuiverModuli):
         """Computes the Picard rank of the moduli space for known cases."""
         # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
         # Comment: The Picard rank is also n-1 if theta is not in the canonical chamber (with d theta-coprime and theta-amply stable). This is because Pic(X) is isomorphic to A^1(X) (X is smooth) and the latter is free of rank n-1 by theh tautological presentation.
-        if is_coprime_for_stability_parameter(
+        if self._Q.is_coprime_for_stability_parameter(
             self._d, self._theta
         ) & self._Q.is_amply_stable(self._Q, self._d, self._theta):
             return self._Q.number_of_vertices() - 1
@@ -1371,7 +1367,7 @@ class QuiverModuliSpace(QuiverModuli):
         # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
         if self._theta == self._Q.canonical_stability_parameter(
             self._d
-        ) & is_coprime_for_stability_parameter(
+        ) & self._Q.is_coprime_for_stability_parameter(
             self._d, self._theta
         ) & self._Q.is_amply_stable(
             self._Q, self._d, self._theta
@@ -1442,7 +1438,7 @@ class QuiverModuliSpace(QuiverModuli):
         n = Q.number_of_vertices()
 
         # This implementation only works if d is theta-coprime which implies that d is indivisible.
-        assert is_coprime_for_stability_parameter(d, theta)
+        assert Q.is_coprime_for_stability_parameter(d, theta)
 
         if chernClasses is None:
             chernClasses = [
@@ -1760,11 +1756,13 @@ class QuiverModuliStack(QuiverModuli):
             )
             return num / den
         else:
-            I = all_subdimension_vectors(d)
+            # TODO use proper=True, nonzero=True
+            I = Q.all_subdimension_vectors(d)
             I = list(filter(lambda e: e != Q.zero_vector() and e != d, I))
-            I = list(filter(lambda e: slope(e, theta) > slope(d, theta), I))
+            I = list(filter(lambda e: Q.slope(e, theta) > Q.slope(d, theta), I))
             I = I + [Q.zero_vector(), d]
-            I.sort(key=(lambda e: deglex_key(e, b=max(d) + 1)))
+            # TODO I believe max(d) on a dict should give the wrong result
+            I.sort(key=(lambda e: Q.deglex_key(e, b=max(d) + 1)))
 
             K = FunctionField(QQ, "L")
             L = K.gen(0)
@@ -1780,7 +1778,7 @@ class QuiverModuliStack(QuiverModuli):
             for i in range(N):
                 for j in range(i, N):
                     e, f = I[i], I[j]
-                    if is_subdimension_vector(e, f):
+                    if Q.is_subdimension_vector(e, f):
                         T[i, j] = L ** (Q.euler_form(e - f, e)) * motive(f - e)
 
             # Solve system of linear equations T*x = e_N and extract entry 0 of the solution x.
