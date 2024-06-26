@@ -1465,6 +1465,7 @@ class Quiver(Element):
 
     def all_subdimension_vectors(self, d, proper=False, nonzero=False):
         """Returns the list of all subdimension vectors of d."""
+        # TODO if Q has vertex labels, then returning vector isn't good enough!
         vectors = list(map(vector, cartesian_product([range(di + 1) for di in d])))
         # TODO clean this up: what if d is zero?
         if proper:
@@ -1499,8 +1500,28 @@ class Quiver(Element):
         return all([self.slope(d, theta) != self.slope(e, theta) for e in vectors])
 
     def is_indivisible(self, d) -> bool:
-        """Checks if the gcd of all entries is 1 or not."""
-        return gcd(d) == 1
+        """
+        Checks if the gcd of all entries of `d` is 1
+
+        INPUT:
+
+        -- `d` -- dimension vector
+
+        OUTPUT: whether the dimension vector is indivisible
+
+        EXAMPLES:
+
+        Two examples with the Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.is_indivisible([2, 3])
+            True
+            sage: Q.is_indivisible([2, 2])
+            False
+
+        """
+        return gcd(self._coerce_dimension_vector(d)) == 1
 
     def support(self, d):
         r"""Returns the support of the dimension vector.
