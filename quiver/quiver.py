@@ -1649,7 +1649,7 @@ class Quiver(Element):
 
         vectors = self.all_subdimension_vectors(d, proper=True, nonzero=True)
 
-        return all([self.slope(d, theta) != self.slope(e, theta) for e in vectors])
+        return all(self.slope(d, theta) != self.slope(e, theta) for e in vectors)
 
     def is_indivisible(self, d) -> bool:
         """
@@ -1686,7 +1686,7 @@ class Quiver(Element):
 
         The support is the set `\{ i \in Q_0 \mid d_i > 0 \}`.
 
-        EXAMPLES
+        EXAMPLES:
 
         The support is the set of vertices for which the value of the dimension
         vector is nonzero::
@@ -1708,8 +1708,7 @@ class Quiver(Element):
             ['a', 'b']
 
         """
-        # TODO we need also a Quiver._is_dimension_vector(d) method?
-        # TODO if d is a dict, should we have defaultdict behavior for zeroes?
+        assert self._is_dimension_vector(d)
 
         return [i for i in self.vertices() if d[i] > 0]
 
@@ -1770,8 +1769,7 @@ class Quiver(Element):
             False
 
         """
-        # TODO we need also a Quiver._is_dimension_vector(d) method?
-        # TODO we don't want to coerce here!
+        assert self._is_dimension_vector(d)
 
         # check if `\langle d,e_i\rangle + \langle e_i,d\rangle \leq 0`
         # for all vertices `i\in Q_0`
@@ -2873,9 +2871,3 @@ class Quiver(Element):
         # something from Schofield
         # see Theorem 11.4.6 in the Derksen--Weyman book
         raise NotImplementedError()
-
-
-"""Auxiliary methods"""
-
-
-"""Class methods"""
