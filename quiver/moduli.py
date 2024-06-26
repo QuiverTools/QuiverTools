@@ -729,7 +729,7 @@ class QuiverModuli(ABC):
             sage: Q = GeneralizedKroneckerQuiver(3).framed_quiver(vector([1,0])).coframed_quiver(vector([0,0,1]))
             sage: d = vector([1,2,3,1])
             sage: theta = vector([1,300,-200,-1])
-            sage: Q.is_coprime_for_stability_parameter(d, theta)
+            sage: Q.is_theta_coprime(d, theta)
             False
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.semistable_equals_stable()
@@ -741,7 +741,7 @@ class QuiverModuli(ABC):
         Q, d, theta = self._Q, self._d, self._theta
 
         # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
-        if Q.is_coprime_for_stability_parameter(d, theta):
+        if Q.is_theta_coprime(d, theta):
             return True
         else:
             # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation is a bit slower
@@ -799,7 +799,7 @@ class QuiverModuli(ABC):
         """
 
         # It's currently only possible with this distinction
-        if self._Q.is_coprime_for_stability_parameter(self._d, self._theta):
+        if self._Q.is_theta_coprime(self._d, self._theta):
             return self.codimension_unstable_locus() >= 2
         else:
             return (
@@ -1288,7 +1288,7 @@ class QuiverModuliSpace(QuiverModuli):
         """
 
         Q, d, theta = self._Q, self._d, self._theta
-        assert Q.is_coprime_for_stability_parameter(d, theta)
+        assert Q.is_theta_coprime(d, theta)
 
         k = FunctionField(QQ, "L")
         K = FunctionField(QQ, "q")
@@ -1322,7 +1322,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
 
-        assert self._Q.is_coprime_for_stability_parameter(self._d, self._theta)
+        assert self._Q.is_theta_coprime(self._d, self._theta)
         N = self.dimension()
 
         K = FunctionField(QQ, "q")
@@ -1345,7 +1345,7 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
         if (self._condition == "stable") or (
-            self._Q.is_coprime_for_stability_parameter(self._d, self._theta)
+            self._Q.is_theta_coprime(self._d, self._theta)
         ):
             return True
         else:
@@ -1438,7 +1438,7 @@ class QuiverModuliSpace(QuiverModuli):
         n = Q.number_of_vertices()
 
         # This implementation only works if d is theta-coprime which implies that d is indivisible.
-        assert Q.is_coprime_for_stability_parameter(d, theta)
+        assert Q.is_theta_coprime(d, theta)
 
         if chernClasses is None:
             chernClasses = [

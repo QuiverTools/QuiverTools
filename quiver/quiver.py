@@ -1610,7 +1610,7 @@ class Quiver(Element):
 
     # TODO: This method has a stupid name (my own fault). Think of a better one.
     # TODO whenever a theta needs to be provided, we should default to the canonical one?
-    def is_coprime_for_stability_parameter(self, d, theta) -> bool:
+    def is_theta_coprime(self, d, theta) -> bool:
         """Checks if d is theta-coprime.
 
         A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d.
@@ -1622,9 +1622,9 @@ class Quiver(Element):
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
             sage: d = [2, 3]
-            sage: Q.is_coprime_for_stability_parameter(d, Q.canonical_stability_parameter(d))
+            sage: Q.is_theta_coprime(d, Q.canonical_stability_parameter(d))
             True
-            sage: Q.is_coprime_for_stability_parameter([3, 3], [1, -1])
+            sage: Q.is_theta_coprime([3, 3], [1, -1])
             False
 
         """
