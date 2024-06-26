@@ -90,8 +90,13 @@ class QuiverModuli(ABC):
     HN business
     """
 
-    def all_harder_narasimhan_types(self):
+    def all_harder_narasimhan_types(self, proper=False):
         r"""Returns the list of all HN types.
+
+        INPUT:
+
+        - `proper` (default: False): whether to only give non-trivial HN-types,
+          excluding the one corresponding to the stable locus
 
         OUTPUT: list of list of vectors of Ints
 
@@ -116,6 +121,14 @@ class QuiverModuli(ABC):
             [(2, 1), (0, 2)],
             [(2, 2), (0, 1)],
             [(2, 3)]]
+            sage: X.all_harder_narasimhan_types(proper=True)
+            [[(1, 0), (1, 1), (0, 2)],
+            [(1, 0), (1, 2), (0, 1)],
+            [(1, 0), (1, 3)],
+            [(1, 1), (1, 2)],
+            [(2, 0), (0, 3)],
+            [(2, 1), (0, 2)],
+            [(2, 2), (0, 1)]]
             sage: Y = QuiverModuliSpace(Q, d, -theta)
             sage: Y.all_harder_narasimhan_types()
             [[(0, 3), (2, 0)]]
@@ -123,7 +136,8 @@ class QuiverModuli(ABC):
         A 3-vertex quiver::
 
             sage: from quiver import *
-            sage: Q, d = ThreeVertexQuiver(2,3,4), vector([2,3,2])
+            sage: Q = ThreeVertexQuiver(2, 3, 4)
+            sage: d = [2, 3, 2]
             sage: theta = Q.canonical_stability_parameter(d)
             sage: Z = QuiverModuliSpace(Q, d, theta)
             sage: Z.all_harder_narasimhan_types()
@@ -246,9 +260,16 @@ class QuiverModuli(ABC):
                 )
             ]
 
+        # TODO document why this is needed
         hn[0] = [[0]]
 
-        return [[subdimensions[r] for r in fstar] for fstar in hn[N - 1]]
+        types = [[subdimensions[r] for r in fstar] for fstar in hn[N - 1]]
+
+        # filter out the type corresponding to the stable locus
+        if proper:
+            types = [type for type in types if type != [d]]
+
+        return types
 
     def is_harder_narasimhan_type(self, dstar) -> bool:
         r"""Checks if dstar is a HN type.
