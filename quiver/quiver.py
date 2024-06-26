@@ -1827,14 +1827,12 @@ class Quiver(Element):
         e = self._coerce_dimension_vector(e)
 
         return (
-            all([d[i] <= e[i] for i in self.sources()])
-            and all([d[i] >= e[i] for i in self.sinks()])
+            all(d[i] <= e[i] for i in self.sources())
+            and all(d[i] >= e[i] for i in self.sinks())
             and all(
-                [
-                    d[i] == e[i]
-                    for i in self.vertices()
-                    if i not in self.sources() and i not in self.sinks()
-                ]
+                d[i] == e[i]
+                for i in self.vertices()
+                if i not in self.sources() and i not in self.sinks()
             )
         )
 
@@ -2282,7 +2280,7 @@ class Quiver(Element):
         # TODO exclude_zero parameter in all_generic_subdimension_vectors?
         genSubdims = self.all_generic_subdimension_vectors(d)
         genSubdims = list(filter(lambda e: e != zero_vector, genSubdims))
-        return all([self.slope(e, theta) <= self.slope(d, theta) for e in genSubdims])
+        return all(self.slope(e, theta) <= self.slope(d, theta) for e in genSubdims)
 
     # TODO remove and cache the recursive one instead
     def __all_semistable_subdimension_vectors_helper(self, d, theta):
@@ -2685,7 +2683,7 @@ class Quiver(Element):
             sage: Q.canonical_decomposition(d, algorithm="recursive_new")
             [(2, 3), (2, 3)]
             sage: ds = [vector([i,j]) for i in range(7) for j in range(7)]
-            sage: all([Q.canonical_decomposition(d, algorithm="recursive") == Q.canonical_decomposition(d, algorithm="recursive_new") for d in ds])
+            sage: all(Q.canonical_decomposition(d, algorithm="recursive") == Q.canonical_decomposition(d, algorithm="recursive_new") for d in ds)
             True
 
             """
@@ -2825,7 +2823,7 @@ class Quiver(Element):
             )
         )
 
-        return all([weights[i] > tensorWeights[i] for i in range(len(HN))])
+        return all(weights[i] > tensorWeights[i] for i in range(len(HN)))
 
     def first_hochschild_cohomology(self):
         r"""
