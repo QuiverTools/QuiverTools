@@ -267,7 +267,8 @@ class QuiverModuli(ABC):
 
         # filter out the type corresponding to the stable locus
         if proper:
-            types = [type for type in types if type != [d]]
+            # TODO fix type of dimension vectors
+            types = [type for type in types if type != [vector(d)]]
 
         return types
 
@@ -899,10 +900,9 @@ class QuiverModuli(ABC):
             sage: from quiver import *
             sage: X = QuiverModuliSpace(KroneckerQuiver(3), [2, 3])
             sage: X.all_weight_bounds()
-            [135, 100, 90, 15/2, 270, 100, 30, 0]
+            [135, 100, 90, 15/2, 270, 100, 30]
 
         """
-        # TODO return the Hn type as well?
         # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
