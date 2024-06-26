@@ -886,6 +886,28 @@ class QuiverModuli(ABC):
     Methods related to Teleman quantization
     """
 
+    # TODO should maybe be a public method?
+    def harder_narasimhan_weight(self, harder_narasimhan_type):
+        r"""
+        Returns the Teleman weight of a Harder-Narasimhan type
+        """
+        # setup shorthand
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        HN = harder_narasimhan_type
+
+        return -sum(
+            [
+                # TODO can we make this cleaner-looking?
+                (
+                    Q.slope(HN[s], theta, denominator=denominator)
+                    - Q.slope(HN[t], theta, denominator=denominator)
+                )
+                * Q.euler_form(HN[s], HN[t])
+                for s in range(len(HN) - 1)
+                for t in range(s + 1, len(HN))
+            ]
+        )
+
     # TODO return weights as dictionaries with HN types as keys.
     def all_weight_bounds(self):
         r"""
@@ -906,28 +928,12 @@ class QuiverModuli(ABC):
         # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
+        # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
 
-        # TODO should maybe be a public method?
-        def weight(HN):
-            return -sum(
-                [
-                    # TODO can we make this cleaner-looking?
-                    (
-                        Q.slope(HN[s], theta, denominator=denominator)
-                        - Q.slope(HN[t], theta, denominator=denominator)
-                    )
-                    * Q.euler_form(HN[s], HN[t])
-                    for s in range(len(HN) - 1)
-                    for t in range(s + 1, len(HN))
-                ]
-            )
+        return list(map(lambda HN: self.harder_narasimhan_weight(HN), HNs))
 
-        weights = map(weight, HNs)
-
-        return list(weights)
-
-    def does_rigidity_inequality_hold(self) -> bool:
+    def if_rigidity_inequality_holds(self) -> bool:
         r"""
 
         OUTPUT: True if the rigidity inequality holds for d and theta, False otherwise.
@@ -935,44 +941,36 @@ class QuiverModuli(ABC):
         If the weights of the 1-PS lambda on $\det(N_{S/R}|_Z)$ for each HN type
         are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$,
         then the resulting moduli space is infinitesimally rigid.
+
+        EXAMPLES:
+
+            sage: from quiver import *
+            sage: X = QuiverModuliSpace(KroneckerQuiver(3), [2, 3])
+            sage: X.if_rigidity_inequality_holds()
+            True
+            sage: X = QuiverModuliSpace(ThreeVertexQuiver(1, 6, 1), [1, 6, 6])
+            sage: X.if_rigidity_inequality_holds()
+            False
+
         """
-        # This is only relevant on the unstable locus
-        # TODO Quiver.all_harder_narasimhan_types needs way to filter out [d]
-        HN = list(
-            filter(
-                lambda hntype: hntype != [d],
-                self.all_harder_narasimhan_types(d, theta, denominator=denominator),
-            )
-        )
+        # setup shorthand
+        Q, theta, denominator = self._Q, self._theta, self._denominator
 
-        # We compute the weights of the 1-PS lambda on det(N_{S/R}|_Z) for each HN type
-        weights = list(
+        weights = self.all_weight_bounds()
+
+        # we compute the maximum weight of the tensors of the universal bundles
+        # this is only relevant on the unstable locus
+        HNs = self.all_harder_narasimhan_types(proper=True)
+
+        tensor_weights = list(
             map(
-                lambda hntype: -sum(
-                    [
-                        (
-                            self.slope(hntype[s], theta, denominator=denominator)
-                            - self.slope(hntype[t], theta, denominator=denominator)
-                        )
-                        * self.euler_form(hntype[s], hntype[t])
-                        for s in range(len(hntype) - 1)
-                        for t in range(s + 1, len(hntype))
-                    ]
-                ),
-                HN,
+                lambda HN: Q.slope(HN[0], theta, denominator=denominator)
+                - Q.slope(HN[-1], theta, denominator=denominator),
+                HNs,
             )
         )
 
-        # We compute the maximum weight of the tensors of the universal bundles U_i^\vee \otimes U_j
-        tensorWeights = list(
-            map(
-                lambda hntype: self.slope(hntype[0], theta, denominator=denominator)
-                - self.slope(hntype[-1], theta, denominator=denominator),
-                HN,
-            )
-        )
-
-        return all(weights[i] > tensorWeights[i] for i in range(len(HN)))
+        return all(weights[i] > tensor_weights[i] for i in range(len(HNs)))
 
     """
     Tautological relations
