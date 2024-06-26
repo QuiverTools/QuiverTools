@@ -2117,86 +2117,90 @@ class Quiver(Element):
         N = len(genSubdims)
         return genSubdims[N - 1]
 
-    def generic_ext(self, a, b):
-        r"""Computes ext(a,b).
+    def generic_ext(self, d, e):
+        r"""
+        Computes ext(d, e).
 
         INPUT:
 
-        - ``a``: dimension vector
+        - ``d``: dimension vector
 
-        - ``b``: dimension vector
+        - ``e``: dimension vector
 
-        OUTPUT: Int
+        OUTPUT: dimension of the generic ext
 
-        According to Thm. 5.4 in Schofield's 'General representations of quivers', we have ext(a,b) = max{-<c,b> | c gen. subdimension vector of a}.
+        According to Theorem 5.4 in Schofield's 'General representations of quivers',
+        we have `ext(a,b) = max{-<c,b> | c gen. subdimension vector of a}`
 
         EXAMPLES:
-
 
         Generic ext on the 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: R = [Q.simple_root(0), Q.simple_root(1), vector([1, 1])]
-            sage: for a in R:
-            ....:     for b in R:
-            ....:         print('ext(' + str(a) + ',' + str(b) + ') = ' + str(Q.generic_ext(a, b)))
-            ....:
-            ext((1, 0),(1, 0)) = 0
-            ext((1, 0),(0, 1)) = 1
-            ext((1, 0),(1, 1)) = 0
-            ext((0, 1),(1, 0)) = 0
-            ext((0, 1),(0, 1)) = 0
-            ext((0, 1),(1, 1)) = 0
-            ext((1, 1),(1, 0)) = 0
-            ext((1, 1),(0, 1)) = 0
-            ext((1, 1),(1, 1)) = 0
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: ds = [Q.simple_root(0), Q.simple_root(1), Q.thin_dimension_vector()]
+            sage: for (d, e) in cartesian_product([ds]*2):
+            ....:     print("ext({}, {}) = {}".format(d, e, Q.generic_ext(d, e)))
+            ext((1, 0), (1, 0)) = 0
+            ext((1, 0), (0, 1)) = 3
+            ext((1, 0), (1, 1)) = 2
+            ext((0, 1), (1, 0)) = 0
+            ext((0, 1), (0, 1)) = 0
+            ext((0, 1), (1, 1)) = 0
+            ext((1, 1), (1, 0)) = 0
+            ext((1, 1), (0, 1)) = 2
+            ext((1, 1), (1, 1)) = 1
 
         """
-        a = self._coerce_dimension_vector(a)
-        b = self._coerce_dimension_vector(b)
-        genSubdims = self.all_generic_subdimension_vectors(a)
-        return max([-self.euler_form(c, b) for c in genSubdims])
+        d = self._coerce_dimension_vector(d)
+        e = self._coerce_dimension_vector(e)
 
-    def generic_hom(self, a, b):
-        r"""Computes hom(a, b).
+        return max(
+            -self.euler_form(f, e) for f in self.all_generic_subdimension_vectors(d)
+        )
+
+    def generic_hom(self, d, e):
+        r"""
+        Computes hom(d, e).
 
         INPUT:
 
-        - ``a``: dimension vector
+        - ``d``: dimension vector
 
-        - ``b``: dimension vector
+        - ``e``: dimension vector
 
-        OUTPUT: Int
+        OUTPUT: dimension of the generic hom
 
-        There is a non-empty open subset U of R(Q,a) x R(Q,b) such that dim Ext(M,N) = ext(a,b), i.e. is minimal, for all (M,N) in U. Therefore dim Hom(M,N) = <a,b> + dim Ext(M,N) is minimal and therefore hom(a,b) = <a,b> + ext(a,b).
+        There is a non-empty open subset U of R(Q,d) x R(Q,e) such that
+        dim Ext(M,N) = ext(d,e)
+        i.e. is minimal, for all (M,N) in U. Therefore
+        dim Hom(M,N) = <a,b> + dim Ext(M,N)
+        is minimal and therefore hom(a,b) = <a,b> + ext(a,b).
 
         EXAMPLES:
 
-        Generic hom for the Kronecker quiver::
+        Generic hom on the 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: R = [Q.simple_root(0), Q.simple_root(1), vector([1,1])]
-            sage: for a in R:
-            ....:     for b in R:
-            ....:         print('hom('+str(a)+','+str(b)+') = '+str(Q.generic_hom(a,b)))
-            ....:
-            hom((1, 0),(1, 0)) = 1
-            hom((1, 0),(0, 1)) = 0
-            hom((1, 0),(1, 1)) = 0
-            hom((0, 1),(1, 0)) = 0
-            hom((0, 1),(0, 1)) = 1
-            hom((0, 1),(1, 1)) = 1
-            hom((1, 1),(1, 0)) = 1
-            hom((1, 1),(0, 1)) = 0
-            hom((1, 1),(1, 1)) = 1
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: ds = [Q.simple_root(0), Q.simple_root(1), Q.thin_dimension_vector()]
+            sage: for (d, e) in cartesian_product([ds]*2):
+            ....:     print("hom({}, {}) = {}".format(d, e, Q.generic_hom(d, e)))
+            hom((1, 0), (1, 0)) = 1
+            hom((1, 0), (0, 1)) = 0
+            hom((1, 0), (1, 1)) = 0
+            hom((0, 1), (1, 0)) = 0
+            hom((0, 1), (0, 1)) = 1
+            hom((0, 1), (1, 1)) = 1
+            hom((1, 1), (1, 0)) = 1
+            hom((1, 1), (0, 1)) = 0
+            hom((1, 1), (1, 1)) = 0
 
         """
-        a = self._coerce_dimension_vector(a)
-        b = self._coerce_dimension_vector(b)
+        d = self._coerce_dimension_vector(d)
+        e = self._coerce_dimension_vector(e)
 
-        return self.euler_form(a, b) + self.generic_ext(a, b)
+        return self.euler_form(d, e) + self.generic_ext(d, e)
 
     # TODO remove
     def generic_ext_vanishing(self, a, b):
