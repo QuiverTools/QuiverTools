@@ -2533,6 +2533,7 @@ class Quiver(Element):
         Compute the dimension of the first Hochschild cohomology
 
         This uses the formula of Happel from Proposition 1.6 in [MR1035222].
+        One needs the quiver to be acyclic for this.
 
         EXAMPLES:
 
@@ -2551,14 +2552,15 @@ class Quiver(Element):
 
         """
         assert self.is_acyclic()
-        # TODO think about including G into the Quiver class
-        G = Graph(self.adjacency_matrix(), format="adjacency_matrix")
 
         # see Proposition 1.6 in Happel's "Hochschild cohomology of finite-dimensional algebras"
         return (
             1
             - self.number_of_vertices()
-            + sum(len(G.all_paths(a[0], a[1], use_multiedges=True)) for a in G.edges())
+            + sum(
+                len(self.graph().all_paths(a[0], a[1], use_multiedges=True))
+                for a in self.graph().edges()
+            )
         )
 
     """
