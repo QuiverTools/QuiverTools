@@ -1,27 +1,14 @@
 from sage.arith.misc import gcd
 from sage.categories.cartesian_product import cartesian_product
 from sage.graphs.digraph import DiGraph
-from sage.graphs.graph import Graph
 from sage.matrix.constructor import matrix
 from sage.matrix.special import zero_matrix
-from sage.modules.free_module_element import vector, zero_vector
+from sage.modules.free_module_element import vector
 from sage.rings.integer_ring import ZZ
 from sage.structure.element import Element
 
 
 class Quiver(Element):
-    # TODO this explanation is about implementation details, which don't matter
-    # it should be possible to also create a quiver from a DiGraph
-    # if so: things like indegree should explicitly refer to the vertices of the graph (and not 1, ..., n)
-    # if the adjacency matrix constructor is given: explain _which_ DiGraph would be created
-    """
-    A quiver is represented by its adjacency matrix (a_ij) in M_{n x n}(N) where Q_0 = {1,...,n} and a_{ij} is the number of arrows i --> j.
-
-    Variables:
-    adjacency
-    name = None
-    """
-
     def __init__(self, G, name=None):
         r"""Constructor for a quiver.
 
@@ -124,16 +111,17 @@ class Quiver(Element):
 
     @classmethod
     def from_string(cls, Q: str, forget_labels=True, name=None):
-        r"""Construct a quiver from a comma-separated list of chains of the form "i-j-k-...
+        r"""Construct a quiver from a comma-separated list of chains like `i-j-k-...`
 
         You specify an arrow from `i` to `j` by writing `i-j`.
-        A multiple arrow is specified by repeating the `i`, so that `1--2` is the Kronecker
-        quiver. If you write `i-j-k` then you have 1 arrow from `i` to `j` and one from `j`
-        to `k`. The full quiver is specified by concatenating (multiple) arrows by commas.
+        A multiple arrow is specified by repeating the hyphen, so that `1--2` is the
+        Kronecker quiver. If you write `i-j-k` then you have 1 arrow from `i` to `j`
+        and one from `j` to `k`. The full quiver is specified by concatenating
+        (multiple) arrows by commas.
 
         The values for a vertex can be anything, and the chosen names will be used for
-        the vertices in the underlying graph. Labels are cast to an integer, if possible,
-        and otherwise to strings.
+        the vertices in the underlying graph. Labels are cast to an integer, if
+        possible, and otherwise to strings.
 
         OUTPUT: the quiver
 
@@ -165,7 +153,8 @@ class Quiver(Element):
             sage: Q.vertices()
             [0, 1, 2]
 
-        The actual labeling we use doesn't matter for the isomorphism type of the quiver::
+        The actual labeling we use doesn't matter for the isomorphism type of the
+        quiver::
 
             sage: from quiver import *
             sage: Quiver.from_matrix([[0, 3], [0, 0]]) == Quiver.from_string("12---b")
@@ -503,7 +492,7 @@ class Quiver(Element):
 
         """
         if len(x) != self.number_of_vertices():
-            raise ValueError("The input is not an element of `\mathbb{Z}Q_0`.")
+            raise ValueError(r"The input is not an element of `\mathbb{Z}Q_0`.")
 
         if isinstance(x, list) or isinstance(x, tuple):
             x = vector(ZZ, x)
@@ -558,8 +547,8 @@ class Quiver(Element):
         Return the vertices of the quiver
 
         If the quiver is created from a DiGraph or string, the vertices are labelled
-        using the data in the DiGraph of string, as explained in :meth:`Quiver.from_graph`
-        or :meth:`Quiver.from_string`.
+        using the data in the DiGraph of string, as explained in
+        :meth:`Quiver.from_graph` or :meth:`Quiver.from_string`.
         If the quiver is created from a matrix, the vertices are labelled from `0`
         to `n-1`, where `n` is the number of rows or columns in the matrix.
 
@@ -682,21 +671,21 @@ class Quiver(Element):
     def in_degree(self, i):
         r"""Returns the in-degree of a vertex.
 
-        The parameter `i` must be an element of the vertices of the underlying graph.
-        If constructed from a matrix or string, one has that `i` can go from `0` to `n-1`
-        where `n` is the number of vertices in the graph.
+        The in-degree of `i` is the number of incoming arrows at `i`.
 
-        The indegree of `i` is the number of incoming arrows at `i`.
+        The parameter `i` must be an element of the vertices of the underlying graph.
+        If constructed from a matrix or string, one has that `i` can go from `0` to
+        `n-1` where `n` is the number of vertices in the graph.
 
         INPUT:
 
         ``i`` -- a vertex of the underlying graph
 
-        OUTPUT: The indegree of the vertex `i`
+        OUTPUT: The in-degree of the vertex `i`
 
         EXAMPLES:
 
-        In the 3-Kronecker quiver the indegree is either 0 or 3::
+        In the 3-Kronecker quiver the in-degree is either 0 or 3::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -720,8 +709,8 @@ class Quiver(Element):
         r"""Returns the out-degree of a vertex.
 
         The parameter `i` must be an element of the vertices of the underlying graph.
-        If constructed from a matrix or string, one has that `i` can go from `0` to `n-1`
-        where `n` is the number of vertices in the graph.
+        If constructed from a matrix or string, one has that `i` can go from `0` to
+        `n-1` where `n` is the number of vertices in the graph.
 
         The out-degree of `i` is the number of outgoing arrows at `i`.
 
@@ -731,7 +720,7 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        In the 3-Kronecker quiver the outdegree is either 3 or 0::
+        In the 3-Kronecker quiver the out-degree is either 3 or 0::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -752,7 +741,15 @@ class Quiver(Element):
         return self.graph().out_degree(i)
 
     def is_source(self, i) -> bool:
-        """Checks if `i` is a source of the quiver, i.e. if there are no incoming arrows at `i`.
+        """Checks if `i` is a source of the quiver
+
+        The vertex `i` is a source if there are no incoming arrows at `i`.
+
+        INPUT:
+
+        - `i` -- a vertex of the quiver
+
+        OUTPUT: whether `i` is a source of the quiver
 
         EXAMPLES:
 
@@ -777,7 +774,15 @@ class Quiver(Element):
         return self.in_degree(i) == 0
 
     def is_sink(self, i) -> bool:
-        """Checks if `i` is a sink of the quiver, i.e. if there are no outgoing arrows out of `i`.
+        """Checks if `i` is a sink of the quiver
+
+        The vertex `i` is a sink if there are no outgoing arrows out of `i`.
+
+        INPUT:
+
+        - `i` -- a vertex of the quiver
+
+        OUTPUT: whether `i` is a sink of the quiver
 
         EXAMPLES
 
@@ -871,7 +876,8 @@ class Quiver(Element):
             [ 1 -3]
             [ 0  1]
 
-        It uses the basis of the vertices, so it agrees with this alternative definition::
+        It uses the basis of the vertices, so it agrees with this alternative
+        definition::
 
             sage: Quiver.from_string("foo---bar", forget_labels=False).euler_matrix()
             [ 1 -3]
@@ -1022,10 +1028,11 @@ class Quiver(Element):
 
         It preserves the labelling of the vertices::
 
-            sage: Q = Quiver.from_string("foo---bar", forget_labels=False).opposite_quiver()
-            sage: Q.vertices()
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Qopp = Q.opposite_quiver()
+            sage: Qopp.vertices()
             ['foo', 'bar']
-            sage: Q.adjacency_matrix()
+            sage: Qopp.adjacency_matrix()
             [0 0]
             [3 0]
 
@@ -1061,10 +1068,11 @@ class Quiver(Element):
 
         It preserves the labelling of the vertices::
 
-            sage: Q = Quiver.from_string("foo---bar", forget_labels=False).doubled_quiver()
-            sage: Q.vertices()
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Qbar = Q.doubled_quiver()
+            sage: Qbar.vertices()
             ['foo', 'bar']
-            sage: Q.adjacency_matrix()
+            sage: Qbar.adjacency_matrix()
             [0 3]
             [3 0]
 
@@ -1429,7 +1437,7 @@ class Quiver(Element):
         return self.tits_form(x) == 1
 
     def is_imaginary_root(self, x) -> bool:
-        r"""Checks whether `x` is a imaginary root of the underlying diagram of the quiver.
+        r"""Checks whether `x` is a imaginary root of the quiver.
 
         A root is called imaginary if its Tits form is non-positive.
 
@@ -1468,6 +1476,7 @@ class Quiver(Element):
         i.e., a representation whose endomorphism ring is the field itself.
         It is necessarily indecomposable.
 
+        # TODO set up referencing in docstrings, and give precise result
         By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487)
         `d` is a Schur root if and only if `d` admits a stable representation for
         the canonical stability parameter.
@@ -1541,8 +1550,8 @@ class Quiver(Element):
         use vertex labels, the choice of quiver doesn't matter::
 
             sage: d, theta = [2, 3], [9, -6]
-            sage: KroneckerQuiver(2).slope(d, theta) == KroneckerQuiver(3).slope(d, theta)
-            True
+            sage: KroneckerQuiver(3).slope(d, theta)
+            0
 
         """
         if theta is None:
@@ -1596,11 +1605,15 @@ class Quiver(Element):
 
         return all(ei <= di for (ei, di) in zip(e, d))
 
+    # TODO document and test
     def deglex_key(self, e, b):
-        """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d), provided that b >> 0."""
+        r"""
+        A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d),
+        provided that b >> 0."""
         n = len(e)
         return sum([e[i] * b ** (n - i - 1) for i in range(n)]) + sum(e) * b**n
 
+    # TODO document and test
     def all_subdimension_vectors(self, d, proper=False, nonzero=False):
         """Returns the list of all subdimension vectors of d."""
         # TODO if Q has vertex labels, then returning vector isn't good enough!
@@ -1718,12 +1731,13 @@ class Quiver(Element):
         The fundamental domain of `Q` is the set of dimension vectors `d` such that
 
         * `\operatorname{supp}(\mathbf{d})` is connected
-        * `\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for every simple root `e_i`.
+        * `\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for every simple root
 
         Every `d` in the fundamental domain is an imaginary root and the set of
         imaginary roots is the Weyl group saturation of the fundamental domain.
         If `d` is in the fundamental domain then it is Schurian and a general
-        representation of dimension vector `d` is stable for the canonical stability parameter.
+        representation of dimension vector `d` is stable for the canonical stability
+        parameter.
 
         The optional parameter `depth` allows to make the inequality stricter.
 
@@ -1785,7 +1799,11 @@ class Quiver(Element):
 
     # TODO what is the use case?
     def division_order(self, d, e):
-        """Checks if d << e, which means that d_i <= e_i for every source i, d_j >= e_j for every sink j, and d_k == e_k for every vertex k which is neither a source nor a sink.
+        r"""
+        Checks if d << e,
+
+        This means that d_i <= e_i for every source i, d_j >= e_j for every sink j,
+        and d_k == e_k for every vertex k which is neither a source nor a sink.
 
         # TODO: Think of a better name.
         # Good name?
@@ -1996,9 +2014,13 @@ class Quiver(Element):
         )
 
     # TODO remove this and cache the recursive one instead
-    # This method computes a list of all generic subdimension vectors of e, for all e which are subdimension vectors of d.
+    # This method computes a list of all generic subdimension vectors of e
+    # for all e which are subdimension vectors of d.
     def __all_generic_subdimension_vectors_helper(self, d):
-        """Returns the list of lists of indexes of all generic subdimension vectors of e, where e ranges over all subdimension vectors of d. The index refers to the deglex order.
+        r"""Returns the list of lists of indices of all generic subdimension vectors
+
+        Here e ranges over all subdimension vectors of d. The index refers to the
+        deglex order.
 
         EXAMPLES:
 
@@ -2034,10 +2056,12 @@ class Quiver(Element):
         """
         subdims = self.all_subdimension_vectors(d)
         subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
-        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+        # we use the deglex order because it's a total order which extends the usual
+        # entry-wise partial order on dimension vectors.
         N = len(subdims)
 
-        # genIndexes[j] will in the end be the list of indexes (in subdims) of all generic subdimension vectors of subdims[j]
+        # genIndexes[j] will in the end be the list of indexes (in subdims) of all
+        # generic subdimension vectors of subdims[j]
         genIndexes = [
             list(
                 filter(
@@ -2240,7 +2264,7 @@ class Quiver(Element):
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
     def has_semistable_representation(self, d, theta=None):
-        r"""Checks if there is a `\theta`-semistable representation of dimension vector `d`
+        r"""Checks if there is a `\theta`-semistable of dimension vector `d`
 
         INPUT:
         - ``d``: dimension vector
@@ -2249,27 +2273,25 @@ class Quiver(Element):
 
         OUTPUT: Statement truth value as Bool
 
-        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-semi-stable representation if and only if mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d.
-        # Thm. 5.4 in Markus's paper is actually a result of Schofield. So the algorithm should bear his name, if any.
+        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf
+        A dimension vector d admits a theta-semi-stable representation if and only if
+        mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d.
+        # Thm. 5.4 in Markus's paper is actually a result of Schofield. So the
+        algorithm should bear his name, if any.
 
         EXAMPLES:
 
         Semistables for the A_2 quiver::
 
             sage: from quiver import *
-            sage: A2 = GeneralizedKroneckerQuiver(1)
-            sage: theta = vector([1,-1])
-            sage: d = vector([1,1])
-            sage: A2.has_semistable_representation(d,theta)
+            sage: Q = GeneralizedKroneckerQuiver(1)
+            sage: Q.has_semistable_representation([1, 1], [1, -1])
             True
-            sage: d = vector([2,2])
-            sage: A2.has_semistable_representation(d,theta)
+            sage: Q.has_semistable_representation([2, 2], [1, -1])
             True
-            sage: d = vector([1,2])
-            sage: A2.has_semistable_representation(d,theta)
+            sage: Q.has_semistable_representation([1, 2], [1, -1])
             False
-            sage: d = vector([0,0])
-            sage: A2.has_semistable_representation(d,theta)
+            sage: Q.has_semistable_representation([0, 0], [1, -1])
             True
 
         Semistables for the 3-Kronecker quiver::
