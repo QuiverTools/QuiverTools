@@ -2375,7 +2375,7 @@ class Quiver(Element):
         d = self._coerce_dimension_vector(d)
         theta = self._coerce_vector(theta)
 
-        if d == self.zero_vector():
+        if d == self._coerce_dimension_vector(self.zero_vector()):
             return False
 
         return all(
