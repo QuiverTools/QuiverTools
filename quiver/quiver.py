@@ -2123,12 +2123,9 @@ class Quiver(Element):
         N = len(genSubdims)
 
         if nonzero:
-            # TODO deal with dict dimension vectors
-            genSubdims[N - 1] = [
-                e for e in genSubdims[N - 1] if e != vector(self.zero_vector())
-            ]
+            genSubdims[N - 1] = genSubdims[N - 1][1:]
         if proper:
-            # TODO deal with dict dimension vectors
+            # TODO deal with dict dimension vectors, or guarantee the order
             genSubdims[N - 1] = [e for e in genSubdims[N - 1] if e != vector(d)]
         return genSubdims[N - 1]
 
