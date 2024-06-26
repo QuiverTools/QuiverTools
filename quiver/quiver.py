@@ -426,10 +426,10 @@ class Quiver(Element):
         if not self._is_vector(d):
             return False
 
-        if isinstance(d, list) or isinstance(d, tuple):
-            return all(di >= 0 for di in d)
-        elif isinstance(d, dict):
+        if isinstance(d, dict):
             return all(di >= 0 for di in d.values())
+
+        return all(di >= 0 for di in d)
 
     def _coerce_dimension_vector(self, d):
         r"""
