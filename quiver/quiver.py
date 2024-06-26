@@ -328,6 +328,109 @@ class Quiver(Element):
         """
         return self.adjacency_matrix() == other.adjacency_matrix()
 
+    def _is_vector(self, x):
+        r"""
+        Checks whether `x` is an element of `\mathbb{Z}Q_0`
+
+        If the quiver doesn't use vertex labels we check that it has the right length.
+        If the quiver uses vertex labels, we check that `d` is a dict with the right
+        set of keys.
+
+        We actually do not care whether the values are in `\mathbb{Z}`.
+
+        INPUT:
+
+        - `x` -- vector
+
+        OUTPUT: whether `x` can be used as a dimension vector for the quiver
+
+        EXAMPLES:
+
+        Some basic examples::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q._is_vector([2, 3])
+            True
+            sage: Q._is_vector([0, 0])
+            True
+            sage: Q._is_vector([-2, -2])
+            True
+            sage: Q._is_vector([1, 2, 3])
+            False
+
+        We allow non-integral values, because this can be useful for stability::
+
+            sage: Q._is_vector([1/2, 3])
+            True
+
+        An example with vertex labels::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Q._is_vector({"foo" : 0, "bar" : 0})
+            True
+            sage: Q._is_vector({"bar" : 0, "foo" : 0})
+            True
+            sage: Q._is_vector({"baz" : 0, "ofo" : 0})
+            False
+
+        """
+        if isinstance(x, list) or isinstance(x, tuple):
+            return len(x) == self.number_of_vertices()
+        elif isinstance(x, dict):
+            return set(x.keys()) == set(self.vertices())
+
+    def _is_dimension_vector(self, d):
+        r"""
+        Checks whether `d` is a dimension vector of the quiver
+
+        If the quiver doesn't use vertex labels we check that it has the right length
+        and has positive entries.
+        If the quiver uses vertex labels, we check that `d` is a dict with the right
+        set of keys and positive entries.
+
+        We only check for non-negativity, not for integrality.
+
+        INPUT:
+
+        - `d` -- dimension vector
+
+        OUTPUT: whether `d` can be used as a dimension vector for the quiver
+
+        EXAMPLES:
+
+        Some basic examples::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q._is_dimension_vector([2, 3])
+            True
+            sage: Q._is_dimension_vector([0, 0])
+            True
+            sage: Q._is_dimension_vector([-2, -2])
+            False
+            sage: Q._is_dimension_vector([1, 2, 3])
+            False
+
+        An example with vertex labels::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Q._is_dimension_vector({"foo" : 2, "bar" : 3})
+            True
+            sage: Q._is_dimension_vector({"bar" : 0, "foo" : -1})
+            False
+            sage: Q._is_dimension_vector({"baz" : 0, "ofo" : 0})
+            False
+
+        """
+        if not self._is_vector(d):
+            return False
+
+        if isinstance(d, list) or isinstance(d, tuple):
+            return all(di >= 0 for di in d)
+        elif isinstance(d, dict):
+            return all(di >= 0 for di in d.values())
+
     def _coerce_dimension_vector(self, d):
         r"""
         Coerces `d` to be a dimension vector of the quiver
