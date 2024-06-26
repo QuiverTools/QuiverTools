@@ -19,7 +19,7 @@ from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
 from sage.structure.element import Element
 
-from quiver import *
+from quiver import Quiver
 
 """Defines how permutations are multiplied."""
 Permutations.options(mult="r2l")
