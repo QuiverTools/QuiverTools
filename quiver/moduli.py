@@ -49,7 +49,10 @@ Something like computing Betti numbers is then only implemented for QuiverModuli
 
 class QuiverModuli(ABC):
     @abstractmethod
-    def __init__(self, Q, d, theta, denominator=sum, condition="semistable"):
+    def __init__(self, Q, d, theta=None, denominator=sum, condition="semistable"):
+        if theta is None:
+            theta = Q.canonical_stability_parameter(d)
+
         n = Q.number_of_vertices()
         assert (
             Q.number_of_vertices()
