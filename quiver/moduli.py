@@ -54,18 +54,13 @@ class QuiverModuli(ABC):
             theta = Q.canonical_stability_parameter(d)
 
         n = Q.number_of_vertices()
-        assert (
-            Q.number_of_vertices()
-            == d.length() & Q.number_of_vertices()
-            == theta.length()
-        )
+        assert Q.number_of_vertices() == len(d)
+        assert Q.number_of_vertices() == len(theta)
         assert condition in ["semistable", "stable"]
         # TODO this effectivity condition needs to be documented, and maybe be part of Quiver?
         assert all(
-            [
-                denominator(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
-                for i in Q.vertices()
-            ]
+            denominator(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
+            for i in Q.vertices()
         )
         self._Q = Q
         self._d = d
