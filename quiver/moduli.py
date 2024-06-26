@@ -1494,9 +1494,10 @@ class QuiverModuliSpace(QuiverModuli):
 
     def mukai_inequality_holds(self):
         # TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.
-        return 1 - self._Q.euler_form(self._d, self._d) >= self.picard_rank() * (
-            self.index() - 1
-        )
+        # setup shorthand
+        Q, d, theta = self._Q, self._d, self._theta
+
+        return 1 - Q.tits_form(d) >= self.picard_rank() * (self.index() - 1)
 
     def chow_ring(self, chi=None, chernClasses=None):
         r"""Returns the Chow ring of the moduli space.
