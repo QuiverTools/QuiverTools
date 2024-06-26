@@ -1398,7 +1398,49 @@ class Quiver(Element):
         return self.has_stable_representation(d, theta)
 
     def slope(self, d, theta, denominator=sum):
-        """For denominator = sum, the slope mu_theta(d) is defined as theta*d/(sum_i d_i). We need to ensure that sum(d) is positive."""
+        r"""
+        Returns the slope of `d` with respect to `theta`
+
+        The slope is defined as the value of `theta(d)` divided by the total dimension
+        of `d`. It is possible to vary the denominator, to use a function more general
+        than the sum.
+
+        INPUT:
+
+        - `d` -- dimension vector
+
+        - `theta` -- stability parameter
+
+        OUTPUT: the slope of `d` with respect to `theta` and optional `denominator`
+
+        EXAMPLES:
+
+        Some slopes for the Kronecker quiver, first for the canonical stability
+        parameter, then for some other::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: d = [2, 3]
+            sage: Q.slope(d, [9, -6])
+            0
+            sage: Q.slope(d, [2, -2])
+            -2/5
+
+        We can use for instance a constant denominator::
+
+            sage: constant = lambda di: 1
+            sage: Q.slope(d, Q.canonical_stability_parameter(d), denominator=constant)
+            0
+
+        The only dependence on the quiver is the set of vertices, so if we don't
+        use vertex labels, the choice of quiver doesn't matter::
+
+            sage: d, theta = [2, 3], [9, -6]
+            sage: KroneckerQuiver(2).slope(d, theta) == KroneckerQuiver(3).slope(d, theta)
+            True
+
+        """
+
         assert denominator(d) > 0
 
         d = self._coerce_dimension_vector(d)
