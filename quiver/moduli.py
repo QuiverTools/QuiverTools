@@ -1466,14 +1466,19 @@ class QuiverModuliSpace(QuiverModuli):
         else:
             raise NotImplementedError()
 
+    def is_projective(self) -> bool:
+        raise NotImplementedError()
+
     def picard_rank(self):
         """Computes the Picard rank of the moduli space for known cases."""
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+        # TODO requires smooth and projective?
 
         if Q.is_theta_coprime(d, theta) and Q.is_amply_stable(Q, d, theta):
             return Q.number_of_vertices() - 1
         else:
+            # TODO if smooth: compute the Betti numbers and return b_2
             raise NotImplementedError()
 
     def index(self):
