@@ -1855,9 +1855,15 @@ class Quiver(Element):
 
         OUTPUT: True if e is a generic subdimension vector of d, False otherwise.
 
-        # Using notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf
-        A dimension vector e is called a generic subdimension vector of d if a generic representation of dimension vector d possesses a subrepresentation of dimension vector e.
-        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf) e is a generic subdimension vector of d if and only if e is a subdimension vector of d (missing in Thm. 5.3!) and <f,d-e> is non-negative for all generic subdimension vectors f of e.
+        Using the notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf:
+        a dimension vector `e` is a generic subdimension vector of `d`
+        if a generic representation of dimension vector `d` possesses
+        a subrepresentation of dimension vector `e`.
+
+        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf)
+        `e` is a generic subdimension vector of `d` if and only if `e` is
+        a subdimension vector of `d` and `\langle f,d-e\rangle` is non-negative
+        for all generic subdimension vectors `f` of `e`.
 
         EXAMPLES:
 
@@ -1865,122 +1871,118 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = LoopQuiver(1)
-            sage: dims = [vector([i]) for i in range(3)]
-            sage: for e in dims:
-            ....:     for d in dims:
-            ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-            ....:
-            (0) gen. subdim of (0)?: True
-            (0) gen. subdim of (1)?: True
-            (0) gen. subdim of (2)?: True
-            (1) gen. subdim of (0)?: False
-            (1) gen. subdim of (1)?: True
-            (1) gen. subdim of (2)?: True
-            (2) gen. subdim of (0)?: False
-            (2) gen. subdim of (1)?: False
-            (2) gen. subdim of (2)?: True
+            sage: ds = [vector([i]) for i in range(3)]
+            sage: for (e, d) in cartesian_product([ds, ds]):
+            ....:     if not Q.is_subdimension_vector(e, d): continue
+            ....:     print("{} is generic subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_generic_subdimension_vector(e,d))
+            ....:     )
+            (0) is generic subdimension vector of (0): True
+            (0) is generic subdimension vector of (1): True
+            (0) is generic subdimension vector of (2): True
+            (1) is generic subdimension vector of (1): True
+            (1) is generic subdimension vector of (2): True
+            (2) is generic subdimension vector of (2): True
             sage: Q = LoopQuiver(2)
-            sage: for e in dims:
-            ....:     for d in dims:
-            ....:         print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-            ....:
-            (0) gen. subdim of (0)?: True
-            (0) gen. subdim of (1)?: True
-            (0) gen. subdim of (2)?: True
-            (1) gen. subdim of (0)?: False
-            (1) gen. subdim of (1)?: True
-            (1) gen. subdim of (2)?: False
-            (2) gen. subdim of (0)?: False
-            (2) gen. subdim of (1)?: False
-            (2) gen. subdim of (2)?: True
+            sage: for (e, d) in cartesian_product([ds]*2):
+            ....:     if not Q.is_subdimension_vector(e, d): continue
+            ....:     print("{} is generic subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_generic_subdimension_vector(e,d))
+            ....:     )
+            (0) is generic subdimension vector of (0): True
+            (0) is generic subdimension vector of (1): True
+            (0) is generic subdimension vector of (2): True
+            (1) is generic subdimension vector of (1): True
+            (1) is generic subdimension vector of (2): False
+            (2) is generic subdimension vector of (2): True
 
-
-        Some n-Kronecker quivers::
+        Some examples on generalized Kronecker quivers::
 
             sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: dims = Tuples(range(3), 2)
-            sage: for e in dims:
-            ....:     for d in dims:
-            ....:         if Q.is_subdimension_vector(e,d):
-            ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-            (0, 0) gen. subdim of (0, 0)?: True
-            (0, 0) gen. subdim of (1, 0)?: True
-            (0, 0) gen. subdim of (2, 0)?: True
-            (0, 0) gen. subdim of (0, 1)?: True
-            (0, 0) gen. subdim of (1, 1)?: True
-            (0, 0) gen. subdim of (2, 1)?: True
-            (0, 0) gen. subdim of (0, 2)?: True
-            (0, 0) gen. subdim of (1, 2)?: True
-            (0, 0) gen. subdim of (2, 2)?: True
-            (1, 0) gen. subdim of (1, 0)?: True
-            (1, 0) gen. subdim of (2, 0)?: True
-            (1, 0) gen. subdim of (1, 1)?: False
-            (1, 0) gen. subdim of (2, 1)?: True
-            (1, 0) gen. subdim of (1, 2)?: False
-            (1, 0) gen. subdim of (2, 2)?: False
-            (2, 0) gen. subdim of (2, 0)?: True
-            (2, 0) gen. subdim of (2, 1)?: False
-            (2, 0) gen. subdim of (2, 2)?: False
-            (0, 1) gen. subdim of (0, 1)?: True
-            (0, 1) gen. subdim of (1, 1)?: True
-            (0, 1) gen. subdim of (2, 1)?: True
-            (0, 1) gen. subdim of (0, 2)?: True
-            (0, 1) gen. subdim of (1, 2)?: True
-            (0, 1) gen. subdim of (2, 2)?: True
-            (1, 1) gen. subdim of (1, 1)?: True
-            (1, 1) gen. subdim of (2, 1)?: True
-            (1, 1) gen. subdim of (1, 2)?: True
-            (1, 1) gen. subdim of (2, 2)?: True
-            (2, 1) gen. subdim of (2, 1)?: True
-            (2, 1) gen. subdim of (2, 2)?: False
-            (0, 2) gen. subdim of (0, 2)?: True
-            (0, 2) gen. subdim of (1, 2)?: True
-            (0, 2) gen. subdim of (2, 2)?: True
-            (1, 2) gen. subdim of (1, 2)?: True
-            (1, 2) gen. subdim of (2, 2)?: True
-            (2, 2) gen. subdim of (2, 2)?: True
+            sage: ds = Tuples(range(3), 2)
+            sage: for (e, d) in cartesian_product([ds]*2):
+            ....:     if not Q.is_subdimension_vector(e, d): continue
+            ....:     print("{} is generic subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_generic_subdimension_vector(e,d))
+            ....:     )
+            (0, 0) is generic subdimension vector of (0, 0): True
+            (0, 0) is generic subdimension vector of (1, 0): True
+            (0, 0) is generic subdimension vector of (2, 0): True
+            (0, 0) is generic subdimension vector of (0, 1): True
+            (0, 0) is generic subdimension vector of (1, 1): True
+            (0, 0) is generic subdimension vector of (2, 1): True
+            (0, 0) is generic subdimension vector of (0, 2): True
+            (0, 0) is generic subdimension vector of (1, 2): True
+            (0, 0) is generic subdimension vector of (2, 2): True
+            (1, 0) is generic subdimension vector of (1, 0): True
+            (1, 0) is generic subdimension vector of (2, 0): True
+            (1, 0) is generic subdimension vector of (1, 1): False
+            (1, 0) is generic subdimension vector of (2, 1): True
+            (1, 0) is generic subdimension vector of (1, 2): False
+            (1, 0) is generic subdimension vector of (2, 2): False
+            (2, 0) is generic subdimension vector of (2, 0): True
+            (2, 0) is generic subdimension vector of (2, 1): False
+            (2, 0) is generic subdimension vector of (2, 2): False
+            (0, 1) is generic subdimension vector of (0, 1): True
+            (0, 1) is generic subdimension vector of (1, 1): True
+            (0, 1) is generic subdimension vector of (2, 1): True
+            (0, 1) is generic subdimension vector of (0, 2): True
+            (0, 1) is generic subdimension vector of (1, 2): True
+            (0, 1) is generic subdimension vector of (2, 2): True
+            (1, 1) is generic subdimension vector of (1, 1): True
+            (1, 1) is generic subdimension vector of (2, 1): True
+            (1, 1) is generic subdimension vector of (1, 2): True
+            (1, 1) is generic subdimension vector of (2, 2): True
+            (2, 1) is generic subdimension vector of (2, 1): True
+            (2, 1) is generic subdimension vector of (2, 2): False
+            (0, 2) is generic subdimension vector of (0, 2): True
+            (0, 2) is generic subdimension vector of (1, 2): True
+            (0, 2) is generic subdimension vector of (2, 2): True
+            (1, 2) is generic subdimension vector of (1, 2): True
+            (1, 2) is generic subdimension vector of (2, 2): True
+            (2, 2) is generic subdimension vector of (2, 2): True
             sage: Q = GeneralizedKroneckerQuiver(2)
-            sage: for e in dims:
-            ....:     for d in dims:
-            ....:         if Q.is_subdimension_vector(e,d):
-            ....:             print(str(e)+" gen. subdim of "+str(d)+"?: "+str(Q.is_generic_subdimension_vector(e,d)))
-            ....:
-            (0, 0) gen. subdim of (0, 0)?: True
-            (0, 0) gen. subdim of (1, 0)?: True
-            (0, 0) gen. subdim of (2, 0)?: True
-            (0, 0) gen. subdim of (0, 1)?: True
-            (0, 0) gen. subdim of (1, 1)?: True
-            (0, 0) gen. subdim of (2, 1)?: True
-            (0, 0) gen. subdim of (0, 2)?: True
-            (0, 0) gen. subdim of (1, 2)?: True
-            (0, 0) gen. subdim of (2, 2)?: True
-            (1, 0) gen. subdim of (1, 0)?: True
-            (1, 0) gen. subdim of (2, 0)?: True
-            (1, 0) gen. subdim of (1, 1)?: False
-            (1, 0) gen. subdim of (2, 1)?: False
-            (1, 0) gen. subdim of (1, 2)?: False
-            (1, 0) gen. subdim of (2, 2)?: False
-            (2, 0) gen. subdim of (2, 0)?: True
-            (2, 0) gen. subdim of (2, 1)?: False
-            (2, 0) gen. subdim of (2, 2)?: False
-            (0, 1) gen. subdim of (0, 1)?: True
-            (0, 1) gen. subdim of (1, 1)?: True
-            (0, 1) gen. subdim of (2, 1)?: True
-            (0, 1) gen. subdim of (0, 2)?: True
-            (0, 1) gen. subdim of (1, 2)?: True
-            (0, 1) gen. subdim of (2, 2)?: True
-            (1, 1) gen. subdim of (1, 1)?: True
-            (1, 1) gen. subdim of (2, 1)?: True
-            (1, 1) gen. subdim of (1, 2)?: False
-            (1, 1) gen. subdim of (2, 2)?: True
-            (2, 1) gen. subdim of (2, 1)?: True
-            (2, 1) gen. subdim of (2, 2)?: False
-            (0, 2) gen. subdim of (0, 2)?: True
-            (0, 2) gen. subdim of (1, 2)?: True
-            (0, 2) gen. subdim of (2, 2)?: True
-            (1, 2) gen. subdim of (1, 2)?: True
-            (1, 2) gen. subdim of (2, 2)?: True
-            (2, 2) gen. subdim of (2, 2)?: True
+            sage: for (e, d) in cartesian_product([ds]*2):
+            ....:     if not Q.is_subdimension_vector(e, d): continue
+            ....:     print("{} is generic subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_generic_subdimension_vector(e,d))
+            ....:     )
+            (0, 0) is generic subdimension vector of (0, 0): True
+            (0, 0) is generic subdimension vector of (1, 0): True
+            (0, 0) is generic subdimension vector of (2, 0): True
+            (0, 0) is generic subdimension vector of (0, 1): True
+            (0, 0) is generic subdimension vector of (1, 1): True
+            (0, 0) is generic subdimension vector of (2, 1): True
+            (0, 0) is generic subdimension vector of (0, 2): True
+            (0, 0) is generic subdimension vector of (1, 2): True
+            (0, 0) is generic subdimension vector of (2, 2): True
+            (1, 0) is generic subdimension vector of (1, 0): True
+            (1, 0) is generic subdimension vector of (2, 0): True
+            (1, 0) is generic subdimension vector of (1, 1): False
+            (1, 0) is generic subdimension vector of (2, 1): False
+            (1, 0) is generic subdimension vector of (1, 2): False
+            (1, 0) is generic subdimension vector of (2, 2): False
+            (2, 0) is generic subdimension vector of (2, 0): True
+            (2, 0) is generic subdimension vector of (2, 1): False
+            (2, 0) is generic subdimension vector of (2, 2): False
+            (0, 1) is generic subdimension vector of (0, 1): True
+            (0, 1) is generic subdimension vector of (1, 1): True
+            (0, 1) is generic subdimension vector of (2, 1): True
+            (0, 1) is generic subdimension vector of (0, 2): True
+            (0, 1) is generic subdimension vector of (1, 2): True
+            (0, 1) is generic subdimension vector of (2, 2): True
+            (1, 1) is generic subdimension vector of (1, 1): True
+            (1, 1) is generic subdimension vector of (2, 1): True
+            (1, 1) is generic subdimension vector of (1, 2): False
+            (1, 1) is generic subdimension vector of (2, 2): True
+            (2, 1) is generic subdimension vector of (2, 1): True
+            (2, 1) is generic subdimension vector of (2, 2): False
+            (0, 2) is generic subdimension vector of (0, 2): True
+            (0, 2) is generic subdimension vector of (1, 2): True
+            (0, 2) is generic subdimension vector of (2, 2): True
+            (1, 2) is generic subdimension vector of (1, 2): True
+            (1, 2) is generic subdimension vector of (2, 2): True
+            (2, 2) is generic subdimension vector of (2, 2): True
 
         """
         d = self._coerce_dimension_vector(d)
@@ -1988,13 +1990,14 @@ class Quiver(Element):
 
         if e == d:
             return True
-        else:
-            if not self.is_subdimension_vector(e, d):
-                return False
-            else:  # e is subdimension vector of d
-                # List of all generic subdimension vectors of e
-                genSubdims = self.all_generic_subdimension_vectors(e)
-                return all([self.euler_form(f, d - e) >= 0 for f in genSubdims])
+
+        if not self.is_subdimension_vector(e, d):
+            return False
+
+        return all(
+            self.euler_form(f, d - e) >= 0
+            for f in self.all_generic_subdimension_vectors(e)
+        )
 
     # TODO remove this and cache the recursive one instead
     # This method computes a list of all generic subdimension vectors of e, for all e which are subdimension vectors of d.
