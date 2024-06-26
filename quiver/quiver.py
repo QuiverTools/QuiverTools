@@ -2067,7 +2067,7 @@ class Quiver(Element):
 
         return genIndexes, genSubdims
 
-    def all_generic_subdimension_vectors(self, d):
+    def all_generic_subdimension_vectors(self, d, proper=False, nonzero=False):
         r"""Returns the list of all generic subdimension vectors of d.
 
         INPUT:
@@ -2109,12 +2109,27 @@ class Quiver(Element):
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
+            sage: Q.all_generic_subdimension_vectors(d, nonzero=True)
+            [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
+            sage: Q.all_generic_subdimension_vectors(d, proper=True)
+            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
 
         """
         d = self._coerce_dimension_vector(d)
 
+        # TODO why is this hidden in a helper function?
+        # TODO prettier variable names and structure
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
         N = len(genSubdims)
+
+        if nonzero:
+            # TODO deal with dict dimension vectors
+            genSubdims[N - 1] = [
+                e for e in genSubdims[N - 1] if e != vector(self.zero_vector())
+            ]
+        if proper:
+            # TODO deal with dict dimension vectors
+            genSubdims[N - 1] = [e for e in genSubdims[N - 1] if e != vector(d)]
         return genSubdims[N - 1]
 
     def generic_ext(self, d, e):
@@ -2223,6 +2238,7 @@ class Quiver(Element):
     """
 
     def canonical_stability_parameter(self, d):
+        # TODO theta needs to work with dicts too
         """The canonical stability parameter is given by <d,_> - <_,d>"""
         d = self._coerce_dimension_vector(d)
 
@@ -2264,13 +2280,10 @@ class Quiver(Element):
         Semistables for the 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: K3 = GeneralizedKroneckerQuiver(3)
-            sage: theta = vector([3,-2])
-            sage: d = vector([2,3])
-            sage: K3.has_semistable_representation(d,theta)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.has_semistable_representation([2, 3])
             True
-            sage: d = vector([1,4])
-            sage: K3.has_semistable_representation(d,theta)
+            sage: Q.has_semistable_representation([1, 4], [-3, 2])
             False
 
         """
@@ -2279,12 +2292,12 @@ class Quiver(Element):
 
         d = self._coerce_dimension_vector(d)
         theta = self._coerce_vector(theta)
-        zero_vector = self._coerce_dimension_vector(self.zero_vector())
 
-        # TODO exclude_zero parameter in all_generic_subdimension_vectors?
-        genSubdims = self.all_generic_subdimension_vectors(d)
-        genSubdims = list(filter(lambda e: e != zero_vector, genSubdims))
-        return all(self.slope(e, theta) <= self.slope(d, theta) for e in genSubdims)
+        # TODO no need for denominator?!
+        return all(
+            self.slope(e, theta) <= self.slope(d, theta)
+            for e in self.all_generic_subdimension_vectors(d, nonzero=True)
+        )
 
     # TODO remove and cache the recursive one instead
     def __all_semistable_subdimension_vectors_helper(self, d, theta):
