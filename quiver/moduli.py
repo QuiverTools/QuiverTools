@@ -1353,26 +1353,27 @@ class QuiverModuliSpace(QuiverModuli):
 
     def picard_rank(self):
         """Computes the Picard rank of the moduli space for known cases."""
-        # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
-        # Comment: The Picard rank is also n-1 if theta is not in the canonical chamber (with d theta-coprime and theta-amply stable). This is because Pic(X) is isomorphic to A^1(X) (X is smooth) and the latter is free of rank n-1 by theh tautological presentation.
-        if self._Q.is_coprime_for_stability_parameter(
-            self._d, self._theta
-        ) & self._Q.is_amply_stable(self._Q, self._d, self._theta):
-            return self._Q.number_of_vertices() - 1
+        # setup shorthand
+        Q, d, theta = self._Q, self._d, self._theta
+
+        if Q.is_theta_coprime(d, theta) and Q.is_amply_stable(Q, d, theta):
+            return Q.number_of_vertices() - 1
         else:
             raise NotImplementedError()
 
     def index(self):
         """Computes the index of the moduli space for known cases, i.e., the largest integer dividing the canonical divisor in Pic."""
         # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
-        if self._theta == self._Q.canonical_stability_parameter(
-            self._d
-        ) & self._Q.is_coprime_for_stability_parameter(
-            self._d, self._theta
-        ) & self._Q.is_amply_stable(
-            self._Q, self._d, self._theta
+        # setup shorthand
+        Q, d, theta = self._Q, self._d, self._theta
+        if (
+            # TODO at the very least check for multiple of canonical
+            theta == Q.canonical_stability_parameter(d)
+            and Q.is_theta_coprime(d, theta)
+            and Q.is_amply_stable(Q, d, theta)
         ):
-            return gcd(self._theta.list())
+            # TODO what if theta is rescaled?
+            return gcd(Q._to_vector(theta))
         else:
             raise NotImplementedError()
 
