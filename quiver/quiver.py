@@ -375,10 +375,10 @@ class Quiver(Element):
             False
 
         """
-        if isinstance(x, list) or isinstance(x, tuple):
-            return len(x) == self.number_of_vertices()
-        elif isinstance(x, dict):
+        if isinstance(x, dict):
             return set(x.keys()) == set(self.vertices())
+
+        return len(x) == self.number_of_vertices()
 
     def _is_dimension_vector(self, d):
         r"""
@@ -1628,7 +1628,9 @@ class Quiver(Element):
             False
 
         """
-        # TODO test the d and theta, but don't coerce
+        assert self._is_dimension_vector(d)
+        assert self._is_vector(theta)
+
         vectors = self.all_subdimension_vectors(d, proper=True, nonzero=True)
 
         return all([self.slope(d, theta) != self.slope(e, theta) for e in vectors])
