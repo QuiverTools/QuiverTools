@@ -1500,7 +1500,7 @@ class Quiver(Element):
 
         return self.has_stable_representation(d, theta)
 
-    def slope(self, d, theta, denominator=sum):
+    def slope(self, d, theta=None, denominator=sum):
         r"""
         Returns the slope of `d` with respect to `theta`
 
@@ -1512,7 +1512,7 @@ class Quiver(Element):
 
         - `d` -- dimension vector
 
-        - `theta` -- stability parameter
+        - `theta` (default: canonical stability parameter) -- stability parameter
 
         OUTPUT: the slope of `d` with respect to `theta` and optional `denominator`
 
@@ -1525,6 +1525,8 @@ class Quiver(Element):
             sage: Q = KroneckerQuiver(3)
             sage: d = [2, 3]
             sage: Q.slope(d, [9, -6])
+            0
+            sage: Q.slope(d)
             0
             sage: Q.slope(d, [2, -2])
             -2/5
@@ -1543,6 +1545,8 @@ class Quiver(Element):
             True
 
         """
+        if theta is None:
+            theta = self.canonical_stability_parameter(d)
 
         assert denominator(d) > 0
 
@@ -1608,14 +1612,21 @@ class Quiver(Element):
             vectors = vectors[1:]
         return vectors
 
-    # TODO: This method has a stupid name (my own fault). Think of a better one.
-    # TODO whenever a theta needs to be provided, we should default to the canonical one?
-    def is_theta_coprime(self, d, theta) -> bool:
-        """Checks if d is theta-coprime.
+    def is_theta_coprime(self, d, theta=None) -> bool:
+        r"""Checks if `d` is `theta`-coprime.
 
-        A dimension vector d is theta-coprime if mu_theta(e) != mu_theta(e) for all proper subdimension vectors e of d.
+        A dimension vector `d` is `theta`-coprime if `mu_theta(e)\neq mu_theta(e)`
+        for all proper non-zero subdimension vectors e of d.
 
-        EXAMPLES
+        The default value for `theta` is the canonical stability parameter.
+
+        INPUT:
+
+        - `d` -- dimension vector
+
+        - `theta` (default: canonical stability paramter) -- stability parameter
+
+        EXAMPLES:
 
         Examples of coprimality::
 
@@ -1624,10 +1635,15 @@ class Quiver(Element):
             sage: d = [2, 3]
             sage: Q.is_theta_coprime(d, Q.canonical_stability_parameter(d))
             True
+            sage: Q.is_theta_coprime(d)
+            True
             sage: Q.is_theta_coprime([3, 3], [1, -1])
             False
 
         """
+        if theta is None:
+            theta = self.canonical_stability_parameter(d)
+
         assert self._is_dimension_vector(d)
         assert self._is_vector(theta)
 
@@ -2209,13 +2225,13 @@ class Quiver(Element):
 
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
-    def has_semistable_representation(self, d, theta):
+    def has_semistable_representation(self, d, theta=None):
         r"""Checks if there is a `\theta`-semistable representation of dimension vector `d`
 
         INPUT:
         - ``d``: dimension vector
 
-        - ``theta``: stability parameter
+        - ``theta`` (default: canonical stability parameter): stability parameter
 
         OUTPUT: Statement truth value as Bool
 
@@ -2255,7 +2271,11 @@ class Quiver(Element):
             False
 
         """
+        if theta is None:
+            theta = self.canonical_stability_parameter(d)
+
         d = self._coerce_dimension_vector(d)
+        theta = self._coerce_vector(theta)
         zero_vector = self._coerce_dimension_vector(self.zero_vector())
 
         # TODO exclude_zero parameter in all_generic_subdimension_vectors?
@@ -2297,17 +2317,15 @@ class Quiver(Element):
         sstSubdims = [subdims[j] for j in sstIndexes]
         return sstIndexes, sstSubdims
 
-    # TODO need to specify what the input for "stability parameter" is
-    # TODO always have canonical stability as default?
-    def has_stable_representation(self, d, theta, algorithm="schofield"):
+    def has_stable_representation(self, d, theta=None, algorithm="schofield"):
         r"""Checks if there is a `\theta`-stable representation of this dimension vector.
 
         INPUT:
         - ``d``: dimension vector
 
-        - ``theta``: stability parameter
+        - ``theta`` (default: canonical stability parameter): stability parameter
 
-        - ``algorithm``: String
+        - ``algorithm``: string
 
         OUTPUT: True if there is a `\theta`-stable representation of `d`, False otherwise.
 
@@ -2335,9 +2353,14 @@ class Quiver(Element):
             sage: theta = Q.canonical_stability_parameter(d)
             sage: Q.has_stable_representation(d, theta, algorithm="schofield")
             True
+            sage: Q.has_stable_representation(d, algorithm="schofield")
+            True
 
         """
         assert algorithm in ["schofield", "king", "al"]
+
+        if theta is None:
+            theta = self.canonical_stability_parameter(d)
 
         # coerce stability parameter
         theta = vector(theta)
@@ -2710,11 +2733,14 @@ class Quiver(Element):
 
     # TODO: This section should go into QuiverModuliSpace, I think.
     # TODO return weights as dictionaries with HN types as keys.
-    def all_weight_bounds(self, d, theta, denominator=sum):
+    def all_weight_bounds(self, d, theta=None, denominator=sum):
         """
         Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
         For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight. Teleman quantization gives a numerical condition involving these weights to compute cohmology on the quotient.
         """
+        if theta is None:
+            theta = self.canonical_stability_parameter(d)
+
         # TODO return the Hn type as well?
 
         # This is only relevant on the unstable locus
@@ -2742,14 +2768,14 @@ class Quiver(Element):
             )
         )
 
-    def does_rigidity_inequality_hold(self, d, theta, denominator=sum):
+    def does_rigidity_inequality_hold(self, d, theta=None, denominator=sum):
         r"""
 
         INPUT:
 
         - ``d`` -- dimension vector
 
-        - ``theta`` -- stability parameter
+        - ``theta`` (default: canonical stability parameter) -- stability parameter
 
         - ``denominator`` -- function to compute the denominator of the slope. Default is sum.
 
@@ -2759,6 +2785,9 @@ class Quiver(Element):
         are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$,
         then the resulting moduli space is infinitesimally rigid.
         """
+        if theta is None:
+            theta = self.canonical_stability_parameter(d)
+
         # This is only relevant on the unstable locus
         # TODO Quiver.all_harder_narasimhan_types needs way to filter out [d]
         HN = list(
