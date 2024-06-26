@@ -882,43 +882,50 @@ class QuiverModuli(ABC):
         return all(Q.euler_form(e, d - e) <= -2 for e in es)
 
     """
-    Teleman quantization
+    Methods related to Teleman quantization
     """
 
     # TODO return weights as dictionaries with HN types as keys.
     def all_weight_bounds(self):
-        """
+        r"""
         Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
+
         For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight. Teleman quantization gives a numerical condition involving these weights to compute cohmology on the quotient.
+
+        EXAMPLES:
+
+        The 6-dimensional 3-Kronecker example::
+
+            sage: from quiver import *
+            sage: X = QuiverModuliSpace(KroneckerQuiver(3), [2, 3])
+            sage: X.all_weight_bounds()
+            [135, 100, 90, 15/2, 270, 100, 30, 0]
+
         """
         # TODO return the Hn type as well?
         # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
-        # this is only relevant on the unstable locus
-        HN = list(
-            filter(
-                lambda hntype: hntype != [d],
-                self.all_harder_narasimhan_types(),
-            )
-        )
+        HNs = self.all_harder_narasimhan_types(proper=True)
 
-        return list(
-            map(
-                lambda hntype: -sum(
-                    [
-                        (
-                            Q.slope(hntype[s], theta, denominator=denominator)
-                            - Q.slope(hntype[t], theta, denominator=denominator)
-                        )
-                        * Q.euler_form(hntype[s], hntype[t])
-                        for s in range(len(hntype) - 1)
-                        for t in range(s + 1, len(hntype))
-                    ]
-                ),
-                HN,
+        # TODO should maybe be a public method?
+        def weight(HN):
+            return -sum(
+                [
+                    # TODO can we make this cleaner-looking?
+                    (
+                        Q.slope(HN[s], theta, denominator=denominator)
+                        - Q.slope(HN[t], theta, denominator=denominator)
+                    )
+                    * Q.euler_form(HN[s], HN[t])
+                    for s in range(len(HN) - 1)
+                    for t in range(s + 1, len(HN))
+                ]
             )
-        )
+
+        weights = map(weight, HNs)
+
+        return list(weights)
 
     def does_rigidity_inequality_hold(self) -> bool:
         r"""
@@ -1255,10 +1262,9 @@ class QuiverModuli(ABC):
 
 
 class QuiverModuliSpace(QuiverModuli):
-
-    def __init__(self, Q, d, theta, denominator=sum, condition="semistable"):
+    def __init__(self, Q, d, theta=None, denominator=sum, condition="semistable"):
         QuiverModuli.__init__(
-            self, Q, d, theta, denominator=denominator, condition=condition
+            self, Q, d, theta=theta, denominator=denominator, condition=condition
         )
 
     def __repr__(self):
