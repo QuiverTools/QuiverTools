@@ -203,6 +203,7 @@ class QuiverModuli(ABC):
             [(2, 3, 2)]]
 
         """
+        # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
         subdimensions = Q.all_subdimension_vectors(d)
@@ -462,6 +463,7 @@ class QuiverModuli(ABC):
             [((3, 3), [1])]]
 
         """
+        # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
         if d == Q.zero_vector():
@@ -667,8 +669,9 @@ class QuiverModuli(ABC):
 
         where for a partition p = (n_1,...,n_l), we define ||p||^2 = sum_v n_v^2 and N(Q_tau, d_tau) is the nullcone of the local quiver setting.
         """
-
+        # setup shorthand
         Q, d = self._Q, self._d
+
         Qtau, dtau = self.local_quiver_setting(tau, secure=False)
         dimNull = Qtau.dimension_nullcone(dtau)
         return (
@@ -738,6 +741,7 @@ class QuiverModuli(ABC):
         """
 
         """Every theta-semistable representation is theta-stable if and only if there are no Luna types other than (possibly) (d,[1])."""
+        # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
 
         # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
@@ -797,9 +801,11 @@ class QuiverModuli(ABC):
             False
 
         """
+        # setup shorthand
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
         # It's currently only possible with this distinction
-        if self._Q.is_theta_coprime(self._d, self._theta):
+        if Q.is_theta_coprime(d, theta):
             return self.codimension_unstable_locus() >= 2
         else:
             return (
@@ -841,6 +847,7 @@ class QuiverModuli(ABC):
             False
 
         """
+        # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
         # All subdimension vectors of d
@@ -882,6 +889,7 @@ class QuiverModuli(ABC):
             [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2), (3, 0), (3, 1), (3, 2)]
 
         """
+        # setup shorthand
         Q, d, theta, condition = self._Q, self._d, self._theta, self._condition
 
         properSubdimensions = list(
@@ -926,6 +934,7 @@ class QuiverModuli(ABC):
             [(1, 1), (2, 2)]
 
         """
+        # setup shorthand
         Q = self._Q
 
         forbidden = self.all_forbidden_subdimension_vectors()
@@ -970,26 +979,27 @@ class QuiverModuli(ABC):
 
         # TODO
         """
-        n = self._Q.number_of_vertices()
+        # setup shorthand
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
         if chernClasses is None:
             chernClasses = [
                 "x%s_%s" % (i, r)
-                for i in range(self._Q.number_of_vertices())
-                for r in range(1, self._d[i] + 1)
+                for i in range(Q.number_of_vertices())
+                for r in range(1, d[i] + 1)
             ]
         if chernRoots is None:
             chernRoots = [
                 "t%s_%s" % (i, r)
-                for i in range(self._Q.number_of_vertices())
-                for r in range(1, self._d[i] + 1)
+                for i in range(Q.number_of_vertices())
+                for r in range(1, d[i] + 1)
             ]
 
         R = PolynomialRing(QQ, chernRoots)
 
         def generator(R, i, r):
             r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
-            return R.gen(r + sum([self._d[j] for j in range(i)]))
+            return R.gen(r + sum([d[j] for j in range(i)]))
 
         """Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T]).
         For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
@@ -999,13 +1009,13 @@ class QuiverModuli(ABC):
                     prod(
                         [
                             (generator(R, j, s) - generator(R, i, r))
-                            ** self._Q.adjacency_matrix()[i, j]
+                            ** Q.adjacency_matrix()[i, j]
                             for r in range(e[i])
-                            for s in range(e[j], self._d[j])
+                            for s in range(e[j], d[j])
                         ]
                     )
-                    for i in range(n)
-                    for j in range(n)
+                    for i in range(Q.number_of_vertices())
+                    for j in range(Q.number_of_vertices())
                 ]
             )
             for e in self.all_minimal_forbidden_subdimension_vectors()
@@ -1024,20 +1034,20 @@ class QuiverModuli(ABC):
                     prod(
                         [
                             generator(R, i, l) - generator(R, i, k)
-                            for k in range(self._d[i])
-                            for l in range(k + 1, self._d[i])
+                            for k in range(d[i])
+                            for l in range(k + 1, d[i])
                         ]
                     )
-                    for i in range(self._Q.number_of_vertices())
+                    for i in range(Q.number_of_vertices())
                 ]
             )
 
             """longest is the longest Weyl group element when regarding W as a subgroup of S_{sum d_i}"""
             longest = []
             r = 0
-            for i in range(self._Q.number_of_vertices()):
-                longest = longest + list(reversed(range(r + 1, r + self._d[i] + 1)))
-                r += self._d[i]
+            for i in range(Q.number_of_vertices()):
+                longest = longest + list(reversed(range(r + 1, r + d[i] + 1)))
+                r += d[i]
             W = Permutations(bruhat_smaller=longest)
 
             def antisymmetrization(f):
@@ -1052,10 +1062,10 @@ class QuiverModuli(ABC):
 
             """Schubert basis of A^*([R/T]) over A^*([R/G])"""
             X = SchubertPolynomialRing(ZZ)
-            supp = list(filter(lambda i: self._d[i] > 0, range(n)))
+            supp = list(filter(lambda i: d[i] > 0, range(Q.number_of_vertices())))
 
             def B(i):
-                return [X(p).expand() for p in Permutations(self._d[i])]
+                return [X(p).expand() for p in Permutations(d[i])]
 
             Bprime = [
                 [
@@ -1081,20 +1091,20 @@ class QuiverModuli(ABC):
 
             """Define A = A*([R/G])."""
             degrees = []
-            for i in range(self._Q.number_of_vertices()):
-                degrees = degrees + list(range(1, self._d[i] + 1))
+            for i in range(Q.number_of_vertices()):
+                degrees = degrees + list(range(1, d[i] + 1))
             A = PolynomialRing(QQ, chernClasses, order=TermOrder("wdegrevlex", degrees))
 
             E = SymmetricFunctions(ZZ).e()
             """The Chern classes of U_i on [R/G] are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
             elementarySymmetric = []
-            for i in range(n):
+            for i in range(Q.number_of_vertices()):
                 elementarySymmetric = elementarySymmetric + [
                     E([k]).expand(
-                        self._d[i],
-                        alphabet=[generator(R, i, r) for r in range(self._d[i])],
+                        d[i],
+                        alphabet=[generator(R, i, r) for r in range(d[i])],
                     )
-                    for k in range(1, self._d[i] + 1)
+                    for k in range(1, d[i] + 1)
                 ]
             """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
             inclusion = A.hom(elementarySymmetric, R)
@@ -1237,15 +1247,17 @@ class QuiverModuliSpace(QuiverModuli):
             sage: X.dimension()
             -Infinity
         """
+        # setup shorthand
+        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
-        if self._Q.has_stable_representation(self._d, self._theta):
+        if Q.has_stable_representation(d, theta):
             # if there are stable representations then both the stable and
             # the semi-stable moduli space have dimension `1-<d,d>`
-            return 1 - self._Q.euler_form(self._d, self._d)
+            return 1 - Q.euler_form(d, d)
         else:
             # Stable locus is empty
             if self._condition == "semistable":
-                if self._Q.has_semistable_representation(self._d, self._theta):
+                if Q.has_semistable_representation(d, theta):
                     # In this case the dimension is given by the maximum of the dimensions of the Luna strata
                     allLunaTypes = self.all_luna_types()
                     return max(
@@ -1287,7 +1299,9 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
 
+        # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+
         assert Q.is_theta_coprime(d, theta)
 
         k = FunctionField(QQ, "L")
@@ -1696,14 +1710,16 @@ class QuiverModuliStack(QuiverModuli):
     def dimension(self):
         """dim [R^{(s)st}/G] = dim R^{(s)st} - dim G
         this is -<d,d> if the (semi-)stable locus is non-empty"""
-        if (
-            self._condition == "stable"
-            and self._Q.has_stable_representation(self._d, self._theta)
-        ) or (
-            self._condition == "semistable"
-            and self._Q.has_semistable_representation(self._d, self._theta)
+        # setup shorthand
+        Q, d, theta = self._Q, self._d, self._theta
+
+        if self._condition == "stable" and Q.has_stable_representation(d, theta):
+            return -Q.euler_form(d, d)
+        # TODO is this one correct? we need to check for existence of a stable I think?
+        if self._condition == "semistable" and Q.has_semistable_representation(
+            d, theta
         ):
-            return -self._Q.euler_form(self._d, self._d)
+            return -Q.euler_form(d, d)
         else:
             return -Infinity
 
@@ -1742,8 +1758,8 @@ class QuiverModuliStack(QuiverModuli):
         # Only for semistable. For stable, we don't know what the motive is. It's not pure in general.
         assert self._condition == "semistable"
 
+        # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
-        n = Q.number_of_vertices()
 
         if theta == Q.zero_vector():
             K = FunctionField(QQ, "L")
@@ -1752,7 +1768,7 @@ class QuiverModuliStack(QuiverModuli):
             den = prod(
                 [
                     prod([(1 - L ** (-nu)) for nu in range(1, d[i] + 1)])
-                    for i in range(n)
+                    for i in range(Q.number_of_vertices())
                 ]
             )
             return num / den
@@ -1797,14 +1813,15 @@ class QuiverModuliStack(QuiverModuli):
 
         OUTPUT: ring
         """
-
+        # setup shorthand
         Q, d = self._Q, self._d
-        n = Q.number_of_vertices()
 
         # TODO there is very similar code earlier
         if chernClasses is None:
             chernClasses = [
-                "x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)
+                "x%s_%s" % (i, r)
+                for i in range(Q.number_of_vertices())
+                for r in range(1, d[i] + 1)
             ]
 
         taut = self._QuiverModuli__tautological_presentation(
