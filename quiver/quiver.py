@@ -403,9 +403,9 @@ class Quiver(Element):
             raise ValueError("The input is not an element of `\mathbb{Z}Q_0`.")
 
         if isinstance(x, list) or isinstance(x, tuple):
-            x = vector(x)
+            x = vector(ZZ, x)
         elif isinstance(x, dict):
-            x = vector(x[i] for i in self.vertices())
+            x = vector(ZZ, [x[i] for i in self.vertices()])
 
         return x
 
