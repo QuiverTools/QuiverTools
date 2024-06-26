@@ -271,7 +271,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: hn = X.all_harder_narasimhan_types()
-            sage: all([X.is_harder_narasimhan_type(dstar) for dstar in hn])
+            sage: all(X.is_harder_narasimhan_type(dstar) for dstar in hn)
             True
             sage: dstar = [vector([1,0]), vector([1,0]), vector([0,3])]
             sage: X.is_harder_narasimhan_type(dstar)
@@ -297,7 +297,7 @@ class QuiverModuli(ABC):
                     for i in range(len(dstar) - 1)
                 ]
             )
-            semistable = all([e in sstSubdims for e in dstar])
+            semistable = all(e in sstSubdims for e in dstar)
             return slopeDecreasing and semistable
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, secure=True):
@@ -337,7 +337,7 @@ class QuiverModuli(ABC):
         Q = self._Q
 
         n = Q.number_of_vertices()
-        assert all([e.length() == n for e in dstar])
+        assert all(e.length() == n for e in dstar)
 
         if secure:
             assert self.is_harder_narasimhan_type(dstar)
@@ -559,14 +559,14 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: l = X.all_luna_types()
-            sage: all([X.is_luna_type(tau) for tau in l])
+            sage: all(X.is_luna_type(tau) for tau in l)
             True
 
         """
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
         n = Q.number_of_vertices()
-        assert all([dn[0].length() == n for dn in tau])
+        assert all(dn[0].length() == n for dn in tau)
         assert d == sum([sum(dn[1]) * dn[0] for dn in tau])
 
         if d == Q.zero_vector():
@@ -853,20 +853,17 @@ class QuiverModuli(ABC):
         # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
-        # All subdimension vectors of d
-        es = Q.all_subdimension_vectors(d)
-        # Remove 0 and d
-        es.remove(Q.zero_vector())
-        es.remove(d)
-        # Filter out those of bigger slope
+        # all subdimension vectors of d
+        es = Q.all_subdimension_vectors(d, proper=True, nonzero=True)
+        # filter out those of bigger slope
         es = list(
             filter(
-                lambda e: Q.slope(e, theta, denominator=denominator)
-                >= Q.slope(d, theta, denominator=denominator),
+                lambda e: Q.slope(e, theta=theta, denominator=denominator)
+                >= Q.slope(d, theta=theta, denominator=denominator),
                 es,
             )
         )
-        return all([Q.euler_form(e, d - e) <= -2 for e in es])
+        return all(Q.euler_form(e, d - e) <= -2 for e in es)
 
     """
     Tautological relations
