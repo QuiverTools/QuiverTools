@@ -1552,14 +1552,45 @@ class Quiver(Element):
         return (theta * d) / denominator(d)
 
     def is_subdimension_vector(self, e, d):
-        # coerce dimension vectors
-        # TODO bad: it could be dicts!
-        d = vector(d)
-        e = vector(e)
+        r"""
+        Determine whether `e` is a subdimension vector of `d`
 
-        assert len(e) == len(d)
+        INPUT:
 
-        return all(0 <= ei and ei <= di for (ei, di) in zip(e, d))
+        -- `e` -- dimension vector
+
+        -- `d` -- dimension vector
+
+        OUTPUT: whether `e` is a subdimension vector of `d`
+
+        EXAMPLES:
+
+        Some basic examples::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.is_subdimension_vector([1, 2], [2, 3])
+            True
+            sage: Q.is_subdimension_vector([2, 3], [2, 3])
+            True
+            sage: Q.is_subdimension_vector([6, 6], [2, 3])
+            False
+
+        We can also work with vertex labels::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: d = {"a" : 3, "b" : 3, "c" : 3}
+            sage: e = {"a" : 1, "b" : 2, "c" : 3}
+            sage: Q.is_subdimension_vector(e, d)
+            True
+            sage: Q.is_subdimension_vector(d, e)
+            False
+
+        """
+        d = self._coerce_dimension_vector(d)
+        e = self._coerce_dimension_vector(e)
+
+        return all(ei <= di for (ei, di) in zip(e, d))
 
     def deglex_key(self, e, b):
         """A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d), provided that b >> 0."""
