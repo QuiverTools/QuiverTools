@@ -1608,7 +1608,7 @@ class Quiver(Element):
 
         return all(ei <= di for (ei, di) in zip(e, d))
 
-    def deglex_key(self, e, b: int) -> int:
+    def _deglex_key(self, e, b: int) -> int:
         r"""
         An integer representation of a dimension vector
 
@@ -2095,7 +2095,7 @@ class Quiver(Element):
 
         """
         subdims = self.all_subdimension_vectors(d)
-        subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
+        subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
         # we use the deglex order because it's a total order which extends the usual
         # entry-wise partial order on dimension vectors.
         N = len(subdims)
@@ -2372,7 +2372,7 @@ class Quiver(Element):
 
         """
         subdims = self.all_subdimension_vectors(d)
-        subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
+        subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
@@ -2485,7 +2485,7 @@ class Quiver(Element):
 
         """
         subdims = self.all_subdimension_vectors(d)
-        subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
+        subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
         # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
         N = len(subdims)
         genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
@@ -2740,7 +2740,7 @@ class Quiver(Element):
 
             """
             subdims = self.all_subdimension_vectors(d)
-            subdims.sort(key=(lambda e: self.deglex_key(e, b=max(d) + 1)))
+            subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
             N = len(subdims)
 
             def idx_diff(j, i):

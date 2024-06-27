@@ -221,7 +221,7 @@ class QuiverModuli(ABC):
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
         subdimensions = Q.all_subdimension_vectors(d)
-        subdimensions.sort(key=(lambda e: Q.deglex_key(e, b=max(d) + 1)))
+        subdimensions.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
         N = len(subdimensions)
 
         # sstIndexes is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
@@ -499,7 +499,7 @@ class QuiverModuli(ABC):
             return [tuple([Q.zero_vector(), [1]])]
         else:
             subdims = Q.all_subdimension_vectors(d)
-            subdims.sort(key=(lambda e: Q.deglex_key(e, b=max(d) + 1)))
+            subdims.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
             N = len(subdims)
             # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
             # TODO this is unused?
@@ -1898,7 +1898,7 @@ class QuiverModuliStack(QuiverModuli):
             I = I + [Q.zero_vector(), d]
             I = [Q._coerce_dimension_vector(e) for e in I]
             # TODO I believe max(d) on a dict should give the wrong result
-            I.sort(key=(lambda e: Q.deglex_key(e, b=max(d) + 1)))
+            I.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
 
             # Now define a matrix T of size NxN whose entry at position (i,j) is L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j] and 0 otherwise
             # TODO it's bad to have a function motive inside a motive method
