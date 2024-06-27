@@ -867,14 +867,9 @@ class QuiverModuli(ABC):
             lambda e: Q.slope(e, theta=theta, denominator=denominator) >= slope,
             Q.all_subdimension_vectors(d, proper=True, nonzero=True),
         )
+        es = map(lambda e: Q._coerce_dimension_vector(e), es)
 
-        return all(
-            Q.euler_form(
-                Q._coerce_dimension_vector(e), d - Q._coerce_dimension_vector(e)
-            )
-            <= -2
-            for e in es
-        )
+        return all(Q.euler_form(e, d - e) <= -2 for e in es)
 
     """
     Methods related to Teleman quantization
