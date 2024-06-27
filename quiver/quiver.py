@@ -1608,7 +1608,7 @@ class Quiver(Element):
 
         return all(ei <= di for (ei, di) in zip(e, d))
 
-    def _deglex_key(self, e, b: int) -> int:
+    def _deglex_key(self, e, b=None) -> int:
         r"""
         An integer representation of a dimension vector
 
@@ -1627,25 +1627,28 @@ class Quiver(Element):
 
         - `e` -- dimension vector
 
-        - `b` -- the "base" of the key
+        - `b` (default: `max(e)+1` -- the "base" of the key
 
         OUTPUT: the base-`b` expansion of the dimension vector
 
         EXAMPLES:
 
-        If we let `b` be the total dimension we get a good key::
+        If we let `b` be the largest entry plus one we get a good key::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
             sage: d = [2, 3]
-            sage: Q.deglex_key(d, sum(d) + 1)
-            195
+            sage: Q._deglex_key(d, max(d) + 1)
+            91
             sage: d = [3, 3]
-            sage: Q.deglex_key(d, sum(d) + 1)
-            318
+            sage: Q._deglex_key(d, max(d) + 1)
+            111
 
         """
         e = self._coerce_dimension_vector(e)
+        if b == None:
+            b = max(e) + 1
+
         n = self.number_of_vertices()
 
         return (
