@@ -1745,11 +1745,25 @@ class Quiver(Element):
              {'a': 1, 'b': 2}]
 
         """
+        assert self._is_dimension_vector(d)
+
+        # if zero dimension vector we deal with it separately
+        if sum(self._coerce_dimension_vector(d)) == 0:
+            if proper or nonzero:
+                return []
+            return [d]
+
+        vectors = list(cartesian_product([range(di + 1) for di in d]))
+
         if proper:
             vectors = vectors[:-1]
         if nonzero:
             vectors = vectors[1:]
-        return vectors
+
+        if self.__has_vertex_labels():
+            return list(map(lambda e: dict(zip(self.vertices(), e)), vectors))
+        else:
+            return list(map(vector, vectors))
 
     def is_theta_coprime(self, d, theta=None) -> bool:
         r"""Checks if `d` is `theta`-coprime.
