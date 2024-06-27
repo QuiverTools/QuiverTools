@@ -93,25 +93,26 @@ class QuiverModuli(ABC):
     def all_harder_narasimhan_types(self, proper=False):
         r"""Returns the list of all HN types.
 
+        A Harder--Narasimhan (HN) type of d with respect to theta is a sequence
+        d^* = (d^1,...,d^s) of dimension vectors such that
+        * d^1 + ... + d^s = d
+        * mu_theta(d^1) > ... > mu_theta(d^s)
+        * Every d^k is theta-semi-stable.
+
         INPUT:
 
         - `proper` (default: False): whether to only give non-trivial HN-types,
           excluding the one corresponding to the stable locus
 
-        OUTPUT: list of list of vectors of Ints
-
-        A Harder--Narasimhan (HN) type of d with respect to theta is a sequence d^* = (d^1,...,d^s) of dimension vectors such that
-        * d^1 + ... + d^s = d
-        * mu_theta(d^1) > ... > mu_theta(d^s)
-        * Every d^k is theta-semi-stable.
+        OUTPUT: list of tuples of dimension vectors encoding HN-types
 
         EXAMPLES:
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3])
             sage: X.all_harder_narasimhan_types()
             [((1, 0), (1, 1), (0, 2)),
              ((1, 0), (1, 2), (0, 1)),
@@ -129,7 +130,9 @@ class QuiverModuli(ABC):
              ((2, 0), (0, 3)),
              ((2, 1), (0, 2)),
              ((2, 2), (0, 1))]
-            sage: Y = QuiverModuliSpace(Q, d, -theta)
+            sage: d = [2, 3]
+            sage: theta = -Q.canonical_stability_parameter(d)
+            sage: Y = QuiverModuliSpace(Q, d, theta)
             sage: Y.all_harder_narasimhan_types()
             [((0, 3), (2, 0))]
 
@@ -138,8 +141,7 @@ class QuiverModuli(ABC):
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(2, 3, 4)
             sage: d = [2, 3, 2]
-            sage: theta = Q.canonical_stability_parameter(d)
-            sage: Z = QuiverModuliSpace(Q, d, theta)
+            sage: Z = QuiverModuliSpace(Q, [2, 3, 2])
             sage: Z.all_harder_narasimhan_types()
             [((0, 1, 0), (2, 0, 1), (0, 2, 1)),
              ((0, 1, 0), (1, 2, 1), (1, 0, 1)),
