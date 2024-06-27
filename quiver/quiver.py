@@ -1633,7 +1633,8 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        If we let `b` be the largest entry plus one we get a good key::
+        If we let `b` be the largest entry plus one we get a good key, at least for
+        subdimension vectors of the original one::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
@@ -1641,7 +1642,7 @@ class Quiver(Element):
             sage: Q._deglex_key(d, max(d) + 1)
             91
             sage: d = [3, 3]
-            sage: Q._deglex_key(d, max(d) + 1)
+            sage: Q._deglex_key(d)
             111
 
         """
