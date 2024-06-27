@@ -2199,7 +2199,7 @@ class Quiver(Element):
             [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]])
 
         """
-        subdims = self.all_subdimension_vectors(d)
+        subdims = self.all_subdimension_vectors(d, forget_labels=True)
         subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
         # we use the deglex order because it's a total order which extends the usual
         # entry-wise partial order on dimension vectors.

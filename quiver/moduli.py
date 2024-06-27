@@ -498,7 +498,7 @@ class QuiverModuli(ABC):
         if d == Q.zero_vector():
             return [tuple([Q.zero_vector(), [1]])]
         else:
-            subdims = Q.all_subdimension_vectors(d)
+            subdims = Q.all_subdimension_vectors(d, forget_labels=True)
             subdims.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
             N = len(subdims)
             # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
