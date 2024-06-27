@@ -329,18 +329,19 @@ class QuiverModuli(ABC):
 
         # third condition: theta-stability of each dimension vector
         # TODO why is this calling a private helper function?
+        # TODO for performance reasons we don't want to call Quiver;has_semistable_representation?
         _, sstSubdims = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta)
         if not all(e in sstSubdims for e in dstar):
             return False
 
         return True
 
-    def codimension_of_harder_narasimhan_stratum(self, dstar, secure=True):
+    def codimension_of_harder_narasimhan_stratum(self, dstar, secure=False):
         """Computes the codimension of the HN stratum of dstar inside the representation variety.
 
         INPUT:
         - ``dstar``: list of vectors of Ints
-        - ``secure``: Bool
+        - ``secure`` (default: False): Bool
 
         OUTPUT: codimension as Int
         # TODO
@@ -371,19 +372,15 @@ class QuiverModuli(ABC):
         """
         Q = self._Q
 
-        n = Q.number_of_vertices()
-        assert all(e.length() == n for e in dstar)
+        assert all(Q._is_dimension_vector(di) for di in dstar)
 
         if secure:
             assert self.is_harder_narasimhan_type(dstar)
 
-        s = len(dstar)
         return -sum(
-            [
-                Q.euler_form(dstar[k], dstar[l])
-                for k in range(s - 1)
-                for l in range(k + 1, s)
-            ]
+            Q.euler_form(dstar[k], dstar[l])
+            for k in range(len(dstar) - 1)
+            for l in range(k + 1, len(dstar))
         )
 
     def codimension_unstable_locus(self):
