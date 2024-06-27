@@ -737,9 +737,12 @@ class QuiverModuli(ABC):
     """
 
     def semistable_equals_stable(self):
-        r"""Checks if every theta-semistable representation of dimension vector d is theta-stable
+        r"""Checks whether every theta-semistable representation is theta-stable
 
-        OUTPUT: statement truth value as Bool
+        Every theta-semistable representation is theta-stable if and only if
+        there are no Luna types other than (possibly) (d,[1])
+
+        OUTPUT: whether every theta-semistable representation is theta-stable
 
         EXAMPLES:
 
@@ -758,9 +761,10 @@ class QuiverModuli(ABC):
         A double framed example as in our vector fields paper::
 
             sage: from quiver import *
-            sage: Q = GeneralizedKroneckerQuiver(3).framed_quiver(vector([1,0])).coframed_quiver(vector([0,0,1]))
-            sage: d = vector([1,2,3,1])
-            sage: theta = vector([1,300,-200,-1])
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q = Q.framed_quiver([1, 0]).coframed_quiver([0, 0, 1])
+            sage: d = [1, 2, 3, 1]
+            sage: theta = [1, 300, -200, -1]
             sage: Q.is_theta_coprime(d, theta)
             False
             sage: X = QuiverModuliSpace(Q, d, theta)
@@ -769,23 +773,25 @@ class QuiverModuli(ABC):
 
         """
 
-        """Every theta-semistable representation is theta-stable if and only if there are no Luna types other than (possibly) (d,[1])."""
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+        d = Q._coerce_dimension_vector(d)
 
-        # As the computation of all Luna types takes so much time, we should first tests if d is theta-coprime
+        # the computation of all Luna types takes so much time
+        # thus we should first tests if d is theta-coprime
         if Q.is_theta_coprime(d, theta):
             return True
+
+        # this is probably the fastest way as checking theta-coprimality is fast
+        # whereas checking for existence of a semi-stable representation is a bit slower
+        if not Q.has_semistable_representation(d, theta):
+            return True
         else:
-            # This is probably the fastest way as checking theta-coprimality is fast whereas checking for existence of a semi-stable representation is a bit slower
-            if not Q.has_semistable_representation(d, theta):
-                return True
-            else:
-                allLunaTypes = self.all_luna_types()
-                genericType = [tuple([d, [1]])]
-                if genericType in allLunaTypes:
-                    allLunaTypes.remove(genericType)
-                return not allLunaTypes  # This checks if the list is empty
+            allLunaTypes = self.all_luna_types()
+            genericType = [tuple([d, [1]])]
+            if genericType in allLunaTypes:
+                allLunaTypes.remove(genericType)
+            return not allLunaTypes  # This checks if the list is empty
 
     """
     Ample stability
@@ -878,9 +884,10 @@ class QuiverModuli(ABC):
         slope = Q.slope(d, theta=theta, denominator=denominator)
         es = filter(
             lambda e: Q.slope(e, theta=theta, denominator=denominator) >= slope,
-            Q.all_subdimension_vectors(d, proper=True, nonzero=True),
+            Q.all_subdimension_vectors(
+                d, proper=True, nonzero=True, forget_labels=True
+            ),
         )
-        es = map(lambda e: Q._coerce_dimension_vector(e), es)
 
         return all(Q.euler_form(e, d - e) <= -2 for e in es)
 
