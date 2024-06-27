@@ -550,7 +550,7 @@ class Quiver(Element):
         Return the vertices of the quiver
 
         If the quiver is created from a DiGraph or string, the vertices are labelled
-        using the data in the DiGraph of string, as explained in
+        using the data in the DiGraph or string, as explained in
         :meth:`Quiver.from_graph` or :meth:`Quiver.from_string`.
         If the quiver is created from a matrix, the vertices are labelled from `0`
         to `n-1`, where `n` is the number of rows or columns in the matrix.
@@ -677,7 +677,7 @@ class Quiver(Element):
         The in-degree of `i` is the number of incoming arrows at `i`.
 
         The parameter `i` must be an element of the vertices of the underlying graph.
-        If constructed from a matrix or string, one has that `i` can go from `0` to
+        If constructed from a matrix or string, `i` can go from `0` to
         `n-1` where `n` is the number of vertices in the graph.
 
         INPUT:
@@ -712,7 +712,7 @@ class Quiver(Element):
         r"""Returns the out-degree of a vertex.
 
         The parameter `i` must be an element of the vertices of the underlying graph.
-        If constructed from a matrix or string, one has that `i` can go from `0` to
+        If constructed from a matrix or string, `i` can go from `0` to
         `n-1` where `n` is the number of vertices in the graph.
 
         The out-degree of `i` is the number of outgoing arrows at `i`.
@@ -1385,9 +1385,8 @@ class Quiver(Element):
     def is_root(self, x) -> bool:
         r"""Checks whether `x` is a root of the underlying diagram of the quiver.
 
-        A root is a non-zero vector in `\mathbb{Z}Q_0` such that
-        the Tits form of `x` is bounded above by 1..
-
+        A root is a non-zero vector `x` in `\mathbb{Z}Q_0` such that
+        the Tits form of `x` is at most 1.
         INPUT:
         - ``x``: integer vector
 
@@ -1512,7 +1511,6 @@ class Quiver(Element):
 
         return self.has_stable_representation(d, theta)
 
-    def slope(self, d, theta=None, denominator=sum):
         r"""
         Returns the slope of `d` with respect to `theta`
 
@@ -1546,7 +1544,6 @@ class Quiver(Element):
         We can use for instance a constant denominator::
 
             sage: constant = lambda di: 1
-            sage: Q.slope(d, Q.canonical_stability_parameter(d), denominator=constant)
             0
 
         The only dependence on the quiver is the set of vertices, so if we don't
@@ -1558,13 +1555,11 @@ class Quiver(Element):
 
         """
         d = self._coerce_dimension_vector(d)
-        assert denominator(d) > 0
 
         if theta is None:
             theta = self.canonical_stability_parameter(d)
         theta = self._coerce_vector(theta)
 
-        return (theta * d) / denominator(d)
 
     def is_subdimension_vector(self, e, d):
         r"""
@@ -2549,7 +2544,6 @@ class Quiver(Element):
         )
 
     # TODO remove and cache the recursive one instead
-    def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
         """Computes the list of all stable subdimension vectors of d which have the same slope as d.
 
         EXAMPLES:
@@ -2597,8 +2591,6 @@ class Quiver(Element):
         # slopeIndexes is the list of subdimension vectors of d of the same slope as d (in particular != 0)
         slopeIndexes = list(
             filter(
-                lambda j: self.slope(subdims[j], theta, denominator=denominator)
-                == self.slope(d, theta, denominator=denominator),
                 range(1, N),
             )
         )
@@ -2608,8 +2600,6 @@ class Quiver(Element):
             filter(
                 lambda j: all(
                     [
-                        self.slope(subdims[i], theta, denominator=denominator)
-                        < self.slope(subdims[j], theta, denominator=denominator)
                         for i in list(
                             filter(lambda i: i != 0 and i != j, genIndexes[j])
                         )
