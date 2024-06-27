@@ -1017,23 +1017,24 @@ class QuiverModuli(ABC):
             return list(filter(lambda e: Q.slope(e, theta) >= slope, es))
 
     def all_minimal_forbidden_subdimension_vectors(self):
-        r"""Returns the list of all minimal forbidden subdimension vectors of d.
+        r"""Returns the list of all _minimal_ forbidden subdimension vectors
 
-        OUTPUT: list of vectors
+        Minimality is with respect to the partial order e << d which means e_i <= d_i
+        for every source i, e_j >= d_j for every sink j, and e_k = d_k for every
+        vertex which is neither a source nor a sink.
 
-        Minimality is with respect to the partial order e << d which means e_i <= d_i for every source i, e_j >= d_j for every sink j, and e_k = d_k for every vertex which is neither a source nor a sink.
+        OUTPUT: list of minimal forbidden dimension vectors
 
         EXAMPLES:
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta, condition = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1]), "semistable"
-            sage: X = QuiverModuliSpace(Q, d, theta, condition=condition)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="semistable")
             sage: X.all_minimal_forbidden_subdimension_vectors()
             [(1, 0), (2, 1), (3, 2)]
-            sage: Q, d, theta, condition = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1]), "stable"
-            sage: Y = QuiverModuliSpace(Q, d, theta, condition=condition)
+            sage: Y = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="stable")
             sage: Y.all_minimal_forbidden_subdimension_vectors()
             [(1, 1), (2, 2)]
 
@@ -1042,17 +1043,14 @@ class QuiverModuli(ABC):
         Q = self._Q
 
         forbidden = self.all_forbidden_subdimension_vectors()
-        return list(
-            filter(
-                lambda e: not any(
-                    [
-                        Q.division_order(f, e)
-                        for f in list(filter(lambda f: f != e, forbidden))
-                    ]
-                ),
-                forbidden,
+
+        def is_minimal(e):
+            return not any(
+                Q.division_order(f, e)
+                for f in list(filter(lambda f: f != e, forbidden))
             )
-        )
+
+        return list(filter(is_minimal, forbidden))
 
     def __tautological_presentation(
         self, inRoots=False, chernClasses=None, chernRoots=None
