@@ -499,6 +499,9 @@ class Quiver(Element):
         elif isinstance(x, dict):
             x = vector(ZZ, [x[i] for i in self.vertices()])
 
+        # so that it can be used for hashing
+        x.set_immutable()
+
         return x
 
     """
