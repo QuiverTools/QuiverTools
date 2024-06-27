@@ -1512,7 +1512,7 @@ class Quiver(Element):
 
         return self.has_stable_representation(d, theta)
 
-    def slope(self, d, theta=None, slope_denominator=sum):
+    def slope(self, d, theta=None, denom=sum):
         r"""
         Returns the slope of `d` with respect to `theta`
 
@@ -1546,7 +1546,7 @@ class Quiver(Element):
         We can use for instance a constant denominator::
 
             sage: constant = lambda di: 1
-            sage: Q.slope(d, Q.canonical_stability_parameter(d), slope_denominator=constant)
+            sage: Q.slope(d, Q.canonical_stability_parameter(d), denom=constant)
             0
 
         The only dependence on the quiver is the set of vertices, so if we don't
@@ -1558,13 +1558,13 @@ class Quiver(Element):
 
         """
         d = self._coerce_dimension_vector(d)
-        assert slope_denominator(d) > 0
+        assert denom(d) > 0
 
         if theta is None:
             theta = self.canonical_stability_parameter(d)
         theta = self._coerce_vector(theta)
 
-        return (theta * d) / slope_denominator(d)
+        return (theta * d) / denom(d)
 
     def is_subdimension_vector(self, e, d):
         r"""
@@ -2003,6 +2003,7 @@ class Quiver(Element):
     Generic subdimension vectors and generic Hom and Ext
     """
 
+    @cached_method
     def is_generic_subdimension_vector(self, e, d) -> bool:
         r"""Checks if e is a generic subdimension vector of d.
 
@@ -2147,92 +2148,21 @@ class Quiver(Element):
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
 
-        if e == d:
+        if e == d or all(ei == 0 for ei in e):
             return True
 
         if not self.is_subdimension_vector(e, d):
             return False
 
-        return all(
-            self.euler_form(f, d - e) >= 0
-            for f in self.all_generic_subdimension_vectors(e)
+        euler_matrix_temp = self.euler_matrix() * (d - e)
+        subdims = filter(
+            lambda eprime: eprime * euler_matrix_temp < 0,
+            self.all_subdimension_vectors(e),
         )
 
-    # TODO remove this and cache the recursive one instead
-    # This method computes a list of all generic subdimension vectors of e
-    # for all e which are subdimension vectors of d.
-    def __all_generic_subdimension_vectors_helper(self, d):
-        r"""Returns the list of lists of indices of all generic subdimension vectors
-
-        Here e ranges over all subdimension vectors of d. The index refers to the
-        deglex order.
-
-        EXAMPLES:
-
-            sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
-            sage: i, s = Q._Quiver__all_generic_subdimension_vectors_helper(d)
-            sage: i, s
-            ([[0],
-            [0, 1],
-            [0, 2],
-            [0, 1, 3],
-            [0, 1, 4],
-            [0, 2, 5],
-            [0, 1, 3, 6],
-            [0, 1, 3, 7],
-            [0, 1, 4, 8],
-            [0, 1, 3, 6, 9],
-            [0, 1, 3, 7, 10],
-            [0, 1, 3, 6, 7, 9, 11]],
-            [[(0, 0)],
-            [(0, 0), (0, 1)],
-            [(0, 0), (1, 0)],
-            [(0, 0), (0, 1), (0, 2)],
-            [(0, 0), (0, 1), (1, 1)],
-            [(0, 0), (1, 0), (2, 0)],
-            [(0, 0), (0, 1), (0, 2), (0, 3)],
-            [(0, 0), (0, 1), (0, 2), (1, 2)],
-            [(0, 0), (0, 1), (1, 1), (2, 1)],
-            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3)],
-            [(0, 0), (0, 1), (0, 2), (1, 2), (2, 2)],
-            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]])
-
-        """
-        subdims = self.all_subdimension_vectors(d, forget_labels=True)
-        subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
-        # we use the deglex order because it's a total order which extends the usual
-        # entry-wise partial order on dimension vectors.
-        N = len(subdims)
-
-        # genIndexes[j] will in the end be the list of indexes (in subdims) of all
-        # generic subdimension vectors of subdims[j]
-        genIndexes = [
-            list(
-                filter(
-                    lambda i: self.is_subdimension_vector(subdims[i], subdims[j]),
-                    range(N),
-                )
-            )
-            for j in range(N)
-        ]
-
-        for j in range(N):
-            genIndexes[j] = list(
-                filter(
-                    lambda i: all(
-                        [
-                            self.euler_form(subdims[k], subdims[j] - subdims[i]) >= 0
-                            for k in genIndexes[i]
-                        ]
-                    ),
-                    genIndexes[j],
-                )
-            )
-
-        genSubdims = [[subdims[i] for i in genIndexes[j]] for j in range(N)]
-
-        return genIndexes, genSubdims
+        return not any(
+            self.is_generic_subdimension_vector(eprime, e) for eprime in subdims
+        )
 
     def all_generic_subdimension_vectors(self, d, proper=False, nonzero=False):
         r"""Returns the list of all generic subdimension vectors of d.
@@ -2252,27 +2182,27 @@ class Quiver(Element):
             sage: d = vector([3,3])
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0),
-            (0, 1),
-            (0, 2),
-            (1, 1),
-            (0, 3),
-            (1, 2),
-            (1, 3),
-            (2, 2),
-            (2, 3),
-            (3, 3)]
+             (0, 1),
+             (0, 2),
+             (0, 3),
+             (1, 1),
+             (1, 2),
+             (1, 3),
+             (2, 2),
+             (2, 3),
+             (3, 3)]
             sage: Q = GeneralizedKroneckerQuiver(2)
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0),
-            (0, 1),
-            (0, 2),
-            (1, 1),
-            (0, 3),
-            (1, 2),
-            (1, 3),
-            (2, 2),
-            (2, 3),
-            (3, 3)]
+             (0, 1),
+             (0, 2),
+             (0, 3),
+             (1, 1),
+             (1, 2),
+             (1, 3),
+             (2, 2),
+             (2, 3),
+             (3, 3)]
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
@@ -2284,17 +2214,12 @@ class Quiver(Element):
         """
         d = self._coerce_dimension_vector(d)
 
-        # TODO why is this hidden in a helper function?
-        # TODO prettier variable names and structure
-        genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
-        N = len(genSubdims)
-
-        if nonzero:
-            genSubdims[N - 1] = genSubdims[N - 1][1:]
-        if proper:
-            # TODO deal with dict dimension vectors, or guarantee the order
-            genSubdims[N - 1] = [e for e in genSubdims[N - 1] if e != vector(d)]
-        return genSubdims[N - 1]
+        return list(
+            filter(
+                lambda e: self.is_generic_subdimension_vector(e, d),
+                self.all_subdimension_vectors(d, proper=proper, nonzero=nonzero),
+            )
+        )
 
     def generic_ext(self, d, e):
         r"""
@@ -2549,7 +2474,7 @@ class Quiver(Element):
         )
 
     # TODO remove and cache the recursive one instead
-    def __all_stable_subdimension_vectors_helper(self, d, theta, slope_denominator=sum):
+    def _all_stable_subdimension_vectors_helper(self, d, theta, denom=sum):
         """Computes the list of all stable subdimension vectors of d which have the same slope as d.
 
         EXAMPLES:
@@ -2575,7 +2500,7 @@ class Quiver(Element):
             (3, 1),
             (3, 2),
             (3, 3)]
-            sage: i, s = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
+            sage: i, s = Q._all_stable_subdimension_vectors_helper(d, theta)
             sage: i
             [4, 11, 15]
             sage: s
@@ -2585,7 +2510,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q, d, theta = GeneralizedKroneckerQuiver(2), vector([3,3]), vector([1,-1])
-            sage: Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
+            sage: Q._all_stable_subdimension_vectors_helper(d, theta)
             ([4], [(1, 1)])
 
         """
@@ -2598,9 +2523,9 @@ class Quiver(Element):
         slopeIndexes = list(
             filter(
                 lambda j: self.slope(
-                    subdims[j], theta, slope_denominator=slope_denominator
+                    subdims[j], theta, denom=denom
                 )
-                == self.slope(d, theta, slope_denominator=slope_denominator),
+                == self.slope(d, theta, denom=denom),
                 range(1, N),
             )
         )
@@ -2611,10 +2536,10 @@ class Quiver(Element):
                 lambda j: all(
                     [
                         self.slope(
-                            subdims[i], theta, slope_denominator=slope_denominator
+                            subdims[i], theta, denom=denom
                         )
                         < self.slope(
-                            subdims[j], theta, slope_denominator=slope_denominator
+                            subdims[j], theta, denom=denom
                         )
                         for i in list(
                             filter(lambda i: i != 0 and i != j, genIndexes[j])
@@ -2653,11 +2578,10 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.canonical_decomposition([2,3])
+            sage: Q.canonical_decomposition((2,3))
             [(2, 3)]
             sage: for d in Q.all_subdimension_vectors((5, 5)):
             ....:     print(Q.canonical_decomposition(d))
-            ....:
             [(0, 0)]
             [(0, 1)]
             [(0, 1), (0, 1)]

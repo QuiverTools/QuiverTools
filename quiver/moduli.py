@@ -49,7 +49,7 @@ Something like computing Betti numbers is then only implemented for QuiverModuli
 
 class QuiverModuli(ABC):
     @abstractmethod
-    def __init__(self, Q, d, theta=None, slope_denominator=sum, condition="semistable"):
+    def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
         if theta is None:
             theta = Q.canonical_stability_parameter(d)
 
@@ -58,14 +58,14 @@ class QuiverModuli(ABC):
         assert condition in ["semistable", "stable"]
         # TODO this effectivity condition needs to be documented, and maybe be part of Quiver?
         assert all(
-            slope_denominator(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
+            denom(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
             for i in Q.vertices()
         )
 
         self._Q = Q
         self._d = d
         self._theta = theta
-        self._denominator = slope_denominator
+        self._denominator = denom
         self._condition = condition
 
     def quiver(self):
@@ -218,7 +218,7 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = (
+        Q, d, theta, denom = (
             self._Q,
             self._d,
             self._theta,
@@ -259,12 +259,12 @@ class QuiverModuli(ABC):
                     filter(
                         lambda fstar: fstar == []
                         or Q.slope(
-                            subdimensions[i], theta, slope_denominator=slope_denominator
+                            subdimensions[i], theta, denom=denom
                         )
                         > Q.slope(
                             subdimensions[fstar[0]],
                             theta,
-                            slope_denominator=slope_denominator,
+                            denom=denom,
                         ),
                         hn[idx_diff(j, i)],
                     )
@@ -318,7 +318,7 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = (
+        Q, d, theta, denom = (
             self._Q,
             self._d,
             self._theta,
@@ -334,8 +334,8 @@ class QuiverModuli(ABC):
         # second condition: decreasing slopes
         if not all(
             (
-                Q.slope(dstar[i], theta, slope_denominator=slope_denominator)
-                > Q.slope(dstar[i + 1], theta, slope_denominator=slope_denominator)
+                Q.slope(dstar[i], theta, denom=denom)
+                > Q.slope(dstar[i + 1], theta, denom=denom)
             )
             for i in range(len(dstar) - 1)
         ):
@@ -507,7 +507,7 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = (
+        Q, d, theta, denom = (
             self._Q,
             self._d,
             self._theta,
@@ -524,8 +524,8 @@ class QuiverModuli(ABC):
             # TODO this is unused?
             # slopeIndexes = list(
             #    filter(
-            #        lambda j: slope(subdims[j], theta, slope_denominator=slope_denominator)
-            #        == slope(d, theta, slope_denominator=slope_denominator),
+            #        lambda j: slope(subdims[j], theta, denom=denom)
+            #        == slope(d, theta, denom=denom),
             #        range(1, N),
             #    )
             # )
@@ -533,7 +533,7 @@ class QuiverModuli(ABC):
             # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
             # They're in deglex order by the way the helper function works.
             stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-                d, theta, slope_denominator=slope_denominator
+                d, theta, denom=denom
             )
 
             # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
@@ -608,7 +608,7 @@ class QuiverModuli(ABC):
             True
 
         """
-        Q, d, theta, slope_denominator = (
+        Q, d, theta, denom = (
             self._Q,
             self._d,
             self._theta,
@@ -626,7 +626,7 @@ class QuiverModuli(ABC):
         else:
             dstar = [dn[0] for dn in tau]
             stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-                d, theta, slope_denominator=slope_denominator
+                d, theta, denom=denom
             )
             return all(
                 [e in stSubdims for e in dstar]
@@ -901,7 +901,7 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = (
+        Q, d, theta, denom = (
             self._Q,
             self._d,
             self._theta,
@@ -910,9 +910,9 @@ class QuiverModuli(ABC):
         d = Q._coerce_dimension_vector(d)
 
         # subdimension vectors of smaller slope
-        slope = Q.slope(d, theta=theta, slope_denominator=slope_denominator)
+        slope = Q.slope(d, theta=theta, denom=denom)
         es = filter(
-            lambda e: Q.slope(e, theta=theta, slope_denominator=slope_denominator)
+            lambda e: Q.slope(e, theta=theta, denom=denom)
             >= slope,
             Q.all_subdimension_vectors(
                 d, proper=True, nonzero=True, forget_labels=True
@@ -930,7 +930,7 @@ class QuiverModuli(ABC):
         Returns the Teleman weight of a Harder-Narasimhan type
         """
         # setup shorthand
-        Q, theta, slope_denominator = self._Q, self._theta, self._denominator
+        Q, theta, denom = self._Q, self._theta, self._denominator
         HN = harder_narasimhan_type
 
         return -sum(
@@ -938,8 +938,8 @@ class QuiverModuli(ABC):
                 # TODO can we make this cleaner-looking?
                 # = unordered tuples without repetition?
                 (
-                    Q.slope(HN[s], theta, slope_denominator=slope_denominator)
-                    - Q.slope(HN[t], theta, slope_denominator=slope_denominator)
+                    Q.slope(HN[s], theta, denom=denom)
+                    - Q.slope(HN[t], theta, denom=denom)
                 )
                 * Q.euler_form(HN[s], HN[t])
                 for s in range(len(HN) - 1)
@@ -1009,7 +1009,7 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, theta, slope_denominator = self._Q, self._theta, self._denominator
+        Q, theta, denom = self._Q, self._theta, self._denominator
 
         weights = self.all_weight_bounds()
 
@@ -1019,8 +1019,8 @@ class QuiverModuli(ABC):
 
         tensor_weights = list(
             map(
-                lambda HN: Q.slope(HN[0], theta, slope_denominator=slope_denominator)
-                - Q.slope(HN[-1], theta, slope_denominator=slope_denominator),
+                lambda HN: Q.slope(HN[0], theta, denom=denom)
+                - Q.slope(HN[-1], theta, denom=denom),
                 HNs,
             )
         )
@@ -1132,7 +1132,7 @@ class QuiverModuli(ABC):
         # TODO
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = (
+        Q, d, theta, denom = (
             self._Q,
             self._d,
             self._theta,
@@ -1310,13 +1310,13 @@ class QuiverModuli(ABC):
 
 
 class QuiverModuliSpace(QuiverModuli):
-    def __init__(self, Q, d, theta=None, slope_denominator=sum, condition="semistable"):
+    def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
         QuiverModuli.__init__(
             self,
             Q,
             d,
             theta=theta,
-            slope_denominator=slope_denominator,
+            denom=denom,
             condition=condition,
         )
 
@@ -1405,7 +1405,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = (
+        Q, d, theta, denom = (
             self._Q,
             self._d,
             self._theta,
@@ -1852,9 +1852,9 @@ class QuiverModuliSpace(QuiverModuli):
 
 class QuiverModuliStack(QuiverModuli):
 
-    def __init__(self, Q, d, theta, slope_denominator=sum, condition="semistable"):
+    def __init__(self, Q, d, theta, denom=sum, condition="semistable"):
         QuiverModuli.__init__(
-            self, Q, d, theta, slope_denominator=slope_denominator, condition=condition
+            self, Q, d, theta, denom=denom, condition=condition
         )
 
     def __repr__(self):
