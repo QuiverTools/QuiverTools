@@ -902,14 +902,18 @@ class QuiverModuli(ABC):
             ]
         )
 
-    # TODO return weights as dictionaries with HN types as keys.
-    def all_weight_bounds(self):
+    def all_weight_bounds(self, as_dict=False):
         r"""
         Returns the list of all weights appearing in Teleman quantization.
 
         For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight.
         Teleman quantization gives a numerical condition involving these weights to
         compute cohmology on the quotient.
+
+        INPUT:
+
+        - `as_dict` (default: False) -- when True it will give a dict whose keys are
+          the HN-types and whose values are the weights
 
         EXAMPLES:
 
@@ -919,12 +923,25 @@ class QuiverModuli(ABC):
             sage: X = QuiverModuliSpace(KroneckerQuiver(3), [2, 3])
             sage: X.all_weight_bounds()
             [135, 100, 90, 15/2, 270, 100, 30]
+            sage: X.all_weight_bounds(as_dict=True)
+            {((1, 0), (1, 1), (0, 2)): 135,
+             ((1, 0), (1, 2), (0, 1)): 100,
+             ((1, 0), (1, 3)): 90,
+             ((1, 1), (1, 2)): 15/2,
+             ((2, 0), (0, 3)): 270,
+             ((2, 1), (0, 2)): 100,
+             ((2, 2), (0, 1)): 30}
 
         """
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
 
-        return list(map(lambda HN: self.harder_narasimhan_weight(HN), HNs))
+        weights = map(lambda HN: self.harder_narasimhan_weight(HN), HNs)
+
+        if as_dict:
+            return dict(zip(HNs, weights))
+
+        return list(weights)
 
     def if_rigidity_inequality_holds(self) -> bool:
         r"""
