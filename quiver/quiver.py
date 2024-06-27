@@ -1557,12 +1557,11 @@ class Quiver(Element):
             0
 
         """
-        if theta is None:
-            theta = self.canonical_stability_parameter(d)
-
+        d = self._coerce_dimension_vector(d)
         assert denominator(d) > 0
 
-        d = self._coerce_dimension_vector(d)
+        if theta is None:
+            theta = self.canonical_stability_parameter(d)
         theta = self._coerce_vector(theta)
 
         return (theta * d) / denominator(d)
