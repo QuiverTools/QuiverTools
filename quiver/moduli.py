@@ -721,8 +721,6 @@ class QuiverModuli(ABC):
     """
 
     def semistable_equals_stable(self):
-        # TODO: I moved it here because it uses the luna methods.
-
         r"""Checks if every theta-semistable representation of dimension vector d is theta-stable
 
         OUTPUT: statement truth value as Bool
@@ -777,17 +775,15 @@ class QuiverModuli(ABC):
     Ample stability
     """
 
-    # TODO dimension vectors should have .is_stable(), .is_amply_stable()?
-    # Is this comment now obsolete?
     # TODO reimplement this with HN strata computation.
     def is_amply_stable(self) -> bool:
-        r"""Checks if d is amply stable for theta.
+        r"""Checks if the dimension vector is amply stable for the stability parameter
 
-        OUTPUT: statement truth value as Bool
+        By definition, a dimension vector `d` is `theta`-amply stable if the
+        codimension of the theta-stable locus inside `R(Q,d)` is at least 2.
 
-        By definition, d is theta-amply stable if the codimension of the theta-stable locus inside R(Q,d) is at least 2.
+        OUTPUT: whether the data for the quiver moduli space is amply stable
 
-        # By Prop. 4.1 of https://arxiv.org/pdf/1410.0466.pdf d is amply stable for theta provided that <e,d-e> <= -2 for every proper subdimension vector.
         # But can we find a necessary and sufficient condition?
         # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
         # I think I can compute the codimension of the non-stable locus in full generality.
@@ -798,28 +794,24 @@ class QuiverModuli(ABC):
         3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: X.is_amply_stable()
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, [2, 3]).is_amply_stable()
             True
-            sage: Y = QuiverModuliSpace(Q, d, -theta)
-            sage: Y.is_amply_stable()
+            sage: QuiverModuliSpace(Q, [2, 3], [-3, 2]).is_amply_stable()
             False
 
-        A three vertex example from the rigidity paper::
+        A three-vertex example from the rigidity paper::
 
-            sage: from quiver import *
-            sage: Q, d = ThreeVertexQuiver(1,6,1), vector([1,6,6])
-            sage: theta = Q.canonical_stability_parameter(d)
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: X.is_amply_stable()
+            sage: Q = ThreeVertexQuiver(1, 6, 1)
+            sage: QuiverModuliSpace(Q, [1, 6, 6]).is_amply_stable()
             False
 
         """
         # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta = self._Q, self._d, self._theta
 
         # It's currently only possible with this distinction
+        # TODO Pieter is confused about what's going on here
         if Q.is_theta_coprime(d, theta):
             return self.codimension_unstable_locus() >= 2
         else:
@@ -834,28 +826,28 @@ class QuiverModuli(ABC):
             )
 
     def is_strongly_amply_stable(self) -> bool:
-        r"""Checks if d is strongly amply stable for theta.
+        r"""Checks if the dimension vector is strongly amply stable for the stability
+        parameter
 
-        OUTPUT: statement truth value as Bool
+        We call `d` strongly amply stable for `theta` if `<e,d-e> <= -2` holds for all
+        subdimension vectors `e` of `d` which satisfy `slope(e) >= slope(d)`.
 
-        We call d strongly amply stable for theta if <e,d-e> <= -2 holds for all subdimension vectors e of d which satisfy slope(e) >= slope(d).
+        OUTPUT: whether the data for the quiver moduli space is strongly amply stable
 
         EXAMPLES:
 
         3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: X.is_strongly_amply_stable()
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, [2, 3]).is_strongly_amply_stable()
             True
 
         A 3-vertex quiver::
 
             sage: from quiver import *
-            sage: Q, d = ThreeVertexQuiver(5,1,1), vector([4,1,4])
-            sage: theta = Q.canonical_stability_parameter(d)
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = ThreeVertexQuiver(5, 1, 1)
+            sage: X = QuiverModuliSpace(Q, [4, 1, 4])
             sage: X.is_amply_stable()
             True
             sage: X.is_strongly_amply_stable()
@@ -864,35 +856,39 @@ class QuiverModuli(ABC):
         """
         # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        d = Q._coerce_dimension_vector(d)
 
-        # all subdimension vectors of d
-        es = Q.all_subdimension_vectors(d, proper=True, nonzero=True)
-        # filter out those of bigger slope
-        es = list(
-            filter(
-                lambda e: Q.slope(e, theta=theta, denominator=denominator)
-                >= Q.slope(d, theta=theta, denominator=denominator),
-                es,
-            )
+        # subdimension vectors of smaller slope
+        slope = Q.slope(d, theta=theta, denominator=denominator)
+        es = filter(
+            lambda e: Q.slope(e, theta=theta, denominator=denominator) >= slope,
+            Q.all_subdimension_vectors(d, proper=True, nonzero=True),
         )
-        return all(Q.euler_form(e, d - e) <= -2 for e in es)
+
+        return all(
+            Q.euler_form(
+                Q._coerce_dimension_vector(e), d - Q._coerce_dimension_vector(e)
+            )
+            <= -2
+            for e in es
+        )
 
     """
     Methods related to Teleman quantization
     """
 
-    # TODO should maybe be a public method?
     def harder_narasimhan_weight(self, harder_narasimhan_type):
         r"""
         Returns the Teleman weight of a Harder-Narasimhan type
         """
         # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        Q, theta, denominator = self._Q, self._theta, self._denominator
         HN = harder_narasimhan_type
 
         return -sum(
             [
                 # TODO can we make this cleaner-looking?
+                # = unordered tuples without repetition?
                 (
                     Q.slope(HN[s], theta, denominator=denominator)
                     - Q.slope(HN[t], theta, denominator=denominator)
@@ -906,9 +902,11 @@ class QuiverModuli(ABC):
     # TODO return weights as dictionaries with HN types as keys.
     def all_weight_bounds(self):
         r"""
-        Returns, for a given dimension vector d and a given stability parameter theta, the list of all weights to apply Teleman quantization.
+        Returns the list of all weights appearing in Teleman quantization.
 
-        For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight. Teleman quantization gives a numerical condition involving these weights to compute cohmology on the quotient.
+        For each HN type, the 1-PS lambda acts on det(N_{S/R}|_Z) with a certain weight.
+        Teleman quantization gives a numerical condition involving these weights to
+        compute cohmology on the quotient.
 
         EXAMPLES:
 
@@ -920,9 +918,6 @@ class QuiverModuli(ABC):
             [135, 100, 90, 15/2, 270, 100, 30]
 
         """
-        # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
-
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
 
