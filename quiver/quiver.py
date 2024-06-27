@@ -2415,7 +2415,7 @@ class Quiver(Element):
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: Statement truth value as Bool
+        OUTPUT: whether there is a `\theta`-semistable representation of dimension vector `d`
 
         See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf
         A dimension vector d admits a theta-semi-stable representation if and only if
