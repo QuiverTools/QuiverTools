@@ -218,7 +218,12 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, slope_denominator = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         subdimensions = Q.all_subdimension_vectors(d)
         subdimensions.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
@@ -253,9 +258,13 @@ class QuiverModuli(ABC):
                 for fstar in list(
                     filter(
                         lambda fstar: fstar == []
-                        or Q.slope(subdimensions[i], theta, slope_denominator=slope_denominator)
+                        or Q.slope(
+                            subdimensions[i], theta, slope_denominator=slope_denominator
+                        )
                         > Q.slope(
-                            subdimensions[fstar[0]], theta, slope_denominator=slope_denominator
+                            subdimensions[fstar[0]],
+                            theta,
+                            slope_denominator=slope_denominator,
                         ),
                         hn[idx_diff(j, i)],
                     )
@@ -309,7 +318,12 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, slope_denominator = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         dstar = list(map(lambda di: Q._coerce_dimension_vector(di), dstar))
 
@@ -493,7 +507,12 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, slope_denominator = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         if d == Q.zero_vector():
             return [tuple([Q.zero_vector(), [1]])]
@@ -589,7 +608,12 @@ class QuiverModuli(ABC):
             True
 
         """
-        Q, d, theta, slope_denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, slope_denominator = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         d = Q._coerce_dimension_vector(d)
 
@@ -877,13 +901,19 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, slope_denominator = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
         d = Q._coerce_dimension_vector(d)
 
         # subdimension vectors of smaller slope
         slope = Q.slope(d, theta=theta, slope_denominator=slope_denominator)
         es = filter(
-            lambda e: Q.slope(e, theta=theta, slope_denominator=slope_denominator) >= slope,
+            lambda e: Q.slope(e, theta=theta, slope_denominator=slope_denominator)
+            >= slope,
             Q.all_subdimension_vectors(
                 d, proper=True, nonzero=True, forget_labels=True
             ),
@@ -1102,7 +1132,12 @@ class QuiverModuli(ABC):
         # TODO
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, slope_denominator = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         if chernClasses is None:
             chernClasses = [
@@ -1277,7 +1312,12 @@ class QuiverModuli(ABC):
 class QuiverModuliSpace(QuiverModuli):
     def __init__(self, Q, d, theta=None, slope_denominator=sum, condition="semistable"):
         QuiverModuli.__init__(
-            self, Q, d, theta=theta, slope_denominator=slope_denominator, condition=condition
+            self,
+            Q,
+            d,
+            theta=theta,
+            slope_denominator=slope_denominator,
+            condition=condition,
         )
 
     def __repr__(self):
@@ -1365,7 +1405,12 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
         # setup shorthand
-        Q, d, theta, slope_denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, slope_denominator = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         # if there are stable representations then both the stable and
         # the semi-stable moduli space have dimension `1-<d,d>`
