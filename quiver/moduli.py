@@ -1292,8 +1292,13 @@ class QuiverModuliSpace(QuiverModuli):
         """Computes the dimension of the moduli space M^{theta-(s)st}(Q,d).
 
         This involves several cases:
-        * if there are theta-stable representations then dim M^{theta-sst}(Q,d) = M^{theta-st}(Q,d) = 1 - <d,d>
-        * if there are no theta-stable representations then dim M^{theta-st}(Q,d) = -Infinity (by convention) and dim M^{theta-sst} = max_tau dim S_tau, the maximum of the dimension of all Luna strata.
+        * if there are theta-stable representations then
+          dim M^{theta-sst}(Q,d) = M^{theta-st}(Q,d) = 1 - <d,d>
+        * if there are no theta-stable representations then
+          dim M^{theta-st}(Q,d) = -Infinity
+          (by convention) and
+          dim M^{theta-sst} = max_tau dim S_tau
+          the maximum of the dimension of all Luna strata.
 
         EXAMPLES
 
@@ -1301,19 +1306,16 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: theta = vector([1,-1])
-            sage: d = vector([1,1])
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+            sage: X = QuiverModuliSpace(Q, [1, 1], condition="stable")
             sage: X.dimension()
             0
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, [1, 1], condition="semistable")
             sage: X.dimension()
             0
-            sage: d = vector([2,2])
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+            sage: X = QuiverModuliSpace(Q, [2, 2], condition="stable")
             sage: X.dimension()
             -Infinity
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, [2, 2], condition="semistable")
             sage: X.dimension()
             0
 
@@ -1321,19 +1323,16 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(2)
-            sage: theta = vector([1,-1])
-            sage: d = vector([1,1])
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+            sage: X = QuiverModuliSpace(Q, [1, 1], [1, -1], condition="stable")
             sage: X.dimension()
             1
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, [1, 1], [1, -1], condition="semistable")
             sage: X.dimension()
             1
-            sage: d = vector([2,2])
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+            sage: X = QuiverModuliSpace(Q, [2, 2], [1, -1], condition="stable")
             sage: X.dimension()
             -Infinity
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, [2, 2], [1, -1], condition="semistable")
             sage: X.dimension()
             2
 
@@ -1341,48 +1340,44 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: d = vector([2,3])
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, [2, 3], condition="semistable")
             sage: X.dimension()
             6
-            sage: d = vector([3,3])
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, [3, 3],condition="semistable")
             sage: X.dimension()
             10
-            sage: d = vector([1,3])
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+            sage: X = QuiverModuliSpace(Q, [1, 3],condition="stable")
             sage: X.dimension()
             0
-            sage: d = vector([1,4])
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="stable")
+            sage: X = QuiverModuliSpace(Q, [1, 4],condition="stable")
             sage: X.dimension()
             -Infinity
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, [1, 4],condition="semistable")
             sage: X.dimension()
             -Infinity
+
         """
         # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
+        # if there are stable representations then both the stable and
+        # the semi-stable moduli space have dimension `1-<d,d>`
         if Q.has_stable_representation(d, theta):
-            # if there are stable representations then both the stable and
-            # the semi-stable moduli space have dimension `1-<d,d>`
             return 1 - Q.euler_form(d, d)
-        else:
-            # Stable locus is empty
-            if self._condition == "semistable":
-                if Q.has_semistable_representation(d, theta):
-                    # In this case the dimension is given by the maximum of the dimensions of the Luna strata
-                    allLunaTypes = self.all_luna_types()
-                    return max(
-                        [self.dimension_of_luna_stratum(tau) for tau in allLunaTypes]
-                    )
-                else:
-                    # I somehow like the convention that the dimension of the empty set is -Infinity
-                    return -Infinity
-            else:
-                # self._condition == "stable"
-                return -Infinity
+
+        # stable locus is empty
+        if self._condition == "stable":
+            return -Infinity
+
+        # we care about the semistable locus
+        if Q.has_semistable_representation(d, theta):
+            # in this case the dimension is given by the maximum of the dimensions of the Luna strata
+            return max(
+                self.dimension_of_luna_stratum(tau) for tau in self.all_luna_types()
+            )
+
+        # semistable locus is also empty
+        return -Infinity
 
     def poincare_polynomial(self):
         r"""Returns the Poincare polynomial of the moduli space.
