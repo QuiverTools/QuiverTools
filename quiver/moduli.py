@@ -982,47 +982,39 @@ class QuiverModuli(ABC):
     """
 
     def all_forbidden_subdimension_vectors(self):
-        r"""Returns the list of all subdimension vectors d' of d for which mu_theta(d') > mu_theta(d) (in the semistable case) or for which mu_theta(d') >= mu_theta(d) (in the stable case).
+        r"""Returns the list of all forbidden subdimension vectors
 
-        OUTPUT: list of vectors
+        These are the dimension vectors `d'` of d for which
+        - mu_theta(d') > mu_theta(d) (in the semistable case)
+        - or for which mu_theta(d') >= mu_theta(d) (in the stable case).
+
+        OUTPUT: list of forbidden subdimension vectors vectors
 
         EXAMPLES:
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta, condition = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1]), "semistable"
-            sage: X = QuiverModuliSpace(Q, d, theta, condition=condition)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="semistable")
             sage: X.all_forbidden_subdimension_vectors()
             [(1, 0), (2, 0), (2, 1), (3, 0), (3, 1), (3, 2)]
-            sage: Q, d, theta, condition = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1]), "stable"
-            sage: Y = QuiverModuliSpace(Q, d, theta, condition=condition)
-            sage: Y.all_forbidden_subdimension_vectors()
+            sage: X = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="stable")
+            sage: X.all_forbidden_subdimension_vectors()
             [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2), (3, 0), (3, 1), (3, 2)]
 
         """
         # setup shorthand
         Q, d, theta, condition = self._Q, self._d, self._theta, self._condition
 
-        properSubdimensions = list(
-            filter(
-                lambda e: e != d and e != Q.zero_vector(), Q.all_subdimension_vectors(d)
-            )
-        )
+        es = Q.all_subdimension_vectors(d, proper=True, nonzero=True)
 
+        # TODO need for denominator?
+        slope = Q.slope(d, theta)
         if condition == "semistable":
-            return list(
-                filter(
-                    lambda e: Q.slope(e, theta) > Q.slope(d, theta), properSubdimensions
-                )
-            )
+            return list(filter(lambda e: Q.slope(e, theta) > slope, es))
         elif condition == "stable":
-            return list(
-                filter(
-                    lambda e: Q.slope(e, theta) >= Q.slope(d, theta),
-                    properSubdimensions,
-                )
-            )
+            return list(filter(lambda e: Q.slope(e, theta) >= slope, es))
 
     def all_minimal_forbidden_subdimension_vectors(self):
         r"""Returns the list of all minimal forbidden subdimension vectors of d.
