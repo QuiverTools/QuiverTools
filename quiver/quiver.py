@@ -1608,13 +1608,45 @@ class Quiver(Element):
 
         return all(ei <= di for (ei, di) in zip(e, d))
 
-    # TODO document and test
-    def deglex_key(self, e, b):
+    def deglex_key(self, e, b: int) -> int:
         r"""
-        A function which satisfies e <_{deglex} d iff deglex_key(e) < deglex_key(d),
-        provided that b >> 0."""
         n = len(e)
         return sum([e[i] * b ** (n - i - 1) for i in range(n)]) + sum(e) * b**n
+        An integer representation of a dimension vector
+
+        This is the base-b expansion of a dimension vector.
+
+        This is a function which satisfies
+
+            e <_{deglex} d iff deglex_key(e) < deglex_key(d),
+
+        provided that b >> 0.
+
+        For b >> 0 the deglex order is a _total_ order which extends the usual
+        entry-wise partial order on dimension vectors.
+
+        INPUT:
+
+        - `e` -- dimension vector
+
+        - `b` -- the "base" of the key
+
+        OUTPUT: the base-`b` expansion of the dimension vector
+
+        EXAMPLES:
+
+        If we let `b` be the total dimension we get a good key::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: d = [2, 3]
+            sage: Q.deglex_key(d, sum(d) + 1)
+            195
+            sage: d = [3, 3]
+            sage: Q.deglex_key(d, sum(d) + 1)
+            318
+
+        """
 
     # TODO document and test
     def all_subdimension_vectors(self, d, proper=False, nonzero=False):
