@@ -591,6 +591,8 @@ class QuiverModuli(ABC):
         """
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
+        d = Q._coerce_dimension_vector(d)
+
         n = Q.number_of_vertices()
         assert all(dn[0].length() == n for dn in tau)
         assert d == sum([sum(dn[1]) * dn[0] for dn in tau])
