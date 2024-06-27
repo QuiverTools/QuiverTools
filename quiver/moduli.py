@@ -1392,22 +1392,20 @@ class QuiverModuliSpace(QuiverModuli):
         Some Kronecker quivers::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, [1, 1])
             sage: X.poincare_polynomial()
             q + 1
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3])
             sage: X.poincare_polynomial()
             q^6 + q^5 + 3*q^4 + 3*q^3 + 3*q^2 + q + 1
-            sage: Q, d = SubspaceQuiver(5), vector([1,1,1,1,1,2])
-            sage: theta = Q.canonical_stability_parameter(d)
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = SubspaceQuiver(5)
+            sage: X = QuiverModuliSpace(Q, [1, 1, 1, 1, 1, 2])
             sage: X.poincare_polynomial()
             q^2 + 5*q + 1
 
         """
-
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
 
@@ -1872,13 +1870,17 @@ class QuiverModuliStack(QuiverModuli):
 
         # Only for semistable. For stable, we don't know what the motive is. It's not pure in general.
         assert self._condition == "semistable"
+        # TODO well: if we have stable == semistable then we can also compute it!
 
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
 
+        # TODO allow some other ring?
+        K = FunctionField(QQ, "L")
+        L = K.gen(0)
+
+        # TODO coercion needs to be checked here
         if theta == Q.zero_vector():
-            K = FunctionField(QQ, "L")
-            L = K.gen(0)
             num = L ** (-Q.tits_form(d))
             den = prod(
                 [
@@ -1888,18 +1890,18 @@ class QuiverModuliStack(QuiverModuli):
             )
             return num / den
         else:
-            # TODO use proper=True, nonzero=True
+            # TODO use proper=True, nonzero=True, or maybe not?
+            # in any case, the next 6 lines are an atrocity
             I = Q.all_subdimension_vectors(d)
             I = list(filter(lambda e: e != Q.zero_vector() and e != d, I))
             I = list(filter(lambda e: Q.slope(e, theta) > Q.slope(d, theta), I))
             I = I + [Q.zero_vector(), d]
+            I = [Q._coerce_dimension_vector(e) for e in I]
             # TODO I believe max(d) on a dict should give the wrong result
             I.sort(key=(lambda e: Q.deglex_key(e, b=max(d) + 1)))
 
-            K = FunctionField(QQ, "L")
-            L = K.gen(0)
-
             # Now define a matrix T of size NxN whose entry at position (i,j) is L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j] and 0 otherwise
+            # TODO it's bad to have a function motive inside a motive method
             def motive(e):
                 return QuiverModuliStack(
                     Q, e, Q.zero_vector(), condition="semistable"
