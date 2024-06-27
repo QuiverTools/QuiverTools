@@ -466,7 +466,7 @@ class Quiver(Element):
         Coerces `x` to be a vector in `\mathbb{Z}Q_0`.
 
         It must be a data structure that is indexed by the vertices of the quiver,
-        so most likely a dict, list, or vector.
+        so most likely a dict, list, tuple, or vector.
 
         It raises a `ValueError` if it is not a data structure of length the number
         of vertices in the quiver.
