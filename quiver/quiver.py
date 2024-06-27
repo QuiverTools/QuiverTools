@@ -1610,8 +1610,6 @@ class Quiver(Element):
 
     def deglex_key(self, e, b: int) -> int:
         r"""
-        n = len(e)
-        return sum([e[i] * b ** (n - i - 1) for i in range(n)]) + sum(e) * b**n
         An integer representation of a dimension vector
 
         This is the base-b expansion of a dimension vector.
@@ -1647,6 +1645,13 @@ class Quiver(Element):
             318
 
         """
+        e = self._coerce_dimension_vector(e)
+        n = self.number_of_vertices()
+
+        return (
+            sum(ei * b ** (n - i - 1) for (i, ei) in enumerate(e))
+            + sum(self._coerce_dimension_vector(e)) * b**n
+        )
 
     # TODO document and test
     def all_subdimension_vectors(self, d, proper=False, nonzero=False):
