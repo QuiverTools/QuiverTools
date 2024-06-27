@@ -1656,7 +1656,9 @@ class Quiver(Element):
             + sum(self._coerce_dimension_vector(e)) * b**n
         )
 
-    def all_subdimension_vectors(self, d, proper=False, nonzero=False):
+    def all_subdimension_vectors(
+        self, d, proper=False, nonzero=False, forget_labels=False
+    ):
         r"""
         Returns the list of all subdimension vectors of d.
 
@@ -1667,6 +1669,8 @@ class Quiver(Element):
         - `proper` (default: False) -- whether to exclude `d`
 
         - `nonzero` (default: False) -- whether to exclude the zero vector
+
+        - `forget_labels` (default: False) -- whether to forget the vertex labels
 
         OUTPUT: all subdimension vectors of `d` (maybe excluding `0` and `d`)
 
@@ -1742,6 +1746,8 @@ class Quiver(Element):
              {'a': 1, 'b': 0},
              {'a': 1, 'b': 1},
              {'a': 1, 'b': 2}]
+            sage: Q.all_subdimension_vectors([1, 2], forget_labels=True)
+            [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
 
         """
         assert self._is_dimension_vector(d)
@@ -1759,10 +1765,10 @@ class Quiver(Element):
         if nonzero:
             vectors = vectors[1:]
 
-        if self.__has_vertex_labels():
+        if self.__has_vertex_labels() and not forget_labels:
             return list(map(lambda e: dict(zip(self.vertices(), e)), vectors))
-        else:
-            return list(map(vector, vectors))
+
+        return list(map(vector, vectors))
 
     def is_theta_coprime(self, d, theta=None) -> bool:
         r"""Checks if `d` is `theta`-coprime.
