@@ -786,12 +786,16 @@ class QuiverModuli(ABC):
         # whereas checking for existence of a semi-stable representation is a bit slower
         if not Q.has_semistable_representation(d, theta):
             return True
-        else:
-            allLunaTypes = self.all_luna_types()
-            genericType = [tuple([d, [1]])]
-            if genericType in allLunaTypes:
-                allLunaTypes.remove(genericType)
-            return not allLunaTypes  # This checks if the list is empty
+
+        luna_types = self.all_luna_types()
+
+        # get rid of the generic type
+        generic_type = [tuple([d, [1]])]
+        if generic_type in luna_types:
+            luna_types.remove(generic_type)
+
+        # is the list of Luna types empty?
+        return not luna_types
 
     """
     Ample stability
