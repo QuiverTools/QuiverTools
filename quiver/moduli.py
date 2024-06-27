@@ -280,6 +280,12 @@ class QuiverModuli(ABC):
     def is_harder_narasimhan_type(self, dstar) -> bool:
         r"""Checks if dstar is a HN type.
 
+        A Harder--Narasimhan (HN) type of d with respect to theta is a sequence
+        d^* = (d^1,...,d^s) of dimension vectors such that
+        * d^1 + ... + d^s = d
+        * mu_theta(d^1) > ... > mu_theta(d^s)
+        * Every d^k is theta-semi-stable.
+
         INPUT:
         - ``dstar``: list of vectors of Ints
 
@@ -290,37 +296,44 @@ class QuiverModuli(ABC):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: hn = X.all_harder_narasimhan_types()
-            sage: all(X.is_harder_narasimhan_type(dstar) for dstar in hn)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3], [1, 0])
+            sage: HNs = X.all_harder_narasimhan_types()
+            sage: all(X.is_harder_narasimhan_type(dstar) for dstar in HNs)
             True
-            sage: dstar = [vector([1,0]), vector([1,0]), vector([0,3])]
+            sage: dstar = [[1, 0], [1, 0], [0, 3]]
             sage: X.is_harder_narasimhan_type(dstar)
+            False
+            sage: X.is_harder_narasimhan_type([Q.zero_vector()])
             False
 
         """
+        # setup shorthand
         Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
-        assert d == sum(dstar)
+        dstar = list(map(lambda di: Q._coerce_dimension_vector(di), dstar))
 
-        if d == Q.zero_vector():
-            return dstar == [Q.zero_vector()]
-        else:
-            sstIndexes, sstSubdims = (
-                Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta)
+        # first condition: sum to dimension vector
+        if Q._coerce_dimension_vector(d) != sum(dstar):
+            return False
+
+        # second condition: decreasing slopes
+        if not all(
+            (
+                Q.slope(dstar[i], theta, denominator=denominator)
+                > Q.slope(dstar[i + 1], theta, denominator=denominator)
             )
-            slopeDecreasing = all(
-                [
-                    (
-                        Q.slope(dstar[i], theta, denominator=denominator)
-                        > Q.slope(dstar[i + 1], theta, denominator=denominator)
-                    )
-                    for i in range(len(dstar) - 1)
-                ]
-            )
-            semistable = all(e in sstSubdims for e in dstar)
-            return slopeDecreasing and semistable
+            for i in range(len(dstar) - 1)
+        ):
+            return False
+
+        # third condition: theta-stability of each dimension vector
+        # TODO why is this calling a private helper function?
+        _, sstSubdims = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta)
+        if not all(e in sstSubdims for e in dstar):
+            return False
+
+        return True
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, secure=True):
         """Computes the codimension of the HN stratum of dstar inside the representation variety.
