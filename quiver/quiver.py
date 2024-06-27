@@ -1657,12 +1657,94 @@ class Quiver(Element):
             + sum(self._coerce_dimension_vector(e)) * b**n
         )
 
-    # TODO document and test
     def all_subdimension_vectors(self, d, proper=False, nonzero=False):
-        """Returns the list of all subdimension vectors of d."""
-        # TODO if Q has vertex labels, then returning vector isn't good enough!
-        vectors = list(map(vector, cartesian_product([range(di + 1) for di in d])))
-        # TODO clean this up: what if d is zero?
+        r"""
+        Returns the list of all subdimension vectors of d.
+
+        INPUT:
+
+        - `d` -- dimension vector
+
+        - `proper` (default: False) -- whether to exclude `d`
+
+        - `nonzero` (default: False) -- whether to exclude the zero vector
+
+        OUTPUT: all subdimension vectors of `d` (maybe excluding `0` and `d`)
+
+        EXAMPLES:
+
+        The usual use cases::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.all_subdimension_vectors([2, 3])
+                [(0, 0),
+                 (0, 1),
+                 (0, 2),
+                 (0, 3),
+                 (1, 0),
+                 (1, 1),
+                 (1, 2),
+                 (1, 3),
+                 (2, 0),
+                 (2, 1),
+                 (2, 2),
+                 (2, 3)]
+            sage: Q.all_subdimension_vectors([2, 3], proper=True)
+                [(0, 0),
+                 (0, 1),
+                 (0, 2),
+                 (0, 3),
+                 (1, 0),
+                 (1, 1),
+                 (1, 2),
+                 (1, 3),
+                 (2, 0),
+                 (2, 1),
+                 (2, 2)]
+            sage: Q.all_subdimension_vectors([2, 3], nonzero=True)
+                [(0, 1),
+                 (0, 2),
+                 (0, 3),
+                 (1, 0),
+                 (1, 1),
+                 (1, 2),
+                 (1, 3),
+                 (2, 0),
+                 (2, 1),
+                 (2, 2),
+                 (2, 3)]
+            sage: Q.all_subdimension_vectors([2, 3], proper=True, nonzero=True)
+                [(0, 1),
+                 (0, 2),
+                 (0, 3),
+                 (1, 0),
+                 (1, 1),
+                 (1, 2),
+                 (1, 3),
+                 (2, 0),
+                 (2, 1),
+                 (2, 2)]
+
+        Some exceptional cases::
+
+            sage: Q.all_subdimension_vectors(Q.zero_vector())
+            [(0, 0)]
+            sage: Q.all_subdimension_vectors(Q.zero_vector(), proper=True)
+            []
+
+        If we work with labeled vertices, then we get a list of dicts::
+
+            sage: Q = Quiver.from_string("a---b", forget_labels=False)
+            sage: Q.all_subdimension_vectors([1, 2])
+            [{'a': 0, 'b': 0},
+             {'a': 0, 'b': 1},
+             {'a': 0, 'b': 2},
+             {'a': 1, 'b': 0},
+             {'a': 1, 'b': 1},
+             {'a': 1, 'b': 2}]
+
+        """
         if proper:
             vectors = vectors[:-1]
         if nonzero:
