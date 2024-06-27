@@ -393,23 +393,22 @@ class QuiverModuli(ABC):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3], [1, 0])
             sage: X.codimension_unstable_locus()
             3
 
         A 3-vertex quiver::
 
-            sage: Q, d = ThreeVertexQuiver(1,6,1), vector([1,6,6])
-            sage: theta = Q.canonical_stability_parameter(d)
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = ThreeVertexQuiver(1,6,1)
+            sage: X = QuiverModuliSpace(Q, [1, 6, 6])
             sage: X.codimension_unstable_locus()
             1
 
         The Kronecker quiver::
 
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = GeneralizedKroneckerQuiver(1)
+            sage: X = QuiverModuliSpace(Q, [2, 3], [1, 0])
             sage: X.codimension_unstable_locus()
             0
 
