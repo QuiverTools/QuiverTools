@@ -2323,6 +2323,74 @@ class Quiver(Element):
             return False
 
     """
+    Harder--Narasimhan types
+    """
+
+    @cached_method
+    def all_hn_types(self, d, theta, denom=sum, sorted=False):
+        r"""Returns the list of all Harder--Narasimhan types of d.
+
+        INPUT:
+
+        - ``d``: dimension vector
+
+        - ``theta``: stability parameter
+
+        - ``denom`` (default: sum) -- the denominator function
+
+        OUTPUT: list of vectors
+
+        EXAMPLES:
+
+        The Harder--Narasimhan types for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: d = (2, 3)
+            sage: theta = (3, -2)
+            sage: Q.all_hn_types(d, theta)
+            [[(1, 0), (1, 1), (0, 2)],
+             [(1, 0), (1, 2), (0, 1)],
+             [(1, 0), (1, 3)],
+             [(1, 1), (1, 2)],
+             [(2, 0), (0, 3)],
+             [(2, 1), (0, 2)],
+             [(2, 2), (0, 1)],
+             [(2, 3)]]
+        """
+        d = self._coerce_dimension_vector(d)
+        theta = self._coerce_vector(theta)
+
+        subdims = filter(
+            lambda e: self.slope(e, theta, denom=denom)
+            > self.slope(d, theta, denom=denom),
+            self.all_subdimension_vectors(d, proper=True, nonzero=True),
+        )
+        subdims = list(
+            filter(
+                lambda e: self.has_semistable_representation(e, theta, denom=denom),
+                subdims,
+            )
+        )
+
+        if sorted:
+            subdims.sort(key=(lambda e: self.slope(e, theta, denom=denom)))
+
+        all_types = []
+        for e in subdims:
+            for estar in filter(
+                lambda fstar: self.slope(e, theta, denom=denom)
+                > self.slope(fstar[0], theta, denom=denom),
+                self.all_hn_types(d - e, theta, denom=denom),
+            ):
+                all_types.append((e,) + estar)
+
+        if self.has_semistable_representation(d, theta, denom=denom):
+            all_types.append((d,))
+
+        return all_types
+
+    """
     (Semi-)stability
     """
 
@@ -2333,7 +2401,7 @@ class Quiver(Element):
 
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
-    def has_semistable_representation(self, d, theta=None):
+    def has_semistable_representation(self, d, theta=None, denom=sum):
         r"""Checks if there is a `\theta`-semistable of dimension vector `d`
 
         INPUT:
@@ -2381,8 +2449,9 @@ class Quiver(Element):
         theta = self._coerce_vector(theta)
 
         # TODO no need for denominator?!
+        # denominator is needed for slope stability
         return all(
-            self.slope(e, theta) <= self.slope(d, theta)
+            self.slope(e, theta, denom=denom) <= self.slope(d, theta, denom=denom)
             for e in self.all_generic_subdimension_vectors(d, nonzero=True)
         )
 
@@ -2522,9 +2591,7 @@ class Quiver(Element):
         # slopeIndexes is the list of subdimension vectors of d of the same slope as d (in particular != 0)
         slopeIndexes = list(
             filter(
-                lambda j: self.slope(
-                    subdims[j], theta, denom=denom
-                )
+                lambda j: self.slope(subdims[j], theta, denom=denom)
                 == self.slope(d, theta, denom=denom),
                 range(1, N),
             )
@@ -2535,12 +2602,8 @@ class Quiver(Element):
             filter(
                 lambda j: all(
                     [
-                        self.slope(
-                            subdims[i], theta, denom=denom
-                        )
-                        < self.slope(
-                            subdims[j], theta, denom=denom
-                        )
+                        self.slope(subdims[i], theta, denom=denom)
+                        < self.slope(subdims[j], theta, denom=denom)
                         for i in list(
                             filter(lambda i: i != 0 and i != j, genIndexes[j])
                         )
