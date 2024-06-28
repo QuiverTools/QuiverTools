@@ -501,7 +501,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
-            [[((1, 1), [3])], [((1, 1), [2, 1])], [((1, 1), [1, 1, 1])]]
+            [{(3, 3): 1}, {(1, 1): 1, (2, 2): 1}, {(1, 1): 3}]
 
         The 3-Kronecker quiver::
 
@@ -509,11 +509,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
-            [[((1, 1), [3])],
-            [((1, 1), [2, 1])],
-            [((1, 1), [1, 1, 1])],
-            [((1, 1), [1]), ((2, 2), [1])],
-            [((3, 3), [1])]]
+            [{(3, 3): 1}, {(1, 1): 1, (2, 2): 1}, {(1, 1): 3}]
 
         The 6-subspace quiver::
 
@@ -521,11 +517,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
-            [[((1, 1), [3])],
-            [((1, 1), [2, 1])],
-            [((1, 1), [1, 1, 1])],
-            [((1, 1), [1]), ((2, 2), [1])],
-            [((3, 3), [1])]]
+            [{(3, 3): 1}, {(1, 1): 1, (2, 2): 1}, {(1, 1): 3}]
 
         """
         # setup shorthand
@@ -538,10 +530,12 @@ class QuiverModuli(ABC):
 
         d = Q._coerce_dimension_vector(d)
 
+        if d == Q.zero_vector():
+            return [{Q.zero_vector(): 1}]
+
         same_slope = filter(
-            lambda e: Q.slope(e, theta, denom=denom)
-            == Q.slope(d, theta, denom=denom),
-            Q.all_subdimension_vectors(d, nonzero=True),
+            lambda e: Q.slope(e, theta, denom=denom) == Q.slope(d, theta, denom=denom),
+            Q.all_subdimension_vectors(d, nonzero=True, forget_labels=True),
         )
         same_slope = list(
             filter(
@@ -550,17 +544,17 @@ class QuiverModuli(ABC):
             )
         )
 
-        bound = sum(d) / min(sum(e) for e in same_slope)
+        bound = (sum(d) / min(sum(e) for e in same_slope)).ceil()
         luna_types = []
-        for i in range(1, bound + 2):
+        for i in range(1, bound + 1):
             for tau in combinations_with_replacement(same_slope, i):
                 if sum(tau) == d:
                     new = {}
-                    for taui in tau:
+                    for taui in tuple(tau):
                         if taui in new.keys():
                             new[taui] += 1
-                    else:
-                        new[taui] = 1
+                        else:
+                            new[taui] = 1
                     luna_types.append(new)
         return luna_types
 
@@ -643,6 +637,7 @@ class QuiverModuli(ABC):
 
         INPUT:
         - ``tau``: list of tuples
+        # TODO tau is a dict now
 
         OUTPUT: whether tau is a Luna type.
 
@@ -668,26 +663,25 @@ class QuiverModuli(ABC):
         d = Q._coerce_dimension_vector(d)
 
         n = Q.number_of_vertices()
-        assert all(dn[0].length() == n for dn in tau)
-        assert d == sum([sum(dn[1]) * dn[0] for dn in tau])
+        assert all(len(dn) == n for dn in tau.keys())
+        assert d == sum(vector(k) * tau[k] for k in tau.keys())
 
         if d == Q.zero_vector():
-            return tau == [tuple([Q.zero_vector(), [1]])]
+            return tau == {Q.zero_vector(): 1}
 
         # assumes that Luna types are a bunch of tuples
         return all(
-            lambda e: Q.slope(e[0], theta, denom=denom)
-            == Q.slope(d, theta, denom=denom)
-            and Q.has_semistable_representation(e[0], theta, denom=denom),
-            tau,
+            Q.slope(key, theta, denom=denom) == Q.slope(d, theta, denom=denom)
+            and Q.has_semistable_representation(key, theta, denom=denom)
+            for key in tau.keys()
         )
-        dstar = [dn[0] for dn in tau]
-        stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-            d, theta, denom=denom
-        )
-        return all(
-            [e in stSubdims for e in dstar]
-        )  # Note that in particular the zero vector must not lie in dstar
+        # dstar = [dn[0] for dn in tau]
+        # stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
+        #     d, theta, denom=denom
+        # )
+        # return all(
+        #     [e in stSubdims for e in dstar]
+        # )  # Note that in particular the zero vector must not lie in dstar
 
     def dimension_of_luna_stratum(self, tau, secure=True):
         r"""Computes the dimension of the Luna stratum S_tau.
@@ -708,7 +702,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: L = X.all_luna_types(); L
-            [[((1, 1), [2])], [((1, 1), [1, 1])]]
+            [{(2, 2): 1}, {(1, 1): 2}]
             sage: [X.dimension_of_luna_stratum(tau) for tau in L]
             [1, 2]
 
@@ -716,7 +710,7 @@ class QuiverModuli(ABC):
 
         if secure:
             assert self.is_luna_type(tau)
-        return sum([len(dn[1]) * (1 - self._Q.euler_form(dn[0], dn[0])) for dn in tau])
+        return sum(tau[dn] * (1 - self._Q.euler_form(dn, dn)) for dn in tau.keys())
 
     def local_quiver_setting(self, tau, secure=True):
         r"""Returns the local quiver and dimension vector for the given Luna type.
@@ -735,7 +729,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,2]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: L = X.all_luna_types(); L
-            [[((1, 1), [2])], [((1, 1), [1, 1])], [((2, 2), [1])]]
+            [{(2, 2): 1}, {(1, 1): 2}]
             sage: Qloc, dloc = X.local_quiver_setting(L[0]); Qloc.adjacency_matrix() , dloc
             ([1], (2))
             sage: Qloc, dloc = X.local_quiver_setting(L[1]); Qloc.adjacency_matrix() , dloc
@@ -856,6 +850,7 @@ class QuiverModuli(ABC):
 
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+        denom = self._denominator
         d = Q._coerce_dimension_vector(d)
 
         # the computation of all Luna types takes so much time
@@ -865,11 +860,12 @@ class QuiverModuli(ABC):
 
         # this is probably the fastest way as checking theta-coprimality is fast
         # whereas checking for existence of a semi-stable representation is a bit slower
-        if not Q.has_semistable_representation(d, theta):
+
+        if not Q.has_semistable_representation(d, theta, denom=denom):
             return True
         else:
             allLunaTypes = self.all_luna_types()
-            genericType = [tuple([d, [1]])]
+            genericType = {d:1}
             if genericType in allLunaTypes:
                 allLunaTypes.remove(genericType)
             return not allLunaTypes  # This checks if the list is empty
