@@ -20,6 +20,8 @@ from sage.rings.rational_field import QQ
 from sage.structure.element import Element
 from sage.misc.cachefunc import cached_method
 
+from itertools import combinations_with_replacement
+
 from quiver import Quiver
 
 """Defines how permutations are multiplied."""
@@ -223,12 +225,14 @@ class QuiverModuli(ABC):
         d = self._Q._coerce_dimension_vector(self._d)
         theta = self._Q._coerce_vector(self._theta)
 
-        all_types = self._Q.all_hn_types(d, theta, denom=self._denominator, sorted=sorted)
-        if proper and (d, ) in all_types:
-            all_types.remove((d, ))
-        
+        all_types = self._Q.all_hn_types(
+            d, theta, denom=self._denominator, sorted=sorted
+        )
+        if proper and (d,) in all_types:
+            all_types.remove((d,))
+
         return all_types
-        
+
         # setup shorthand
         # Q, d, theta, denom = (
         #     self._Q,
@@ -532,79 +536,107 @@ class QuiverModuli(ABC):
             self._denominator,
         )
 
-        if d == Q.zero_vector():
-            return [tuple([Q.zero_vector(), [1]])]
-        else:
-            subdims = Q.all_subdimension_vectors(d, forget_labels=True)
-            subdims.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
-            N = len(subdims)
-            # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
-            # TODO this is unused?
-            # slopeIndexes = list(
-            #    filter(
-            #        lambda j: slope(subdims[j], theta, denom=denom)
-            #        == slope(d, theta, denom=denom),
-            #        range(1, N),
-            #    )
-            # )
+        d = Q._coerce_dimension_vector(d)
 
-            # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
-            # They're in deglex order by the way the helper function works.
-            stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-                d, theta, denom=denom
+        same_slope = filter(
+            lambda e: Q.slope(e, theta, denom=denom)
+            == Q.slope(d, theta, denom=denom),
+            Q.all_subdimension_vectors(d, nonzero=True),
+        )
+        same_slope = list(
+            filter(
+                lambda e: Q.has_semistable_representation(e, theta, denom=denom),
+                same_slope,
             )
+        )
 
-            # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
-            # TODO another time this one is used
-            def idx_diff(j, i):
-                return subdims.index(subdims[j] - subdims[i])
+        bound = sum(d) / min(sum(e) for e in same_slope)
+        luna_types = []
+        for i in range(1, bound + 2):
+            for tau in combinations_with_replacement(same_slope, i):
+                if sum(tau) == d:
+                    new = {}
+                    for taui in tau:
+                        if taui in new.keys():
+                            new[taui] += 1
+                    else:
+                        new[taui] = 1
+                    luna_types.append(new)
+        return luna_types
 
-            # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
-            partialLunaTypes = [[] for j in range(N)]
-            for j in range(N):
-                stSub = list(
-                    filter(
-                        lambda i: Q.is_subdimension_vector(subdims[i], subdims[j])
-                        and i != j,
-                        stIndexes,
-                    )
-                )
-                for i in stSub:
-                    smaller = partialLunaTypes[idx_diff(j, i)]
-                    for tau in smaller:
-                        # Check if f := stSubdims[i] occurs as a dimension vector in tau.
-                        # If so, say of the form (f,n) then remove this occurrence and add (f,n+1)
-                        # If not, then add (f,1)
-                        tauNew = copy.deepcopy(tau)
-                        occurs = False
-                        for dn in tauNew:
-                            if dn[0] == i:
-                                # We remove dn from tau and add the tuple (e,dn[1]+1) instead
-                                tauNew.remove(dn)
-                                tauNew.append(tuple([i, dn[1] + 1]))
-                                occurs = True
-                        if not occurs:
-                            tauNew.append(tuple([i, 1]))
-                        # Now tauNew is a Luna type of e := subdims[j] the desired form
-                        # We sort it, because it's supposed to be unordered
-                        tauNew.sort()
-                        # If tau isn't already contained, then we add it
-                        if tauNew not in partialLunaTypes[j]:
-                            partialLunaTypes[j] = partialLunaTypes[j] + [tauNew]
-                if j in stIndexes:
-                    # If e = subdims[j] is stable then (e,1) is also a Luna type.
-                    partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([j, 1])]]
+        # if d == Q.zero_vector():
+        #     return [tuple([Q.zero_vector(), [1]])]
+        # else:
+        #     subdims = Q.all_subdimension_vectors(d, forget_labels=True)
+        #     subdims.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
+        #     N = len(subdims)
+        #     # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
+        #     # TODO this is unused?
+        #     # slopeIndexes = list(
+        #     #    filter(
+        #     #        lambda j: slope(subdims[j], theta, denom=denom)
+        #     #        == slope(d, theta, denom=denom),
+        #     #        range(1, N),
+        #     #    )
+        #     # )
 
-            partial = partialLunaTypes[N - 1]
-            allLunaTypes = []
-            for tau in partial:
-                listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
-                Prod = cartesian_product(listOfPartitions).list()
-                allLunaTypes = allLunaTypes + [
-                    [tuple([subdims[tau[i][0]], p[i]]) for i in range(len(tau))]
-                    for p in Prod
-                ]
-            return allLunaTypes
+        #     # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
+        #     # They're in deglex order by the way the helper function works.
+        #     stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
+        #         d, theta, denom=denom
+        #     )
+
+        #     # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
+        #     # TODO another time this one is used
+        #     def idx_diff(j, i):
+        #         return subdims.index(subdims[j] - subdims[i])
+
+        #     # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
+        #     partialLunaTypes = [[] for j in range(N)]
+        #     for j in range(N):
+        #         stSub = list(
+        #             filter(
+        #                 lambda i: Q.is_subdimension_vector(subdims[i], subdims[j])
+        #                 and i != j,
+        #                 stIndexes,
+        #             )
+        #         )
+        #         for i in stSub:
+        #             smaller = partialLunaTypes[idx_diff(j, i)]
+        #             for tau in smaller:
+        #                 # Check if f := stSubdims[i] occurs as a dimension vector in tau.
+        #                 # If so, say of the form (f,n) then remove this occurrence and add (f,n+1)
+        #                 # If not, then add (f,1)
+        #                 tauNew = copy.deepcopy(tau)
+        #                 occurs = False
+        #                 for dn in tauNew:
+        #                     if dn[0] == i:
+        #                         # We remove dn from tau and add the tuple (e,dn[1]+1) instead
+        #                         tauNew.remove(dn)
+        #                         tauNew.append(tuple([i, dn[1] + 1]))
+        #                         occurs = True
+        #                 if not occurs:
+        #                     tauNew.append(tuple([i, 1]))
+        #                 # Now tauNew is a Luna type of e := subdims[j] the desired form
+        #                 # We sort it, because it's supposed to be unordered
+        #                 tauNew.sort()
+        #                 # If tau isn't already contained, then we add it
+        #                 if tauNew not in partialLunaTypes[j]:
+        #                     partialLunaTypes[j] = partialLunaTypes[j] + [tauNew]
+        #         if j in stIndexes:
+        #             # If e = subdims[j] is stable then (e,1) is also a Luna type.
+        #             partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([j, 1])]]
+
+        #     partial = partialLunaTypes[N - 1]
+        #     allLunaTypes = []
+        #     for tau in partial:
+        #         listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
+        #         Prod = cartesian_product(listOfPartitions).list()
+        #         allLunaTypes = allLunaTypes + [
+        #             [tuple([subdims[tau[i][0]], p[i]]) for i in range(len(tau))]
+        #             for p in Prod
+        #         ]
+        #     return allLunaTypes
 
     def is_luna_type(self, tau) -> bool:
         r"""Checks if tau is a Luna type for theta.
@@ -612,7 +644,7 @@ class QuiverModuli(ABC):
         INPUT:
         - ``tau``: list of tuples
 
-        OUTPUT: statement truth value as Bool
+        OUTPUT: whether tau is a Luna type.
 
         EXAMPLES:
 
@@ -641,14 +673,21 @@ class QuiverModuli(ABC):
 
         if d == Q.zero_vector():
             return tau == [tuple([Q.zero_vector(), [1]])]
-        else:
-            dstar = [dn[0] for dn in tau]
-            stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-                d, theta, denom=denom
-            )
-            return all(
-                [e in stSubdims for e in dstar]
-            )  # Note that in particular the zero vector must not lie in dstar
+
+        # assumes that Luna types are a bunch of tuples
+        return all(
+            lambda e: Q.slope(e[0], theta, denom=denom)
+            == Q.slope(d, theta, denom=denom)
+            and Q.has_semistable_representation(e[0], theta, denom=denom),
+            tau,
+        )
+        dstar = [dn[0] for dn in tau]
+        stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
+            d, theta, denom=denom
+        )
+        return all(
+            [e in stSubdims for e in dstar]
+        )  # Note that in particular the zero vector must not lie in dstar
 
     def dimension_of_luna_stratum(self, tau, secure=True):
         r"""Computes the dimension of the Luna stratum S_tau.
