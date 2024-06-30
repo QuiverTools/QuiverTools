@@ -2496,7 +2496,7 @@ class Quiver(Element):
     #     return sstIndexes, sstSubdims
 
     # TODO make a GitHub issue for King algorithm (is there actually one?) and Andriaenssens--Le Bruyn algorithm
-    def has_stable_representation(self, d, theta=None):
+    def has_stable_representation(self, d, theta=None, denom=sum):
         r"""Checks if there is a `\theta`-stable representation of this dimension vector.
 
         INPUT:
@@ -2544,7 +2544,7 @@ class Quiver(Element):
             return False
 
         return all(
-            self.slope(e, theta) < self.slope(d, theta)
+            self.slope(e, theta, denom=denom) < self.slope(d, theta, denom=denom)
             for e in self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
         )
 
