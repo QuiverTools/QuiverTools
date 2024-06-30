@@ -20,7 +20,7 @@ from sage.rings.rational_field import QQ
 from sage.structure.element import Element
 from sage.misc.cachefunc import cached_method
 
-from itertools import combinations_with_replacement
+from itertools import combinations_with_replacement, product
 
 from quiver import Quiver
 
@@ -501,7 +501,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
-            [{(3, 3): 1}, {(1, 1): 1, (2, 2): 1}, {(1, 1): 3}]
+            [{(1, 1): [3]}, {(1, 1): [2, 1]}, {(1, 1): [1, 1, 1]}]
 
         The 3-Kronecker quiver::
 
@@ -509,15 +509,11 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
-            [{(3, 3): 1}, {(1, 1): 1, (2, 2): 1}, {(1, 1): 3}]
-
-        The 6-subspace quiver::
-
-            sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: X.all_luna_types()
-            [{(3, 3): 1}, {(1, 1): 1, (2, 2): 1}, {(1, 1): 3}]
+            [{(3, 3): [1]},
+             {(1, 1): [1], (2, 2): [1]},
+             {(1, 1): [3]},
+             {(1, 1): [2, 1]},
+             {(1, 1): [1, 1, 1]}]
 
         """
         # setup shorthand
@@ -539,7 +535,7 @@ class QuiverModuli(ABC):
         )
         same_slope = list(
             filter(
-                lambda e: Q.has_semistable_representation(e, theta, denom=denom),
+                lambda e: Q.has_stable_representation(e, theta, denom=denom),
                 same_slope,
             )
         )
@@ -549,13 +545,25 @@ class QuiverModuli(ABC):
         for i in range(1, bound + 1):
             for tau in combinations_with_replacement(same_slope, i):
                 if sum(tau) == d:
-                    new = {}
+                    # from tau we build all possible Luna types
+                    partial = {}
                     for taui in tuple(tau):
-                        if taui in new.keys():
-                            new[taui] += 1
+                        if taui in partial.keys():
+                            partial[taui] += 1
                         else:
-                            new[taui] = 1
-                    luna_types.append(new)
+                            partial[taui] = 1
+
+                    # partial has the form {d^1: Partitions(p^1), ..., d^s: Partitions(p^s)}
+                    for key in partial.keys():
+                        partial[key] = Partitions(partial[key]).list()
+
+                    # this is a cartesian product of dictionaries!
+                    new_types = [
+                        dict(zip(partial.keys(), values))
+                        for values in product(*partial.values())
+                    ]
+                    luna_types += new_types
+                    # luna_types.append(partial)
         return luna_types
 
         # if d == Q.zero_vector():
@@ -664,12 +672,11 @@ class QuiverModuli(ABC):
 
         n = Q.number_of_vertices()
         assert all(len(dn) == n for dn in tau.keys())
-        assert d == sum(vector(k) * tau[k] for k in tau.keys())
+        assert d == sum(vector(k) * dim for k in tau.keys() for dim in tau[k])
 
         if d == Q.zero_vector():
             return tau == {Q.zero_vector(): 1}
 
-        # assumes that Luna types are a bunch of tuples
         return all(
             Q.slope(key, theta, denom=denom) == Q.slope(d, theta, denom=denom)
             and Q.has_semistable_representation(key, theta, denom=denom)
@@ -702,7 +709,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: L = X.all_luna_types(); L
-            [{(2, 2): 1}, {(1, 1): 2}]
+            [{(1, 1): [2]}, {(1, 1): [1, 1]}]
             sage: [X.dimension_of_luna_stratum(tau) for tau in L]
             [1, 2]
 
@@ -710,7 +717,7 @@ class QuiverModuli(ABC):
 
         if secure:
             assert self.is_luna_type(tau)
-        return sum(tau[dn] * (1 - self._Q.euler_form(dn, dn)) for dn in tau.keys())
+        return sum(len(tau[dn]) * (1 - self._Q.euler_form(dn, dn)) for dn in tau.keys())
 
     def local_quiver_setting(self, tau, secure=True):
         r"""Returns the local quiver and dimension vector for the given Luna type.
@@ -729,16 +736,16 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,2]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: L = X.all_luna_types(); L
-            [{(2, 2): 1}, {(1, 1): 2}]
+            [{(2, 2): [1]}, {(1, 1): [2]}, {(1, 1): [1, 1]}]
             sage: Qloc, dloc = X.local_quiver_setting(L[0]); Qloc.adjacency_matrix() , dloc
-            ([1], (2))
+            ([4], (1))
             sage: Qloc, dloc = X.local_quiver_setting(L[1]); Qloc.adjacency_matrix() , dloc
+            ([1], (2))
+            sage: Qloc, dloc = X.local_quiver_setting(L[2]); Qloc.adjacency_matrix() , dloc
             (
             [1 1]
             [1 1], (1, 1)
             )
-            sage: Qloc, dloc = X.local_quiver_setting(L[2]); Qloc.adjacency_matrix() , dloc
-            ([4], (1))
 
         """
 
@@ -747,15 +754,19 @@ class QuiverModuli(ABC):
 
         Q = self._Q
 
+        # a word of caution to the future maintainer: Python dictionaries
+        # iterate over the keys in the order they were inserted. This ensures
+        # that the following is a well-defined adjacency matrix. Python sets
+        # DO NOT have this property.
         A = matrix(
             [
-                [Q.generic_ext(dp[0], eq[0]) for eq in tau for n in eq[1]]
-                for dp in tau
-                for m in dp[1]
+                [Q.generic_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
+                for dp in tau.keys()
+                for m in tau[dp]
             ]
         )
         Qloc = Quiver(A)
-        dloc = vector([m for dp in tau for m in dp[1]])
+        dloc = vector(dim for dp in tau.keys() for dim in tau[dp])
 
         return Qloc, dloc
 
@@ -865,7 +876,7 @@ class QuiverModuli(ABC):
             return True
         else:
             allLunaTypes = self.all_luna_types()
-            genericType = {d:1}
+            genericType = {d: [1]}
             if genericType in allLunaTypes:
                 allLunaTypes.remove(genericType)
             return not allLunaTypes  # This checks if the list is empty
