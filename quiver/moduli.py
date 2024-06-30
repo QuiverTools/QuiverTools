@@ -439,6 +439,14 @@ class QuiverModuli(ABC):
              {(1, 1): [2, 1]},
              {(1, 1): [1, 1, 1]}]
 
+        The zero vector::
+
+            sage: from quiver import *
+            sage: Q, d, theta = KroneckerQuiver(), vector([0,0]), vector([1,-1])
+            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: X.all_luna_types()
+            [{(0, 0): [1]}]
+
         """
         # setup shorthand
         Q, d, theta, denom = (
@@ -451,7 +459,8 @@ class QuiverModuli(ABC):
         d = Q._coerce_dimension_vector(d)
 
         if d == Q.zero_vector():
-            return [{Q.zero_vector(): 1}]
+            z = Q._coerce_vector(Q.zero_vector())
+            return [{z: [1]}]
 
         same_slope = filter(
             lambda e: Q.slope(e, theta, denom=denom) == Q.slope(d, theta, denom=denom),
@@ -481,7 +490,6 @@ class QuiverModuli(ABC):
                     for key in partial.keys():
                         partial[key] = Partitions(partial[key]).list()
 
-                    # this is a cartesian product of dictionaries!
                     new_types = [
                         dict(zip(partial.keys(), values))
                         for values in product(*partial.values())
@@ -493,8 +501,7 @@ class QuiverModuli(ABC):
         r"""Checks if tau is a Luna type for theta.
 
         INPUT:
-        - ``tau``: list of tuples
-        # TODO tau is a dict now
+        - ``tau``: a dictionary with dimension vectors as keys and lists of integers as values
 
         OUTPUT: whether tau is a Luna type.
 
@@ -509,6 +516,15 @@ class QuiverModuli(ABC):
             sage: all(X.is_luna_type(tau) for tau in l)
             True
 
+        The 3-Kronecker quiver with zero vector::
+
+            sage: from quiver import *
+            sage: Q, d, theta = KroneckerQuiver(), vector([0,0]), vector([1,-1])
+            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: d.set_immutable()
+            sage: X.is_luna_type({d: [1]})
+            True
+
         """
         Q, d, theta, denom = (
             self._Q,
@@ -521,10 +537,11 @@ class QuiverModuli(ABC):
 
         n = Q.number_of_vertices()
         assert all(len(dn) == n for dn in tau.keys())
-        assert d == sum(vector(k) * dim for k in tau.keys() for dim in tau[k])
+        assert d == sum(k * dim for k in tau.keys() for dim in tau[k])
 
         if d == Q.zero_vector():
-            return tau == {Q.zero_vector(): 1}
+            z = Q._coerce_vector(Q.zero_vector())
+            return tau == {z: [1]}
 
         return all(
             Q.slope(key, theta, denom=denom) == Q.slope(d, theta, denom=denom)
