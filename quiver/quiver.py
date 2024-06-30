@@ -1293,7 +1293,6 @@ class Quiver(Element):
     Dimension vectors and roots
     """
 
-    @cached_method
     def zero_vector(self):
         r"""
         Returns the zero dimension vector
@@ -2547,79 +2546,6 @@ class Quiver(Element):
             self.slope(e, theta, denom=denom) < self.slope(d, theta, denom=denom)
             for e in self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
         )
-
-    # # TODO remove and cache the recursive one instead
-    # def _all_stable_subdimension_vectors_helper(self, d, theta, denom=sum):
-    #     """Computes the list of all stable subdimension vectors of d which have the same slope as d.
-
-    #     EXAMPLES:
-
-    #     Manual caching of all stable subdimension vectors of (3,3) for the 3-Kronecker quiver::
-
-    #         sage: from quiver import *
-    #         sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,0])
-    #         sage: Q.all_subdimension_vectors(d)
-    #         [(0, 0),
-    #         (0, 1),
-    #         (0, 2),
-    #         (0, 3),
-    #         (1, 0),
-    #         (1, 1),
-    #         (1, 2),
-    #         (1, 3),
-    #         (2, 0),
-    #         (2, 1),
-    #         (2, 2),
-    #         (2, 3),
-    #         (3, 0),
-    #         (3, 1),
-    #         (3, 2),
-    #         (3, 3)]
-    #         sage: i, s = Q._all_stable_subdimension_vectors_helper(d, theta)
-    #         sage: i
-    #         [4, 11, 15]
-    #         sage: s
-    #         [(1, 1), (2, 2), (3, 3)]
-
-    #     Now for the 2-Kronecker quiver::
-
-    #         sage: from quiver import *
-    #         sage: Q, d, theta = GeneralizedKroneckerQuiver(2), vector([3,3]), vector([1,-1])
-    #         sage: Q._all_stable_subdimension_vectors_helper(d, theta)
-    #         ([4], [(1, 1)])
-
-    #     """
-    #     subdims = self.all_subdimension_vectors(d)
-    #     subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
-    #     # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-    #     N = len(subdims)
-    #     genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
-    #     # slopeIndexes is the list of subdimension vectors of d of the same slope as d (in particular != 0)
-    #     slopeIndexes = list(
-    #         filter(
-    #             lambda j: self.slope(subdims[j], theta, denom=denom)
-    #             == self.slope(d, theta, denom=denom),
-    #             range(1, N),
-    #         )
-    #     )
-    #     # stIndexes contains all j for which subdims[j] is stable
-    #     # e = subdims[j] is stable if for all generic subdimension vectors f = subdims[i] of e, it holds that slope(f) < slope(e)
-    #     stIndexes = list(
-    #         filter(
-    #             lambda j: all(
-    #                 [
-    #                     self.slope(subdims[i], theta, denom=denom)
-    #                     < self.slope(subdims[j], theta, denom=denom)
-    #                     for i in list(
-    #                         filter(lambda i: i != 0 and i != j, genIndexes[j])
-    #                     )
-    #                 ]
-    #             ),
-    #             slopeIndexes,
-    #         )
-    #     )
-    #     stSubdims = [subdims[j] for j in stIndexes]
-    #     return stIndexes, stSubdims
 
     """
     Canonical decomposition

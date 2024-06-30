@@ -233,75 +233,6 @@ class QuiverModuli(ABC):
 
         return all_types
 
-        # setup shorthand
-        # Q, d, theta, denom = (
-        #     self._Q,
-        #     self._d,
-        #     self._theta,
-        #     self._denominator,
-        # )
-
-        # subdimensions = Q.all_subdimension_vectors(d)
-        # subdimensions.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
-        # N = len(subdimensions)
-
-        # # sstIndexes is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
-        # sstIndexes, sstSubdims = Q._Quiver__all_semistable_subdimension_vectors_helper(
-        #     d, theta
-        # )
-
-        # # TODO this helper function already appeared elsewhere?
-        # # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
-        # def idx_diff(j, i):
-        #     return subdimensions.index(subdimensions[j] - subdimensions[i])
-
-        # hn = [[[]] for j in range(N)]
-
-        # for j in range(1, N):
-        #     # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
-        #     sstSub = list(
-        #         filter(
-        #             lambda i: Q.is_subdimension_vector(
-        #                 subdimensions[i], subdimensions[j]
-        #             ),
-        #             sstIndexes,
-        #         )
-        #     )
-        #     # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
-        #     hn[j] = [
-        #         [i] + fstar
-        #         for i in sstSub
-        #         for fstar in list(
-        #             filter(
-        #                 lambda fstar: fstar == []
-        #                 or Q.slope(
-        #                     subdimensions[i], theta, denom=denom
-        #                 )
-        #                 > Q.slope(
-        #                     subdimensions[fstar[0]],
-        #                     theta,
-        #                     denom=denom,
-        #                 ),
-        #                 hn[idx_diff(j, i)],
-        #             )
-        #         )
-        #     ]
-
-        # # TODO document why this is needed
-        # hn[0] = [[0]]
-
-        # types = [[subdimensions[r] for r in fstar] for fstar in hn[N - 1]]
-
-        # # filter out the type corresponding to the stable locus
-        # if proper:
-        #     # TODO fix type of dimension vectors
-        #     types = [type for type in types if type != [vector(d)]]
-
-        # # TODO make sure that HN-types are tuples from the very beginning...
-        # types = list(map(tuple, types))
-
-        # return types
-
     def is_harder_narasimhan_type(self, dstar) -> bool:
         r"""Checks if dstar is a HN type.
 
@@ -357,18 +288,11 @@ class QuiverModuli(ABC):
         ):
             return False
 
-        # third condition: theta-stability of each dimension vector
-        # TODO why is this calling a private helper function?
-        # TODO for performance reasons we don't want to call Quiver;has_semistable_representation?
-        # oh yeah we do
-
         if not all(
             Q.has_semistable_representation(di, theta, denom=denom) for di in dstar
         ):
             return False
-        # _, sstSubdims = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta)
-        # if not all(e in sstSubdims for e in dstar):
-        #     return False
+
 
         return True
 
@@ -563,82 +487,7 @@ class QuiverModuli(ABC):
                         for values in product(*partial.values())
                     ]
                     luna_types += new_types
-                    # luna_types.append(partial)
         return luna_types
-
-        # if d == Q.zero_vector():
-        #     return [tuple([Q.zero_vector(), [1]])]
-        # else:
-        #     subdims = Q.all_subdimension_vectors(d, forget_labels=True)
-        #     subdims.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
-        #     N = len(subdims)
-        #     # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
-        #     # TODO this is unused?
-        #     # slopeIndexes = list(
-        #     #    filter(
-        #     #        lambda j: slope(subdims[j], theta, denom=denom)
-        #     #        == slope(d, theta, denom=denom),
-        #     #        range(1, N),
-        #     #    )
-        #     # )
-
-        #     # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
-        #     # They're in deglex order by the way the helper function works.
-        #     stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-        #         d, theta, denom=denom
-        #     )
-
-        #     # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
-        #     # TODO another time this one is used
-        #     def idx_diff(j, i):
-        #         return subdims.index(subdims[j] - subdims[i])
-
-        #     # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
-        #     partialLunaTypes = [[] for j in range(N)]
-        #     for j in range(N):
-        #         stSub = list(
-        #             filter(
-        #                 lambda i: Q.is_subdimension_vector(subdims[i], subdims[j])
-        #                 and i != j,
-        #                 stIndexes,
-        #             )
-        #         )
-        #         for i in stSub:
-        #             smaller = partialLunaTypes[idx_diff(j, i)]
-        #             for tau in smaller:
-        #                 # Check if f := stSubdims[i] occurs as a dimension vector in tau.
-        #                 # If so, say of the form (f,n) then remove this occurrence and add (f,n+1)
-        #                 # If not, then add (f,1)
-        #                 tauNew = copy.deepcopy(tau)
-        #                 occurs = False
-        #                 for dn in tauNew:
-        #                     if dn[0] == i:
-        #                         # We remove dn from tau and add the tuple (e,dn[1]+1) instead
-        #                         tauNew.remove(dn)
-        #                         tauNew.append(tuple([i, dn[1] + 1]))
-        #                         occurs = True
-        #                 if not occurs:
-        #                     tauNew.append(tuple([i, 1]))
-        #                 # Now tauNew is a Luna type of e := subdims[j] the desired form
-        #                 # We sort it, because it's supposed to be unordered
-        #                 tauNew.sort()
-        #                 # If tau isn't already contained, then we add it
-        #                 if tauNew not in partialLunaTypes[j]:
-        #                     partialLunaTypes[j] = partialLunaTypes[j] + [tauNew]
-        #         if j in stIndexes:
-        #             # If e = subdims[j] is stable then (e,1) is also a Luna type.
-        #             partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([j, 1])]]
-
-        #     partial = partialLunaTypes[N - 1]
-        #     allLunaTypes = []
-        #     for tau in partial:
-        #         listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
-        #         Prod = cartesian_product(listOfPartitions).list()
-        #         allLunaTypes = allLunaTypes + [
-        #             [tuple([subdims[tau[i][0]], p[i]]) for i in range(len(tau))]
-        #             for p in Prod
-        #         ]
-        #     return allLunaTypes
 
     def is_luna_type(self, tau) -> bool:
         r"""Checks if tau is a Luna type for theta.
@@ -682,13 +531,6 @@ class QuiverModuli(ABC):
             and Q.has_semistable_representation(key, theta, denom=denom)
             for key in tau.keys()
         )
-        # dstar = [dn[0] for dn in tau]
-        # stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-        #     d, theta, denom=denom
-        # )
-        # return all(
-        #     [e in stSubdims for e in dstar]
-        # )  # Note that in particular the zero vector must not lie in dstar
 
     def dimension_of_luna_stratum(self, tau, secure=True):
         r"""Computes the dimension of the Luna stratum S_tau.
