@@ -386,7 +386,6 @@ class QuiverModuli(ABC):
     Luna
     """
 
-    # TODO is there not an iterator for partitions in Sage? Also, the order does not matter, so why is a Luna type not a Dictionary, a Set, or some other more fitting data structure?
     def all_luna_types(self):
         r"""Returns the unordered list of all Luna types of d for theta.
 
@@ -459,6 +458,7 @@ class QuiverModuli(ABC):
         d = Q._coerce_dimension_vector(d)
 
         if d == Q.zero_vector():
+            # Q.zero_vector() can't be hashed a priori
             z = Q._coerce_vector(Q.zero_vector())
             return [{z: [1]}]
 
@@ -540,6 +540,7 @@ class QuiverModuli(ABC):
         assert d == sum(k * dim for k in tau.keys() for dim in tau[k])
 
         if d == Q.zero_vector():
+            # Q.zero_vector() can't be hashed a priori
             z = Q._coerce_vector(Q.zero_vector())
             return tau == {z: [1]}
 
@@ -749,14 +750,9 @@ class QuiverModuli(ABC):
         r"""Checks if the dimension vector is amply stable for the stability parameter
 
         By definition, a dimension vector `d` is `theta`-amply stable if the
-        codimension of the theta-stable locus inside `R(Q,d)` is at least 2.
+        codimension of the theta-semistable locus inside `R(Q,d)` is at least 2.
 
         OUTPUT: whether the data for the quiver moduli space is amply stable
-
-        # But can we find a necessary and sufficient condition?
-        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
-        # I think I can compute the codimension of the non-stable locus in full generality.
-        # TODO: It's more difficult than I thought. I think it's doable though.
 
         EXAMPLES:
 
@@ -776,23 +772,12 @@ class QuiverModuli(ABC):
             False
 
         """
-        # setup shorthand
-        Q, d, theta = self._Q, self._d, self._theta
+        HNs = self.all_harder_narasimhan_types(proper=True)
+        return min(
+            self.codimension_of_harder_narasimhan_stratum(dstar, secure=False)
+            for dstar in HNs
+        ) >= 2
 
-        # It's currently only possible with this distinction
-        # TODO Pieter is confused about what's going on here
-        if Q.is_theta_coprime(d, theta):
-            return self.codimension_unstable_locus() >= 2
-        else:
-            return (
-                min(
-                    [
-                        self.codimension_unstable_locus(),
-                        self.codimension_properly_semistable_locus(),
-                    ]
-                )
-                >= 2
-            )
 
     def is_strongly_amply_stable(self) -> bool:
         r"""Checks if the dimension vector is strongly amply stable for the stability
