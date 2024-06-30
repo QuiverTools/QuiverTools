@@ -293,7 +293,6 @@ class QuiverModuli(ABC):
         ):
             return False
 
-
         return True
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, secure=False):
@@ -773,11 +772,13 @@ class QuiverModuli(ABC):
 
         """
         HNs = self.all_harder_narasimhan_types(proper=True)
-        return min(
-            self.codimension_of_harder_narasimhan_stratum(dstar, secure=False)
-            for dstar in HNs
-        ) >= 2
-
+        return (
+            min(
+                self.codimension_of_harder_narasimhan_stratum(dstar, secure=False)
+                for dstar in HNs
+            )
+            >= 2
+        )
 
     def is_strongly_amply_stable(self) -> bool:
         r"""Checks if the dimension vector is strongly amply stable for the stability
