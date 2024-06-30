@@ -6,6 +6,7 @@ from sage.matrix.special import zero_matrix
 from sage.modules.free_module_element import vector
 from sage.rings.integer_ring import ZZ
 from sage.structure.element import Element
+from sage.misc.cachefunc import cached_method
 
 
 class Quiver(Element):
@@ -550,7 +551,7 @@ class Quiver(Element):
         Return the vertices of the quiver
 
         If the quiver is created from a DiGraph or string, the vertices are labelled
-        using the data in the DiGraph of string, as explained in
+        using the data in the DiGraph or string, as explained in
         :meth:`Quiver.from_graph` or :meth:`Quiver.from_string`.
         If the quiver is created from a matrix, the vertices are labelled from `0`
         to `n-1`, where `n` is the number of rows or columns in the matrix.
@@ -677,7 +678,7 @@ class Quiver(Element):
         The in-degree of `i` is the number of incoming arrows at `i`.
 
         The parameter `i` must be an element of the vertices of the underlying graph.
-        If constructed from a matrix or string, one has that `i` can go from `0` to
+        If constructed from a matrix or string, `i` can go from `0` to
         `n-1` where `n` is the number of vertices in the graph.
 
         INPUT:
@@ -712,7 +713,7 @@ class Quiver(Element):
         r"""Returns the out-degree of a vertex.
 
         The parameter `i` must be an element of the vertices of the underlying graph.
-        If constructed from a matrix or string, one has that `i` can go from `0` to
+        If constructed from a matrix or string, `i` can go from `0` to
         `n-1` where `n` is the number of vertices in the graph.
 
         The out-degree of `i` is the number of outgoing arrows at `i`.
@@ -1352,6 +1353,7 @@ class Quiver(Element):
         else:
             return vector([1] * self.number_of_vertices())
 
+    @cached_method
     def simple_root(self, i):
         r"""
         Returns the simple root at the vertex `i`
@@ -1377,7 +1379,10 @@ class Quiver(Element):
             {'a': 0, 'b': 1, 'c': 0}
 
         """
-        root = self.zero_vector()
+        if self.__has_vertex_labels():
+            root = {i: 0 for i in self.vertices()}
+        else:
+            root = vector([0] * self.number_of_vertices())
         root[i] = 1
 
         return root
@@ -1385,9 +1390,8 @@ class Quiver(Element):
     def is_root(self, x) -> bool:
         r"""Checks whether `x` is a root of the underlying diagram of the quiver.
 
-        A root is a non-zero vector in `\mathbb{Z}Q_0` such that
-        the Tits form of `x` is bounded above by 1..
-
+        A root is a non-zero vector `x` in `\mathbb{Z}Q_0` such that
+        the Tits form of `x` is at most 1.
         INPUT:
         - ``x``: integer vector
 
@@ -1512,7 +1516,7 @@ class Quiver(Element):
 
         return self.has_stable_representation(d, theta)
 
-    def slope(self, d, theta=None, denominator=sum):
+    def slope(self, d, theta=None, denom=sum):
         r"""
         Returns the slope of `d` with respect to `theta`
 
@@ -1546,7 +1550,7 @@ class Quiver(Element):
         We can use for instance a constant denominator::
 
             sage: constant = lambda di: 1
-            sage: Q.slope(d, Q.canonical_stability_parameter(d), denominator=constant)
+            sage: Q.slope(d, Q.canonical_stability_parameter(d), denom=constant)
             0
 
         The only dependence on the quiver is the set of vertices, so if we don't
@@ -1558,13 +1562,13 @@ class Quiver(Element):
 
         """
         d = self._coerce_dimension_vector(d)
-        assert denominator(d) > 0
+        assert denom(d) > 0
 
         if theta is None:
             theta = self.canonical_stability_parameter(d)
         theta = self._coerce_vector(theta)
 
-        return (theta * d) / denominator(d)
+        return (theta * d) / denom(d)
 
     def is_subdimension_vector(self, e, d):
         r"""
@@ -2003,6 +2007,9 @@ class Quiver(Element):
     Generic subdimension vectors and generic Hom and Ext
     """
 
+    @cached_method(
+        key=lambda self, e, d: (self._coerce_vector(e), self._coerce_vector(d))
+    )
     def is_generic_subdimension_vector(self, e, d) -> bool:
         r"""Checks if e is a generic subdimension vector of d.
 
@@ -2147,92 +2154,22 @@ class Quiver(Element):
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
 
-        if e == d:
+        if e == d or all(ei == 0 for ei in e):
             return True
 
         if not self.is_subdimension_vector(e, d):
             return False
 
-        return all(
-            self.euler_form(f, d - e) >= 0
-            for f in self.all_generic_subdimension_vectors(e)
+        # euler_matrix_temp = self.euler_matrix() * (d - e)
+        subdims = filter(
+            # lambda eprime: eprime * euler_matrix_temp < 0,
+            lambda eprime: self.euler_form(eprime, d - e) < 0,
+            self.all_subdimension_vectors(e),
         )
 
-    # TODO remove this and cache the recursive one instead
-    # This method computes a list of all generic subdimension vectors of e
-    # for all e which are subdimension vectors of d.
-    def __all_generic_subdimension_vectors_helper(self, d):
-        r"""Returns the list of lists of indices of all generic subdimension vectors
-
-        Here e ranges over all subdimension vectors of d. The index refers to the
-        deglex order.
-
-        EXAMPLES:
-
-            sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
-            sage: i, s = Q._Quiver__all_generic_subdimension_vectors_helper(d)
-            sage: i, s
-            ([[0],
-            [0, 1],
-            [0, 2],
-            [0, 1, 3],
-            [0, 1, 4],
-            [0, 2, 5],
-            [0, 1, 3, 6],
-            [0, 1, 3, 7],
-            [0, 1, 4, 8],
-            [0, 1, 3, 6, 9],
-            [0, 1, 3, 7, 10],
-            [0, 1, 3, 6, 7, 9, 11]],
-            [[(0, 0)],
-            [(0, 0), (0, 1)],
-            [(0, 0), (1, 0)],
-            [(0, 0), (0, 1), (0, 2)],
-            [(0, 0), (0, 1), (1, 1)],
-            [(0, 0), (1, 0), (2, 0)],
-            [(0, 0), (0, 1), (0, 2), (0, 3)],
-            [(0, 0), (0, 1), (0, 2), (1, 2)],
-            [(0, 0), (0, 1), (1, 1), (2, 1)],
-            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3)],
-            [(0, 0), (0, 1), (0, 2), (1, 2), (2, 2)],
-            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]])
-
-        """
-        subdims = self.all_subdimension_vectors(d, forget_labels=True)
-        subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
-        # we use the deglex order because it's a total order which extends the usual
-        # entry-wise partial order on dimension vectors.
-        N = len(subdims)
-
-        # genIndexes[j] will in the end be the list of indexes (in subdims) of all
-        # generic subdimension vectors of subdims[j]
-        genIndexes = [
-            list(
-                filter(
-                    lambda i: self.is_subdimension_vector(subdims[i], subdims[j]),
-                    range(N),
-                )
-            )
-            for j in range(N)
-        ]
-
-        for j in range(N):
-            genIndexes[j] = list(
-                filter(
-                    lambda i: all(
-                        [
-                            self.euler_form(subdims[k], subdims[j] - subdims[i]) >= 0
-                            for k in genIndexes[i]
-                        ]
-                    ),
-                    genIndexes[j],
-                )
-            )
-
-        genSubdims = [[subdims[i] for i in genIndexes[j]] for j in range(N)]
-
-        return genIndexes, genSubdims
+        return not any(
+            self.is_generic_subdimension_vector(eprime, e) for eprime in subdims
+        )
 
     def all_generic_subdimension_vectors(self, d, proper=False, nonzero=False):
         r"""Returns the list of all generic subdimension vectors of d.
@@ -2252,27 +2189,27 @@ class Quiver(Element):
             sage: d = vector([3,3])
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0),
-            (0, 1),
-            (0, 2),
-            (1, 1),
-            (0, 3),
-            (1, 2),
-            (1, 3),
-            (2, 2),
-            (2, 3),
-            (3, 3)]
+             (0, 1),
+             (0, 2),
+             (0, 3),
+             (1, 1),
+             (1, 2),
+             (1, 3),
+             (2, 2),
+             (2, 3),
+             (3, 3)]
             sage: Q = GeneralizedKroneckerQuiver(2)
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0),
-            (0, 1),
-            (0, 2),
-            (1, 1),
-            (0, 3),
-            (1, 2),
-            (1, 3),
-            (2, 2),
-            (2, 3),
-            (3, 3)]
+             (0, 1),
+             (0, 2),
+             (0, 3),
+             (1, 1),
+             (1, 2),
+             (1, 3),
+             (2, 2),
+             (2, 3),
+             (3, 3)]
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
@@ -2284,17 +2221,14 @@ class Quiver(Element):
         """
         d = self._coerce_dimension_vector(d)
 
-        # TODO why is this hidden in a helper function?
-        # TODO prettier variable names and structure
-        genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
-        N = len(genSubdims)
-
-        if nonzero:
-            genSubdims[N - 1] = genSubdims[N - 1][1:]
-        if proper:
-            # TODO deal with dict dimension vectors, or guarantee the order
-            genSubdims[N - 1] = [e for e in genSubdims[N - 1] if e != vector(d)]
-        return genSubdims[N - 1]
+        return list(
+            filter(
+                lambda e: self.is_generic_subdimension_vector(e, d),
+                self.all_subdimension_vectors(
+                    d, proper=proper, nonzero=nonzero, forget_labels=True
+                ),
+            )
+        )
 
     def generic_ext(self, d, e):
         r"""
@@ -2398,6 +2332,74 @@ class Quiver(Element):
             return False
 
     """
+    Harder--Narasimhan types
+    """
+
+    @cached_method
+    def all_hn_types(self, d, theta, denom=sum, sorted=False):
+        r"""Returns the list of all Harder--Narasimhan types of d.
+
+        INPUT:
+
+        - ``d``: dimension vector
+
+        - ``theta``: stability parameter
+
+        - ``denom`` (default: sum) -- the denominator function
+
+        OUTPUT: list of vectors
+
+        EXAMPLES:
+
+        The Harder--Narasimhan types for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: d = (2, 3)
+            sage: theta = (3, -2)
+            sage: Q.all_hn_types(d, theta)
+            [((1, 0), (1, 1), (0, 2)),
+             ((1, 0), (1, 2), (0, 1)),
+             ((1, 0), (1, 3)),
+             ((1, 1), (1, 2)),
+             ((2, 0), (0, 3)),
+             ((2, 1), (0, 2)),
+             ((2, 2), (0, 1)),
+             ((2, 3),)]
+        """
+        d = self._coerce_dimension_vector(d)
+        theta = self._coerce_vector(theta)
+
+        subdims = filter(
+            lambda e: self.slope(e, theta, denom=denom)
+            > self.slope(d, theta, denom=denom),
+            self.all_subdimension_vectors(d, proper=True, nonzero=True),
+        )
+        subdims = list(
+            filter(
+                lambda e: self.has_semistable_representation(e, theta, denom=denom),
+                subdims,
+            )
+        )
+
+        if sorted:
+            subdims.sort(key=(lambda e: self.slope(e, theta, denom=denom)))
+
+        all_types = []
+        for e in subdims:
+            for estar in filter(
+                lambda fstar: self.slope(e, theta, denom=denom)
+                > self.slope(fstar[0], theta, denom=denom),
+                self.all_hn_types(d - e, theta, denom=denom),
+            ):
+                all_types.append((e,) + estar)
+
+        if self.has_semistable_representation(d, theta, denom=denom):
+            all_types.append((d,))
+
+        return all_types
+
+    """
     (Semi-)stability
     """
 
@@ -2408,7 +2410,7 @@ class Quiver(Element):
 
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
-    def has_semistable_representation(self, d, theta=None):
+    def has_semistable_representation(self, d, theta=None, denom=sum):
         r"""Checks if there is a `\theta`-semistable of dimension vector `d`
 
         INPUT:
@@ -2416,7 +2418,7 @@ class Quiver(Element):
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: Statement truth value as Bool
+        OUTPUT: whether there is a `\theta`-semistable representation of dimension vector `d`
 
         See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf
         A dimension vector d admits a theta-semi-stable representation if and only if
@@ -2456,47 +2458,48 @@ class Quiver(Element):
         theta = self._coerce_vector(theta)
 
         # TODO no need for denominator?!
+        # denominator is needed for slope stability
         return all(
-            self.slope(e, theta) <= self.slope(d, theta)
+            self.slope(e, theta, denom=denom) <= self.slope(d, theta, denom=denom)
             for e in self.all_generic_subdimension_vectors(d, nonzero=True)
         )
 
-    # TODO remove and cache the recursive one instead
-    def __all_semistable_subdimension_vectors_helper(self, d, theta):
-        """Computes the list of indexes of all semistable subdimension vectors of d.
+    # # TODO remove and cache the recursive one instead
+    # def __all_semistable_subdimension_vectors_helper(self, d, theta):
+    #     """Computes the list of indexes of all semistable subdimension vectors of d.
 
-        EXAMPLES:
+    #     EXAMPLES:
 
-        Manual caching for all semistable subdimension vectors of (2,3) for the Kronecker quiver::
+    #     Manual caching for all semistable subdimension vectors of (2,3) for the Kronecker quiver::
 
-            sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
-            sage: i, s = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta); i, s
-            ([1, 2, 3, 4, 5, 6, 10],
-            [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
+    #         sage: from quiver import *
+    #         sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
+    #         sage: i, s = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta); i, s
+    #         ([1, 2, 3, 4, 5, 6, 10],
+    #         [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
 
-        """
-        subdims = self.all_subdimension_vectors(d)
-        subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
-        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-        N = len(subdims)
-        genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
-        sstIndexes = list(
-            filter(
-                lambda j: all(
-                    [
-                        self.slope(subdims[i], theta) <= self.slope(subdims[j], theta)
-                        for i in list(filter(lambda i: i != 0, genIndexes[j]))
-                    ]
-                ),
-                range(1, N),
-            )
-        )
-        sstSubdims = [subdims[j] for j in sstIndexes]
-        return sstIndexes, sstSubdims
+    #     """
+    #     subdims = self.all_subdimension_vectors(d)
+    #     subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
+    #     # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
+    #     N = len(subdims)
+    #     genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
+    #     sstIndexes = list(
+    #         filter(
+    #             lambda j: all(
+    #                 [
+    #                     self.slope(subdims[i], theta) <= self.slope(subdims[j], theta)
+    #                     for i in list(filter(lambda i: i != 0, genIndexes[j]))
+    #                 ]
+    #             ),
+    #             range(1, N),
+    #         )
+    #     )
+    #     sstSubdims = [subdims[j] for j in sstIndexes]
+    #     return sstIndexes, sstSubdims
 
     # TODO make a GitHub issue for King algorithm (is there actually one?) and Andriaenssens--Le Bruyn algorithm
-    def has_stable_representation(self, d, theta=None):
+    def has_stable_representation(self, d, theta=None, denom=sum):
         r"""Checks if there is a `\theta`-stable representation of this dimension vector.
 
         INPUT:
@@ -2544,324 +2547,89 @@ class Quiver(Element):
             return False
 
         return all(
-            self.slope(e, theta) < self.slope(d, theta)
+            self.slope(e, theta, denom=denom) < self.slope(d, theta, denom=denom)
             for e in self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
         )
-
-    # TODO remove and cache the recursive one instead
-    def __all_stable_subdimension_vectors_helper(self, d, theta, denominator=sum):
-        """Computes the list of all stable subdimension vectors of d which have the same slope as d.
-
-        EXAMPLES:
-
-        Manual caching of all stable subdimension vectors of (3,3) for the 3-Kronecker quiver::
-
-            sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,0])
-            sage: Q.all_subdimension_vectors(d)
-            [(0, 0),
-            (0, 1),
-            (0, 2),
-            (0, 3),
-            (1, 0),
-            (1, 1),
-            (1, 2),
-            (1, 3),
-            (2, 0),
-            (2, 1),
-            (2, 2),
-            (2, 3),
-            (3, 0),
-            (3, 1),
-            (3, 2),
-            (3, 3)]
-            sage: i, s = Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
-            sage: i
-            [4, 11, 15]
-            sage: s
-            [(1, 1), (2, 2), (3, 3)]
-
-        Now for the 2-Kronecker quiver::
-
-            sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(2), vector([3,3]), vector([1,-1])
-            sage: Q._Quiver__all_stable_subdimension_vectors_helper(d, theta)
-            ([4], [(1, 1)])
-
-        """
-        subdims = self.all_subdimension_vectors(d)
-        subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
-        # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-        N = len(subdims)
-        genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
-        # slopeIndexes is the list of subdimension vectors of d of the same slope as d (in particular != 0)
-        slopeIndexes = list(
-            filter(
-                lambda j: self.slope(subdims[j], theta, denominator=denominator)
-                == self.slope(d, theta, denominator=denominator),
-                range(1, N),
-            )
-        )
-        # stIndexes contains all j for which subdims[j] is stable
-        # e = subdims[j] is stable if for all generic subdimension vectors f = subdims[i] of e, it holds that slope(f) < slope(e)
-        stIndexes = list(
-            filter(
-                lambda j: all(
-                    [
-                        self.slope(subdims[i], theta, denominator=denominator)
-                        < self.slope(subdims[j], theta, denominator=denominator)
-                        for i in list(
-                            filter(lambda i: i != 0 and i != j, genIndexes[j])
-                        )
-                    ]
-                ),
-                slopeIndexes,
-            )
-        )
-        stSubdims = [subdims[j] for j in stIndexes]
-        return stIndexes, stSubdims
 
     """
     Canonical decomposition
     """
 
-    # TODO this is an implementation detail, not something for the public interface
-    def rearrange_dw_decomposition(self, decomposition, i, j):
-        # this is non functional, let alone tested
-        # apply Lemma 11.9.10 of Derksen--Weyman to rearrange the roots from i to j as k, k+1
-        S = []
-        for k in range(i, j - 1):
-            # if k has a ``path to j'' satisfying the hypothesis of Lemma 11.9.10, we keep it
-            # m is the j-k times j-k matrix with entry m[i,j] = 1 if !generic_hom_vanishing(Q,decomposition[j][2],decomposition[i][2]) and 0 otherwise
-            m = matrix(j - k)
-            for l in range(k, j - 1):
-                for s in range(l + 1, j):
-                    if not self.generic_hom_vanishing(
-                        decomposition[s][2], decomposition[l][2]
-                    ):
-                        m[l - k, s - k] = 1
-            paths = matrix(
-                j - k
-            )  # paths[i,j] is the number of paths from k + i - 1 to k + j - 1 of length at most j-k
-            for l in range(j - k):
-                paths = paths + m**l
-            if paths[0, j - k - 1] > 0:
-                S.append(k)
-        rearrangement = [l for l in range(i + 1, j - 1) if l not in S]
-        final = S + [i, j] + rearrangement
-        decomposition_temp = [decomposition[l] for l in final]
-        for l in range(i, j):
-            decomposition[l] = decomposition_temp[l - i]
-        return i + len(S) - 1  # this is the index of the element i now.
+    @cached_method
+    def canonical_decomposition(self, d):
+        r"""Computes the canonical decomposition of a dimension vector.
 
-    def canonical_decomposition(self, d, algorithm="derksen-weyman"):
-        # TODO implement this
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1930979
-        # this is implemented in code/snippets/canonical.sage, so include it here
-        """
-        There's something wrong with this implementation. I ran it on the Kronecker quiver and it gave the following:
+        INPUT:
+        - ``d``: dimension vector
 
-        sage: from quiver import *
-        sage: Q = KroneckerQuiver()
-        sage: d = vector([2,4])
-        sage: Q.canonical_decomposition(d, algorithm="derksen-weyman")
-        [[2, (1, 0)], [4, (0, 1)]]
+        OUTPUT: canonical decomposition as list of dimension vectors
 
-        But clearly a general representation of dimension vector (2,4) isn't semisimple. It is instead a direct sum of two copies of the preprojective representation of dimension vector (1,2). So the canonical decomposition should be [2, (1, 2)].
-        """
-        # TODO this implementation needs to be documented (much better)
-        if algorithm == "derksen-weyman":
-            decomposition = [
-                [d[i], self.simple_root(i)]
-                # TODO range over self.vertices() instead
-                for i in range(self.number_of_vertices())
-            ]
-            while True:
-                decomposition = list(filter(lambda root: root[0] > 0, decomposition))
-                violating_pairs = [
-                    (i, j)
-                    for i in range(len(decomposition) - 1)
-                    for j in range(i + 1, len(decomposition))
-                    if self.euler_form(decomposition[j][1], decomposition[i][1]) < 0
-                ]
-                if not violating_pairs:
-                    break
-                violating_pairs = sorted(
-                    violating_pairs, key=(lambda pair: pair[1] - pair[0])
-                )
-                i, j = violating_pairs[0]
+        The canonical decomposition of a dimension vector `d` is the unique decomposition
+        `d = e_1 + e_2 + ... + e_k` such that `e_1, e_2, ..., e_k` are such that
+        `\forall i \neq j, \mathrm{ext}(e_i, e_j) = \mathrm{ext}(e_j, e_i) = 0`.
 
-                # this modifies the decomposition in place
-                i = self.rearrange_dw_decomposition(decomposition, i, j)
+        The general representation of dimension vector `d` is isomorphic
+        to the direct sum of representations of dimension vectors `e_1, e_2, ..., e_k`.
 
-                p, xi = decomposition[i]
-                q, eta = decomposition[i + 1]
-                xi_real = self.is_real_root(xi)
-                eta_real = self.is_real_root(eta)
-                zeta = p * xi + q * eta
-                if xi_real and eta_real:
-                    discriminant = self.euler_form(zeta, zeta)
-                    if discriminant > 0:
-                        pass  # TODO figure out what this should do
-                    elif discriminant == 0:
-                        zeta_prime = zeta // gcd(zeta)
-                        del decomposition[i + 1]
-                        decomposition[i] = [1, zeta_prime]
-                    else:
-                        del decomposition[i + 1]
-                        decomposition[i] = [1, zeta]
-                elif xi_real and not eta_real:
-                    if p + q * self.euler_form(eta, xi) >= 0:
-                        del decomposition[i + 1]
-                        decomposition[i] = [1, eta - self.euler_form(eta, xi) * xi]
-                    else:
-                        del decomposition[i + 1]
-                        decomposition[i] = [1, zeta]
-                elif not xi_real and eta_real:
-                    if q + p * self.euler_form(eta, xi) >= 0:
-                        decomposition[i] = [1, eta]
-                        decomposition[i + 1] = [1, xi - self.euler_form(eta, xi) * eta]
-                    else:
-                        del decomposition[i + 1]
-                        decomposition[i] = [1, zeta]
-                elif not xi_real and not eta_real:
-                    del decomposition[i + 1]
-                    decomposition[i] = [1, zeta]
-            return decomposition
+        EXAMPLES:
 
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=1162487
-        elif algorithm == "schofield-1":
-            raise NotImplementedError()
-        # TODO implement this
-        # https://arxiv.org/pdf/math/9911014.pdf (see Section 5, and also Section 3 of https://mathscinet.ams.org/mathscinet/article?mr=1789222)
-        # in Derksen--Weyman's https://mathscinet.ams.org/mathscinet-getitem?mr=1930979 it is claimed that there is a second Schofield algorithm
-        # (they do cite the wrong Schofield preprint though...)
-        elif algorithm == "schofield-2":
-            raise NotImplementedError()
-
-        elif algorithm == "recursive":
-            # TODO move this to docstring
-            """I'm not sure if one of the Schofield algorithms is meant to be this one. But here's a very simple recursion which computes the canonical decomposition. It is based on Lem. 11.2.5 in Derksen--Weyman's book (a.k.a. 'the book with typos'):
-
-            Lemma: Let a be a dimension vector and a = b+c a decomposition such that ext(b,c) = ext(c,b) = 0. If b = b_1 + ... + b_s and c = c_1 + ... + c_t are the canonical decompositions, then a = b_1 + ... + b_s + c_1 + ... + c_t is the canonical decomposition of a.
-
-            If no non-trivial decomposition a = b+c as above exists, then a is a Schur root and therefore its own canonical decomposition. This is because a generic representation has no subdimension vector b which admits both a subrepresentation and a quotient representation. So a generic representation is indecomposable, which implies that a is a Schur root.
-
-            EXAMPLES:
-
-            Canonical decompositions of small dimension vectors for the Kronecker quiver::
-
-                # TODO make a smaller example? don't print _everything_?
-                sage: from quiver import *
-                sage: Q = KroneckerQuiver()
-                sage: ds = Tuples(range(7), 2)
-                sage: decompositions = {d: Q.canonical_decomposition(d, algorithm="recursive") for d in ds}
-                sage: for d in ds:
-                ....:     print("decomposition of {} is {}".format(d, decompositions[d]))
-                decomposition of (0, 0) is [(0, 0)]
-                decomposition of (1, 0) is [(1, 0)]
-                decomposition of (2, 0) is [(1, 0), (1, 0)]
-                decomposition of (3, 0) is [(1, 0), (1, 0), (1, 0)]
-                decomposition of (4, 0) is [(1, 0), (1, 0), (1, 0), (1, 0)]
-                decomposition of (5, 0) is [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
-                decomposition of (6, 0) is [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
-                decomposition of (0, 1) is [(0, 1)]
-                decomposition of (1, 1) is [(1, 1)]
-                decomposition of (2, 1) is [(2, 1)]
-                decomposition of (3, 1) is [(1, 0), (2, 1)]
-                decomposition of (4, 1) is [(1, 0), (1, 0), (2, 1)]
-                decomposition of (5, 1) is [(1, 0), (1, 0), (1, 0), (2, 1)]
-                decomposition of (6, 1) is [(1, 0), (1, 0), (1, 0), (1, 0), (2, 1)]
-                decomposition of (0, 2) is [(0, 1), (0, 1)]
-                decomposition of (1, 2) is [(1, 2)]
-                decomposition of (2, 2) is [(1, 1), (1, 1)]
-                decomposition of (3, 2) is [(3, 2)]
-                decomposition of (4, 2) is [(2, 1), (2, 1)]
-                decomposition of (5, 2) is [(1, 0), (2, 1), (2, 1)]
-                decomposition of (6, 2) is [(1, 0), (1, 0), (2, 1), (2, 1)]
-                decomposition of (0, 3) is [(0, 1), (0, 1), (0, 1)]
-                decomposition of (1, 3) is [(0, 1), (1, 2)]
-                decomposition of (2, 3) is [(2, 3)]
-                decomposition of (3, 3) is [(1, 1), (1, 1), (1, 1)]
-                decomposition of (4, 3) is [(4, 3)]
-                decomposition of (5, 3) is [(2, 1), (3, 2)]
-                decomposition of (6, 3) is [(2, 1), (2, 1), (2, 1)]
-                decomposition of (0, 4) is [(0, 1), (0, 1), (0, 1), (0, 1)]
-                decomposition of (1, 4) is [(0, 1), (0, 1), (1, 2)]
-                decomposition of (2, 4) is [(1, 2), (1, 2)]
-                decomposition of (3, 4) is [(3, 4)]
-                decomposition of (4, 4) is [(1, 1), (1, 1), (1, 1), (1, 1)]
-                decomposition of (5, 4) is [(5, 4)]
-                decomposition of (6, 4) is [(3, 2), (3, 2)]
-                decomposition of (0, 5) is [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-                decomposition of (1, 5) is [(0, 1), (0, 1), (0, 1), (1, 2)]
-                decomposition of (2, 5) is [(0, 1), (1, 2), (1, 2)]
-                decomposition of (3, 5) is [(1, 2), (2, 3)]
-                decomposition of (4, 5) is [(4, 5)]
-                decomposition of (5, 5) is [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
-                decomposition of (6, 5) is [(6, 5)]
-                decomposition of (0, 6) is [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-                decomposition of (1, 6) is [(0, 1), (0, 1), (0, 1), (0, 1), (1, 2)]
-                decomposition of (2, 6) is [(0, 1), (0, 1), (1, 2), (1, 2)]
-                decomposition of (3, 6) is [(1, 2), (1, 2), (1, 2)]
-                decomposition of (4, 6) is [(2, 3), (2, 3)]
-                decomposition of (5, 6) is [(5, 6)]
-                decomposition of (6, 6) is [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
-
-            We verify the vanishing of generic Ext::
-
-                sage: all(all(Q.generic_ext(di, dj) + Q.generic_ext(dj, di) == 0
-                ....:         for (di, dj) in Combinations(s, 2))
-                ....:     for s in decompositions.values())
-                True
-
-            """
-            d = self._coerce_dimension_vector(d)
-
-            genSubdims = self.all_generic_subdimension_vectors(d)
-            genSubdims = list(
-                filter(lambda e: e != self.zero_vector() and e != d, genSubdims)
-            )
-            for e in genSubdims:
-                if d - e in genSubdims:
-                    return self.canonical_decomposition(
-                        e, algorithm="recursive"
-                    ) + self.canonical_decomposition(d - e, algorithm="recursive")
-            return [d]
-
-        elif algorithm == "recursive_new":
-            # TODO move this to docstring
-            """
-            EXAMPLES:
+        Canonical decomposition of the 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q = KroneckerQuiver()
-            sage: d = vector([4,6])
-            sage: Q.canonical_decomposition(d, algorithm="recursive_new")
-            [(2, 3), (2, 3)]
-            sage: ds = [vector([i,j]) for i in range(7) for j in range(7)]
-            sage: all(Q.canonical_decomposition(d, algorithm="recursive") == Q.canonical_decomposition(d, algorithm="recursive_new") for d in ds)
-            True
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.canonical_decomposition((2,3))
+            [(2, 3)]
+            sage: for d in Q.all_subdimension_vectors((5, 5)):
+            ....:     print(Q.canonical_decomposition(d))
+            [(0, 0)]
+            [(0, 1)]
+            [(0, 1), (0, 1)]
+            [(0, 1), (0, 1), (0, 1)]
+            [(0, 1), (0, 1), (0, 1), (0, 1)]
+            [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
+            [(1, 0)]
+            [(1, 1)]
+            [(1, 2)]
+            [(1, 3)]
+            [(0, 1), (1, 3)]
+            [(0, 1), (0, 1), (1, 3)]
+            [(1, 0), (1, 0)]
+            [(2, 1)]
+            [(2, 2)]
+            [(2, 3)]
+            [(2, 4)]
+            [(2, 5)]
+            [(1, 0), (1, 0), (1, 0)]
+            [(3, 1)]
+            [(3, 2)]
+            [(3, 3)]
+            [(3, 4)]
+            [(3, 5)]
+            [(1, 0), (1, 0), (1, 0), (1, 0)]
+            [(1, 0), (3, 1)]
+            [(4, 2)]
+            [(4, 3)]
+            [(4, 4)]
+            [(4, 5)]
+            [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
+            [(1, 0), (1, 0), (3, 1)]
+            [(5, 2)]
+            [(5, 3)]
+            [(5, 4)]
+            [(5, 5)]
+        """
 
-            """
-            subdims = self.all_subdimension_vectors(d)
-            subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
-            N = len(subdims)
+        d = self._coerce_dimension_vector(d)
 
-            def idx_diff(j, i):
-                return subdims.index(subdims[j] - subdims[i])
-
-            genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
-
-            def canon_indexes(j):
-                """Computes for j in range(N) the list of indexes in subdims for the canonical decomposition of subdims[j]"""
-                for i in list(filter(lambda i: i != 0 and i != j, genIndexes[j])):
-                    k = idx_diff(j, i)
-                    if k in genIndexes[j]:
-                        return canon_indexes(i) + canon_indexes(k)
-                return [j]
-
-            return [subdims[i] for i in canon_indexes(N - 1)]
+        generic_subdims = self.all_generic_subdimension_vectors(
+            d, proper=True, nonzero=True
+        )
+        for e in generic_subdims:
+            if d - e in generic_subdims:
+                return self.canonical_decomposition(e) + self.canonical_decomposition(
+                    d - e
+                )
+        return [d]
 
     """
     Nilpotent cone and Hesselink

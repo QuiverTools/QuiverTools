@@ -18,6 +18,9 @@ from sage.rings.polynomial.term_order import TermOrder
 from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
 from sage.structure.element import Element
+from sage.misc.cachefunc import cached_method
+
+from itertools import combinations_with_replacement, product
 
 from quiver import Quiver
 
@@ -49,7 +52,7 @@ Something like computing Betti numbers is then only implemented for QuiverModuli
 
 class QuiverModuli(ABC):
     @abstractmethod
-    def __init__(self, Q, d, theta=None, denominator=sum, condition="semistable"):
+    def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
         if theta is None:
             theta = Q.canonical_stability_parameter(d)
 
@@ -58,14 +61,14 @@ class QuiverModuli(ABC):
         assert condition in ["semistable", "stable"]
         # TODO this effectivity condition needs to be documented, and maybe be part of Quiver?
         assert all(
-            denominator(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
+            denom(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
             for i in Q.vertices()
         )
 
         self._Q = Q
         self._d = d
         self._theta = theta
-        self._denominator = denominator
+        self._denominator = denom
         self._condition = condition
 
     def quiver(self):
@@ -90,7 +93,7 @@ class QuiverModuli(ABC):
     HN business
     """
 
-    def all_harder_narasimhan_types(self, proper=False):
+    def all_harder_narasimhan_types(self, proper=False, sorted=False):
         r"""Returns the list of all HN types.
 
         A Harder--Narasimhan (HN) type of d with respect to theta is a sequence
@@ -103,6 +106,8 @@ class QuiverModuli(ABC):
 
         - `proper` (default: False): whether to only give non-trivial HN-types,
           excluding the one corresponding to the stable locus
+        - `sorted` (default: False): whether to sort the HN-types according to
+            the given slope
 
         OUTPUT: list of tuples of dimension vectors encoding HN-types
 
@@ -143,11 +148,17 @@ class QuiverModuli(ABC):
             sage: d = [2, 3, 2]
             sage: Z = QuiverModuliSpace(Q, [2, 3, 2])
             sage: Z.all_harder_narasimhan_types()
-            [((0, 1, 0), (2, 0, 1), (0, 2, 1)),
-             ((0, 1, 0), (1, 2, 1), (1, 0, 1)),
+            [((0, 1, 0), (1, 2, 1), (1, 0, 1)),
+             ((0, 1, 0), (2, 0, 1), (0, 2, 1)),
              ((0, 1, 0), (2, 1, 1), (0, 1, 1)),
              ((0, 1, 0), (2, 2, 1), (0, 0, 1)),
              ((0, 1, 0), (2, 2, 2)),
+             ((0, 2, 0), (1, 1, 1), (1, 0, 1)),
+             ((0, 2, 0), (2, 0, 1), (0, 1, 1)),
+             ((0, 2, 0), (2, 1, 1), (0, 0, 1)),
+             ((0, 2, 0), (2, 1, 2)),
+             ((0, 3, 0), (2, 0, 1), (0, 0, 1)),
+             ((0, 3, 0), (2, 0, 2)),
              ((1, 0, 0), (0, 1, 0), (1, 0, 1), (0, 2, 1)),
              ((1, 0, 0), (0, 1, 0), (1, 1, 1), (0, 1, 1)),
              ((1, 0, 0), (0, 1, 0), (1, 2, 1), (0, 0, 1)),
@@ -155,25 +166,21 @@ class QuiverModuli(ABC):
              ((1, 0, 0), (0, 2, 0), (1, 0, 1), (0, 1, 1)),
              ((1, 0, 0), (0, 2, 0), (1, 1, 1), (0, 0, 1)),
              ((1, 0, 0), (0, 2, 0), (1, 1, 2)),
+             ((1, 0, 0), (0, 3, 0), (1, 0, 1), (0, 0, 1)),
+             ((1, 0, 0), (0, 3, 0), (1, 0, 2)),
+             ((1, 0, 0), (0, 3, 1), (1, 0, 1)),
              ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),
              ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 2)),
              ((1, 0, 0), (1, 1, 0), (0, 2, 0), (0, 0, 2)),
              ((1, 0, 0), (1, 1, 0), (0, 2, 1), (0, 0, 1)),
              ((1, 0, 0), (1, 1, 0), (0, 2, 2)),
-             ((1, 0, 0), (0, 3, 0), (1, 0, 1), (0, 0, 1)),
-             ((1, 0, 0), (0, 3, 0), (1, 0, 2)),
              ((1, 0, 0), (1, 1, 1), (0, 2, 1)),
              ((1, 0, 0), (1, 2, 0), (0, 1, 0), (0, 0, 2)),
              ((1, 0, 0), (1, 2, 0), (0, 1, 1), (0, 0, 1)),
              ((1, 0, 0), (1, 2, 0), (0, 1, 2)),
-             ((1, 0, 0), (0, 3, 1), (1, 0, 1)),
              ((1, 0, 0), (1, 2, 1), (0, 1, 1)),
              ((1, 0, 0), (1, 3, 1), (0, 0, 1)),
              ((1, 0, 0), (1, 3, 2)),
-             ((0, 2, 0), (1, 1, 1), (1, 0, 1)),
-             ((0, 2, 0), (2, 0, 1), (0, 1, 1)),
-             ((0, 2, 0), (2, 1, 1), (0, 0, 1)),
-             ((0, 2, 0), (2, 1, 2)),
              ((1, 1, 0), (0, 1, 0), (1, 0, 1), (0, 1, 1)),
              ((1, 1, 0), (0, 1, 0), (1, 1, 1), (0, 0, 1)),
              ((1, 1, 0), (0, 1, 0), (1, 1, 2)),
@@ -184,6 +191,13 @@ class QuiverModuli(ABC):
              ((1, 1, 0), (1, 2, 0), (0, 0, 2)),
              ((1, 1, 0), (1, 2, 1), (0, 0, 1)),
              ((1, 1, 0), (1, 2, 2)),
+             ((1, 2, 0), (0, 1, 0), (1, 0, 1), (0, 0, 1)),
+             ((1, 2, 0), (0, 1, 0), (1, 0, 2)),
+             ((1, 2, 0), (1, 0, 1), (0, 1, 1)),
+             ((1, 2, 0), (1, 1, 1), (0, 0, 1)),
+             ((1, 2, 0), (1, 1, 2)),
+             ((1, 2, 1), (1, 1, 1)),
+             ((1, 3, 1), (1, 0, 1)),
              ((2, 0, 0), (0, 1, 0), (0, 2, 1), (0, 0, 1)),
              ((2, 0, 0), (0, 1, 0), (0, 2, 2)),
              ((2, 0, 0), (0, 2, 0), (0, 1, 1), (0, 0, 1)),
@@ -192,90 +206,32 @@ class QuiverModuli(ABC):
              ((2, 0, 0), (0, 3, 0), (0, 0, 2)),
              ((2, 0, 0), (0, 3, 1), (0, 0, 1)),
              ((2, 0, 0), (0, 3, 2)),
-             ((0, 3, 0), (2, 0, 1), (0, 0, 1)),
-             ((0, 3, 0), (2, 0, 2)),
-             ((1, 2, 0), (0, 1, 0), (1, 0, 1), (0, 0, 1)),
-             ((1, 2, 0), (0, 1, 0), (1, 0, 2)),
-             ((1, 2, 0), (1, 0, 1), (0, 1, 1)),
-             ((1, 2, 0), (1, 1, 1), (0, 0, 1)),
-             ((1, 2, 0), (1, 1, 2)),
              ((2, 0, 1), (0, 3, 1)),
              ((2, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),
              ((2, 1, 0), (0, 1, 0), (0, 1, 2)),
              ((2, 1, 0), (0, 2, 0), (0, 0, 2)),
              ((2, 1, 0), (0, 2, 1), (0, 0, 1)),
              ((2, 1, 0), (0, 2, 2)),
-             ((1, 2, 1), (1, 1, 1)),
              ((2, 1, 1), (0, 2, 1)),
              ((2, 2, 0), (0, 1, 0), (0, 0, 2)),
              ((2, 2, 0), (0, 1, 1), (0, 0, 1)),
              ((2, 2, 0), (0, 1, 2)),
-             ((1, 3, 1), (1, 0, 1)),
              ((2, 2, 1), (0, 1, 1)),
              ((2, 3, 0), (0, 0, 2)),
              ((2, 3, 1), (0, 0, 1)),
              ((2, 3, 2),)]
-
         """
-        # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
 
-        subdimensions = Q.all_subdimension_vectors(d)
-        subdimensions.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
-        N = len(subdimensions)
+        d = self._Q._coerce_dimension_vector(self._d)
+        theta = self._Q._coerce_vector(self._theta)
 
-        # sstIndexes is the list of indexes of all non-zero semistable subdimension vectors in subdimensions
-        sstIndexes, sstSubdims = Q._Quiver__all_semistable_subdimension_vectors_helper(
-            d, theta
+        all_types = self._Q.all_hn_types(
+            d, theta, denom=self._denominator, sorted=sorted
         )
+        if proper and (d,) in all_types:
+            all_types.remove((d,))
 
-        # TODO this helper function already appeared elsewhere?
-        # idx_diff(j, i) is the index of the difference subdimensions[j]-subdimensions[i] in the list subdimensions
-        def idx_diff(j, i):
-            return subdimensions.index(subdimensions[j] - subdimensions[i])
-
-        hn = [[[]] for j in range(N)]
-
-        for j in range(1, N):
-            # sstSub is the list of all indexes in subdimensions of semistable non-zero subdimension vectors of subdimensions[j]
-            sstSub = list(
-                filter(
-                    lambda i: Q.is_subdimension_vector(
-                        subdimensions[i], subdimensions[j]
-                    ),
-                    sstIndexes,
-                )
-            )
-            # The HN types which are not of the form (d) are given by (e,f^1,...,f^s) where e is a proper subdimension vector such that mu_theta(e) > mu_theta(d) and (f^1,...,f^s) is a HN type of f = d-e such that mu_theta(e) > mu_theta(f^1) holds.
-            hn[j] = [
-                [i] + fstar
-                for i in sstSub
-                for fstar in list(
-                    filter(
-                        lambda fstar: fstar == []
-                        or Q.slope(subdimensions[i], theta, denominator=denominator)
-                        > Q.slope(
-                            subdimensions[fstar[0]], theta, denominator=denominator
-                        ),
-                        hn[idx_diff(j, i)],
-                    )
-                )
-            ]
-
-        # TODO document why this is needed
-        hn[0] = [[0]]
-
-        types = [[subdimensions[r] for r in fstar] for fstar in hn[N - 1]]
-
-        # filter out the type corresponding to the stable locus
-        if proper:
-            # TODO fix type of dimension vectors
-            types = [type for type in types if type != [vector(d)]]
-
-        # TODO make sure that HN-types are tuples from the very beginning...
-        types = list(map(tuple, types))
-
-        return types
+        return all_types
 
     def is_harder_narasimhan_type(self, dstar) -> bool:
         r"""Checks if dstar is a HN type.
@@ -309,7 +265,12 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, denom = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         dstar = list(map(lambda di: Q._coerce_dimension_vector(di), dstar))
 
@@ -320,18 +281,16 @@ class QuiverModuli(ABC):
         # second condition: decreasing slopes
         if not all(
             (
-                Q.slope(dstar[i], theta, denominator=denominator)
-                > Q.slope(dstar[i + 1], theta, denominator=denominator)
+                Q.slope(dstar[i], theta, denom=denom)
+                > Q.slope(dstar[i + 1], theta, denom=denom)
             )
             for i in range(len(dstar) - 1)
         ):
             return False
 
-        # third condition: theta-stability of each dimension vector
-        # TODO why is this calling a private helper function?
-        # TODO for performance reasons we don't want to call Quiver;has_semistable_representation?
-        _, sstSubdims = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta)
-        if not all(e in sstSubdims for e in dstar):
+        if not all(
+            Q.has_semistable_representation(di, theta, denom=denom) for di in dstar
+        ):
             return False
 
         return True
@@ -426,7 +385,6 @@ class QuiverModuli(ABC):
     Luna
     """
 
-    # TODO is there not an iterator for partitions in Sage? Also, the order does not matter, so why is a Luna type not a Dictionary, a Set, or some other more fitting data structure?
     def all_luna_types(self):
         r"""Returns the unordered list of all Luna types of d for theta.
 
@@ -465,7 +423,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
-            [[((1, 1), [3])], [((1, 1), [2, 1])], [((1, 1), [1, 1, 1])]]
+            [{(1, 1): [3]}, {(1, 1): [2, 1]}, {(1, 1): [1, 1, 1]}]
 
         The 3-Kronecker quiver::
 
@@ -473,109 +431,78 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
-            [[((1, 1), [3])],
-            [((1, 1), [2, 1])],
-            [((1, 1), [1, 1, 1])],
-            [((1, 1), [1]), ((2, 2), [1])],
-            [((3, 3), [1])]]
+            [{(3, 3): [1]},
+             {(1, 1): [1], (2, 2): [1]},
+             {(1, 1): [3]},
+             {(1, 1): [2, 1]},
+             {(1, 1): [1, 1, 1]}]
 
-        The 6-subspace quiver::
+        The zero vector::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
+            sage: Q, d, theta = KroneckerQuiver(), vector([0,0]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
-            [[((1, 1), [3])],
-            [((1, 1), [2, 1])],
-            [((1, 1), [1, 1, 1])],
-            [((1, 1), [1]), ((2, 2), [1])],
-            [((3, 3), [1])]]
+            [{(0, 0): [1]}]
 
         """
         # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, denom = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
+
+        d = Q._coerce_dimension_vector(d)
 
         if d == Q.zero_vector():
-            return [tuple([Q.zero_vector(), [1]])]
-        else:
-            subdims = Q.all_subdimension_vectors(d, forget_labels=True)
-            subdims.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
-            N = len(subdims)
-            # slopeIndexes is the list of indexes j such that the slope of e := subdims[j] equals the slope of d (this requires e != 0)
-            # TODO this is unused?
-            # slopeIndexes = list(
-            #    filter(
-            #        lambda j: slope(subdims[j], theta, denominator=denominator)
-            #        == slope(d, theta, denominator=denominator),
-            #        range(1, N),
-            #    )
-            # )
+            # Q.zero_vector() can't be hashed a priori
+            z = Q._coerce_vector(Q.zero_vector())
+            return [{z: [1]}]
 
-            # We consider all subdimension vectors which are not zero, whose slope equals the slope of d, and which admit a stable representation
-            # They're in deglex order by the way the helper function works.
-            stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-                d, theta, denominator=denominator
+        same_slope = filter(
+            lambda e: Q.slope(e, theta, denom=denom) == Q.slope(d, theta, denom=denom),
+            Q.all_subdimension_vectors(d, nonzero=True, forget_labels=True),
+        )
+        same_slope = list(
+            filter(
+                lambda e: Q.has_stable_representation(e, theta, denom=denom),
+                same_slope,
             )
+        )
 
-            # idx_diff(j, i) is the index of the difference stSubdims[j]-stSubdims[i] in the list stSubdims
-            # TODO another time this one is used
-            def idx_diff(j, i):
-                return subdims.index(subdims[j] - subdims[i])
+        bound = (sum(d) / min(sum(e) for e in same_slope)).ceil()
+        luna_types = []
+        for i in range(1, bound + 1):
+            for tau in combinations_with_replacement(same_slope, i):
+                if sum(tau) == d:
+                    # from tau we build all possible Luna types
+                    partial = {}
+                    for taui in tuple(tau):
+                        if taui in partial.keys():
+                            partial[taui] += 1
+                        else:
+                            partial[taui] = 1
 
-            # partialLunaTypes is going to hold all "partial Luna types" of e for every e in stSubdims; a partial luna type of e is an unordered sequence (i.e. multiset) {(e^1,n_1),...,(e^s,n_s)} such that all e^k are distinct, e^1+...+e^s = e and the slopes of all e^k are the same (and thus equal the slope of e).
-            partialLunaTypes = [[] for j in range(N)]
-            for j in range(N):
-                stSub = list(
-                    filter(
-                        lambda i: Q.is_subdimension_vector(subdims[i], subdims[j])
-                        and i != j,
-                        stIndexes,
-                    )
-                )
-                for i in stSub:
-                    smaller = partialLunaTypes[idx_diff(j, i)]
-                    for tau in smaller:
-                        # Check if f := stSubdims[i] occurs as a dimension vector in tau.
-                        # If so, say of the form (f,n) then remove this occurrence and add (f,n+1)
-                        # If not, then add (f,1)
-                        tauNew = copy.deepcopy(tau)
-                        occurs = False
-                        for dn in tauNew:
-                            if dn[0] == i:
-                                # We remove dn from tau and add the tuple (e,dn[1]+1) instead
-                                tauNew.remove(dn)
-                                tauNew.append(tuple([i, dn[1] + 1]))
-                                occurs = True
-                        if not occurs:
-                            tauNew.append(tuple([i, 1]))
-                        # Now tauNew is a Luna type of e := subdims[j] the desired form
-                        # We sort it, because it's supposed to be unordered
-                        tauNew.sort()
-                        # If tau isn't already contained, then we add it
-                        if tauNew not in partialLunaTypes[j]:
-                            partialLunaTypes[j] = partialLunaTypes[j] + [tauNew]
-                if j in stIndexes:
-                    # If e = subdims[j] is stable then (e,1) is also a Luna type.
-                    partialLunaTypes[j] = partialLunaTypes[j] + [[tuple([j, 1])]]
+                    # partial has the form {d^1: Partitions(p^1), ..., d^s: Partitions(p^s)}
+                    for key in partial.keys():
+                        partial[key] = Partitions(partial[key]).list()
 
-            partial = partialLunaTypes[N - 1]
-            allLunaTypes = []
-            for tau in partial:
-                listOfPartitions = [Partitions(dn[1]).list() for dn in tau]
-                Prod = cartesian_product(listOfPartitions).list()
-                allLunaTypes = allLunaTypes + [
-                    [tuple([subdims[tau[i][0]], p[i]]) for i in range(len(tau))]
-                    for p in Prod
-                ]
-            return allLunaTypes
+                    new_types = [
+                        dict(zip(partial.keys(), values))
+                        for values in product(*partial.values())
+                    ]
+                    luna_types += new_types
+        return luna_types
 
     def is_luna_type(self, tau) -> bool:
         r"""Checks if tau is a Luna type for theta.
 
         INPUT:
-        - ``tau``: list of tuples
+        - ``tau``: a dictionary with dimension vectors as keys and lists of integers as values
 
-        OUTPUT: statement truth value as Bool
+        OUTPUT: whether tau is a Luna type.
 
         EXAMPLES:
 
@@ -588,25 +515,39 @@ class QuiverModuli(ABC):
             sage: all(X.is_luna_type(tau) for tau in l)
             True
 
+        The 3-Kronecker quiver with zero vector::
+
+            sage: from quiver import *
+            sage: Q, d, theta = KroneckerQuiver(), vector([0,0]), vector([1,-1])
+            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: d.set_immutable()
+            sage: X.is_luna_type({d: [1]})
+            True
+
         """
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, denom = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         d = Q._coerce_dimension_vector(d)
 
         n = Q.number_of_vertices()
-        assert all(dn[0].length() == n for dn in tau)
-        assert d == sum([sum(dn[1]) * dn[0] for dn in tau])
+        assert all(len(dn) == n for dn in tau.keys())
+        assert d == sum(k * dim for k in tau.keys() for dim in tau[k])
 
         if d == Q.zero_vector():
-            return tau == [tuple([Q.zero_vector(), [1]])]
-        else:
-            dstar = [dn[0] for dn in tau]
-            stIndexes, stSubdims = Q._Quiver__all_stable_subdimension_vectors_helper(
-                d, theta, denominator=denominator
-            )
-            return all(
-                [e in stSubdims for e in dstar]
-            )  # Note that in particular the zero vector must not lie in dstar
+            # Q.zero_vector() can't be hashed a priori
+            z = Q._coerce_vector(Q.zero_vector())
+            return tau == {z: [1]}
+
+        return all(
+            Q.slope(key, theta, denom=denom) == Q.slope(d, theta, denom=denom)
+            and Q.has_semistable_representation(key, theta, denom=denom)
+            for key in tau.keys()
+        )
 
     def dimension_of_luna_stratum(self, tau, secure=True):
         r"""Computes the dimension of the Luna stratum S_tau.
@@ -627,7 +568,7 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: L = X.all_luna_types(); L
-            [[((1, 1), [2])], [((1, 1), [1, 1])]]
+            [{(1, 1): [2]}, {(1, 1): [1, 1]}]
             sage: [X.dimension_of_luna_stratum(tau) for tau in L]
             [1, 2]
 
@@ -635,7 +576,7 @@ class QuiverModuli(ABC):
 
         if secure:
             assert self.is_luna_type(tau)
-        return sum([len(dn[1]) * (1 - self._Q.euler_form(dn[0], dn[0])) for dn in tau])
+        return sum(len(tau[dn]) * (1 - self._Q.euler_form(dn, dn)) for dn in tau.keys())
 
     def local_quiver_setting(self, tau, secure=True):
         r"""Returns the local quiver and dimension vector for the given Luna type.
@@ -654,16 +595,16 @@ class QuiverModuli(ABC):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,2]), vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: L = X.all_luna_types(); L
-            [[((1, 1), [2])], [((1, 1), [1, 1])], [((2, 2), [1])]]
+            [{(2, 2): [1]}, {(1, 1): [2]}, {(1, 1): [1, 1]}]
             sage: Qloc, dloc = X.local_quiver_setting(L[0]); Qloc.adjacency_matrix() , dloc
-            ([1], (2))
+            ([4], (1))
             sage: Qloc, dloc = X.local_quiver_setting(L[1]); Qloc.adjacency_matrix() , dloc
+            ([1], (2))
+            sage: Qloc, dloc = X.local_quiver_setting(L[2]); Qloc.adjacency_matrix() , dloc
             (
             [1 1]
             [1 1], (1, 1)
             )
-            sage: Qloc, dloc = X.local_quiver_setting(L[2]); Qloc.adjacency_matrix() , dloc
-            ([4], (1))
 
         """
 
@@ -672,15 +613,19 @@ class QuiverModuli(ABC):
 
         Q = self._Q
 
+        # a word of caution to the future maintainer: Python dictionaries
+        # iterate over the keys in the order they were inserted. This ensures
+        # that the following is a well-defined adjacency matrix. Python sets
+        # DO NOT have this property.
         A = matrix(
             [
-                [Q.generic_ext(dp[0], eq[0]) for eq in tau for n in eq[1]]
-                for dp in tau
-                for m in dp[1]
+                [Q.generic_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
+                for dp in tau.keys()
+                for m in tau[dp]
             ]
         )
         Qloc = Quiver(A)
-        dloc = vector([m for dp in tau for m in dp[1]])
+        dloc = vector(dim for dp in tau.keys() for dim in tau[dp])
 
         return Qloc, dloc
 
@@ -775,6 +720,7 @@ class QuiverModuli(ABC):
 
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+        denom = self._denominator
         d = Q._coerce_dimension_vector(d)
 
         # the computation of all Luna types takes so much time
@@ -784,18 +730,15 @@ class QuiverModuli(ABC):
 
         # this is probably the fastest way as checking theta-coprimality is fast
         # whereas checking for existence of a semi-stable representation is a bit slower
-        if not Q.has_semistable_representation(d, theta):
+
+        if not Q.has_semistable_representation(d, theta, denom=denom):
             return True
-
-        luna_types = self.all_luna_types()
-
-        # get rid of the generic type
-        generic_type = [tuple([d, [1]])]
-        if generic_type in luna_types:
-            luna_types.remove(generic_type)
-
-        # is the list of Luna types empty?
-        return not luna_types
+        else:
+            allLunaTypes = self.all_luna_types()
+            genericType = {d: [1]}
+            if genericType in allLunaTypes:
+                allLunaTypes.remove(genericType)
+            return not allLunaTypes  # This checks if the list is empty
 
     """
     Ample stability
@@ -806,14 +749,9 @@ class QuiverModuli(ABC):
         r"""Checks if the dimension vector is amply stable for the stability parameter
 
         By definition, a dimension vector `d` is `theta`-amply stable if the
-        codimension of the theta-stable locus inside `R(Q,d)` is at least 2.
+        codimension of the theta-semistable locus inside `R(Q,d)` is at least 2.
 
         OUTPUT: whether the data for the quiver moduli space is amply stable
-
-        # But can we find a necessary and sufficient condition?
-        # If every theta-semi-stable representation of dimension vector d is theta-stable then theta-ample stability is equivalent to every proper HN stratum having codimension at least 2.
-        # I think I can compute the codimension of the non-stable locus in full generality.
-        # TODO: It's more difficult than I thought. I think it's doable though.
 
         EXAMPLES:
 
@@ -833,23 +771,14 @@ class QuiverModuli(ABC):
             False
 
         """
-        # setup shorthand
-        Q, d, theta = self._Q, self._d, self._theta
-
-        # It's currently only possible with this distinction
-        # TODO Pieter is confused about what's going on here
-        if Q.is_theta_coprime(d, theta):
-            return self.codimension_unstable_locus() >= 2
-        else:
-            return (
-                min(
-                    [
-                        self.codimension_unstable_locus(),
-                        self.codimension_properly_semistable_locus(),
-                    ]
-                )
-                >= 2
+        HNs = self.all_harder_narasimhan_types(proper=True)
+        return (
+            min(
+                self.codimension_of_harder_narasimhan_stratum(dstar, secure=False)
+                for dstar in HNs
             )
+            >= 2
+        )
 
     def is_strongly_amply_stable(self) -> bool:
         r"""Checks if the dimension vector is strongly amply stable for the stability
@@ -881,13 +810,18 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, denom = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
         d = Q._coerce_dimension_vector(d)
 
         # subdimension vectors of smaller slope
-        slope = Q.slope(d, theta=theta, denominator=denominator)
+        slope = Q.slope(d, theta=theta, denom=denom)
         es = filter(
-            lambda e: Q.slope(e, theta=theta, denominator=denominator) >= slope,
+            lambda e: Q.slope(e, theta=theta, denom=denom) >= slope,
             Q.all_subdimension_vectors(
                 d, proper=True, nonzero=True, forget_labels=True
             ),
@@ -904,7 +838,7 @@ class QuiverModuli(ABC):
         Returns the Teleman weight of a Harder-Narasimhan type
         """
         # setup shorthand
-        Q, theta, denominator = self._Q, self._theta, self._denominator
+        Q, theta, denom = self._Q, self._theta, self._denominator
         HN = harder_narasimhan_type
 
         return -sum(
@@ -912,8 +846,8 @@ class QuiverModuli(ABC):
                 # TODO can we make this cleaner-looking?
                 # = unordered tuples without repetition?
                 (
-                    Q.slope(HN[s], theta, denominator=denominator)
-                    - Q.slope(HN[t], theta, denominator=denominator)
+                    Q.slope(HN[s], theta, denom=denom)
+                    - Q.slope(HN[t], theta, denom=denom)
                 )
                 * Q.euler_form(HN[s], HN[t])
                 for s in range(len(HN) - 1)
@@ -983,7 +917,7 @@ class QuiverModuli(ABC):
 
         """
         # setup shorthand
-        Q, theta, denominator = self._Q, self._theta, self._denominator
+        Q, theta, denom = self._Q, self._theta, self._denominator
 
         weights = self.all_weight_bounds()
 
@@ -993,8 +927,8 @@ class QuiverModuli(ABC):
 
         tensor_weights = list(
             map(
-                lambda HN: Q.slope(HN[0], theta, denominator=denominator)
-                - Q.slope(HN[-1], theta, denominator=denominator),
+                lambda HN: Q.slope(HN[0], theta, denom=denom)
+                - Q.slope(HN[-1], theta, denom=denom),
                 HNs,
             )
         )
@@ -1106,7 +1040,12 @@ class QuiverModuli(ABC):
         # TODO
         """
         # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, denom = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         if chernClasses is None:
             chernClasses = [
@@ -1279,9 +1218,14 @@ class QuiverModuli(ABC):
 
 
 class QuiverModuliSpace(QuiverModuli):
-    def __init__(self, Q, d, theta=None, denominator=sum, condition="semistable"):
+    def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
         QuiverModuli.__init__(
-            self, Q, d, theta=theta, denominator=denominator, condition=condition
+            self,
+            Q,
+            d,
+            theta=theta,
+            denom=denom,
+            condition=condition,
         )
 
     def __repr__(self):
@@ -1369,7 +1313,12 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
         # setup shorthand
-        Q, d, theta, denominator = self._Q, self._d, self._theta, self._denominator
+        Q, d, theta, denom = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denominator,
+        )
 
         # if there are stable representations then both the stable and
         # the semi-stable moduli space have dimension `1-<d,d>`
@@ -1684,14 +1633,14 @@ class QuiverModuliSpace(QuiverModuli):
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
 
-        numerator = prod(
+        my_numerator = prod(
             [
                 self.total_chern_class_universal(j + 1, chi, chernClasses=chernClasses)
                 ** (d * a.column(j))
                 for j in range(n)
             ]
         )
-        denominator = prod(
+        my_denominator = prod(
             [
                 self.total_chern_class_universal(i + 1, chi, chernClasses=chernClasses)
                 ** d[i]
@@ -1699,7 +1648,7 @@ class QuiverModuliSpace(QuiverModuli):
             ]
         )
 
-        quotient = numerator / denominator
+        quotient = my_numerator / my_denominator
 
         return pi(sect(quotient).homogeneous_components()[N])
 
@@ -1811,10 +1760,8 @@ class QuiverModuliSpace(QuiverModuli):
 
 class QuiverModuliStack(QuiverModuli):
 
-    def __init__(self, Q, d, theta, denominator=sum, condition="semistable"):
-        QuiverModuli.__init__(
-            self, Q, d, theta, denominator=denominator, condition=condition
-        )
+    def __init__(self, Q, d, theta, denom=sum, condition="semistable"):
+        QuiverModuli.__init__(self, Q, d, theta, denom=denom, condition=condition)
 
     def __repr__(self):
         return (
