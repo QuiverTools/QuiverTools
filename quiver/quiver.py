@@ -130,9 +130,7 @@ class Quiver(Element):
 
         - ``Q`` -- string; a string of the format described above giving a quiver
 
-        - ``forget_labels`` -- boolean (default: True): specifies whether to use the
-          names for vertices, or whether to use the integers `0,...,n-1` where `n` is
-          the number of vertices
+        - ``forget_labels`` -- (default: True): whether to use labels for vertices or to number them `0,...,n-1`
 
         - ``name`` -- optional name for the quiver
 
@@ -320,19 +318,19 @@ class Quiver(Element):
 
     def _is_vector(self, x):
         r"""
-        Checks whether `x` is an element of :math:`\mathbb{Z}Q_0`
+        Checks whether ``x`` is an element of :math:`\mathbb{Z}Q_0`
 
         If the quiver doesn't use vertex labels we check that it has the right length.
-        If the quiver uses vertex labels, we check that `d` is a dict with the right
+        If the quiver uses vertex labels, we check that ``x`` is a dict with the right
         set of keys.
 
         We actually do not care whether the values are in :math:`\mathbb{Z}`.
 
         INPUT:
 
-        - `x` -- vector
+        - ``x`` -- vector
 
-        OUTPUT: whether `x` can be used as a dimension vector for the quiver
+        OUTPUT: whether ``x`` can be used as a dimension vector for the quiver
 
         EXAMPLES:
 
@@ -372,20 +370,20 @@ class Quiver(Element):
 
     def _is_dimension_vector(self, d):
         r"""
-        Checks whether `d` is a dimension vector of the quiver
+        Checks whether ``d`` is a dimension vector of the quiver
 
         If the quiver doesn't use vertex labels we check that it has the right length
         and has positive entries.
-        If the quiver uses vertex labels, we check that `d` is a dict with the right
+        If the quiver uses vertex labels, we check that ``d`` is a dict with the right
         set of keys and positive entries.
 
         We only check for non-negativity, not for integrality.
 
         INPUT:
 
-        - `d` -- dimension vector
+        - ``d`` -- dimension vector
 
-        OUTPUT: whether `d` can be used as a dimension vector for the quiver
+        OUTPUT: whether ``d`` can be used as a dimension vector for the quiver
 
         EXAMPLES:
 
@@ -464,7 +462,7 @@ class Quiver(Element):
 
     def _coerce_vector(self, x):
         r"""
-        Coerces `x` to be a vector in :math:`\mathbb{Z}Q_0`.
+        Coerces ``x`` to be a vector in :math:`\mathbb{Z}Q_0`.
 
         It must be a data structure that is indexed by the vertices of the quiver,
         so most likely a dict, list, tuple, or vector.
@@ -476,7 +474,7 @@ class Quiver(Element):
 
         - ``x``: a list, tuple, or dict of integers
 
-        OUTPUT: a Sage vector if `x` is an element of :math:`\mathbb{Z}Q_0`
+        OUTPUT: a Sage vector if ``x`` is an element of :math:`\mathbb{Z}Q_0`
 
         EXAMPLES:
 
@@ -675,7 +673,7 @@ class Quiver(Element):
     def in_degree(self, i):
         r"""Returns the in-degree of a vertex.
 
-        The in-degree of `i` is the number of incoming arrows at `i`.
+        The in-degree of ``i`` is the number of incoming arrows at ``i``.
 
         The parameter `i` must be an element of the vertices of the underlying graph.
         If constructed from a matrix or string, `i` can go from `0` to
@@ -685,7 +683,7 @@ class Quiver(Element):
 
         ``i`` -- a vertex of the underlying graph
 
-        OUTPUT: The in-degree of the vertex `i`
+        OUTPUT: The in-degree of the vertex ``i``
 
         EXAMPLES:
 
@@ -745,15 +743,15 @@ class Quiver(Element):
         return self.graph().out_degree(i)
 
     def is_source(self, i) -> bool:
-        """Checks if `i` is a source of the quiver
+        """Checks if ``i`` is a source of the quiver
 
         The vertex `i` is a source if there are no incoming arrows at `i`.
 
         INPUT:
 
-        - `i` -- a vertex of the quiver
+        - ``i`` -- a vertex of the quiver
 
-        OUTPUT: whether `i` is a source of the quiver
+        OUTPUT: whether ``i`` is a source of the quiver
 
         EXAMPLES:
 
@@ -1103,8 +1101,7 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``framing`` -- list of non-negative integers saying how many arrows from the
-                         framed vertex to `i`
+        - ``framing`` -- list of non-negative integers saying how many arrows from the framed vertex to `i`
 
         - ``vertex`` (default: "-oo") -- name of the framing vertex
 
@@ -1175,8 +1172,7 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``coframing`` -- list of non-negative integers saying how many arrows from the
-                         framed vertex to `i`
+        - ``coframing`` -- list of non-negative integers saying how many arrows from the framed vertex to `i`
 
         - ``vertex`` (default: None) -- name of the framing vertex
 
@@ -1389,14 +1385,16 @@ class Quiver(Element):
         return root
 
     def is_root(self, x) -> bool:
-        r"""Checks whether `x` is a root of the underlying diagram of the quiver.
+        r"""Checks whether ``x`` is a root of the underlying diagram of the quiver.
 
         A root is a non-zero vector `x` in :math:`\mathbb{Z}Q_0` such that
         the Tits form of `x` is at most 1.
+
         INPUT:
+
         - ``x``: integer vector
 
-        OUTPUT: whether `x` is a root
+        OUTPUT: whether ``x`` is a root
 
         EXAMPLES:
 
@@ -1417,14 +1415,15 @@ class Quiver(Element):
         return any(x) and self.tits_form(x) <= 1
 
     def is_real_root(self, x) -> bool:
-        r"""Checks whether `x` is a real root of the underlying diagram of the quiver.
+        r"""Checks whether ``x`` is a real root of the underlying diagram of the quiver.
 
         A root is called real if its Tits form equals 1.
 
         INPUT:
+
         - ``x``: integer vector
 
-        OUTPUT: whether `x` is a real root
+        OUTPUT: whether ``x`` is a real root
 
         EXAMPLES:
 
@@ -1450,9 +1449,10 @@ class Quiver(Element):
         A root is called imaginary if its Tits form is non-positive.
 
         INPUT:
+
         - ``x``: integer vector
 
-        OUTPUT: whether `x` is an imaginary root
+        OUTPUT: whether ``x`` is an imaginary root
 
         EXAMPLES:
 
@@ -1476,9 +1476,10 @@ class Quiver(Element):
         r"""Checks if `d` is a Schur root.
 
         INPUT:
+
         - ``d``: dimension vector
 
-        OUTPUT: whether `d` is an imaginary root
+        OUTPUT: whether ``d`` is an imaginary root
 
         A Schur root is a dimension vector which admits a Schurian representation,
         i.e., a representation whose endomorphism ring is the field itself.
@@ -1527,9 +1528,9 @@ class Quiver(Element):
 
         INPUT:
 
-        - `d` -- dimension vector
+        - ``d`` -- dimension vector
 
-        - `theta` (default: canonical stability parameter) -- stability parameter
+        - ``theta`` (default: canonical stability parameter) -- stability parameter
 
         OUTPUT: the slope of `d` with respect to `theta` and optional `denominator`
 
@@ -1573,15 +1574,15 @@ class Quiver(Element):
 
     def is_subdimension_vector(self, e, d):
         r"""
-        Determine whether `e` is a subdimension vector of `d`
+        Determine whether ``e`` is a subdimension vector of ``d``
 
         INPUT:
 
-        -- `e` -- dimension vector
+        -- ``e`` -- dimension vector
 
-        -- `d` -- dimension vector
+        -- ``d`` -- dimension vector
 
-        OUTPUT: whether `e` is a subdimension vector of `d`
+        OUTPUT: whether ``e`` is a subdimension vector of ``d``
 
         EXAMPLES:
 
@@ -1629,9 +1630,9 @@ class Quiver(Element):
 
         INPUT:
 
-        - `e` -- dimension vector
+        - ``e`` -- dimension vector
 
-        - `b` (default: `max(e)+1` -- the "base" of the key
+        - ``b`` (default: `max(e)+1` -- the "base" of the key
 
         OUTPUT: the base-`b` expansion of the dimension vector
 
@@ -1669,13 +1670,13 @@ class Quiver(Element):
 
         INPUT:
 
-        - `d` -- dimension vector
+        - ``d`` -- dimension vector
 
-        - `proper` (default: False) -- whether to exclude `d`
+        - ``proper`` (default: False) -- whether to exclude `d`
 
-        - `nonzero` (default: False) -- whether to exclude the zero vector
+        - ``nonzero`` (default: False) -- whether to exclude the zero vector
 
-        - `forget_labels` (default: False) -- whether to forget the vertex labels
+        - ``forget_labels`` (default: False) -- whether to forget the vertex labels
 
         OUTPUT: all subdimension vectors of `d` (maybe excluding `0` and `d`)
 
@@ -1776,18 +1777,18 @@ class Quiver(Element):
         return list(map(vector, vectors))
 
     def is_theta_coprime(self, d, theta=None) -> bool:
-        r"""Checks if `d` is `theta`-coprime.
+        r"""Checks if ``d`` is ``theta``-coprime.
 
-        A dimension vector `d` is `theta`-coprime if `mu_theta(e)\neq mu_theta(e)`
+        A dimension vector ``d`` is ``theta``-coprime if `mu_theta(e)\neq mu_theta(e)`
         for all proper non-zero subdimension vectors e of d.
 
         The default value for `theta` is the canonical stability parameter.
 
         INPUT:
 
-        - `d` -- dimension vector
+        - ``d`` -- dimension vector
 
-        - `theta` (default: canonical stability paramter) -- stability parameter
+        - ``theta`` (default: canonical stability paramter) -- stability parameter
 
         EXAMPLES:
 
@@ -1816,11 +1817,11 @@ class Quiver(Element):
 
     def is_indivisible(self, d) -> bool:
         """
-        Checks if the gcd of all entries of `d` is 1
+        Checks if the gcd of all entries of ``d`` is 1
 
         INPUT:
 
-        -- `d` -- dimension vector
+        -- ``d`` -- dimension vector
 
         OUTPUT: whether the dimension vector is indivisible
 
@@ -1889,7 +1890,7 @@ class Quiver(Element):
         representation of dimension vector :math:`d` is stable for the canonical stability
         parameter.
 
-        The optional parameter `depth` allows to make the inequality stricter.
+        The optional parameter ``depth`` allows to make the inequality stricter.
 
         INPUT:
 
@@ -2411,14 +2412,15 @@ class Quiver(Element):
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
     def has_semistable_representation(self, d, theta=None, denom=sum):
-        r"""Checks if there is a `theta`-semistable of dimension vector `d`
+        r"""Checks if there is a ``theta``-semistable of dimension vector `d`
 
         INPUT:
+
         - ``d``: dimension vector
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: whether there is a `theta`-semistable representation of dimension vector `d`
+        OUTPUT: whether there is a ``theta``-semistable representation of dimension vector `d`
 
         See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf
         A dimension vector d admits a theta-semi-stable representation if and only if
@@ -2500,9 +2502,10 @@ class Quiver(Element):
 
     # TODO make a GitHub issue for King algorithm (is there actually one?) and Andriaenssens--Le Bruyn algorithm
     def has_stable_representation(self, d, theta=None, denom=sum):
-        r"""Checks if there is a `theta`-stable representation of this dimension vector.
+        r"""Checks if there is a ``theta``-stable representation of this dimension vector.
 
         INPUT:
+
         - ``d``: dimension vector
 
         - ``theta`` (default: canonical stability parameter): stability parameter
@@ -2563,6 +2566,7 @@ class Quiver(Element):
         Computes the canonical decomposition of a dimension vector.
 
         INPUT:
+
         - ``d``: dimension vector
 
         OUTPUT: canonical decomposition as list of dimension vectors
