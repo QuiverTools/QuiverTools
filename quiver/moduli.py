@@ -86,7 +86,7 @@ class QuiverModuli(ABC):
     def is_nonempty(self) -> bool:
         if self._condition == "stable":
             return self._Q.has_stable_representation(self._d, self._theta)
-        elif self._condition == "semistable":
+        if self._condition == "semistable":
             return self._Q.has_semistable_representation(self._d, self._theta)
 
     """

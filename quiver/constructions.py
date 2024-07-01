@@ -243,7 +243,7 @@ def ThickenedSubspaceQuiver(m, k):
     r"""
     Return the thickened subspace quiver with `m` sources
 
-    The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are are `k` arrows
+    The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are `k` arrows
     from every source to the sink.
 
     - ``m`` -- integer; the number of sources in the subspace quiver
@@ -254,7 +254,7 @@ def ThickenedSubspaceQuiver(m, k):
 
     EXAMPLES:
 
-    The `k`-thickened subspace quiver with `m` sources has `km` arrows and `m+1` vertices::
+    The `k`-thickened subspace quiver with `m` sources has `km` arrows, `m+1` vertices::
 
         sage: from quiver import *
         sage: Q = ThickenedSubspaceQuiver(6, 2)
@@ -281,8 +281,8 @@ def GeneralizedSubspaceQuiver(m, K):
     r"""
     Return the generalized subspace quiver with `m` sources and multiplicities `K`
 
-    The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are are `K_i` arrows
-    from every source `i=1,\ldots,m` to the sink.
+    The sources are labelled `1,\ldots,m` and the sink is `m+1`;
+    there are are `K_i` arrows from every source `i=1,\ldots,m` to the sink.
 
     - ``m`` -- integer; the number of sources in the subspace quiver
 
@@ -292,8 +292,8 @@ def GeneralizedSubspaceQuiver(m, K):
 
     EXAMPLES:
 
-    The generalized subspace quiver with `m` sources and multiplicities `K` has `\sum_{i=1}^mK_i`
-    arrows and `m+1` vertices::
+    The generalized subspace quiver with `m` sources and multiplicities `K`
+    has `\sum_{i=1}^mK_i` arrows and `m+1` vertices::
 
         sage: from quiver import *
         sage: Q = GeneralizedSubspaceQuiver(6, (1, 2, 3, 4, 5, 6))
@@ -340,7 +340,8 @@ def DynkinQuiver(T):
         sage: DynkinQuiver("A2") == GeneralizedKroneckerQuiver(1)
         True
 
-    The Dynkin quiver `\mathrm{D}_4` is a different orientation of the 3-subspace quiver::
+    The Dynkin quiver `\mathrm{D}_4` is a different orientation of the 3-subspace
+    quiver::
 
         sage: DynkinQuiver("D4") == SubspaceQuiver(3)
         False
@@ -414,7 +415,8 @@ def CyclicQuiver(n):
 
     EXAMPLES:
 
-    The doubled Dynkin quiver of type `\mathrm{A}_2` is the cyclic quiver on 2 vertices::
+    The doubled Dynkin quiver of type `\mathrm{A}_2` is also the cyclic quiver on
+    2 vertices::
 
         sage: from quiver import *
         sage: CyclicQuiver(2) == DynkinQuiver("A2").doubled_quiver()
@@ -432,8 +434,8 @@ def BipartiteQuiver(m, n):
     r"""
     Return the bipartite quiver with `m` sources and `n` sinks
 
-    This is the quiver with `m+n` vertices, having 1 arrow from each of the first `m` vertices
-    to the each of the last `n` vertices.
+    This is the quiver with `m+n` vertices, having 1 arrow from each of
+    the first `m` vertices to the each of the last `n` vertices.
 
     INPUT:
 
@@ -464,78 +466,3 @@ def BipartiteQuiver(m, n):
             M[i, m + j] = 1
 
     return Quiver(M, "bipartite quiver on {} sources and {} sinks".format(m, n))
-
-
-# Sampling and testing methods
-
-
-def RandomQuiver(vertices, arrow_bound=10, acyclic=False, connected=True):
-    """Returns a random Quiver object.
-
-    Input:
-        - vertices: the number of vertices of the desired quiver;
-        - acyclic: If True, the quiver will not have cycles. If false, it might but it is not guaranteed. Defaults to True; and
-        - arrow_bound: the maximum amount of arrows between any two vertices. Defaults to 10.
-        - connected: If True, the adjacency matrix is invertible, so that the underlying graph of the quiver is connected. Defaults to True.
-    """
-    # This while loop just samples candidate quivers until a connected one is found.
-    # There has to be a better way to do this!
-    # what other features should such a function have?
-
-    if connected:
-        acceptable = False
-
-        while not acceptable:
-            adjacency = random_matrix(ZZ, vertices, vertices, x=0, y=arrow_bound)
-
-            if acyclic:
-                # upper triangular matrix
-                for i in range(vertices):
-                    for j in range(i, vertices):
-                        adjacency[j, i] = 0
-
-            acceptable = Quiver(
-                adjacency
-            ).is_connected()  # unnecessary overhead in defining Quiver object
-    elif not connected:
-        adjacency = random_matrix(ZZ, vertices, vertices, x=0, y=arrow_bound)
-
-        if acyclic:
-            # upper triangular matrix
-            for i in range(vertices):
-                for j in range(i, vertices):
-                    adjacency[j, i] = 0
-
-    return Quiver(adjacency)
-
-
-def RandomDimensionVector(quiver, positive=False, upper_bound=10):
-    """Returns a random dimension vector for the given quiver.
-    Inputs:
-        - quiver: a Quiver object;
-        - positive: if True, the root will not have zero entries. Defaults to False; and
-        - upper_bound: an upper bound on the entries. Defaults to 10.
-    """
-    # what other features should such a function have?
-    # if given a stability condition theta, an option to generate theta-coprime roots;
-    # an option to generate indivisible roots;
-    # ?
-    lower_bound = 0
-    if positive:
-        lower_bound += 1
-    return vector(
-        [randint(lower_bound, upper_bound) for i in range(quiver.number_of_vertices())]
-    )
-
-
-def RandomStability(quiver, bound=10):
-    """Returns a random stability condition for the given quiver.
-    Inputs:
-        - quiver: a Quiver object;
-        - bound: upper and lower bound on the entries. Defaults to 10.
-    """
-    # what other features should this have?
-
-    return vector(
-        [randint(-bound // 2, bound) for i in range(quiver.number_of_vertices())]
-    )
