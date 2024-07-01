@@ -14,7 +14,7 @@ class Quiver(Element):
         r"""Constructor for a quiver.
 
         This takes a directed graph as input. If it is not a DiGraph instance,
-        we interpret it as an adjacency matrix.
+        it is interpreted it as an adjacency matrix.
         For other constructions, see
 
         - :meth:`Quiver.from_digraph`
@@ -108,7 +108,6 @@ class Quiver(Element):
             [0 0]
 
         """
-        return cls(DiGraph(matrix(M)), name)
 
     @classmethod
     def from_string(cls, Q: str, forget_labels=True, name=None):
@@ -232,8 +231,8 @@ class Quiver(Element):
         r"""
         Basic description of the quiver
 
-        To override the output, one uses `Quiver.rename` from the `Element` class.
-        The output of `Quiver.repr` is that of `Quiver.get_custom_name` if it is set,
+        To override the output, one uses :meth:`Quiver.rename` from the `Element` class.
+        The output of :meth:`Quiver.repr` is that of :meth:`Quiver.get_custom_name` if it is set,
         else it is the default specifying the number of vertices and arrows.
 
         OUTPUT: a basic description of the quiver
@@ -421,14 +420,14 @@ class Quiver(Element):
 
     def _coerce_dimension_vector(self, d):
         r"""
-        Coerces `d` to be a dimension vector of the quiver
+        Coerces ``d`` to be a dimension vector of the quiver
 
-        It must be a data structure that is indexed by the vertices of the quiver,
-        so most likely a dict, list, or vector.
+        The input ``d`` must be a data structure that is indexed
+        by the vertices of the quiver, so most likely a dict, list, or vector.
         It is coerced to a vector, see :meth:`Quiver._coerce_vector`.
 
         As a consistency check we verify that all entries are non-negative,
-        raising a `ValueError` if it isn't.
+        raising a `ValueError` if it isn't the case.
 
         INPUT:
 
@@ -464,7 +463,7 @@ class Quiver(Element):
         r"""
         Coerces ``x`` to be a vector in :math:`\mathbb{Z}Q_0`.
 
-        It must be a data structure that is indexed by the vertices of the quiver,
+        The input ``x`` must be a data structure that is indexed by the vertices of the quiver,
         so most likely a dict, list, tuple, or vector.
 
         It raises a `ValueError` if it is not a data structure of length the number
@@ -511,8 +510,8 @@ class Quiver(Element):
         r"""
         Returns the adjacency matrix of the quiver.
 
-        OUTPUT: The square matrix `M` whose entry `M[i,j]` is the number of arrows
-        from the vertex `i` to the vertex `j`
+        OUTPUT: The square matrix ``M`` whose entry ``M[i,j]`` is the number of arrows
+        from the vertex ``i`` to the vertex ``j``
 
         EXAMPLES::
 
@@ -616,7 +615,7 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        There are 7 vertices in this 3-vertex quiver::
+        There are 7 arrows in this 3-vertex quiver::
 
             sage: from quiver import *
             sage: ThreeVertexQuiver(1, 2, 4).number_of_arrows()
@@ -675,8 +674,8 @@ class Quiver(Element):
 
         The in-degree of ``i`` is the number of incoming arrows at ``i``.
 
-        The parameter `i` must be an element of the vertices of the underlying graph.
-        If constructed from a matrix or string, `i` can go from `0` to
+        The parameter ``i`` must be an element of the vertices of the underlying graph.
+        If constructed from a matrix or string, ``i`` can go from `0` to
         `n-1` where `n` is the number of vertices in the graph.
 
         INPUT:
@@ -710,15 +709,15 @@ class Quiver(Element):
     def out_degree(self, i):
         r"""Returns the out-degree of a vertex.
 
-        The parameter `i` must be an element of the vertices of the underlying graph.
-        If constructed from a matrix or string, `i` can go from `0` to
+        The parameter ``i`` must be an element of the vertices of the underlying graph.
+        If constructed from a matrix or string, ``i`` can go from `0` to
         `n-1` where `n` is the number of vertices in the graph.
 
-        The out-degree of `i` is the number of outgoing arrows at `i`.
+        The out-degree of ``i`` is the number of outgoing arrows at ``i``.
 
         ``i`` -- a vertex of the underlying graph
 
-        OUTPUT: The out-degree of the vertex `i`
+        OUTPUT: The out-degree of the vertex ``i``
 
         EXAMPLES:
 
@@ -745,7 +744,7 @@ class Quiver(Element):
     def is_source(self, i) -> bool:
         """Checks if ``i`` is a source of the quiver
 
-        The vertex `i` is a source if there are no incoming arrows at `i`.
+        The vertex ``i`` is a source if there are no incoming arrows at ``i``.
 
         INPUT:
 
@@ -778,7 +777,7 @@ class Quiver(Element):
     def is_sink(self, i) -> bool:
         """Checks if ``i`` is a sink of the quiver
 
-        The vertex `i` is a sink if there are no outgoing arrows out of `i`.
+        The vertex ``i`` is a sink if there are no outgoing arrows out of ``i``.
 
         INPUT:
 
@@ -862,7 +861,7 @@ class Quiver(Element):
         .. MATH::
 
             \langle\mathbf{d},\mathbf{e}\rangle=
-                \sum_{i\in Q_0}d_i e_i-\sum_{\alpha\in Q_1}d_{s(\alpha)}e_{t(\alpha)}
+            \sum_{i\in Q_0}d_i e_i-\sum_{\alpha\in Q_1}d_{s(\alpha)}e_{t(\alpha)}
 
         In the basis given by the vertices, it can be written as the difference
         of the identity matrix and the adjacency matrix.
@@ -942,7 +941,7 @@ class Quiver(Element):
         return self.euler_matrix() + self.euler_matrix().transpose()
 
     def symmetrized_euler_form(self, x, y) -> int:
-        r"""The value `(x,y)` of the Euler form
+        r"""The value :math:`(x,y)` of the Euler form
 
         INPUT:
 
@@ -950,7 +949,7 @@ class Quiver(Element):
 
         - ``y`` -- an element of :math:`\mathbb{Z}Q_0`
 
-        OUTPUT: the value of the symmetrized Euler form applied to `x` and `y`
+        OUTPUT: the value of the symmetrized Euler form applied to ``x`` and ``y``
 
         EXAMPLES:
 
@@ -975,7 +974,7 @@ class Quiver(Element):
         return self.euler_form(x, y) + self.euler_form(y, x)
 
     def tits_form(self, x) -> int:
-        r"""The value of the Tits quadratic form of the quiver at `x`
+        r"""The value of the Tits quadratic form of the quiver at ``x``
 
         This is really just the value :math:`\langle x,x\rangle` of the Euler form,
         or half of the value :math:`(x,x)` of the symmetrized Euler form.
@@ -984,7 +983,7 @@ class Quiver(Element):
 
         - ``x`` -- an element of :math:`\mathbb{Z}Q_0`
 
-        OUTPUT: the value of the Tits form applied to `x`
+        OUTPUT: the value of the Tits form applied to ``x``
 
         EXAMPLES:
 
@@ -1050,11 +1049,11 @@ class Quiver(Element):
         r"""
         Returns the doubled quiver
 
-        The double of a quiver is the quiver where for each arrow we add an arrow in
-        the opposite direction.
+        The double of a quiver is the quiver where for each arrow
+        we add an arrow in the opposite direction.
 
-        Its adjacency matrix is the sum of the adjacency matrix of the original quiver
-        and its transpose.
+        Its adjacency matrix is the sum of the adjacency matrix
+        of the original quiver and its transpose.
 
         OUTPUT: the doubled quiver
 
@@ -1091,9 +1090,9 @@ class Quiver(Element):
 
     def framed_quiver(self, framing, vertex="-oo"):
         r"""
-        Returns the framed quiver with framing vector `framing`
+        Returns the framed quiver with framing vector ``framing``
 
-        The optional parameter `vertex` determines the name of the framing vertex,
+        The optional parameter ``vertex`` determines the name of the framing vertex,
         which defaults to `-oo`.
 
         The framed quiver has one additional vertex, and `f_i` many arrows from
@@ -1101,7 +1100,7 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``framing`` -- list of non-negative integers saying how many arrows from the framed vertex to `i`
+        - ``framing`` -- list of non-negative integers saying how many arrows from the framed vertex to ``i``
 
         - ``vertex`` (default: "-oo") -- name of the framing vertex
 
@@ -1162,9 +1161,9 @@ class Quiver(Element):
 
     def coframed_quiver(self, coframing, vertex="+oo"):
         r"""
-        Returns the coframed quiver with coframing vector `coframing`
+        Returns the coframed quiver with coframing vector ``coframing``
 
-        The optional parameter `vertex` determines the name of the coframing vertex,
+        The optional parameter ``vertex`` determines the name of the coframing vertex,
         which defaults to `+oo`.
 
         The coframed quiver has one additional vertex, and `f_i` many arrows from
@@ -1172,7 +1171,7 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``coframing`` -- list of non-negative integers saying how many arrows from the framed vertex to `i`
+        - ``coframing`` -- list of non-negative integers saying how many arrows go from the framed vertex to `i`
 
         - ``vertex`` (default: None) -- name of the framing vertex
 
@@ -1290,9 +1289,10 @@ class Quiver(Element):
     Dimension vectors and roots
     """
 
+    @cached_method
     def zero_vector(self):
         r"""
-        Returns the zero dimension vector
+        Returns the zero dimension vector.
 
         The output is adapted to the vertices.
 
@@ -1320,6 +1320,7 @@ class Quiver(Element):
         else:
             return vector([0] * self.number_of_vertices())
 
+    @cached_method
     def thin_dimension_vector(self):
         r"""
         Returns the thin dimension vector, i.e., all ones
@@ -1353,11 +1354,11 @@ class Quiver(Element):
     @cached_method
     def simple_root(self, i):
         r"""
-        Returns the simple root at the vertex `i`
+        Returns the simple root at the vertex ``i``
 
         The output is adapted to the vertices.
 
-        OUTPUT: the simple root at the vertex `i`
+        OUTPUT: the simple root at the vertex ``i``
 
         EXAMPLES:
 
@@ -1444,7 +1445,7 @@ class Quiver(Element):
         return self.tits_form(x) == 1
 
     def is_imaginary_root(self, x) -> bool:
-        r"""Checks whether `x` is a imaginary root of the quiver.
+        r"""Checks whether ``x`` is a imaginary root of the quiver.
 
         A root is called imaginary if its Tits form is non-positive.
 
@@ -1473,7 +1474,7 @@ class Quiver(Element):
         return any(x) and self.tits_form(x) <= 0
 
     def is_schur_root(self, d) -> bool:
-        r"""Checks if `d` is a Schur root.
+        r"""Checks if ``d`` is a Schur root.
 
         INPUT:
 
@@ -1486,7 +1487,7 @@ class Quiver(Element):
         It is necessarily indecomposable.
 
         # TODO set up referencing in docstrings, and give precise result
-        By a result of Schofield (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487)
+        By [a result of Schofield](https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487)
         `d` is a Schur root if and only if `d` admits a stable representation for
         the canonical stability parameter.
 
@@ -1520,7 +1521,7 @@ class Quiver(Element):
 
     def slope(self, d, theta=None, denom=sum):
         r"""
-        Returns the slope of `d` with respect to `theta`
+        Returns the slope of ``d`` with respect to ``theta``
 
         The slope is defined as the value of `theta(d)` divided by the total dimension
         of `d`. It is possible to vary the denominator, to use a function more general
@@ -1530,9 +1531,11 @@ class Quiver(Element):
 
         - ``d`` -- dimension vector
 
-        - ``theta`` (default: canonical stability parameter) -- stability parameter
+        - ``theta`` -- (default: canonical stability parameter) stability parameter
 
-        OUTPUT: the slope of `d` with respect to `theta` and optional `denominator`
+        - ``denom`` -- (default: sum) the denominator function
+
+        OUTPUT: the slope of ``d`` with respect to ``theta`` and optional ``denom``
 
         EXAMPLES:
 
@@ -1672,13 +1675,13 @@ class Quiver(Element):
 
         - ``d`` -- dimension vector
 
-        - ``proper`` (default: False) -- whether to exclude `d`
+        - ``proper`` (default: False) -- whether to exclude ``d``
 
         - ``nonzero`` (default: False) -- whether to exclude the zero vector
 
         - ``forget_labels`` (default: False) -- whether to forget the vertex labels
 
-        OUTPUT: all subdimension vectors of `d` (maybe excluding `0` and `d`)
+        OUTPUT: all subdimension vectors of ``d`` (maybe excluding the zero vector and/or ``d``)
 
         EXAMPLES:
 
@@ -1779,16 +1782,16 @@ class Quiver(Element):
     def is_theta_coprime(self, d, theta=None) -> bool:
         r"""Checks if ``d`` is ``theta``-coprime.
 
-        A dimension vector ``d`` is ``theta``-coprime if `mu_theta(e)\neq mu_theta(e)`
+        A dimension vector `d` is :math:`\theta`-coprime if :math:`\mu_{\theta}(e)\neq \mu_{\theta}(e)`
         for all proper non-zero subdimension vectors e of d.
 
-        The default value for `theta` is the canonical stability parameter.
+        The default value for ``theta`` is the canonical stability parameter.
 
         INPUT:
 
         - ``d`` -- dimension vector
 
-        - ``theta`` (default: canonical stability paramter) -- stability parameter
+        - ``theta`` -- (default: canonical stability paramter) stability parameter
 
         EXAMPLES:
 
@@ -1881,8 +1884,8 @@ class Quiver(Element):
 
         The fundamental domain of :math:`Q` is the set of dimension vectors :math:`d` such that
 
-        * :math:`\operatorname{supp}(\mathbf{d})` is connected
-        * :math:`\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for every simple root
+        - :math:`\operatorname{supp}(\mathbf{d})` is connected
+        - :math:`\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for every simple root
 
         Every :math:`d` in the fundamental domain is an imaginary root and the set of
         imaginary roots is the Weyl group saturation of the fundamental domain.
@@ -1898,7 +1901,7 @@ class Quiver(Element):
 
         - ``depth`` (default: 0) -- how deep the vector should be in the domain
 
-        OUTPUT: whether `d` is in the (interior of) the fundamental domain
+        OUTPUT: whether ``d`` is in the (interior of) the fundamental domain
 
         EXAMPLES:
 
@@ -1950,10 +1953,10 @@ class Quiver(Element):
 
     def division_order(self, d, e):
         r"""
-        Checks if d << e,
+        Checks if `d << e`.
 
-        This means that d_i <= e_i for every source i, d_j >= e_j for every sink j,
-        and d_k == e_k for every vertex k which is neither a source nor a sink.
+        This means that :math:`d_i \leq e_i` for every source `i`, :math:`d_j \geq e_j` for every sink `j`,
+        and `d_k = e_k` for every vertex `k` which is neither a source nor a sink.
 
         # TODO: Think of a better name.
         # Good name?
@@ -2020,7 +2023,7 @@ class Quiver(Element):
 
         - ``d``: dimension vector for the ambient representation
 
-        OUTPUT: True if e is a generic subdimension vector of d, False otherwise.
+        OUTPUT: whether e is a generic subdimension vector of d
 
         Using the notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf:
         a dimension vector `e` is a generic subdimension vector of `d`
@@ -2161,9 +2164,7 @@ class Quiver(Element):
         if not self.is_subdimension_vector(e, d):
             return False
 
-        # euler_matrix_temp = self.euler_matrix() * (d - e)
         subdims = filter(
-            # lambda eprime: eprime * euler_matrix_temp < 0,
             lambda eprime: self.euler_form(eprime, d - e) < 0,
             self.all_subdimension_vectors(e),
         )
@@ -2173,7 +2174,7 @@ class Quiver(Element):
         )
 
     def all_generic_subdimension_vectors(self, d, proper=False, nonzero=False):
-        r"""Returns the list of all generic subdimension vectors of d.
+        r"""Returns the list of all generic subdimension vectors of ``d``.
 
         INPUT:
 
@@ -2233,7 +2234,7 @@ class Quiver(Element):
 
     def generic_ext(self, d, e):
         r"""
-        Computes ext(d, e).
+        Computes :math:`\operatorname{ext}(d, e)`.
 
         INPUT:
 
@@ -2244,7 +2245,12 @@ class Quiver(Element):
         OUTPUT: dimension of the generic ext
 
         According to Theorem 5.4 in Schofield's 'General representations of quivers',
-        we have `ext(a,b) = max{-<c,b> | c gen. subdimension vector of a}`
+        we have
+
+        .. MATH::
+
+            \operatorname{ext}(a,b) =
+            \operatorname{max}\{-\langle c,b\rangle \mid c~gen.~subdimension~vector~of~a\}.
 
         EXAMPLES:
 
@@ -2275,7 +2281,7 @@ class Quiver(Element):
 
     def generic_hom(self, d, e):
         r"""
-        Computes hom(d, e).
+        Computes :math:`\operatorname{hom}(d, e)`.
 
         INPUT:
 
@@ -2285,11 +2291,16 @@ class Quiver(Element):
 
         OUTPUT: dimension of the generic hom
 
-        There is a non-empty open subset U of R(Q,d) x R(Q,e) such that
-        dim Ext(M,N) = ext(d,e)
-        i.e. is minimal, for all (M,N) in U. Therefore
-        dim Hom(M,N) = <a,b> + dim Ext(M,N)
-        is minimal and therefore hom(a,b) = <a,b> + ext(a,b).
+        There is a non-empty open subset `U` of :math:`R(Q,d) \times R(Q,e)` such that
+
+        .. MATH::
+
+            \operatorname{dim}(\operatorname{Ext}(M,N)) = \operatorname{ext}(d,e),
+
+        i.e., :math:`\operatorname{dim}(\operatorname{Ext}(M,N))` is minimal for all `(M,N)` in `U`.
+
+        Therefore, :math:`\operatorname{dim}(\operatorname{Hom}(M,N)) = \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`
+        is minimal, and :math:`\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.
 
         EXAMPLES:
 
@@ -2406,7 +2417,11 @@ class Quiver(Element):
 
     def canonical_stability_parameter(self, d):
         # TODO theta needs to work with dicts too
-        """The canonical stability parameter is given by <d,_> - <_,d>"""
+        # on it
+        r"""
+        The canonical stability parameter is given by :math:`\langle d,-\rangle - \langle -,d\rangle`.
+
+        """
         d = self._coerce_dimension_vector(d)
 
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
@@ -2422,15 +2437,13 @@ class Quiver(Element):
 
         OUTPUT: whether there is a ``theta``-semistable representation of dimension vector `d`
 
-        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf
-        A dimension vector d admits a theta-semi-stable representation if and only if
-        mu_theta(e) <= mu_theta(d) for all generic subdimension vectors e of d.
-        # Thm. 5.4 in Markus's paper is actually a result of Schofield. So the
-        algorithm should bear his name, if any.
+        By a theorem of Schofield [Theorem 5.4(1) of Reineke's overview](https://arxiv.org/pdf/0802.2147.pdf),
+        a dimension vector `d` admits a :math:`\theta`-semi-stable representation if and only if
+        :math:`\mu_{\theta}(e) <= \mu_{\theta}(d)` for all generic subdimension vectors `e` of `d`.
 
         EXAMPLES:
 
-        Semistables for the A_2 quiver::
+        Semistables for the :math:`\mathrm{A}_2` quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
@@ -2466,40 +2479,6 @@ class Quiver(Element):
             for e in self.all_generic_subdimension_vectors(d, nonzero=True)
         )
 
-    # # TODO remove and cache the recursive one instead
-    # def __all_semistable_subdimension_vectors_helper(self, d, theta):
-    #     """Computes the list of indexes of all semistable subdimension vectors of d.
-
-    #     EXAMPLES:
-
-    #     Manual caching for all semistable subdimension vectors of (2,3) for the Kronecker quiver::
-
-    #         sage: from quiver import *
-    #         sage: Q, d, theta = GeneralizedKroneckerQuiver(1), vector([2,3]), vector([1,0])
-    #         sage: i, s = Q._Quiver__all_semistable_subdimension_vectors_helper(d, theta); i, s
-    #         ([1, 2, 3, 4, 5, 6, 10],
-    #         [(0, 1), (1, 0), (0, 2), (1, 1), (2, 0), (0, 3), (2, 2)])
-
-    #     """
-    #     subdims = self.all_subdimension_vectors(d)
-    #     subdims.sort(key=(lambda e: self._deglex_key(e, b=max(d) + 1)))
-    #     # We use the deglex order because it's a total order which extends the usual entry-wise partial order on dimension vectors.
-    #     N = len(subdims)
-    #     genIndexes, genSubdims = self.__all_generic_subdimension_vectors_helper(d)
-    #     sstIndexes = list(
-    #         filter(
-    #             lambda j: all(
-    #                 [
-    #                     self.slope(subdims[i], theta) <= self.slope(subdims[j], theta)
-    #                     for i in list(filter(lambda i: i != 0, genIndexes[j]))
-    #                 ]
-    #             ),
-    #             range(1, N),
-    #         )
-    #     )
-    #     sstSubdims = [subdims[j] for j in sstIndexes]
-    #     return sstIndexes, sstSubdims
-
     # TODO make a GitHub issue for King algorithm (is there actually one?) and Andriaenssens--Le Bruyn algorithm
     def has_stable_representation(self, d, theta=None, denom=sum):
         r"""Checks if there is a ``theta``-stable representation of this dimension vector.
@@ -2510,7 +2489,7 @@ class Quiver(Element):
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: True if there is a `theta`-stable representation of `d`, False otherwise.
+        OUTPUT: True if there is a ``theta``-stable representation of ``d``, False otherwise.
 
         See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf:
         a dimension vector d admits a theta-stable representation if and only if
@@ -2560,7 +2539,7 @@ class Quiver(Element):
     Canonical decomposition
     """
 
-    @cached_method(key=lambda self, d: self._coerce_dimension_vector(d))
+    @cached_method(key=lambda self, d: self._coerce_vector(d))
     def canonical_decomposition(self, d):
         r"""
         Computes the canonical decomposition of a dimension vector.
@@ -2572,11 +2551,11 @@ class Quiver(Element):
         OUTPUT: canonical decomposition as list of dimension vectors
 
         The canonical decomposition of a dimension vector `d` is the unique decomposition
-        `d = e_1 + e_2 + ... + e_k` such that `e_1, e_2, ..., e_k` are such that
+        :math:`d = e_1 + e_2 + ... + e_k` such that :math:`e_1, e_2, ..., e_k` are such that
         for all :math:`i \neq j, \mathrm{ext}(e_i, e_j) = \mathrm{ext}(e_j, e_i) = 0`.
 
         The general representation of dimension vector `d` is isomorphic
-        to the direct sum of representations of dimension vectors `e_1, e_2, ..., e_k`.
+        to the direct sum of representations of dimension vectors :math:`e_1, e_2, ..., e_k`.
 
         EXAMPLES:
 
