@@ -17,9 +17,9 @@ class Quiver(Element):
         we interpret it as an adjacency matrix.
         For other constructions, see
 
-        - meth:`Quiver.from_digraph`
-        - meth:`Quiver.from_matrix`
-        - meth:`Quiver.from_string`
+        - :meth:`Quiver.from_digraph`
+        - :meth:`Quiver.from_matrix`
+        - :meth:`Quiver.from_string`
 
         INPUT:
 
@@ -320,13 +320,13 @@ class Quiver(Element):
 
     def _is_vector(self, x):
         r"""
-        Checks whether `x` is an element of `\mathbb{Z}Q_0`
+        Checks whether `x` is an element of :math:`\mathbb{Z}Q_0`
 
         If the quiver doesn't use vertex labels we check that it has the right length.
         If the quiver uses vertex labels, we check that `d` is a dict with the right
         set of keys.
 
-        We actually do not care whether the values are in `\mathbb{Z}`.
+        We actually do not care whether the values are in :math:`\mathbb{Z}`.
 
         INPUT:
 
@@ -449,7 +449,7 @@ class Quiver(Element):
             sage: Q._coerce_dimension_vector([1, 2, 3, 4])
             Traceback (most recent call last):
             ...
-            ValueError: The input is not an element of `\mathbb{Z}Q_0`.
+            ValueError: The input is not an element of :math:`\mathbb{Z}Q_0`.
             sage: Q._coerce_dimension_vector([1, -3])
             Traceback (most recent call last):
             ...
@@ -464,7 +464,7 @@ class Quiver(Element):
 
     def _coerce_vector(self, x):
         r"""
-        Coerces `x` to be a vector in `\mathbb{Z}Q_0`.
+        Coerces `x` to be a vector in :math:`\mathbb{Z}Q_0`.
 
         It must be a data structure that is indexed by the vertices of the quiver,
         so most likely a dict, list, tuple, or vector.
@@ -476,7 +476,7 @@ class Quiver(Element):
 
         - ``x``: a list, tuple, or dict of integers
 
-        OUTPUT: a Sage vector if `x` is an element of `\mathbb{Z}Q_0`
+        OUTPUT: a Sage vector if `x` is an element of :math:`\mathbb{Z}Q_0`
 
         EXAMPLES:
 
@@ -489,11 +489,11 @@ class Quiver(Element):
             sage: Q._coerce_vector([1, 2, 3, 4])
             Traceback (most recent call last):
             ...
-            ValueError: The input is not an element of `\mathbb{Z}Q_0`.
+            ValueError: The input is not an element of :math:`\mathbb{Z}Q_0`.
 
         """
         if len(x) != self.number_of_vertices():
-            raise ValueError(r"The input is not an element of `\mathbb{Z}Q_0`.")
+            raise ValueError(r"The input is not an element of :math:`\mathbb{Z}Q_0`.")
 
         if isinstance(x, list) or isinstance(x, tuple):
             x = vector(ZZ, x)
@@ -552,7 +552,7 @@ class Quiver(Element):
 
         If the quiver is created from a DiGraph or string, the vertices are labelled
         using the data in the DiGraph or string, as explained in
-        :meth:`Quiver.from_graph` or :meth:`Quiver.from_string`.
+        :meth:`Quiver.from_digraph` or :meth:`Quiver.from_string`.
         If the quiver is created from a matrix, the vertices are labelled from `0`
         to `n-1`, where `n` is the number of rows or columns in the matrix.
 
@@ -778,15 +778,15 @@ class Quiver(Element):
         return self.in_degree(i) == 0
 
     def is_sink(self, i) -> bool:
-        """Checks if `i` is a sink of the quiver
+        """Checks if ``i`` is a sink of the quiver
 
         The vertex `i` is a sink if there are no outgoing arrows out of `i`.
 
         INPUT:
 
-        - `i` -- a vertex of the quiver
+        - ``i`` -- a vertex of the quiver
 
-        OUTPUT: whether `i` is a sink of the quiver
+        OUTPUT: whether ``i`` is a sink of the quiver
 
         EXAMPLES
 
@@ -861,10 +861,10 @@ class Quiver(Element):
 
         This is the matrix representing the Euler form, defined by
 
-        \begin{equation}
+        .. MATH::
+
             \langle\mathbf{d},\mathbf{e}\rangle=
-            \sum_{i\in Q_0}d_ie_i-\sum_{\alpha\in Q_1}d_{s(\alpha)}e_{t(\alpha)}
-        \end{equation}
+                \sum_{i\in Q_0}d_i e_i-\sum_{\alpha\in Q_1}d_{s(\alpha)}e_{t(\alpha)}
 
         In the basis given by the vertices, it can be written as the difference
         of the identity matrix and the adjacency matrix.
@@ -891,15 +891,15 @@ class Quiver(Element):
         return matrix.identity(self.number_of_vertices()) - self.adjacency_matrix()
 
     def euler_form(self, x, y) -> int:
-        r"""The value `\langle x,y\rangle` of the Euler form
+        r"""The value :math:`\langle x,y\rangle` of the Euler form
 
         INPUT:
 
-        - ``x`` -- an element of `\mathbb{Z}Q_0`
+        - ``x`` -- an element of :math:`\mathbb{Z}Q_0`
 
-        - ``y`` -- an element of `\mathbb{Z}Q_0`
+        - ``y`` -- an element of :math:`\mathbb{Z}Q_0`
 
-        OUTPUT: the value of the Euler form, i.e., `x * self.euler_matrix() * y`
+        OUTPUT: the value of the Euler form, i.e., ``x * self.euler_matrix() * y``
 
         EXAMPLES:
 
@@ -911,7 +911,7 @@ class Quiver(Element):
             2
 
         It uses the basis of the vertices, so we specify the entries of elements of
-        `\mathbb{Z}Q_0` in this order, thus the same example as before::
+        :math:`\mathbb{Z}Q_0` in this order, thus the same example as before::
 
             sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
             sage: Q.euler_form([1, 3], [2, -2])
@@ -948,9 +948,9 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``x`` -- an element of `\mathbb{Z}Q_0`
+        - ``x`` -- an element of :math:`\mathbb{Z}Q_0`
 
-        - ``y`` -- an element of `\mathbb{Z}Q_0`
+        - ``y`` -- an element of :math:`\mathbb{Z}Q_0`
 
         OUTPUT: the value of the symmetrized Euler form applied to `x` and `y`
 
@@ -964,7 +964,7 @@ class Quiver(Element):
             -20
 
         It uses the basis of the vertices, so we specify the entries of elements of
-        `\mathbb{Z}Q_0` in this order, thus the same example as before::
+        :math:`\mathbb{Z}Q_0` in this order, thus the same example as before::
 
             sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
             sage: Q.symmetrized_euler_form([1, 3], [2, -2])
@@ -979,14 +979,15 @@ class Quiver(Element):
     def tits_form(self, x) -> int:
         r"""The value of the Tits quadratic form of the quiver at `x`
 
-        This is really just the value `\langle x,x\rangle` of the Euler form,
-        or half of the value `(x,x)` of the symmetrized Euler form.
+        This is really just the value :math:`\langle x,x\rangle` of the Euler form,
+        or half of the value :math:`(x,x)` of the symmetrized Euler form.
 
         INPUT:
 
-        - ``x`` -- an element of `\mathbb{Z}Q_0`
+        - ``x`` -- an element of :math:`\mathbb{Z}Q_0`
 
         OUTPUT: the value of the Tits form applied to `x`
+
         EXAMPLES:
 
         An example using the Kronecker quiver::
@@ -997,7 +998,7 @@ class Quiver(Element):
             -5
 
         It uses the basis of the vertices, so we specify the entries of elements of
-        `\mathbb{Z}Q_0` in this order, thus the same example as before::
+        :math:`\mathbb{Z}Q_0` in this order, thus the same example as before::
 
             sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
             sage: Q.tits_form([2, 3])
@@ -1390,7 +1391,7 @@ class Quiver(Element):
     def is_root(self, x) -> bool:
         r"""Checks whether `x` is a root of the underlying diagram of the quiver.
 
-        A root is a non-zero vector `x` in `\mathbb{Z}Q_0` such that
+        A root is a non-zero vector `x` in :math:`\mathbb{Z}Q_0` such that
         the Tits form of `x` is at most 1.
         INPUT:
         - ``x``: integer vector
@@ -1846,7 +1847,7 @@ class Quiver(Element):
 
         OUTPUT: subset of vertices in the underlying graph in the support
 
-        The support is the set `\{ i \in Q_0 \mid d_i > 0 \}`.
+        The support is the set :math:`\{ i \in Q_0 \mid d_i > 0 \}`.
 
         EXAMPLES:
 
@@ -1877,15 +1878,15 @@ class Quiver(Element):
     def in_fundamental_domain(self, d, depth=0):
         r"""Checks if a dimension vector is in the fundamental domain.
 
-        The fundamental domain of `Q` is the set of dimension vectors `d` such that
+        The fundamental domain of :math:`Q` is the set of dimension vectors :math:`d` such that
 
-        * `\operatorname{supp}(\mathbf{d})` is connected
-        * `\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for every simple root
+        * :math:`\operatorname{supp}(\mathbf{d})` is connected
+        * :math:`\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for every simple root
 
-        Every `d` in the fundamental domain is an imaginary root and the set of
+        Every :math:`d` in the fundamental domain is an imaginary root and the set of
         imaginary roots is the Weyl group saturation of the fundamental domain.
-        If `d` is in the fundamental domain then it is Schurian and a general
-        representation of dimension vector `d` is stable for the canonical stability
+        If :math:`d` is in the fundamental domain then it is Schurian and a general
+        representation of dimension vector :math:`d` is stable for the canonical stability
         parameter.
 
         The optional parameter `depth` allows to make the inequality stricter.
@@ -1946,7 +1947,6 @@ class Quiver(Element):
 
         return inequality and connected
 
-    # TODO what is the use case?
     def division_order(self, d, e):
         r"""
         Checks if d << e,
@@ -2028,7 +2028,7 @@ class Quiver(Element):
 
         By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf)
         `e` is a generic subdimension vector of `d` if and only if `e` is
-        a subdimension vector of `d` and `\langle f,d-e\rangle` is non-negative
+        a subdimension vector of `d` and :math:`\langle f,d-e\rangle` is non-negative
         for all generic subdimension vectors `f` of `e`.
 
         EXAMPLES:
@@ -2411,14 +2411,14 @@ class Quiver(Element):
         return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
     def has_semistable_representation(self, d, theta=None, denom=sum):
-        r"""Checks if there is a `\theta`-semistable of dimension vector `d`
+        r"""Checks if there is a `theta`-semistable of dimension vector `d`
 
         INPUT:
         - ``d``: dimension vector
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: whether there is a `\theta`-semistable representation of dimension vector `d`
+        OUTPUT: whether there is a `theta`-semistable representation of dimension vector `d`
 
         See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf
         A dimension vector d admits a theta-semi-stable representation if and only if
@@ -2500,20 +2500,22 @@ class Quiver(Element):
 
     # TODO make a GitHub issue for King algorithm (is there actually one?) and Andriaenssens--Le Bruyn algorithm
     def has_stable_representation(self, d, theta=None, denom=sum):
-        r"""Checks if there is a `\theta`-stable representation of this dimension vector.
+        r"""Checks if there is a `theta`-stable representation of this dimension vector.
 
         INPUT:
         - ``d``: dimension vector
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: True if there is a `\theta`-stable representation of `d`, False otherwise.
+        OUTPUT: True if there is a `theta`-stable representation of `d`, False otherwise.
 
-        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf: A dimension vector d admits a theta-stable representation if and only if mu_theta(e) < mu_theta(d) for all proper generic subdimension vectors e of d.
+        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf:
+        a dimension vector d admits a theta-stable representation if and only if
+        :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all proper generic subdimension vectors :math:`e` of :math:`d`.
 
         EXAMPLES:
 
-        Stables for the `\mathrm{A}_2` quiver::
+        Stables for the :math:`\mathrm{A}_2` quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
@@ -2555,9 +2557,10 @@ class Quiver(Element):
     Canonical decomposition
     """
 
-    @cached_method
+    @cached_method(key=lambda self, d: self._coerce_dimension_vector(d))
     def canonical_decomposition(self, d):
-        r"""Computes the canonical decomposition of a dimension vector.
+        r"""
+        Computes the canonical decomposition of a dimension vector.
 
         INPUT:
         - ``d``: dimension vector
@@ -2566,7 +2569,7 @@ class Quiver(Element):
 
         The canonical decomposition of a dimension vector `d` is the unique decomposition
         `d = e_1 + e_2 + ... + e_k` such that `e_1, e_2, ..., e_k` are such that
-        `\forall i \neq j, \mathrm{ext}(e_i, e_j) = \mathrm{ext}(e_j, e_i) = 0`.
+        for all :math:`i \neq j, \mathrm{ext}(e_i, e_j) = \mathrm{ext}(e_j, e_i) = 0`.
 
         The general representation of dimension vector `d` is isomorphic
         to the direct sum of representations of dimension vectors `e_1, e_2, ..., e_k`.
@@ -2639,7 +2642,8 @@ class Quiver(Element):
         r"""Returns the dimension of the nullcone which is the set of all nilpotent representations.
 
         INPUT:
-        - ``d``: vector of Ints
+
+        - ``d`` -- vector of Ints
 
         OUTPUT: dimension as Int
         """
@@ -2660,8 +2664,8 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        The first Hochschild cohomology of the $m$th generalized Kronecker quiver
-        is the dimension of $\mathrm{PGL}_{m+1}$::
+        The first Hochschild cohomology of the `m`-th generalized Kronecker quiver
+        is the dimension of :math:`\mathrm{PGL}_{m+1}`::
 
             sage: from quiver import *
             sage: GeneralizedKroneckerQuiver(3).first_hochschild_cohomology()

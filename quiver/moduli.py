@@ -96,18 +96,18 @@ class QuiverModuli(ABC):
     def all_harder_narasimhan_types(self, proper=False, sorted=False):
         r"""Returns the list of all HN types.
 
-        A Harder--Narasimhan (HN) type of d with respect to theta is a sequence
-        d^* = (d^1,...,d^s) of dimension vectors such that
-        * d^1 + ... + d^s = d
-        * mu_theta(d^1) > ... > mu_theta(d^s)
-        * Every d^k is theta-semi-stable.
+        A Harder--Narasimhan (HN) type of :math:`d` with respect to :math:`\theta` is a sequence
+        :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
+
+        - :math:`d^1 + ... + d^s = d`
+        - :math:`\mu_{\theta}(d^1) > ... > \mu_{\theta}(d^s)`
+        - Every :math:`d^k` is :math:`\theta`-semi-stable.
 
         INPUT:
 
-        - `proper` (default: False): whether to only give non-trivial HN-types,
-          excluding the one corresponding to the stable locus
-        - `sorted` (default: False): whether to sort the HN-types according to
-            the given slope
+        - ``proper`` -- (default: False) whether to exclude the HN type corresponding to the stable locus
+
+        - ``sorted`` -- (default: False) whether to sort the HN-types according to the given slope
 
         OUTPUT: list of tuples of dimension vectors encoding HN-types
 
@@ -901,8 +901,8 @@ class QuiverModuli(ABC):
 
         OUTPUT: True if the rigidity inequality holds for d and theta, False otherwise.
 
-        If the weights of the 1-PS lambda on $\det(N_{S/R}|_Z)$ for each HN type
-        are all strictly larger than the weights of the tensors of the universal bundles $U_i^\vee \otimes U_j$,
+        If the weights of the 1-PS lambda on :math:`\det(N_{S/R}|_Z)` for each HN type
+        are all strictly larger than the weights of the tensors of the universal bundles :math:`U_i^\vee \otimes U_j`,
         then the resulting moduli space is infinitesimally rigid.
 
         EXAMPLES:
@@ -1345,7 +1345,7 @@ class QuiverModuliSpace(QuiverModuli):
         OUTPUT: polynomial in one variable
         # TODO allow a user-supplied ring?
 
-        The Poincare polynomial is defined as $P_X(q) = \sum_{i \geq 0} (-1)^i dim H^i(X;\mathbb{C}) q^{i/2}$. For a quiver moduli space whose dimension vector is $\theta$-coprime, the odd cohomology vanishes and this is a Polynomial in $q$. We use Cor. 6.9 in Reineke's Harder--Narasimhan paper to compute it.
+        The Poincare polynomial is defined as :math:`P_X(q) = \sum_{i \geq 0} (-1)^i dim H^i(X;\mathbb{C}) q^{i/2}`. For a quiver moduli space whose dimension vector is :math:`\theta`-coprime, the odd cohomology vanishes and this is a Polynomial in :math:`q`. We use Cor. 6.9 in Reineke's Harder--Narasimhan paper to compute it.
 
         EXAMPLES:
 
