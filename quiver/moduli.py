@@ -1,5 +1,6 @@
 import copy
 from abc import ABC, abstractmethod
+from itertools import combinations_with_replacement, product
 
 from sage.arith.misc import bernoulli, factorial, gcd, xgcd
 from sage.categories.cartesian_product import cartesian_product
@@ -8,6 +9,7 @@ from sage.combinat.permutation import Permutations
 from sage.combinat.schubert_polynomial import SchubertPolynomialRing
 from sage.combinat.sf.sf import SymmetricFunctions
 from sage.matrix.constructor import matrix
+from sage.misc.cachefunc import cached_method
 from sage.misc.misc_c import prod
 from sage.modules.free_module_element import vector
 from sage.rings.function_field.constructor import FunctionField
@@ -18,9 +20,6 @@ from sage.rings.polynomial.term_order import TermOrder
 from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
 from sage.structure.element import Element
-from sage.misc.cachefunc import cached_method
-
-from itertools import combinations_with_replacement, product
 
 from quiver import Quiver
 
