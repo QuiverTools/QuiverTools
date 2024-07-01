@@ -46,7 +46,7 @@ def GeneralizedKroneckerQuiver(m: int):
     r"""
     Return the generalized Kronecker quiver
 
-    The generalized Kronecker quiver has two vertices and $m$ arrows
+    The generalized Kronecker quiver has two vertices and ``m`` arrows
     from the first to the second vertex.
 
     INPUT:
@@ -80,7 +80,7 @@ def KroneckerQuiver(m: int = 2):
 
     INPUT:
 
-    - ``m`` -- integer (default: `2`; number of arrows in the quiver
+    - ``m`` -- integer (default: `2`); number of arrows in the quiver
 
     OUTPUT: the Kronecker quiver as Quiver instance
 
@@ -107,7 +107,7 @@ def KroneckerQuiver(m: int = 2):
 
 def ThreeVertexQuiver(m12: int, m13: int, m23: int):
     r"""
-    Constructs a 3-vertex quiver, with and `m_{i,j} arrows from `i` to `j`.
+    Constructs a 3-vertex quiver, with and :math:`m_{i,j}` arrows from `i` to `j`.
 
     Thus it is always an acyclic quiver.
 
@@ -142,7 +142,7 @@ def ThreeVertexQuiver(m12: int, m13: int, m23: int):
 
 def LoopQuiver(m: int):
     r"""
-    Return the quiver with 1 vertex and `m` loops.
+    Return the quiver with 1 vertex and ``m`` loops.
 
     This is a synonym for :func:`GeneralizedJordanQuiver`.
 
@@ -159,7 +159,7 @@ def LoopQuiver(m: int):
 
 def JordanQuiver(m: int = 1):
     r"""
-    Return the generalized Jordan quiver with `m` loops, where `m` has default value 1.
+    Return the generalized Jordan quiver with ``m`` loops, where ``m`` has default value 1.
 
     .. SEEALSO::
 
@@ -172,7 +172,7 @@ def JordanQuiver(m: int = 1):
 
 def GeneralizedJordanQuiver(m: int):
     r"""
-    Return the generalized Jordan quiver with `m` loops
+    Return the generalized Jordan quiver with ``m`` loops
 
     INPUT:
 
@@ -182,7 +182,7 @@ def GeneralizedJordanQuiver(m: int):
 
     EXAMPLES::
 
-    The generalized Jordan quiver has 1 vertex and `m` arrows::
+    The generalized Jordan quiver has 1 vertex and ``m`` arrows::
 
         sage: from quiver import *
         sage: Q = GeneralizedJordanQuiver(7)
@@ -202,20 +202,20 @@ def GeneralizedJordanQuiver(m: int):
 
 def SubspaceQuiver(m: int):
     r"""
-    Return the subspace quiver with `m` sources
+    Return the subspace quiver with ``m`` sources
 
-    The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are is one arrow
+    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`; there are is one arrow
     from every source to the sink.
 
     INPUT:
 
     - ``m`` -- integer; the number of sources in the subspace quiver
 
-    OUTPUT: the subspace quiver with `m` sources
+    OUTPUT: the subspace quiver with ``m`` sources
 
     EXAMPLES:
 
-    The subspace quiver with `m` sources has `m` arrows and `m+1` vertices::
+    The subspace quiver with ``m`` sources has ``m`` arrows and ``m+1`` vertices::
 
         sage: from quiver import *
         sage: Q = SubspaceQuiver(6)
@@ -241,20 +241,20 @@ def SubspaceQuiver(m: int):
 
 def ThickenedSubspaceQuiver(m, k):
     r"""
-    Return the thickened subspace quiver with `m` sources
+    Return the thickened subspace quiver with ``m`` sources
 
-    The sources are labelled `1,\ldots,m` and the sink is `m+1`; there are `k` arrows
+    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`; there are ``k`` arrows
     from every source to the sink.
 
     - ``m`` -- integer; the number of sources in the subspace quiver
 
     - ``k`` -- integer; the number arrows from a source to the sink
 
-    OUTPUT: the subspace quiver with `m` sources and `k` arrows from each source
+    OUTPUT: the subspace quiver with ``m`` sources and ``k`` arrows from each source
 
     EXAMPLES:
 
-    The `k`-thickened subspace quiver with `m` sources has `km` arrows, `m+1` vertices::
+    The ``k``-thickened subspace quiver with ``m`` sources has ``km`` arrows, ``m+1`` vertices::
 
         sage: from quiver import *
         sage: Q = ThickenedSubspaceQuiver(6, 2)
@@ -263,7 +263,7 @@ def ThickenedSubspaceQuiver(m, k):
         sage: Q.number_of_arrows()
         12
 
-    The `k`-thickened subspace quiver with 2 sources is also a 3-vertex quiver::
+    The ``k``-thickened subspace quiver with 2 sources is also a 3-vertex quiver::
 
         sage: ThickenedSubspaceQuiver(2, 6) == ThreeVertexQuiver(0, 6, 6)
         True
@@ -279,21 +279,21 @@ def ThickenedSubspaceQuiver(m, k):
 
 def GeneralizedSubspaceQuiver(m, K):
     r"""
-    Return the generalized subspace quiver with `m` sources and multiplicities `K`
+    Return the generalized subspace quiver with ``m`` sources and multiplicities ``K``
 
-    The sources are labelled `1,\ldots,m` and the sink is `m+1`;
-    there are are `K_i` arrows from every source `i=1,\ldots,m` to the sink.
+    The sources are labelled :math:`1,\ldots,m` and the sink is `m+1`;
+    there are are `K_i` arrows from every source :math:`i=1,\ldots,m` to the sink.
 
     - ``m`` -- integer; the number of sources in the subspace quiver
 
-    - ``K`` -- list of integers; the number arrows from the `i`th source to the sink
+    - ``K`` -- list of integers; the number arrows from the `i`-th source to the sink
 
-    OUTPUT: the subspace quiver with `m` sources and `K_i` arrows from each source
+    OUTPUT: the subspace quiver with ``m`` sources and ``K_i`` arrows from each source
 
     EXAMPLES:
 
     The generalized subspace quiver with `m` sources and multiplicities `K`
-    has `\sum_{i=1}^mK_i` arrows and `m+1` vertices::
+    has :math:`\sum_{i=1}^mK_i` arrows and `m+1` vertices::
 
         sage: from quiver import *
         sage: Q = GeneralizedSubspaceQuiver(6, (1, 2, 3, 4, 5, 6))
@@ -334,7 +334,7 @@ def DynkinQuiver(T):
 
     EXAMPLES:
 
-    The `\mathrm{A}_2` quiver is the generalized Kronecker quiver with 1 arrow::
+    The :math:`\mathrm{A}_2` quiver is the generalized Kronecker quiver with 1 arrow::
 
         sage: from quiver import *
         sage: DynkinQuiver("A2") == GeneralizedKroneckerQuiver(1)
@@ -379,7 +379,7 @@ def ExtendedDynkinQuiver(T):
 
     EXAMPLES:
 
-    The extended `\mathrm{A}_1` quiver is the Kronecker quiver::
+    The extended :math:`\mathrm{A}_1` quiver is the Kronecker quiver::
 
         sage: from quiver import *
         sage: ExtendedDynkinQuiver("A1") == KroneckerQuiver()
@@ -402,10 +402,10 @@ def ExtendedDynkinQuiver(T):
 
 def CyclicQuiver(n):
     r"""
-    Return the cyclic quiver on `n` vertices
+    Return the cyclic quiver on ``n`` vertices
 
-    This is the quiver with `n` vertices and `n` arrows from `i` to `i+1`
-    for `i=1,\ldots,n`, with `n+1=1`.
+    This is the quiver with ``n`` vertices and ``n`` arrows from `i` to `i+1`
+    for :math:`i=1,\ldots,n`, with `n+1=1`.
 
     INPUT:
 
@@ -415,7 +415,7 @@ def CyclicQuiver(n):
 
     EXAMPLES:
 
-    The doubled Dynkin quiver of type `\mathrm{A}_2` is also the cyclic quiver on
+    The doubled Dynkin quiver of type :math:`\mathrm{A}_2` is also the cyclic quiver on
     2 vertices::
 
         sage: from quiver import *
@@ -432,7 +432,7 @@ def CyclicQuiver(n):
 
 def BipartiteQuiver(m, n):
     r"""
-    Return the bipartite quiver with `m` sources and `n` sinks
+    Return the bipartite quiver with ``m`` sources and ``n`` sinks
 
     This is the quiver with `m+n` vertices, having 1 arrow from each of
     the first `m` vertices to the each of the last `n` vertices.
@@ -443,11 +443,11 @@ def BipartiteQuiver(m, n):
 
     - ``n`` -- non-negative integer; number of sinks
 
-    OUTPUT: bipartite quiver with `m` sources and `n` sinks
+    OUTPUT: bipartite quiver with ``m`` sources and ``n`` sinks
 
     EXAMPLES:
 
-    When `m=n=1` we get the `\mathrm{A}_2` quiver::
+    When `m=n=1` we get the :math:`\mathrm{A}_2` quiver::
 
         sage: from quiver import *
         sage: BipartiteQuiver(1, 1) == DynkinQuiver("A2")

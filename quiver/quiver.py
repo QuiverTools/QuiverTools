@@ -64,7 +64,7 @@ class Quiver(Element):
 
     @classmethod
     def from_digraph(cls, G, name=None):
-        r"""Construct a quiver a graph
+        r"""Construct a quiver from a DiGraph object.
 
         INPUT:
 
@@ -72,7 +72,7 @@ class Quiver(Element):
 
         - ``name`` -- optional name for the quiver
 
-        OUTPUT: the quiver
+        OUTPUT: the quiver.
 
         EXAMPLES:
 
@@ -88,7 +88,7 @@ class Quiver(Element):
 
     @classmethod
     def from_matrix(cls, M, name=None):
-        r"""Construct a quiver from its adjacency matrix
+        r"""Construct a quiver from its adjacency matrix.
 
         INPUT:
 
@@ -96,7 +96,7 @@ class Quiver(Element):
 
         - ``name`` -- optional name for the quiver
 
-        OUTPUT: the quiver
+        OUTPUT: the quiver.
 
         EXAMPLES:
 
@@ -115,7 +115,7 @@ class Quiver(Element):
         r"""Construct a quiver from a comma-separated list of chains like `i-j-k-...`
 
         You specify an arrow from `i` to `j` by writing `i-j`.
-        A multiple arrow is specified by repeating the hyphen, so that `1--2` is the
+        Multiple arrows are specified by repeating the hyphen, so that `1--2` is the
         Kronecker quiver. If you write `i-j-k` then you have 1 arrow from `i` to `j`
         and one from `j` to `k`. The full quiver is specified by concatenating
         (multiple) arrows by commas.
@@ -128,7 +128,7 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``Q`` -- string; a string of the format described above giving a quiver
+        - ``Q`` -- a string of the format described above giving a quiver
 
         - ``forget_labels`` -- (default: True): whether to use labels for vertices or to number them `0,...,n-1`
 
