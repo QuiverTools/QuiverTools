@@ -108,6 +108,7 @@ class Quiver(Element):
             [0 0]
 
         """
+        return cls(DiGraph(matrix(M)), name)
 
     @classmethod
     def from_string(cls, Q: str, forget_labels=True, name=None):
