@@ -1,6 +1,10 @@
 name: Lint
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "quiver/**.py"
+  pull_request:
 
 jobs:
   lint:
