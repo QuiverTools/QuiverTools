@@ -45,7 +45,7 @@ extensions = [
 
 mathjax3_config = {
     "tex": {
-        "inlineMath": [["$", "$"]],
+        "inlineMath": [["$", "$"], ["\(", "\)"]],
         "displayMath": [["$$", "$$"], ["\\[", "\\]"]],
     },
 }
