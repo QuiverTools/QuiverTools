@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from itertools import combinations_with_replacement, product
 
 from sage.arith.misc import bernoulli, factorial, gcd, xgcd
@@ -16,6 +15,7 @@ from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.polynomial.term_order import TermOrder
 from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
+from sage.structure.element import Element
 
 from quiver import Quiver
 
@@ -45,26 +45,99 @@ Something like computing Betti numbers is then only implemented for QuiverModuli
 """
 
 
-class QuiverModuli(ABC):
-    @abstractmethod
+class QuiverModuli(Element):
     def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
+        r"""Constructor for an abstract quiver moduli space
+
+        This base class contains everything that is common between
+        - quiver moduli spaces, i.e., varieties
+        - quiver moduli stacks
+
+        INPUT:
+
+        - ``Q`` -- quiver
+
+        - ``d`` --- dimension vector
+
+        - ``theta`` -- stability parameter (default: canonical stability parameter)
+
+        - ``denom`` -- denominator for slope stability (default: ``sum``), needs to be
+          effective on the simple roots
+
+        - ``condition`` -- whether to include all semistables, or only stables
+          (default: "semistable")
+
+        See :class:`QuiverModuliSpace` and :class:`QuiverModuliStack` for more details.
+
+        EXAMPLES:
+
+        We can instantiate an abstract quiver moduli space::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, [2, 3])
+            sage: X
+            abstract moduli of semistable representations, with
+            Q = 3-Kronecker quiver
+            d = [2, 3]
+            theta = (9, -6)
+
+        It has functionality common to both varieties and stacks, i.e., when it really
+        concerns something involving the representation variety::
+
+            sage: X.all_harder_narasimhan_types()
+            [((1, 0), (1, 1), (0, 2)),
+             ((1, 0), (1, 2), (0, 1)),
+             ((1, 0), (1, 3)),
+             ((1, 1), (1, 2)),
+             ((2, 0), (0, 3)),
+             ((2, 1), (0, 2)),
+             ((2, 2), (0, 1)),
+             ((2, 3),)]
+
+        But things like dimension depend on whether we consider it as a variety or as
+        a stack, and thus these are not implemented::
+
+            sage: X.dimension()
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
+
+        """
         if theta is None:
             theta = Q.canonical_stability_parameter(d)
 
-        assert Q._is_dimension_vector(d)
-        assert Q._is_vector(theta)
+        assert Q._is_dimension_vector(d), "`d` is not a dimension vector of `Q`"
+        assert Q._is_vector(theta), "`theta` is not a stability parameter for `Q`"
         assert condition in ["semistable", "stable"]
         # TODO this effectivity condition needs to be documented, and maybe be part of Quiver?
         assert all(
             denom(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
             for i in Q.vertices()
-        )
+        ), "denominator needs to be effective"
 
         self._Q = Q
         self._d = d
         self._theta = theta
         self._denominator = denom
         self._condition = condition
+
+    def _repr_(self):
+        r"""
+        Give a shorthand string presentation for an abstract quiver moduli space
+        """
+        if self.get_custom_name():
+            return self.get_custom_name()
+
+        output = "abstract moduli of {} representations, with".format(self._condition)
+        output += "\nQ = {}\nd = {}\ntheta = {}".format(
+            self._Q.repr(), self._d, self._theta
+        )
+
+        return output
+
+    def repr(self):
+        return self._repr_()
 
     def quiver(self):
         return self._Q
@@ -1040,6 +1113,7 @@ class QuiverModuli(ABC):
         elif condition == "stable":
             return list(filter(lambda e: Q.slope(e, theta) >= slope, es))
 
+    # TODO make it private?
     def all_minimal_forbidden_subdimension_vectors(self):
         r"""Returns the list of all `minimal` forbidden subdimension vectors
 
@@ -1281,21 +1355,49 @@ class QuiverModuli(ABC):
         )
         return taut["Relations"]
 
-    @abstractmethod
     def dimension(self) -> int:
-        pass
+        raise NotImplementedError()
 
-    @abstractmethod
     def is_smooth(self) -> bool:
-        pass
+        raise NotImplementedError()
 
-    @abstractmethod
     def chow_ring(self):
-        pass
+        raise NotImplementedError()
 
 
 class QuiverModuliSpace(QuiverModuli):
     def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
+        r"""Constructor for a quiver moduli space
+
+        This is the quiver moduli space as a variety.
+
+        INPUT:
+
+        - ``Q`` -- quiver
+
+        - ``d`` --- dimension vector
+
+        - ``theta`` -- stability parameter (default: canonical stability parameter)
+
+        - ``denom`` -- denominator for slope stability (default: ``sum``), needs to be
+          effective on the simple roots
+
+        - ``condition`` -- whether to include all semistables, or only stables
+          (default: "semistable")
+
+        EXAMPLES:
+
+        An example::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, [2, 3])
+            moduli space of semistable representations, with
+            Q = 3-Kronecker quiver
+            d = [2, 3]
+            theta = (9, -6)
+
+        """
         QuiverModuli.__init__(
             self,
             Q,
@@ -1305,20 +1407,22 @@ class QuiverModuliSpace(QuiverModuli):
             condition=condition,
         )
 
-    def __repr__(self):
-        return (
-            "A "
-            + self._condition
-            + " quiver moduli space with:\n"
-            + "Q = "
-            + str(self._Q)
-            + "\n"
-            + "d = "
-            + str(self._d)
-            + "\n"
-            + "theta = "
-            + str(self._theta)
+    def _repr_(self):
+        r"""
+        Give a shorthand string presentation for the quiver moduli space
+        """
+        if self.get_custom_name():
+            return self.get_custom_name()
+
+        output = "moduli space of {} representations, with".format(self._condition)
+        output += "\nQ = {}\nd = {}\ntheta = {}".format(
+            self._Q.repr(), self._d, self._theta
         )
+
+        return output
+
+    def repr(self):
+        return self._repr_()
 
     def dimension(self):
         r"""
@@ -1886,9 +1990,35 @@ class QuiverModuliSpace(QuiverModuli):
 
 
 class QuiverModuliStack(QuiverModuli):
+    def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
+        r"""Constructor for a quiver moduli stack
 
-    def __init__(self, Q, d, theta, denom=sum, condition="semistable"):
-        QuiverModuli.__init__(self, Q, d, theta, denom=denom, condition=condition)
+        This is the quiver moduli space as a stack.
+
+        INPUT:
+
+        - ``Q`` -- quiver
+
+        - ``d`` --- dimension vector
+
+        - ``theta`` -- stability parameter (default: canonical stability parameter)
+
+        - ``denom`` -- denominator for slope stability (default: ``sum``), needs to be
+          effective on the simple roots
+
+        - ``condition`` -- whether to include all semistables, or only stables
+          (default: "semistable")
+
+        EXAMPLES:
+
+        An example::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliStack(Q, [2, 3])
+
+        """
+        QuiverModuli.__init__(self, Q, d, theta=theta, denom=denom, condition=condition)
 
     def __repr__(self):
         return (
