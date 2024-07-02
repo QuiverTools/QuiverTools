@@ -2091,9 +2091,6 @@ class Quiver(Element):
     Generic subdimension vectors and generic Hom and Ext
     """
 
-    @cached_method(
-        key=lambda self, e, d: (self._coerce_vector(e), self._coerce_vector(d))
-    )
     def is_generic_subdimension_vector(self, e, d) -> bool:
         r"""Checks if e is a generic subdimension vector of d.
 
@@ -2234,6 +2231,15 @@ class Quiver(Element):
             (1, 2) is generic subdimension vector of (2, 2): True
             (2, 2) is generic subdimension vector of (2, 2): True
 
+        """
+        return self.__is_generic_subdimension_vector(e, d)
+
+    @cached_method(
+        key=lambda self, e, d: (self._coerce_vector(e), self._coerce_vector(d))
+    )
+    def __is_generic_subdimension_vector(self, e, d) -> bool:
+        r""""
+        The cacheable implementation of :meth:`Quiver.is_generic_subdimension_vector`.
         """
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
