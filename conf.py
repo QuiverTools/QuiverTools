@@ -51,6 +51,28 @@ mathjax3_config = {
 }
 
 latex_engine = "lualatex"
+latex_elements = {
+    "fontpkg": """
+\setmainfont{FreeSerif}[
+  UprightFont    = *,
+  ItalicFont     = *Italic,
+  BoldFont       = *Bold,
+  BoldItalicFont = *BoldItalic
+]
+\setsansfont{FreeSans}[
+  UprightFont    = *,
+  ItalicFont     = *Oblique,
+  BoldFont       = *Bold,
+  BoldItalicFont = *BoldOblique,
+]
+\setmonofont{FreeMono}[
+  UprightFont    = *,
+  ItalicFont     = *Oblique,
+  BoldFont       = *Bold,
+  BoldItalicFont = *BoldOblique,
+]
+""",
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
