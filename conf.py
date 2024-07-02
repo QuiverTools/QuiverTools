@@ -27,9 +27,9 @@ sys.path.insert(0, os.path.abspath("."))
 # -- Project information -----------------------------------------------------
 
 project = "QuiverTools"
-copyright = "2023"
+copyright = "2024"
 # The full version, including alpha/beta/rc tags
-release = "v0"
+release = "v1"
 
 # -- General configuration ---------------------------------------------------
 
@@ -64,4 +64,6 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "furo"
+html_theme = "sphinx_book_theme"
+html_logo = "logo.png"
+html_favicon = "favicon.ico"
