@@ -25,7 +25,8 @@ Permutations.options(mult="r2l")
 
 class QuiverModuli(Element):
     def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
-        r"""Constructor for an abstract quiver moduli space
+        r"""
+        Constructor for an abstract quiver moduli space.
 
         This base class contains everything that is common between
         - quiver moduli spaces, i.e., varieties
@@ -102,7 +103,7 @@ class QuiverModuli(Element):
 
     def __repr_helper(self, description):
         r"""
-        Standard format for shorthand string presentation
+        Standard format for shorthand string presentation.
         """
         output = "{} of {} representations, with".format(description, self._condition)
         output += "\n- Q = {}\n- d = {}\n- θ = {}".format(
@@ -113,7 +114,7 @@ class QuiverModuli(Element):
 
     def _repr_(self):
         r"""
-        Give a shorthand string presentation for an abstract quiver moduli space
+        Give a shorthand string presentation for an abstract quiver moduli space.
         """
         if self.get_custom_name():
             return self.get_custom_name()
@@ -125,7 +126,7 @@ class QuiverModuli(Element):
 
     def to_space(self):
         r"""
-        Make the abstract quiver moduli a variety
+        Make the abstract quiver moduli a variety.
 
         This is an explicit way of casting.
 
@@ -159,7 +160,7 @@ class QuiverModuli(Element):
 
     def to_stack(self):
         r"""
-        Make the abstract quiver moduli a stack
+        Make the abstract quiver moduli a stack.
 
         This is an explicit way of casting.
 
@@ -194,16 +195,18 @@ class QuiverModuli(Element):
         r""" "
         Returns the quiver of the moduli space.
 
-        OUTPUT: Quiver object
+        OUTPUT: the underlying quiver as an instance of the Quiver class
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        The quiver of a Kronecker moduli space::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3]); X.quiver()
-            3-Kronecker quiver
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: Q == X.quiver()
+            True
+
         """
         return self._Q
 
@@ -211,52 +214,53 @@ class QuiverModuli(Element):
         r"""
         Returns the dimension vector of the moduli space.
 
-        OUTPUT: the dimension vector, either as vector of ints or as a dict
+        OUTPUT: the dimension vector
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        The dimension vector of a Kronecker moduli space::
 
             sage: from quiver import *
-            sage: Q1 = GeneralizedKroneckerQuiver(3)
-            sage: X1 = QuiverModuliSpace(Q1, [2, 3]); X1.dimension_vector()
-            [2, 3]
-
-        The dimension vector is stored in the same format as given::
-
-            sage: Q2 = Quiver.from_string("foo---bar", forget_labels=False)
-            sage: X2 = QuiverModuliSpace(Q2, {"foo": 2, "bar": 3});
-            sage: X2.dimension_vector()
-            {'bar': 3, 'foo': 2}
-            sage: X3 = QuiverModuliSpace(Q2, vector([2, 3])); X3.dimension_vector()
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: X.dimension_vector()
             (2, 3)
 
-        """
+        The dimension vector is stored in the same format as it was given::
 
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: X = QuiverModuli(Q, {"foo": 2, "bar": 3})
+            sage: X.dimension_vector()
+            {'bar': 3, 'foo': 2}
+
+        """
         return self._d
 
     def stability_parameter(self):
         r"""
         Returns the stability parameter of the moduli space.
 
-        OUTPUT: the stability parameter, either as vector of ints or as a dict
+        OUTPUT: the stability parameter
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        The stability parameter of a Kronecker moduli space::
 
             sage: from quiver import *
-            sage: Q1 = GeneralizedKroneckerQuiver(3)
-            sage: X1 = QuiverModuliSpace(Q1, [2, 3], [3, -2]); X1.stability_parameter()
-            [3, -2]
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3), (3, -2))
+            sage: X.stability_parameter()
+            (3, -2)
 
-            sage: Q2 = Quiver.from_string("foo---bar", forget_labels=False)
+        The stability parameter is stored in the same format as it was given::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
             sage: d, theta = {"foo": 2, "bar": 3}, {"foo": 3, "bar": -2}
-            sage: X2 = QuiverModuliSpace(Q2, d, theta);
-            sage: X2.stability_parameter()
+            sage: X = QuiverModuliSpace(Q, d, theta);
+            sage: X.stability_parameter()
             {'bar': -2, 'foo': 3}
-        """
 
+        """
         return self._theta
 
     def denominator(self):
@@ -265,17 +269,16 @@ class QuiverModuli(Element):
 
         OUTPUT: the denominator as a function
 
-        If the denominator is not specified, it will be the sum function, i.e.,
-        the function sending ``d`` to ``sum(d)``.
-
         EXAMPLES:
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3]); X.denominator()
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.denominator()
             <built-in function sum>
+
         """
         return self._denom
 
@@ -298,13 +301,14 @@ class QuiverModuli(Element):
         ones::
 
             sage: Q = JordanQuiver()
-            sage: X = QuiverModuliSpace(Q, [3], condition="stable"); X.is_nonempty()
+            sage: X = QuiverModuliSpace(Q, [3], condition="stable")
+            sage: X.is_nonempty()
             False
             sage: X = QuiverModuliSpace(Q, [3], condition="semistable")
             sage: X.is_nonempty()
             True
-        """
 
+        """
         if self._condition == "stable":
             return self._Q.has_stable_representation(self._d, self._theta)
         if self._condition == "semistable":
@@ -316,7 +320,7 @@ class QuiverModuli(Element):
 
     def all_harder_narasimhan_types(self, proper=False, sorted=False):
         r"""
-        Returns the list of all HN types.
+        Returns the list of all Harder--Narasimhan types.
 
         A Harder--Narasimhan (HN) type of :math:`d` with respect to :math:`\theta`
         is a sequence :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
@@ -327,9 +331,11 @@ class QuiverModuli(Element):
 
         INPUT:
 
-        - ``proper`` -- (default: False) whether to exclude the HN type corresponding to the stable locus
+        - ``proper`` -- (default: False) whether to exclude the HN-type corresponding
+          to the stable locus
 
-        - ``sorted`` -- (default: False) whether to sort the HN-types according to the given slope
+        - ``sorted`` -- (default: False) whether to sort the HN-types according to the
+          given slope
 
         OUTPUT: list of tuples of dimension vectors encoding HN-types
 
@@ -339,7 +345,7 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3])
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: X.all_harder_narasimhan_types()
             [((1, 0), (1, 1), (0, 2)),
              ((1, 0), (1, 2), (0, 1)),
@@ -367,8 +373,7 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(2, 3, 4)
-            sage: d = [2, 3, 2]
-            sage: Z = QuiverModuliSpace(Q, [2, 3, 2])
+            sage: Z = QuiverModuliSpace(Q, (2, 3, 2))
             sage: Z.all_harder_narasimhan_types()
             [((0, 1, 0), (1, 2, 1), (1, 0, 1)),
              ((0, 1, 0), (2, 0, 1), (0, 2, 1)),
@@ -442,6 +447,7 @@ class QuiverModuli(Element):
              ((2, 3, 0), (0, 0, 2)),
              ((2, 3, 1), (0, 0, 1)),
              ((2, 3, 2),)]
+
         """
 
         d = self._Q._coerce_dimension_vector(self._d)
