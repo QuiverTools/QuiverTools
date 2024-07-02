@@ -1491,10 +1491,10 @@ class Quiver(Element):
         i.e., a representation whose endomorphism ring is the field itself.
         It is necessarily indecomposable.
 
-        # TODO set up referencing in docstrings, and give precise result
-        By [a result of Schofield](https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487)
-        `d` is a Schur root if and only if `d` admits a stable representation for
-        the canonical stability parameter.
+        By MR1162487_ `d` is a Schur root if and only if `d` admits a stable
+        representation for the canonical stability parameter.
+
+        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
         EXAMPLES:
 
