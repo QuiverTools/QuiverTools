@@ -28,6 +28,9 @@ jobs:
         run: |
           make html
           make latexpdf
+      - name: Make sure CNAME is there
+        run:
+          echo "sage.quiver.tools" > CNAME
       - name: Create artifact
         run: |
           mkdir -p github-artifacts/docs
