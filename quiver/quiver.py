@@ -2657,28 +2657,34 @@ class Quiver(Element):
                 )
         return [d]
 
-    """
-    Nilpotent cone and Hesselink
-    """
-
     # TODO tests and documentation
     def dimension_nullcone(self, d):
-        r"""Returns the dimension of the nullcone
+        r"""
+        Returns the dimension of the nullcone
 
         The nullcone is the set of all nilpotent representations.
 
         INPUT:
 
-        - ``d`` -- vector of Ints
+        - ``d`` -- dimension vector
 
-        OUTPUT: dimension as Int
+        OUTPUT: dimension of the nullcone
+
+        EXAMPLES:
+
+        The usual example of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.dimension_nullcone([2, 3])
+            18
+
         """
         d = self._coerce_dimension_vector(d)
 
         if self.is_acyclic():
-            return d.transpose() * self.adjacency_matrix() * d
+            return d * self.adjacency_matrix() * d
         else:
-            # TODO where is the algorithm?
             raise NotImplementedError()
 
     def first_hochschild_cohomology(self):
