@@ -838,6 +838,7 @@ class QuiverModuli(Element):
         d = Q._coerce_dimension_vector(d)
 
         n = Q.number_of_vertices()
+        # TODO shouldn't we test for Q._is_dimension_vector?
         assert all(len(dn) == n for dn in tau.keys())
         assert d == sum(k * dim for k in tau.keys() for dim in tau[k])
 
@@ -882,9 +883,9 @@ class QuiverModuli(Element):
             [1, 2]
 
         """
-
         if secure:
             assert self.is_luna_type(tau)
+
         return sum(len(tau[dn]) * (1 - self._Q.euler_form(dn, dn)) for dn in tau.keys())
 
     def local_quiver_setting(self, tau, secure=True):
@@ -922,7 +923,6 @@ class QuiverModuli(Element):
             )
 
         """
-
         if secure:
             assert self.is_luna_type(tau)
 
@@ -2488,7 +2488,10 @@ class SmoothModel:
     """How about this: instead of a separate class SmoothModel,
     we could define a method framed_moduli_space(self,n)
     inside the class QuiverModuliSpace which returns another quiver moduli space.
-    After all, it is itself a quiver moduli space."""
+    After all, it is itself a quiver moduli space.
+
+    #TODO (Pieter) yes, I agree with this
+    """
 
     def __init__(self):
         pass
