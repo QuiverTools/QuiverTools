@@ -1,6 +1,10 @@
 name: Documentation
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - ".github/workflows/docs.yml"
 
 jobs:
   build:
@@ -47,7 +51,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           path: github-artifacts
       - name: Move docs
