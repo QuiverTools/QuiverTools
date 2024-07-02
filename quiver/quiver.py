@@ -218,6 +218,9 @@ class Quiver(Element):
         return cls.from_digraph(G, name)
 
     def __repr__(self) -> str:
+        r"""
+        Internal method for :meth:`Quiver.repr`
+        """
         if self.get_custom_name():
             return self.get_custom_name()
         else:
@@ -226,6 +229,9 @@ class Quiver(Element):
             )
 
     def __str__(self) -> str:
+        r"""
+        Internal method for :meth:`Quiver.str`
+        """
         return "{}\nadjacency matrix:\n{}".format(self.repr(), self.adjacency_matrix())
 
     def repr(self) -> str:
@@ -2345,10 +2351,35 @@ class Quiver(Element):
         return self.euler_form(d, e) + self.generic_ext(d, e)
 
     def is_left_orthogonal(self, a, b) -> bool:
-        if self.generic_ext_vanishing(a, b):
-            return self.euler_form(a, b) == 0
-        else:
-            return False
+        r"""
+        Checks if a is left orthogonal to b.
+
+        INPUT:
+
+        - ``a``: dimension vector
+        - ``b``: dimension vector
+
+        OUTPUT: whether a is left orthogonal to b
+
+        A dimension vector `a` is said to be left orthogonal
+        to another dimension vector `b` if
+        :math:`\operatorname{hom}(a,b) = \operatorname{ext}(a, b) = 0`.
+
+        EXAMPLES:
+
+        Left orthogonality on the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: ds = [Q.simple_root(0), Q.simple_root(1)]
+            sage: Q.is_left_orthogonal(ds[0], ds[1])
+            False
+            sage: Q.is_left_orthogonal(ds[1], ds[0])
+            True
+
+        """
+
+        return self.generic_hom(a, b) == 0 and self.generic_ext(a, b) == 0
 
     """
     Harder--Narasimhan types
@@ -2430,13 +2461,39 @@ class Quiver(Element):
         r"""
         Returns the canonical stability parameter for ``d``
 
+        INPUT:
+
+        - ``d``: dimension vector
+
+        OUTPUT: canonical stability parameter
+
         The canonical stability parameter is given by
         :math:`\langle d,-\rangle - \langle -,d\rangle`.
 
-        """
-        d = self._coerce_dimension_vector(d)
+        EXAMPLES:
 
-        return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
+        Canonical stability parameter for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2, 3])
+            sage: Q.canonical_stability_parameter(d)
+            (9, -6)
+
+        This method also works with vertex labels::
+
+            sage: from quiver import *
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: d = {"foo": 2, "bar": 3}
+            sage: Q.canonical_stability_parameter(d)
+            {'bar': -6, 'foo': 9}
+        """
+        if self.__has_vertex_labels():
+            d = self._coerce_dimension_vector(d)
+            theta = vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
+            return dict(zip(self.vertices(), theta))
+        else:
+            d = self._coerce_dimension_vector(d)
+            return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
 
     def has_semistable_representation(self, d, theta=None, denom=sum):
         r"""Checks if there is a ``theta``-semistable of dimension vector `d`
