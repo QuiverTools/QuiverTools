@@ -2597,7 +2597,7 @@ class Quiver(Element):
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: whether there is a ``theta``-stable representation of dimension vector ``d``
+        OUTPUT: whether there is a ``theta``-stable of dimension vector ``d``
 
         By MR1162487_ `d` admits a theta-stable representation if and only if
         :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all proper generic subdimension
