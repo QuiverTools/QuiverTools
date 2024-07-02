@@ -2037,16 +2037,15 @@ class Quiver(Element):
 
         OUTPUT: whether e is a generic subdimension vector of d
 
-        # TODO reference
-        Using the notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf:
-        a dimension vector `e` is a generic subdimension vector of `d`
+        A dimension vector `e` is a generic subdimension vector of `d`
         if a generic representation of dimension vector `d` possesses
         a subrepresentation of dimension vector `e`.
-
         By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf)
-        `e` is a generic subdimension vector of `d` if and only if `e` is
+        By MR1162487_ `e` is a generic subdimension vector of `d` if and only if `e` is
         a subdimension vector of `d` and :math:`\langle f,d-e\rangle` is non-negative
         for all generic subdimension vectors `f` of `e`.
+
+        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
         EXAMPLES:
 
@@ -2313,11 +2312,10 @@ class Quiver(Element):
         i.e., :math:`\operatorname{dim}(\operatorname{Ext}(M,N))` is minimal for all
         `(M,N)` in `U`.
 
-        # TODO can we define macros?
-        Therefore,
-        :math:`\operatorname{dim}(\operatorname{Hom}(M,N)) = \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`
+        Therefore, `\operatorname{dim}(\operatorname{Hom}(M,N)) =
+        \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`
         is minimal, and
-        :math:`\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.
+        `\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.
 
         EXAMPLES:
 
@@ -2447,11 +2445,13 @@ class Quiver(Element):
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: whether there is a ``theta``-semistable representation of dimension vector `d`
+        OUTPUT: whether there is a ``theta``-semistable of dimension vector `d`
 
-        By a theorem of Schofield [Theorem 5.4(1) of Reineke's overview](https://arxiv.org/pdf/0802.2147.pdf),
-        a dimension vector `d` admits a :math:`\theta`-semi-stable representation if and only if
-        :math:`\mu_{\theta}(e) <= \mu_{\theta}(d)` for all generic subdimension vectors `e` of `d`.
+        By MR1162486_ a dimension vector `d` admits a :math:`\theta`-semi-stable
+        representation if and only if :math:`\mu_{\theta}(e) <= \mu_{\theta}(d)` for
+        all generic subdimension vectors `e` of `d`.
+
+        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
         EXAMPLES:
 
@@ -2501,11 +2501,11 @@ class Quiver(Element):
 
         OUTPUT: where there is a ``theta``-stable representation of ``d``
 
-        TODO reference
-        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf:
-        a dimension vector d admits a theta-stable representation if and only if
+        By MR1162487_ `d` admits a theta-stable representation if and only if
         :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all proper generic subdimension
         vectors :math:`e` of :math:`d`.
+
+        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
         EXAMPLES:
 
