@@ -1961,7 +1961,7 @@ class Quiver(Element):
 
     def division_order(self, d, e):
         r"""
-        Checks if `d << e`.
+        Checks if `d\ll e`
 
         This means that
 
@@ -1969,13 +1969,12 @@ class Quiver(Element):
         - :math:`d_j \geq e_j` for every sink `j`,
         - :math:`d_k = e_k` for every vertex `k` which is neither a source nor a sink.
 
-        # TODO: Think of a better name.
-        # Good name?
-        # TODO give reference for its origin
+        This is used when dealing with Chow rings of quiver moduli, see also
+        :meth:`QuiverModuliSpace.all_minimal_forbidden_subdimension_vectors`.
 
-        EXAMPLES
+        EXAMPLES:
 
-        Order on some dimension vectors for the 3-Kronecker quiver::
+        The division order on some dimension vectors for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -1995,7 +1994,7 @@ class Quiver(Element):
             sage: Q.division_order(f, e)
             True
 
-        Order on some dimension vectors for a 3-vertex quiver::
+        The division order on some dimension vectors for a 3-vertex quiver::
 
             sage: Q = ThreeVertexQuiver(2, 2, 2)
             sage: d = [1, 1, 1]
