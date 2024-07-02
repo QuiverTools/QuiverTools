@@ -172,7 +172,7 @@ class QuiverModuli(Element):
 
         This is an explicit way of casting.
 
-        EXAMPLES::
+        EXAMPLES:
 
         From an abstract quiver moduli to a space::
 
@@ -206,7 +206,7 @@ class QuiverModuli(Element):
 
         This is an explicit way of casting.
 
-        EXAMPLES::
+        EXAMPLES:
 
         From an abstract quiver moduli to a stack::
 
@@ -234,7 +234,7 @@ class QuiverModuli(Element):
         )
 
     def quiver(self):
-        r""" "
+        r"""
         Returns the quiver of the moduli space.
 
         OUTPUT: the underlying quiver as an instance of the Quiver class
@@ -1586,24 +1586,28 @@ class QuiverModuli(Element):
         return taut["Relations"]
 
     def dimension(self) -> int:
-        r""" "
+        r"""
         Returns the dimension of the moduli space.
 
         Abstract method, see the concrete implementations for details.
 
-        .. SEEALSO:: :meth:`QuiverModuliSpace.dimension`,
-        :meth:`QuiverModuliStack.dimension`.
+        .. SEEALSO::
+
+            - :meth:`QuiverModuliSpace.dimension`,
+            - :meth:`QuiverModuliStack.dimension`.
         """
         raise NotImplementedError()
 
     def is_smooth(self) -> bool:
-        r""" "
+        r"""
         Checks if the moduli space is smooth.
 
         Abstract method, see the concrete implementations for details.
 
-        .. SEEALSO:: :meth:`QuiverModuliSpace.is_smooth`,
-        :meth:`QuiverModuliStack.is_smooth`.
+        .. SEEALSO::
+
+            - :meth:`QuiverModuliSpace.is_smooth`
+            - :meth:`QuiverModuliStack.is_smooth`
         """
 
         raise NotImplementedError()

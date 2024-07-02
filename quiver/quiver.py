@@ -331,7 +331,7 @@ class Quiver(Element):
 
         OUTPUT: a complete description of the quiver
 
-        EXAMPLES::
+        EXAMPLES:
 
         The 3-Kronecker quiver::
 
@@ -573,7 +573,7 @@ class Quiver(Element):
         OUTPUT: The square matrix ``M`` whose entry ``M[i,j]`` is the number of arrows
         from the vertex ``i`` to the vertex ``j``
 
-        EXAMPLES::
+        EXAMPLES:
 
         The adjacency matrix of a quiver construct from an adjacency matrix::
 
@@ -990,7 +990,7 @@ class Quiver(Element):
 
         OUTPUT: the Cartan matrix of the quiver
 
-        EXAMPLES::
+        EXAMPLES:
 
         The Kronecker 3-quiver::
 
@@ -1353,7 +1353,6 @@ class Quiver(Element):
     Dimension vectors and roots
     """
 
-    @cached_method
     def zero_vector(self):
         r"""
         Returns the zero dimension vector.
@@ -1377,14 +1376,17 @@ class Quiver(Element):
             sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
             sage: Q.zero_vector()
             {'a': 0, 'b': 0, 'c': 0}
-
         """
+        return self.__zero_vector()
+
+    @cached_method
+    def __zero_vector(self):
+        r"""The cacheable implementation of :meth:`Quiver.zero_vector`"""
         if self.__has_vertex_labels():
             return {i: 0 for i in self.vertices()}
 
         return vector([0] * self.number_of_vertices())
 
-    @cached_method
     def thin_dimension_vector(self):
         r"""
         Returns the thin dimension vector, i.e., all ones
@@ -1410,12 +1412,16 @@ class Quiver(Element):
             {'a': 1, 'b': 1, 'c': 1}
 
         """
+        return self.__thin_dimension_vector()
+
+    @cached_method
+    def __thin_dimension_vector(self):
+        r"""The cacheable implementation of :meth:`Quiver.thin_dimension_vector`"""
         if self.__has_vertex_labels():
             return {i: 1 for i in self.vertices()}
 
         return vector([1] * self.number_of_vertices())
 
-    @cached_method
     def simple_root(self, i):
         r"""
         Returns the simple root at the vertex ``i``
@@ -1441,6 +1447,11 @@ class Quiver(Element):
             {'a': 0, 'b': 1, 'c': 0}
 
         """
+        return self.__simple_root(i)
+
+    @cached_method
+    def __simple_root(self, i):
+        r"""The cacheable implementation of :meth:`Quiver.simple_root`"""
         if self.__has_vertex_labels():
             root = {i: 0 for i in self.vertices()}
         else:
@@ -2553,7 +2564,7 @@ class Quiver(Element):
 
         OUTPUT: whether there is a ``theta``-semistable of dimension vector `d`
 
-        By MR1162486_ a dimension vector `d` admits a :math:`\theta`-semi-stable
+        By MR1162487_ a dimension vector `d` admits a :math:`\theta`-semi-stable
         representation if and only if :math:`\mu_{\theta}(e) <= \mu_{\theta}(d)` for
         all generic subdimension vectors `e` of `d`.
 
@@ -2657,7 +2668,6 @@ class Quiver(Element):
     Canonical decomposition
     """
 
-    @cached_method(key=lambda self, d: self._coerce_vector(d))
     def canonical_decomposition(self, d):
         r"""
         Computes the canonical decomposition of a dimension vector.
@@ -2723,7 +2733,11 @@ class Quiver(Element):
             [(5, 4)]
             [(5, 5)]
         """
+        return self.__canonical_decomposition(d)
 
+    @cached_method(key=lambda self, d: self._coerce_vector(d))
+    def __canonical_decomposition(self, d):
+        r"""The cacheable implementation of :meth:`Quiver.canonical_decomposition`"""
         d = self._coerce_dimension_vector(d)
 
         ds = self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
