@@ -2404,7 +2404,7 @@ class Quiver(Element):
     """
 
     @cached_method
-    def all_hn_types(self, d, theta, denom=sum, sorted=False):
+    def _all_harder_narasimhan_types(self, d, theta, denom=sum, sorted=False):
         r"""Returns the list of all Harder--Narasimhan types of d.
 
         INPUT:
@@ -2425,7 +2425,7 @@ class Quiver(Element):
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: d = (2, 3)
             sage: theta = (3, -2)
-            sage: Q.all_hn_types(d, theta)
+            sage: Q._all_harder_narasimhan_types(d, theta)
             [((1, 0), (1, 1), (0, 2)),
              ((1, 0), (1, 2), (0, 1)),
              ((1, 0), (1, 3)),
@@ -2434,6 +2434,12 @@ class Quiver(Element):
              ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
              ((2, 3),)]
+
+        .. NOTE ::
+
+        This is a method of Quiver so that its results can be more efficiently cached.
+        See :meth:`QuiverModuli.all_harder_narasimhan_types()` for the better location
+        to call it from.
 
         """
         d = self._coerce_dimension_vector(d)
@@ -2459,7 +2465,7 @@ class Quiver(Element):
             for estar in filter(
                 lambda fstar: self.slope(e, theta, denom=denom)
                 > self.slope(fstar[0], theta, denom=denom),
-                self.all_hn_types(d - e, theta, denom=denom),
+                self._all_harder_narasimhan_types(d - e, theta, denom=denom),
             ):
                 all_types.append((e,) + estar)
 

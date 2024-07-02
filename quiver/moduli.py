@@ -453,7 +453,9 @@ class QuiverModuli(Element):
         d = self._Q._coerce_dimension_vector(self._d)
         theta = self._Q._coerce_vector(self._theta)
 
-        all_types = self._Q.all_hn_types(d, theta, denom=self._denom, sorted=sorted)
+        all_types = self._Q._all_harder_narasimhan_types(
+            d, theta, denom=self._denom, sorted=sorted
+        )
         if proper and (d,) in all_types:
             all_types.remove((d,))
 
