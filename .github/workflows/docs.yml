@@ -24,7 +24,7 @@ jobs:
           sudo apt-get install -y texlive-latex-extra
           sudo apt-get install -y texlive-luatex
           sudo apt-get install -y latexmk
-          sudo apt-get install -y fonts-freefont-ttf
+          sudo apt-get install -y fonts-freefont-otf
           sudo apt-get install -y python3-sphinx
           sage -pip install sphinx-book-theme
       - name: Checkout QuiverTools
