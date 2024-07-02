@@ -1,193 +1,426 @@
-<!doctype html>
-<html class="no-js" lang="en" data-content_root="./">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>QuiverTools v0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
-    
-    
+<!DOCTYPE html>
 
 
-<style>
-  body {
-    --color-code-background: #f8f8f8;
-  --color-code-foreground: black;
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Documentation for QuiverTools &#8212; QuiverTools v1 documentation</title>
   
-  }
-  @media not print {
-    body[data-theme="dark"] {
-      --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
   
-    }
-    @media (prefers-color-scheme: dark) {
-      body:not([data-theme="light"]) {
-        --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
   
-      }
-    }
-  }
-</style></head>
-  <body>
-    
-    <script>
-      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
-    </script>
-    
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-  <symbol id="svg-toc" viewBox="0 0 24 24">
-    <title>Contents</title>
-    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
-      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
-    </svg>
-  </symbol>
-  <symbol id="svg-menu" viewBox="0 0 24 24">
-    <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
-      <line x1="3" y1="12" x2="21" y2="12"></line>
-      <line x1="3" y1="6" x2="21" y2="6"></line>
-      <line x1="3" y1="18" x2="21" y2="18"></line>
-    </svg>
-  </symbol>
-  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
-    <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
-      <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
-  </symbol>
-  <symbol id="svg-sun" viewBox="0 0 24 24">
-    <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
-      <circle cx="12" cy="12" r="5"></circle>
-      <line x1="12" y1="1" x2="12" y2="3"></line>
-      <line x1="12" y1="21" x2="12" y2="23"></line>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-      <line x1="1" y1="12" x2="3" y2="12"></line>
-      <line x1="21" y1="12" x2="23" y2="12"></line>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-    </svg>
-  </symbol>
-  <symbol id="svg-moon" viewBox="0 0 24 24">
-    <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
-    </svg>
-  </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
-    </svg>
-  </symbol>
-</svg>
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
-</label>
-<label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
-</label>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
+    <script src="_static/documentation_options.js?v=7d3b92e0"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"]], "displayMath": [["$$", "$$"], ["\\[", "\\]"]]}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
 
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+<script defer data-domain="quiver.tools" src="https://plausible.io/js/script.js"></script>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<div class="page">
-  <header class="mobile-header">
-    <div class="header-left">
-      <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
-      </label>
-    </div>
-    <div class="header-center">
-      <a href="#"><div class="brand">QuiverTools v0 documentation</div></a>
-    </div>
-    <div class="header-right">
-      <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
-          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
-          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
-        </button>
-      </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-      </label>
-    </div>
-  </header>
-  <aside class="sidebar-drawer">
-    <div class="sidebar-container">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
   
   
-  <span class="sidebar-brand-text">QuiverTools v0 documentation</span>
   
-</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
-  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
-  <input type="hidden" name="check_keywords" value="yes">
-  <input type="hidden" name="area" value="default">
-</form>
-<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="QuiverTools v1 documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="QuiverTools v1 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
   
 </div>
 </div>
+              
+              
 
-      </div>
-      
-    </div>
-  </aside>
-  <div class="main">
-    <div class="content">
-      <div class="article-container">
-        <a href="#" class="back-to-top muted-link">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
-          </svg>
-          <span>Back to top</span>
-        </a>
-        <div class="content-icon-container">
-          
-<div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
-              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
-              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
-            </button>
-          </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
-          </label>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Documentation for QuiverTools</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver"><code class="docutils literal notranslate"><span class="pre">Quiver</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__init__"><code class="docutils literal notranslate"><span class="pre">Quiver.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.from_digraph"><code class="docutils literal notranslate"><span class="pre">Quiver.from_digraph()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.from_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.from_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.from_string"><code class="docutils literal notranslate"><span class="pre">Quiver.from_string()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__str__"><code class="docutils literal notranslate"><span class="pre">Quiver.__str__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.repr"><code class="docutils literal notranslate"><span class="pre">Quiver.repr()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.str"><code class="docutils literal notranslate"><span class="pre">Quiver.str()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__eq__"><code class="docutils literal notranslate"><span class="pre">Quiver.__eq__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.adjacency_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.adjacency_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.graph"><code class="docutils literal notranslate"><span class="pre">Quiver.graph()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.vertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.number_of_vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_vertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.number_of_arrows"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_arrows()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_acyclic"><code class="docutils literal notranslate"><span class="pre">Quiver.is_acyclic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_connected"><code class="docutils literal notranslate"><span class="pre">Quiver.is_connected()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.in_degree"><code class="docutils literal notranslate"><span class="pre">Quiver.in_degree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.out_degree"><code class="docutils literal notranslate"><span class="pre">Quiver.out_degree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_source"><code class="docutils literal notranslate"><span class="pre">Quiver.is_source()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_sink"><code class="docutils literal notranslate"><span class="pre">Quiver.is_sink()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.sources"><code class="docutils literal notranslate"><span class="pre">Quiver.sources()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.sinks"><code class="docutils literal notranslate"><span class="pre">Quiver.sinks()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.euler_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.euler_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.euler_form"><code class="docutils literal notranslate"><span class="pre">Quiver.euler_form()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.cartan_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.cartan_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.symmetrized_euler_form"><code class="docutils literal notranslate"><span class="pre">Quiver.symmetrized_euler_form()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.tits_form"><code class="docutils literal notranslate"><span class="pre">Quiver.tits_form()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.opposite_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.opposite_quiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.doubled_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.doubled_quiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.framed_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.framed_quiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.coframed_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.coframed_quiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.full_subquiver"><code class="docutils literal notranslate"><span class="pre">Quiver.full_subquiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.zero_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.zero_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.thin_dimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.thin_dimension_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.simple_root"><code class="docutils literal notranslate"><span class="pre">Quiver.simple_root</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_root()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_real_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_real_root()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_imaginary_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_imaginary_root()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_schur_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_schur_root()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.slope"><code class="docutils literal notranslate"><span class="pre">Quiver.slope()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_subdimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.is_subdimension_vector()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.all_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">Quiver.all_subdimension_vectors()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_theta_coprime"><code class="docutils literal notranslate"><span class="pre">Quiver.is_theta_coprime()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_indivisible"><code class="docutils literal notranslate"><span class="pre">Quiver.is_indivisible()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.support"><code class="docutils literal notranslate"><span class="pre">Quiver.support()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.in_fundamental_domain"><code class="docutils literal notranslate"><span class="pre">Quiver.in_fundamental_domain()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.division_order"><code class="docutils literal notranslate"><span class="pre">Quiver.division_order()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_generic_subdimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.is_generic_subdimension_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.all_generic_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">Quiver.all_generic_subdimension_vectors()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.generic_ext"><code class="docutils literal notranslate"><span class="pre">Quiver.generic_ext()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.generic_hom"><code class="docutils literal notranslate"><span class="pre">Quiver.generic_hom()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.all_hn_types"><code class="docutils literal notranslate"><span class="pre">Quiver.all_hn_types</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.canonical_stability_parameter"><code class="docutils literal notranslate"><span class="pre">Quiver.canonical_stability_parameter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.has_semistable_representation"><code class="docutils literal notranslate"><span class="pre">Quiver.has_semistable_representation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.has_stable_representation"><code class="docutils literal notranslate"><span class="pre">Quiver.has_stable_representation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.canonical_decomposition"><code class="docutils literal notranslate"><span class="pre">Quiver.canonical_decomposition</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.dimension_nullcone"><code class="docutils literal notranslate"><span class="pre">Quiver.dimension_nullcone()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__hash__"><code class="docutils literal notranslate"><span class="pre">Quiver.__hash__</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__weakref__"><code class="docutils literal notranslate"><span class="pre">Quiver.__weakref__</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.first_hochschild_cohomology"><code class="docutils literal notranslate"><span class="pre">Quiver.first_hochschild_cohomology()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli"><code class="docutils literal notranslate"><span class="pre">QuiverModuli</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.all_harder_narasimhan_types"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_harder_narasimhan_types()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.is_harder_narasimhan_type"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_harder_narasimhan_type()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.codimension_of_harder_narasimhan_stratum"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_of_harder_narasimhan_stratum()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.codimension_unstable_locus"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_unstable_locus()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.all_luna_types"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_luna_types()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.is_luna_type"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_luna_type()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.dimension_of_luna_stratum"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.dimension_of_luna_stratum()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.local_quiver_setting"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.local_quiver_setting()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.codimension_properly_semistable_locus"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_properly_semistable_locus()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.semistable_equals_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.semistable_equals_stable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.is_amply_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_amply_stable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.is_strongly_amply_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_strongly_amply_stable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.harder_narasimhan_weight"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.harder_narasimhan_weight()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.all_weight_bounds"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_weight_bounds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.if_rigidity_inequality_holds"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.if_rigidity_inequality_holds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.all_minimal_forbidden_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_minimal_forbidden_subdimension_vectors()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.tautological_relations"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.tautological_relations()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.dimension"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.dimension()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.poincare_polynomial"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.poincare_polynomial()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.betti_numbers"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.betti_numbers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.picard_rank"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.picard_rank()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.index"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.index()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.chow_ring"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chow_ring()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.chern_class_line_bundle"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chern_class_line_bundle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.chern_character_line_bundle"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chern_character_line_bundle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.total_chern_class_universal"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.total_chern_class_universal()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.point_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.point_class()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.degree"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.degree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.todd_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.todd_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack.dimension"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.dimension()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack.motive"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.motive()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack.chow_ring"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.chow_ring()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
-        <article role="main">
-          <section id="module-quiver.quiver">
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-quiver.quiver">
 <span id="documentation-for-quivertools"></span><h1>Documentation for QuiverTools<a class="headerlink" href="#module-quiver.quiver" title="Link to this heading">#</a></h1>
 <dl class="py class" id="module-quiver.moduli">
 <span id="module-quiver.constructions"></span><dt class="sig sig-object py" id="quiver.Quiver">
@@ -715,11 +948,9 @@ If constructed from a matrix or string, <code class="docutils literal notranslat
 <span class="sig-name descname"><span class="pre">euler_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.euler_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.euler_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Returns the Euler matrix of the quiver</p>
 <p>This is the matrix representing the Euler form, defined by</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\langle\mathbf{d},\mathbf{e}\rangle=
 \sum_{i\in Q_0}d_i e_i-\sum_{\alpha\in Q_1}d_{s(\alpha)}e_{t(\alpha)}\]</div>
-</div>
 <p>In the basis given by the vertices, it can be written as the difference
 of the identity matrix and the adjacency matrix.</p>
 <p>OUTPUT: the Euler matrix of the quiver</p>
@@ -1764,11 +1995,9 @@ for all generic subdimension vectors <cite>f</cite> of <cite>e</cite>.</p>
 <p>OUTPUT: dimension of the generic ext</p>
 <p>According to Theorem 5.4 in Schofield’s ‘General representations of quivers’,
 we have</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\operatorname{ext}(a,b) =
 \operatorname{max}\{-\langle c,b\rangle\}.\]</div>
-</div>
 <p>where <span class="math notranslate nohighlight">\(c\)</span> runs over the generic subdimension vectors of <span class="math notranslate nohighlight">\(a\)</span>.</p>
 <p>EXAMPLES:</p>
 <p>Generic ext on the 3-Kronecker quiver:</p>
@@ -1801,10 +2030,8 @@ we have</p>
 </ul>
 <p>OUTPUT: dimension of the generic hom</p>
 <p>There is a non-empty open subset <cite>U</cite> of <span class="math notranslate nohighlight">\(R(Q,d) \times R(Q,e)\)</span> such that</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\operatorname{dim}(\operatorname{Ext}(M,N)) = \operatorname{ext}(d,e),\]</div>
-</div>
 <p>i.e., <span class="math notranslate nohighlight">\(\operatorname{dim}(\operatorname{Ext}(M,N))\)</span> is minimal for all
 <cite>(M,N)</cite> in <cite>U</cite>.</p>
 <p>Therefore, <cite>operatorname{dim}(operatorname{Hom}(M,N)) =
@@ -2293,10 +2520,8 @@ inside the representation variety.</p>
 # It checks for dstar to be a HN type iff secure == True. This check is slow.
 # Be sure to be dealing with a HN type if you call it with secure == False. This is fast but yields nonsense, if dstar is not a HN type.</p>
 <p>The codimension of the HN stratum of <span class="math notranslate nohighlight">\(d^* = (d^1,...,d^s)\)</span> is given by</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[- sum_{k &lt; l} &lt;d^k,d^l&gt;\]</div>
-</div>
 <p>EXAMPLES</p>
 <p>The 3-Kronecker quiver:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
@@ -2365,7 +2590,6 @@ inside the representation variety.</p>
 <p>Example: Suppose that <cite>d = 3e</cite> and <cite>e, 2e, d = 3e</cite>
 are the only stable subdimension vectors.
 Then the Luna types are</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
     ((3e,1)) \\
@@ -2374,15 +2598,12 @@ Then the Luna types are</p>
     ((e,2),(e,1))\\
     ((e,1),(e,1),(e,1)).
 \end{aligned}\end{split}\]</div>
-</div>
 <p>We implement it as follows.</p>
 <p>A Luna type for us is a dictionary
 <code class="docutils literal notranslate"><span class="pre">{d^1:</span> <span class="pre">p_1^1,...,</span> <span class="pre">d^s:</span> <span class="pre">p_s^1,...,</span> <span class="pre">d_s:</span> <span class="pre">p_s^t}</span></code>
 of dimension vectors d^k and non-empty partitions p^k such that</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[|p_1^1|d^1 + ... + |p_s^t|d^s = d\]</div>
-</div>
 <p>So in the above example, the Luna types are:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="mi">3</span><span class="n">e</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="p">{</span><span class="mi">2</span><span class="n">e</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">e</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
@@ -2798,10 +3019,8 @@ the maximum of the dimension of all Luna strata.</p></li>
 <p>OUTPUT: polynomial in one variable
 # TODO allow a user-supplied ring?</p>
 <p>The Poincare polynomial is defined as</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[P_X(q) = \sum_{i \geq 0} (-1)^i \mathrm{dim} H^i(X;\mathbb{C}) q^{i/2}.\]</div>
-</div>
 <p>For a quiver moduli space whose dimension vector is
 <span class="math notranslate nohighlight">\(\theta\)</span>-coprime, the odd cohomology vanishes
 and this is a Polynomial in <span class="math notranslate nohighlight">\(q\)</span>.
@@ -2944,10 +3163,8 @@ is given by <span class="math notranslate nohighlight">\(e^x = 1 + x + \frac{x^2
 <span class="math notranslate nohighlight">\(U_i\)</span> (<code class="docutils literal notranslate"><span class="pre">chi</span></code>).</p>
 <p>The point class is given as the homogeneous component of degree
 <span class="math notranslate nohighlight">\(\mathrm{dim} X\)</span> of the expression</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\prod_{a \in Q_1} c(U_{t(a)})^{d_{s(a)}} / (\prod_{i \in Q_0} c(U_i)^{d_i})\]</div>
-</div>
 <p>EXAMPLES</p>
 <p><span class="math notranslate nohighlight">\(\mathbb{P}^7\)</span> as a quiver moduli space
 of a generalized Kronecker quiver:</p>
@@ -2998,12 +3215,10 @@ in general position:</p>
 <span class="sig-name descname"><span class="pre">todd_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.todd_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.todd_class" title="Link to this definition">#</a></dt>
 <dd><p>The Todd class of <cite>X</cite> is the Todd class of the tangent bundle.</p>
 <p>For quiver moduli it computes as</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[td(X) =
 (\prod_{a:i \to j \in Q_1} \prod_{p=1}^{d_j} \prod_{q=1}^{d_i} Q(t_{j,q} -
 t_{i,p}))/(prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))\]</div>
-</div>
 </dd></dl>
 
 </dd></dl>
@@ -3015,10 +3230,8 @@ t_{i,p}))/(prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))\]</div>
 <dt class="sig sig-object py" id="quiver.QuiverModuliStack.dimension">
 <span class="sig-name descname"><span class="pre">dimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliStack.dimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliStack.dimension" title="Link to this definition">#</a></dt>
 <dd><p>Computes the dimension of the moduli stack <span class="math notranslate nohighlight">\([R^{(s)st}/G]\)</span>.</p>
-<div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[dim [R^{(s)st}/G] = dim R^{(s)st} - dim G\]</div>
-</div>
 <p>The dimension turns out to be <span class="math notranslate nohighlight">\(-\langle d,d\rangle\)</span>
 if the (semi-)stable locus is non-empty</p>
 </dd></dl>
@@ -3067,163 +3280,184 @@ in an appropriate localization of K_0(Var)</p>
 
 </section>
 
-        </article>
-      </div>
-      <footer>
-        
-        <div class="related-pages">
-          
-          
-        </div>
-        <div class="bottom-of-page">
-          <div class="left-details">
-            <div class="copyright">
-                Copyright &#169; 2023
-            </div>
-            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-            
-            <a href="https://github.com/pradyunsg/furo">Furo</a>
-            
-          </div>
-          <div class="right-details">
-            
-          </div>
-        </div>
-        
-      </footer>
-    </div>
-    <aside class="toc-drawer">
-      
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Documentation for QuiverTools</a><ul>
-<li><a class="reference internal" href="#quiver.Quiver"><code class="docutils literal notranslate"><span class="pre">Quiver</span></code></a><ul>
-<li><a class="reference internal" href="#quiver.Quiver.__init__"><code class="docutils literal notranslate"><span class="pre">Quiver.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.from_digraph"><code class="docutils literal notranslate"><span class="pre">Quiver.from_digraph()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.from_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.from_matrix()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.from_string"><code class="docutils literal notranslate"><span class="pre">Quiver.from_string()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.__str__"><code class="docutils literal notranslate"><span class="pre">Quiver.__str__()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.repr"><code class="docutils literal notranslate"><span class="pre">Quiver.repr()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.str"><code class="docutils literal notranslate"><span class="pre">Quiver.str()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.__eq__"><code class="docutils literal notranslate"><span class="pre">Quiver.__eq__()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.adjacency_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.adjacency_matrix()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.graph"><code class="docutils literal notranslate"><span class="pre">Quiver.graph()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.vertices()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.number_of_vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_vertices()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.number_of_arrows"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_arrows()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_acyclic"><code class="docutils literal notranslate"><span class="pre">Quiver.is_acyclic()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_connected"><code class="docutils literal notranslate"><span class="pre">Quiver.is_connected()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.in_degree"><code class="docutils literal notranslate"><span class="pre">Quiver.in_degree()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.out_degree"><code class="docutils literal notranslate"><span class="pre">Quiver.out_degree()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_source"><code class="docutils literal notranslate"><span class="pre">Quiver.is_source()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_sink"><code class="docutils literal notranslate"><span class="pre">Quiver.is_sink()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.sources"><code class="docutils literal notranslate"><span class="pre">Quiver.sources()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.sinks"><code class="docutils literal notranslate"><span class="pre">Quiver.sinks()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.euler_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.euler_matrix()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.euler_form"><code class="docutils literal notranslate"><span class="pre">Quiver.euler_form()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.cartan_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.cartan_matrix()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.symmetrized_euler_form"><code class="docutils literal notranslate"><span class="pre">Quiver.symmetrized_euler_form()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.tits_form"><code class="docutils literal notranslate"><span class="pre">Quiver.tits_form()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.opposite_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.opposite_quiver()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.doubled_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.doubled_quiver()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.framed_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.framed_quiver()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.coframed_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.coframed_quiver()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.full_subquiver"><code class="docutils literal notranslate"><span class="pre">Quiver.full_subquiver()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.zero_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.zero_vector</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.thin_dimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.thin_dimension_vector</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.simple_root"><code class="docutils literal notranslate"><span class="pre">Quiver.simple_root</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_root()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_real_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_real_root()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_imaginary_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_imaginary_root()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_schur_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_schur_root()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.slope"><code class="docutils literal notranslate"><span class="pre">Quiver.slope()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_subdimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.is_subdimension_vector()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.all_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">Quiver.all_subdimension_vectors()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_theta_coprime"><code class="docutils literal notranslate"><span class="pre">Quiver.is_theta_coprime()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_indivisible"><code class="docutils literal notranslate"><span class="pre">Quiver.is_indivisible()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.support"><code class="docutils literal notranslate"><span class="pre">Quiver.support()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.in_fundamental_domain"><code class="docutils literal notranslate"><span class="pre">Quiver.in_fundamental_domain()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.division_order"><code class="docutils literal notranslate"><span class="pre">Quiver.division_order()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.is_generic_subdimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.is_generic_subdimension_vector</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.all_generic_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">Quiver.all_generic_subdimension_vectors()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.generic_ext"><code class="docutils literal notranslate"><span class="pre">Quiver.generic_ext()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.generic_hom"><code class="docutils literal notranslate"><span class="pre">Quiver.generic_hom()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.all_hn_types"><code class="docutils literal notranslate"><span class="pre">Quiver.all_hn_types</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.canonical_stability_parameter"><code class="docutils literal notranslate"><span class="pre">Quiver.canonical_stability_parameter()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.has_semistable_representation"><code class="docutils literal notranslate"><span class="pre">Quiver.has_semistable_representation()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.has_stable_representation"><code class="docutils literal notranslate"><span class="pre">Quiver.has_stable_representation()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.canonical_decomposition"><code class="docutils literal notranslate"><span class="pre">Quiver.canonical_decomposition</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.dimension_nullcone"><code class="docutils literal notranslate"><span class="pre">Quiver.dimension_nullcone()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.__hash__"><code class="docutils literal notranslate"><span class="pre">Quiver.__hash__</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.__weakref__"><code class="docutils literal notranslate"><span class="pre">Quiver.__weakref__</span></code></a></li>
-<li><a class="reference internal" href="#quiver.Quiver.first_hochschild_cohomology"><code class="docutils literal notranslate"><span class="pre">Quiver.first_hochschild_cohomology()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#quiver.QuiverModuli"><code class="docutils literal notranslate"><span class="pre">QuiverModuli</span></code></a><ul>
-<li><a class="reference internal" href="#quiver.QuiverModuli.all_harder_narasimhan_types"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_harder_narasimhan_types()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.is_harder_narasimhan_type"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_harder_narasimhan_type()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.codimension_of_harder_narasimhan_stratum"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_of_harder_narasimhan_stratum()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.codimension_unstable_locus"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_unstable_locus()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.all_luna_types"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_luna_types()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.is_luna_type"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_luna_type()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.dimension_of_luna_stratum"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.dimension_of_luna_stratum()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.local_quiver_setting"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.local_quiver_setting()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.codimension_properly_semistable_locus"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_properly_semistable_locus()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.semistable_equals_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.semistable_equals_stable()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.is_amply_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_amply_stable()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.is_strongly_amply_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_strongly_amply_stable()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.harder_narasimhan_weight"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.harder_narasimhan_weight()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.all_weight_bounds"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_weight_bounds()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.if_rigidity_inequality_holds"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.if_rigidity_inequality_holds()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.all_minimal_forbidden_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_minimal_forbidden_subdimension_vectors()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuli.tautological_relations"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.tautological_relations()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace</span></code></a><ul>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.dimension"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.dimension()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.poincare_polynomial"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.poincare_polynomial()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.betti_numbers"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.betti_numbers()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.picard_rank"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.picard_rank()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.index"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.index()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.chow_ring"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chow_ring()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.chern_class_line_bundle"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chern_class_line_bundle()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.chern_character_line_bundle"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chern_character_line_bundle()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.total_chern_class_universal"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.total_chern_class_universal()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.point_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.point_class()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.degree"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.degree()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliSpace.todd_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.todd_class()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#quiver.QuiverModuliStack"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack</span></code></a><ul>
-<li><a class="reference internal" href="#quiver.QuiverModuliStack.dimension"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.dimension()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliStack.motive"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.motive()</span></code></a></li>
-<li><a class="reference internal" href="#quiver.QuiverModuliStack.chow_ring"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.chow_ring()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 
-          </div>
-        </div>
-      </div>
-      
-      
-    </aside>
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
   </div>
-</div><script src="_static/documentation_options.js?v=f8c80a57"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"]], "displayMath": [["$$", "$$"], ["\\[", "\\]"]]}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    </body>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver"><code class="docutils literal notranslate"><span class="pre">Quiver</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__init__"><code class="docutils literal notranslate"><span class="pre">Quiver.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.from_digraph"><code class="docutils literal notranslate"><span class="pre">Quiver.from_digraph()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.from_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.from_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.from_string"><code class="docutils literal notranslate"><span class="pre">Quiver.from_string()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__str__"><code class="docutils literal notranslate"><span class="pre">Quiver.__str__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.repr"><code class="docutils literal notranslate"><span class="pre">Quiver.repr()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.str"><code class="docutils literal notranslate"><span class="pre">Quiver.str()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__eq__"><code class="docutils literal notranslate"><span class="pre">Quiver.__eq__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.adjacency_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.adjacency_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.graph"><code class="docutils literal notranslate"><span class="pre">Quiver.graph()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.vertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.number_of_vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_vertices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.number_of_arrows"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_arrows()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_acyclic"><code class="docutils literal notranslate"><span class="pre">Quiver.is_acyclic()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_connected"><code class="docutils literal notranslate"><span class="pre">Quiver.is_connected()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.in_degree"><code class="docutils literal notranslate"><span class="pre">Quiver.in_degree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.out_degree"><code class="docutils literal notranslate"><span class="pre">Quiver.out_degree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_source"><code class="docutils literal notranslate"><span class="pre">Quiver.is_source()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_sink"><code class="docutils literal notranslate"><span class="pre">Quiver.is_sink()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.sources"><code class="docutils literal notranslate"><span class="pre">Quiver.sources()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.sinks"><code class="docutils literal notranslate"><span class="pre">Quiver.sinks()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.euler_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.euler_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.euler_form"><code class="docutils literal notranslate"><span class="pre">Quiver.euler_form()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.cartan_matrix"><code class="docutils literal notranslate"><span class="pre">Quiver.cartan_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.symmetrized_euler_form"><code class="docutils literal notranslate"><span class="pre">Quiver.symmetrized_euler_form()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.tits_form"><code class="docutils literal notranslate"><span class="pre">Quiver.tits_form()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.opposite_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.opposite_quiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.doubled_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.doubled_quiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.framed_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.framed_quiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.coframed_quiver"><code class="docutils literal notranslate"><span class="pre">Quiver.coframed_quiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.full_subquiver"><code class="docutils literal notranslate"><span class="pre">Quiver.full_subquiver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.zero_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.zero_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.thin_dimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.thin_dimension_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.simple_root"><code class="docutils literal notranslate"><span class="pre">Quiver.simple_root</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_root()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_real_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_real_root()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_imaginary_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_imaginary_root()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_schur_root"><code class="docutils literal notranslate"><span class="pre">Quiver.is_schur_root()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.slope"><code class="docutils literal notranslate"><span class="pre">Quiver.slope()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_subdimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.is_subdimension_vector()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.all_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">Quiver.all_subdimension_vectors()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_theta_coprime"><code class="docutils literal notranslate"><span class="pre">Quiver.is_theta_coprime()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_indivisible"><code class="docutils literal notranslate"><span class="pre">Quiver.is_indivisible()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.support"><code class="docutils literal notranslate"><span class="pre">Quiver.support()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.in_fundamental_domain"><code class="docutils literal notranslate"><span class="pre">Quiver.in_fundamental_domain()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.division_order"><code class="docutils literal notranslate"><span class="pre">Quiver.division_order()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_generic_subdimension_vector"><code class="docutils literal notranslate"><span class="pre">Quiver.is_generic_subdimension_vector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.all_generic_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">Quiver.all_generic_subdimension_vectors()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.generic_ext"><code class="docutils literal notranslate"><span class="pre">Quiver.generic_ext()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.generic_hom"><code class="docutils literal notranslate"><span class="pre">Quiver.generic_hom()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.all_hn_types"><code class="docutils literal notranslate"><span class="pre">Quiver.all_hn_types</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.canonical_stability_parameter"><code class="docutils literal notranslate"><span class="pre">Quiver.canonical_stability_parameter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.has_semistable_representation"><code class="docutils literal notranslate"><span class="pre">Quiver.has_semistable_representation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.has_stable_representation"><code class="docutils literal notranslate"><span class="pre">Quiver.has_stable_representation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.canonical_decomposition"><code class="docutils literal notranslate"><span class="pre">Quiver.canonical_decomposition</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.dimension_nullcone"><code class="docutils literal notranslate"><span class="pre">Quiver.dimension_nullcone()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__hash__"><code class="docutils literal notranslate"><span class="pre">Quiver.__hash__</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.__weakref__"><code class="docutils literal notranslate"><span class="pre">Quiver.__weakref__</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.first_hochschild_cohomology"><code class="docutils literal notranslate"><span class="pre">Quiver.first_hochschild_cohomology()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli"><code class="docutils literal notranslate"><span class="pre">QuiverModuli</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.all_harder_narasimhan_types"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_harder_narasimhan_types()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.is_harder_narasimhan_type"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_harder_narasimhan_type()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.codimension_of_harder_narasimhan_stratum"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_of_harder_narasimhan_stratum()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.codimension_unstable_locus"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_unstable_locus()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.all_luna_types"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_luna_types()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.is_luna_type"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_luna_type()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.dimension_of_luna_stratum"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.dimension_of_luna_stratum()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.local_quiver_setting"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.local_quiver_setting()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.codimension_properly_semistable_locus"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.codimension_properly_semistable_locus()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.semistable_equals_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.semistable_equals_stable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.is_amply_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_amply_stable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.is_strongly_amply_stable"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.is_strongly_amply_stable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.harder_narasimhan_weight"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.harder_narasimhan_weight()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.all_weight_bounds"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_weight_bounds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.if_rigidity_inequality_holds"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.if_rigidity_inequality_holds()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.all_minimal_forbidden_subdimension_vectors"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.all_minimal_forbidden_subdimension_vectors()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuli.tautological_relations"><code class="docutils literal notranslate"><span class="pre">QuiverModuli.tautological_relations()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.dimension"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.dimension()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.poincare_polynomial"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.poincare_polynomial()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.betti_numbers"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.betti_numbers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.picard_rank"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.picard_rank()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.index"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.index()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.chow_ring"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chow_ring()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.chern_class_line_bundle"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chern_class_line_bundle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.chern_character_line_bundle"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.chern_character_line_bundle()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.total_chern_class_universal"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.total_chern_class_universal()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.point_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.point_class()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.degree"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.degree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.todd_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.todd_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack.dimension"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.dimension()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack.motive"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.motive()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack.chow_ring"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack.chow_ring()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>
