@@ -75,12 +75,12 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: X = QuiverModuli(Q, [2, 3])
+            sage: X = QuiverModuli(Q, (2, 3))
             sage: X
             abstract moduli of semistable representations, with
-            Q = 3-Kronecker quiver
-            d = [2, 3]
-            theta = (9, -6)
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
 
         It has functionality common to both varieties and stacks, i.e., when it really
         concerns something involving the representation variety::
@@ -122,6 +122,17 @@ class QuiverModuli(Element):
         self._denom = denom
         self._condition = condition
 
+    def __repr_helper(self, description):
+        r"""
+        Standard format for shorthand string presentation
+        """
+        output = "{} of {} representations, with".format(description, self._condition)
+        output += "\n- Q = {}\n- d = {}\n- θ = {}".format(
+            self._Q.repr(), self._d, self._theta
+        )
+
+        return output
+
     def _repr_(self):
         r"""
         Give a shorthand string presentation for an abstract quiver moduli space
@@ -129,15 +140,77 @@ class QuiverModuli(Element):
         if self.get_custom_name():
             return self.get_custom_name()
 
-        output = "abstract moduli of {} representations, with".format(self._condition)
-        output += "\nQ = {}\nd = {}\ntheta = {}".format(
-            self._Q.repr(), self._d, self._theta
-        )
-
-        return output
+        return self.__repr_helper("abstract moduli")
 
     def repr(self):
         return self._repr_()
+
+    def to_space(self):
+        r"""
+        Make the abstract quiver moduli a variety
+
+        This is an explicit way of casting.
+
+        EXAMPLES::
+
+        From an abstract quiver moduli to a space::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: X.to_space()
+            moduli space of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        From a stack to a space::
+
+            sage: X = QuiverModuliStack(Q, (2, 3))
+            sage: X.to_space()
+            moduli space of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
+
+        return QuiverModuliSpace(
+            self._Q, self._d, self._theta, self._denom, self._condition
+        )
+
+    def to_stack(self):
+        r"""
+        Make the abstract quiver moduli a stack
+
+        This is an explicit way of casting.
+
+        EXAMPLES::
+
+        From an abstract quiver moduli to a stack::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: X.to_stack()
+            moduli stack of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        From a space to a stack::
+
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.to_stack()
+            moduli stack of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
+        return QuiverModuliStack(
+            self._Q, self._d, self._theta, self._denom, self._condition
+        )
 
     def quiver(self):
         return self._Q
@@ -1389,11 +1462,11 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: QuiverModuliSpace(Q, [2, 3])
+            sage: QuiverModuliSpace(Q, (2, 3))
             moduli space of semistable representations, with
-            Q = 3-Kronecker quiver
-            d = [2, 3]
-            theta = (9, -6)
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
 
         """
         QuiverModuli.__init__(
@@ -1412,12 +1485,7 @@ class QuiverModuliSpace(QuiverModuli):
         if self.get_custom_name():
             return self.get_custom_name()
 
-        output = "moduli space of {} representations, with".format(self._condition)
-        output += "\nQ = {}\nd = {}\ntheta = {}".format(
-            self._Q.repr(), self._d, self._theta
-        )
-
-        return output
+        return super()._QuiverModuli__repr_helper("moduli space")
 
     def repr(self):
         return self._repr_()
@@ -2018,20 +2086,14 @@ class QuiverModuliStack(QuiverModuli):
         """
         QuiverModuli.__init__(self, Q, d, theta=theta, denom=denom, condition=condition)
 
-    def __repr__(self):
-        return (
-            "A "
-            + self._condition
-            + " quiver moduli stack with:\n"
-            + "Q = "
-            + str(self._Q)
-            + "\n"
-            + "d = "
-            + str(self._d)
-            + "\n"
-            + "theta = "
-            + str(self._theta)
-        )
+    def _repr_(self):
+        r"""
+        Give a shorthand string presentation for the quiver moduli stack
+        """
+        if self.get_custom_name():
+            return self.get_custom_name()
+
+        return super()._QuiverModuli__repr_helper("moduli stack")
 
     def dimension(self):
         r"""
