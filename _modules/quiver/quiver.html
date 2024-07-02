@@ -421,6 +421,37 @@
 
 
     <span class="k">def</span> <span class="nf">_repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give a shorthand string presentation for the quiver</span>
+
+<span class="sd">        If a name is set, use that, if not, just give information on number of vertices</span>
+<span class="sd">        and arrows.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = Quiver.from_string(&quot;1---2&quot;); Q</span>
+<span class="sd">            a quiver with 2 vertices and 3 arrows</span>
+<span class="sd">            sage: Q.rename(&quot;3-Kronecker quiver&quot;); Q</span>
+<span class="sd">            3-Kronecker quiver</span>
+
+<span class="sd">        Renaming and resetting the name::</span>
+
+<span class="sd">            sage: Q = Quiver.from_string(&quot;1---2&quot;)</span>
+<span class="sd">            sage: Q.get_custom_name()</span>
+
+<span class="sd">            sage: Q.rename(&quot;3-Kronecker quiver&quot;)</span>
+<span class="sd">            sage: Q.get_custom_name()</span>
+<span class="sd">            &#39;3-Kronecker quiver&#39;</span>
+<span class="sd">            sage: Q.reset_name()</span>
+<span class="sd">            sage: Q.get_custom_name()</span>
+
+<span class="sd">            sage: Q</span>
+<span class="sd">            a quiver with 2 vertices and 3 arrows</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -431,6 +462,29 @@
 <div class="viewcode-block" id="Quiver.__str__">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.__str__">[docs]</a>
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detailed description of the quiver</span>
+
+<span class="sd">        Everything you get from :meth:`Quiver.repr()` together with the adjacency</span>
+<span class="sd">        matrix.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = Quiver.from_string(&quot;1---2&quot;); print(Q)</span>
+<span class="sd">            a quiver with 2 vertices and 3 arrows</span>
+<span class="sd">            adjacency matrix:</span>
+<span class="sd">            [0 3]</span>
+<span class="sd">            [0 0]</span>
+<span class="sd">            sage: Q.rename(&quot;3-Kronecker quiver&quot;); print(Q)</span>
+<span class="sd">            3-Kronecker quiver</span>
+<span class="sd">            adjacency matrix:</span>
+<span class="sd">            [0 3]</span>
+<span class="sd">            [0 0]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n</span><span class="s2">adjacency matrix:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repr</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">())</span></div>
 
 
@@ -2765,6 +2819,12 @@
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the canonical stability parameter for ``d``</span>
 
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``d``: dimension vector</span>
+
+<span class="sd">        OUTPUT: canonical stability parameter</span>
+
 <span class="sd">        The canonical stability parameter is given by</span>
 <span class="sd">        `\langle d,-\rangle - \langle -,d\rangle`.</span>
 
@@ -2795,14 +2855,28 @@
 <span class="sd">            sage: Q.canonical_stability_parameter([2, 3])</span>
 <span class="sd">            {&#39;bar&#39;: -6, &#39;foo&#39;: 9}</span>
 
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        Canonical stability parameter for the 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2, 3])</span>
+<span class="sd">            sage: Q.canonical_stability_parameter(d)</span>
+<span class="sd">            (9, -6)</span>
+
+<span class="sd">        This method also works with vertex labels::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = Quiver.from_string(&quot;foo---bar&quot;, forget_labels=False)</span>
+<span class="sd">            sage: d = {&quot;foo&quot;: 2, &quot;bar&quot;: 3}</span>
+<span class="sd">            sage: Q.canonical_stability_parameter(d)</span>
+<span class="sd">            {&#39;bar&#39;: -6, &#39;foo&#39;: 9}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">euler_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">euler_matrix</span><span class="p">())</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">euler_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">euler_matrix</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_vertex_labels</span><span class="p">():</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">(),</span> <span class="n">theta</span><span class="p">))</span>
-
         <span class="k">return</span> <span class="n">theta</span></div>
 
 
@@ -2874,7 +2948,7 @@
 
 <span class="sd">        - ``theta`` (default: canonical stability parameter): stability parameter</span>
 
-<span class="sd">        OUTPUT: whether there is a ``theta``-stable representation of dimension vector ``d``</span>
+<span class="sd">        OUTPUT: whether there is a ``theta``-stable of dimension vector ``d``</span>
 
 <span class="sd">        By MR1162487_ `d` admits a theta-stable representation if and only if</span>
 <span class="sd">        :math:`\mu_{\theta}(e) &lt; \mu_{\theta}(d)` for all proper generic subdimension</span>

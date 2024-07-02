@@ -328,7 +328,24 @@ quiver:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.Quiver.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.__str__" title="Link to this definition">#</a></dt>
-<dd><p>Return str(self).</p>
+<dd><p>Detailed description of the quiver</p>
+<p>Everything you get from <a class="reference internal" href="#quiver.Quiver.repr" title="quiver.Quiver.repr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Quiver.repr()</span></code></a> together with the adjacency
+matrix.</p>
+<p>EXAMPLES:</p>
+<p>The 3-Kronecker quiver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">Quiver</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&quot;1---2&quot;</span><span class="p">);</span> <span class="nb">print</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+<span class="n">a</span> <span class="n">quiver</span> <span class="k">with</span> <span class="mi">2</span> <span class="n">vertices</span> <span class="ow">and</span> <span class="mi">3</span> <span class="n">arrows</span>
+<span class="n">adjacency</span> <span class="n">matrix</span><span class="p">:</span>
+<span class="p">[</span><span class="mi">0</span> <span class="mi">3</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;3-Kronecker quiver&quot;</span><span class="p">);</span> <span class="nb">print</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+<span class="mi">3</span><span class="o">-</span><span class="n">Kronecker</span> <span class="n">quiver</span>
+<span class="n">adjacency</span> <span class="n">matrix</span><span class="p">:</span>
+<span class="p">[</span><span class="mi">0</span> <span class="mi">3</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1024,7 +1041,7 @@ the framed vertex to <cite>i</cite></p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="quiver.Quiver.zero_vector">
 <span class="sig-name descname"><span class="pre">zero_vector</span></span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.zero_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.zero_vector" title="Link to this definition">#</a></dt>
-<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 1300)</p>
+<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 1354)</p>
 <p>Returns the zero dimension vector.</p>
 <p>The output is adapted to the vertices.</p>
 <p>OUTPUT: the zero dimension vector</p>
@@ -1048,7 +1065,7 @@ sage: type(KroneckerQuiver(3).zero_vector())
 <dl class="py attribute">
 <dt class="sig sig-object py" id="quiver.Quiver.thin_dimension_vector">
 <span class="sig-name descname"><span class="pre">thin_dimension_vector</span></span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.thin_dimension_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.thin_dimension_vector" title="Link to this definition">#</a></dt>
-<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 1331)</p>
+<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 1385)</p>
 <p>Returns the thin dimension vector, i.e., all ones</p>
 <p>The output is adapted to the vertices.</p>
 <p>OUTPUT: the thin dimension vector</p>
@@ -1072,7 +1089,7 @@ sage: type(KroneckerQuiver(3).thin_dimension_vector())
 <dl class="py attribute">
 <dt class="sig sig-object py" id="quiver.Quiver.simple_root">
 <span class="sig-name descname"><span class="pre">simple_root</span></span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.simple_root"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.simple_root" title="Link to this definition">#</a></dt>
-<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 1362)</p>
+<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 1416)</p>
 <p>Returns the simple root at the vertex <code class="docutils literal notranslate"><span class="pre">i</span></code></p>
 <p>The output is adapted to the vertices.</p>
 <p>OUTPUT: the simple root at the vertex <code class="docutils literal notranslate"><span class="pre">i</span></code></p>
@@ -1550,7 +1567,7 @@ equal to 1:</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="quiver.Quiver.is_generic_subdimension_vector">
 <span class="sig-name descname"><span class="pre">is_generic_subdimension_vector</span></span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.is_generic_subdimension_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.is_generic_subdimension_vector" title="Link to this definition">#</a></dt>
-<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 2027)
+<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 2081)
 Checks if e is a generic subdimension vector of d.</p>
 <blockquote>
 <div><p>INPUT:</p>
@@ -1817,7 +1834,7 @@ is minimal, and
 <dl class="py attribute">
 <dt class="sig sig-object py" id="quiver.Quiver.all_hn_types">
 <span class="sig-name descname"><span class="pre">all_hn_types</span></span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.all_hn_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.all_hn_types" title="Link to this definition">#</a></dt>
-<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 2350)
+<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 2404)
 Returns the list of all Harder–Narasimhan types of d.</p>
 <blockquote>
 <div><p>INPUT:</p>
@@ -1851,6 +1868,11 @@ Returns the list of all Harder–Narasimhan types of d.</p>
 <dt class="sig sig-object py" id="quiver.Quiver.canonical_stability_parameter">
 <span class="sig-name descname"><span class="pre">canonical_stability_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.canonical_stability_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.canonical_stability_parameter" title="Link to this definition">#</a></dt>
 <dd><p>Returns the canonical stability parameter for <code class="docutils literal notranslate"><span class="pre">d</span></code></p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension vector</p></li>
+</ul>
+<p>OUTPUT: canonical stability parameter</p>
 <p>The canonical stability parameter is given by
 <cite>langle d,-rangle - langle -,drangle</cite>.</p>
 <p>INPUT:</p>
@@ -1875,6 +1897,22 @@ Returns the list of all Harder–Narasimhan types of d.</p>
 <p>It takes vertex labels (if present) into account:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">Quiver</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&quot;foo---bar&quot;</span><span class="p">,</span> <span class="n">forget_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="p">{</span><span class="s1">&#39;bar&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>EXAMPLES:</p>
+<p>Canonical stability parameter for the 3-Kronecker quiver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">GeneralizedKroneckerQuiver</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">vector</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This method also works with vertex labels:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">Quiver</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&quot;foo---bar&quot;</span><span class="p">,</span> <span class="n">forget_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 <span class="p">{</span><span class="s1">&#39;bar&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">}</span>
 </pre></div>
 </div>
@@ -1927,7 +1965,7 @@ all generic subdimension vectors <cite>e</cite> of <cite>d</cite>.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension vector</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">theta</span></code> (default: canonical stability parameter): stability parameter</p></li>
 </ul>
-<p>OUTPUT: whether there is a <code class="docutils literal notranslate"><span class="pre">theta</span></code>-stable representation of dimension vector <code class="docutils literal notranslate"><span class="pre">d</span></code></p>
+<p>OUTPUT: whether there is a <code class="docutils literal notranslate"><span class="pre">theta</span></code>-stable of dimension vector <code class="docutils literal notranslate"><span class="pre">d</span></code></p>
 <p>By <a class="reference external" href="https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487">MR1162487</a> <cite>d</cite> admits a theta-stable representation if and only if
 <span class="math notranslate nohighlight">\(\mu_{\theta}(e) &lt; \mu_{\theta}(d)\)</span> for all proper generic subdimension
 vectors <span class="math notranslate nohighlight">\(e\)</span> of <span class="math notranslate nohighlight">\(d\)</span>.</p>
@@ -1960,7 +1998,7 @@ vectors <span class="math notranslate nohighlight">\(e\)</span> of <span class="
 <dl class="py attribute">
 <dt class="sig sig-object py" id="quiver.Quiver.canonical_decomposition">
 <span class="sig-name descname"><span class="pre">canonical_decomposition</span></span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.canonical_decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.canonical_decomposition" title="Link to this definition">#</a></dt>
-<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 2578)</p>
+<dd><p>File: /__w/QuiverTools/QuiverTools/quiver/quiver.py (starting at line 2652)</p>
 <p>Computes the canonical decomposition of a dimension vector.</p>
 <p>INPUT:</p>
 <ul class="simple">
