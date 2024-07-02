@@ -268,6 +268,8 @@ document.write(`
 <span class="kn">from</span> <span class="nn">sage.rings.integer_ring</span> <span class="kn">import</span> <span class="n">ZZ</span>
 <span class="kn">from</span> <span class="nn">sage.structure.element</span> <span class="kn">import</span> <span class="n">Element</span>
 
+<span class="c1"># TODO use tuple notation, not list notation, for dimension vectors and stability</span>
+
 
 <div class="viewcode-block" id="Quiver">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver">[docs]</a>
@@ -526,10 +528,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;a quiver with </span><span class="si">{}</span><span class="s2"> vertices and </span><span class="si">{}</span><span class="s2"> arrows&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">nrows</span><span class="p">(),</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()))</span>
-            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;a quiver with </span><span class="si">{}</span><span class="s2"> vertices and </span><span class="si">{}</span><span class="s2"> arrows&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">nrows</span><span class="p">(),</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()))</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="Quiver.__str__">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.__str__">[docs]</a>
@@ -611,7 +613,7 @@ document.write(`
 
 <span class="sd">        OUTPUT: a complete description of the quiver</span>
 
-<span class="sd">        EXAMPLES::</span>
+<span class="sd">        EXAMPLES:</span>
 
 <span class="sd">        The 3-Kronecker quiver::</span>
 
@@ -859,7 +861,7 @@ document.write(`
 <span class="sd">        OUTPUT: The square matrix ``M`` whose entry ``M[i,j]`` is the number of arrows</span>
 <span class="sd">        from the vertex ``i`` to the vertex ``j``</span>
 
-<span class="sd">        EXAMPLES::</span>
+<span class="sd">        EXAMPLES:</span>
 
 <span class="sd">        The adjacency matrix of a quiver construct from an adjacency matrix::</span>
 
@@ -1321,7 +1323,7 @@ document.write(`
 
 <span class="sd">        OUTPUT: the Cartan matrix of the quiver</span>
 
-<span class="sd">        EXAMPLES::</span>
+<span class="sd">        EXAMPLES:</span>
 
 <span class="sd">        The Kronecker 3-quiver::</span>
 
@@ -1708,7 +1710,6 @@ document.write(`
 
 <div class="viewcode-block" id="Quiver.zero_vector">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.zero_vector">[docs]</a>
-    <span class="nd">@cached_method</span>
     <span class="k">def</span> <span class="nf">zero_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the zero dimension vector.</span>
@@ -1732,17 +1733,20 @@ document.write(`
 <span class="sd">            sage: Q = Quiver.from_string(&quot;a--b----c,a---c&quot;, forget_labels=False)</span>
 <span class="sd">            sage: Q.zero_vector()</span>
 <span class="sd">            {&#39;a&#39;: 0, &#39;b&#39;: 0, &#39;c&#39;: 0}</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__zero_vector</span><span class="p">()</span></div>
+
+
+    <span class="nd">@cached_method</span>
+    <span class="k">def</span> <span class="nf">__zero_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The cacheable implementation of :meth:`Quiver.zero_vector`&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_vertex_labels</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
 
-        <span class="k">return</span> <span class="n">vector</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span></div>
-
+        <span class="k">return</span> <span class="n">vector</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
 
 <div class="viewcode-block" id="Quiver.thin_dimension_vector">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.thin_dimension_vector">[docs]</a>
-    <span class="nd">@cached_method</span>
     <span class="k">def</span> <span class="nf">thin_dimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the thin dimension vector, i.e., all ones</span>
@@ -1768,15 +1772,19 @@ document.write(`
 <span class="sd">            {&#39;a&#39;: 1, &#39;b&#39;: 1, &#39;c&#39;: 1}</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thin_dimension_vector</span><span class="p">()</span></div>
+
+
+    <span class="nd">@cached_method</span>
+    <span class="k">def</span> <span class="nf">__thin_dimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The cacheable implementation of :meth:`Quiver.thin_dimension_vector`&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_vertex_labels</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
 
-        <span class="k">return</span> <span class="n">vector</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span></div>
-
+        <span class="k">return</span> <span class="n">vector</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
 
 <div class="viewcode-block" id="Quiver.simple_root">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.simple_root">[docs]</a>
-    <span class="nd">@cached_method</span>
     <span class="k">def</span> <span class="nf">simple_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the simple root at the vertex ``i``</span>
@@ -1802,14 +1810,19 @@ document.write(`
 <span class="sd">            {&#39;a&#39;: 0, &#39;b&#39;: 1, &#39;c&#39;: 0}</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__simple_root</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
+
+    <span class="nd">@cached_method</span>
+    <span class="k">def</span> <span class="nf">__simple_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The cacheable implementation of :meth:`Quiver.simple_root`&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_vertex_labels</span><span class="p">():</span>
             <span class="n">root</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">()}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">root</span> <span class="o">=</span> <span class="n">vector</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
         <span class="n">root</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="n">root</span></div>
-
+        <span class="k">return</span> <span class="n">root</span>
 
 <div class="viewcode-block" id="Quiver.is_root">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.is_root">[docs]</a>
@@ -2813,10 +2826,8 @@ document.write(`
 <span class="sd">    Harder--Narasimhan types</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Quiver.all_hn_types">
-<a class="viewcode-back" href="../../index.html#quiver.Quiver.all_hn_types">[docs]</a>
     <span class="nd">@cached_method</span>
-    <span class="k">def</span> <span class="nf">all_hn_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_all_harder_narasimhan_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the list of all Harder--Narasimhan types of d.</span>
 
 <span class="sd">        INPUT:</span>
@@ -2837,7 +2848,7 @@ document.write(`
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
 <span class="sd">            sage: d = (2, 3)</span>
 <span class="sd">            sage: theta = (3, -2)</span>
-<span class="sd">            sage: Q.all_hn_types(d, theta)</span>
+<span class="sd">            sage: Q._all_harder_narasimhan_types(d, theta)</span>
 <span class="sd">            [((1, 0), (1, 1), (0, 2)),</span>
 <span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
 <span class="sd">             ((1, 0), (1, 3)),</span>
@@ -2847,21 +2858,27 @@ document.write(`
 <span class="sd">             ((2, 2), (0, 1)),</span>
 <span class="sd">             ((2, 3),)]</span>
 
+<span class="sd">        .. NOTE ::</span>
+
+<span class="sd">        This is a method of Quiver so that its results can be more efficiently cached.</span>
+<span class="sd">        See :meth:`QuiverModuli.all_harder_narasimhan_types()` for the better location</span>
+<span class="sd">        to call it from.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 
+        <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
             <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">all_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ds</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">ds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">filter</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_semistable_representation</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
-                <span class="n">ds</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_semistable_representation</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
+            <span class="n">ds</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">sorted</span><span class="p">:</span>
             <span class="n">ds</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)))</span>
@@ -2871,15 +2888,14 @@ document.write(`
             <span class="k">for</span> <span class="n">estar</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">fstar</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
                 <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">fstar</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">all_hn_types</span><span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_all_harder_narasimhan_types</span><span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="n">all_types</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="p">,)</span> <span class="o">+</span> <span class="n">estar</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_semistable_representation</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">):</span>
             <span class="n">all_types</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">d</span><span class="p">,))</span>
 
-        <span class="k">return</span> <span class="n">all_types</span></div>
-
+        <span class="k">return</span> <span class="n">all_types</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Semi-)stability</span>
@@ -2965,7 +2981,7 @@ document.write(`
 
 <span class="sd">        OUTPUT: whether there is a ``theta``-semistable of dimension vector `d`</span>
 
-<span class="sd">        By MR1162486_ a dimension vector `d` admits a :math:`\theta`-semi-stable</span>
+<span class="sd">        By MR1162487_ a dimension vector `d` admits a :math:`\theta`-semi-stable</span>
 <span class="sd">        representation if and only if :math:`\mu_{\theta}(e) &lt;= \mu_{\theta}(d)` for</span>
 <span class="sd">        all generic subdimension vectors `e` of `d`.</span>
 
@@ -3075,7 +3091,6 @@ document.write(`
 
 <div class="viewcode-block" id="Quiver.canonical_decomposition">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.canonical_decomposition">[docs]</a>
-    <span class="nd">@cached_method</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
     <span class="k">def</span> <span class="nf">canonical_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the canonical decomposition of a dimension vector.</span>
@@ -3141,7 +3156,12 @@ document.write(`
 <span class="sd">            [(5, 4)]</span>
 <span class="sd">            [(5, 5)]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__canonical_decomposition</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
 
+
+    <span class="nd">@cached_method</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">__canonical_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The cacheable implementation of :meth:`Quiver.canonical_decomposition`&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
         <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_generic_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -3150,8 +3170,7 @@ document.write(`
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">canonical_decomposition</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">canonical_decomposition</span><span class="p">(</span>
                     <span class="n">d</span> <span class="o">-</span> <span class="n">e</span>
                 <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="p">]</span></div>
-
+        <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Quiver.dimension_nullcone">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.dimension_nullcone">[docs]</a>

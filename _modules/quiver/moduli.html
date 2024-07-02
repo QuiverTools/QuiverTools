@@ -258,8 +258,7 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for quiver.moduli</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations_with_replacement</span><span class="p">,</span> <span class="n">product</span>
+<span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations_with_replacement</span><span class="p">,</span> <span class="n">product</span>
 
 <span class="kn">from</span> <span class="nn">sage.arith.misc</span> <span class="kn">import</span> <span class="n">bernoulli</span><span class="p">,</span> <span class="n">factorial</span><span class="p">,</span> <span class="n">gcd</span><span class="p">,</span> <span class="n">xgcd</span>
 <span class="kn">from</span> <span class="nn">sage.combinat.partition</span> <span class="kn">import</span> <span class="n">Partitions</span>
@@ -276,6 +275,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">sage.rings.polynomial.term_order</span> <span class="kn">import</span> <span class="n">TermOrder</span>
 <span class="kn">from</span> <span class="nn">sage.rings.quotient_ring</span> <span class="kn">import</span> <span class="n">QuotientRing</span>
 <span class="kn">from</span> <span class="nn">sage.rings.rational_field</span> <span class="kn">import</span> <span class="n">QQ</span>
+<span class="kn">from</span> <span class="nn">sage.structure.element</span> <span class="kn">import</span> <span class="n">Element</span>
 
 <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="n">Quiver</span>
 
@@ -283,78 +283,374 @@ document.write(`
 <span class="n">Permutations</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">mult</span><span class="o">=</span><span class="s2">&quot;r2l&quot;</span><span class="p">)</span>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">a brainstorm</span>
-
-<span class="sd">What about an abstract base class QuiverModuli which deals with all the things common to moduli spaces and moduli stacks?</span>
-<span class="sd">There&#39;d be abstract methods for things like dimension.</span>
-
-<span class="sd">Then we&#39;d have implementations in</span>
-<span class="sd">- QuiverModuliSpace</span>
-<span class="sd">- QuiverModuliStack</span>
-
-<span class="sd">This avoids the ugly distinction between the two.</span>
-<span class="sd">The stack would also allow _not_ specifying stable or semistable,</span>
-<span class="sd">whereas for the quiver moduli space this is a necessity.</span>
-
-
-<span class="sd">Something like enumerating Harder-Narasimhan strata is then a method of QuiverModuliStack?</span>
-
-<span class="sd">Something like computing Betti numbers is then only implemented for QuiverModuliSpace.</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-
-
 <div class="viewcode-block" id="QuiverModuli">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli">[docs]</a>
-<span class="k">class</span> <span class="nc">QuiverModuli</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="nd">@abstractmethod</span>
+<span class="k">class</span> <span class="nc">QuiverModuli</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;semistable&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for an abstract quiver moduli space.</span>
+
+<span class="sd">        This base class contains everything that is common between</span>
+<span class="sd">        - quiver moduli spaces, i.e., varieties</span>
+<span class="sd">        - quiver moduli stacks</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``Q`` -- quiver</span>
+
+<span class="sd">        - ``d`` --- dimension vector</span>
+
+<span class="sd">        - ``theta`` -- stability parameter (default: canonical stability parameter)</span>
+
+<span class="sd">        - ``denom`` -- denominator for slope stability (default: ``sum``), needs to be</span>
+<span class="sd">          effective on the simple roots</span>
+
+<span class="sd">        - ``condition`` -- whether to include all semistables, or only stables</span>
+<span class="sd">          (default: &quot;semistable&quot;)</span>
+
+<span class="sd">        See :class:`QuiverModuliSpace` and :class:`QuiverModuliStack` for more details.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        We can instantiate an abstract quiver moduli space::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            sage: X</span>
+<span class="sd">            abstract moduli of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        It has functionality common to both varieties and stacks, i.e., when it really</span>
+<span class="sd">        concerns something involving the representation variety::</span>
+
+<span class="sd">            sage: X.all_harder_narasimhan_types()</span>
+<span class="sd">            [((1, 0), (1, 1), (0, 2)),</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
+<span class="sd">             ((1, 0), (1, 3)),</span>
+<span class="sd">             ((1, 1), (1, 2)),</span>
+<span class="sd">             ((2, 0), (0, 3)),</span>
+<span class="sd">             ((2, 1), (0, 2)),</span>
+<span class="sd">             ((2, 2), (0, 1)),</span>
+<span class="sd">             ((2, 3),)]</span>
+
+<span class="sd">        But things like dimension depend on whether we consider it as a variety or as</span>
+<span class="sd">        a stack, and thus these are not implemented::</span>
+
+<span class="sd">            sage: X.dimension()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">theta</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-        <span class="k">assert</span> <span class="n">Q</span><span class="o">.</span><span class="n">_is_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">Q</span><span class="o">.</span><span class="n">_is_vector</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">Q</span><span class="o">.</span><span class="n">_is_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="s2">&quot;`d` is not a dimension vector of `Q`&quot;</span>
+        <span class="k">assert</span> <span class="n">Q</span><span class="o">.</span><span class="n">_is_vector</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="s2">&quot;`theta` is not a stability parameter for `Q`&quot;</span>
         <span class="k">assert</span> <span class="n">condition</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;semistable&quot;</span><span class="p">,</span> <span class="s2">&quot;stable&quot;</span><span class="p">]</span>
-        <span class="c1"># TODO this effectivity condition needs to be documented, and maybe be part of Quiver?</span>
         <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span>
             <span class="n">denom</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">simple_root</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Q</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span>
-        <span class="p">)</span>
+        <span class="p">),</span> <span class="s2">&quot;denominator needs to be effective&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span> <span class="o">=</span> <span class="n">Q</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">d</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span> <span class="o">=</span> <span class="n">theta</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span> <span class="o">=</span> <span class="n">denom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span> <span class="o">=</span> <span class="n">denom</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_condition</span> <span class="o">=</span> <span class="n">condition</span>
 
+    <span class="k">def</span> <span class="nf">__repr_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Standard format for shorthand string presentation.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        A Kronecker moduli space with non-standard description::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            sage: print(X._QuiverModuli__repr_helper(&quot;Kronecker moduli space&quot;))</span>
+<span class="sd">            Kronecker moduli space of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> of </span><span class="si">{}</span><span class="s2"> representations, with&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condition</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">- Q = </span><span class="si">{}</span><span class="se">\n</span><span class="s2">- d = </span><span class="si">{}</span><span class="se">\n</span><span class="s2">- θ = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">repr</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="k">def</span> <span class="nf">_repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give a shorthand string presentation for an abstract quiver moduli space.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        A Kronecker moduli space::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            abstract moduli of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__repr_helper</span><span class="p">(</span><span class="s2">&quot;abstract moduli&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QuiverModuli.repr">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.repr">[docs]</a>
+    <span class="k">def</span> <span class="nf">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give a shorthand string presentation for an abstract quiver moduli space.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        A Kronecker moduli spac::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            abstract moduli of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.to_space">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.to_space">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make the abstract quiver moduli a variety.</span>
+
+<span class="sd">        This is an explicit way of casting.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        From an abstract quiver moduli to a space::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            sage: X.to_space()</span>
+<span class="sd">            moduli space of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        From a stack to a space::</span>
+
+<span class="sd">            sage: X = QuiverModuliStack(Q, (2, 3))</span>
+<span class="sd">            sage: X.to_space()</span>
+<span class="sd">            moduli space of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">QuiverModuliSpace</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condition</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.to_stack">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.to_stack">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make the abstract quiver moduli a stack.</span>
+
+<span class="sd">        This is an explicit way of casting.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        From an abstract quiver moduli to a stack::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            sage: X.to_stack()</span>
+<span class="sd">            moduli stack of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        From a space to a stack::</span>
+
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: X.to_stack()</span>
+<span class="sd">            moduli stack of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">QuiverModuliStack</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condition</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.quiver">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.quiver">[docs]</a>
     <span class="k">def</span> <span class="nf">quiver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the quiver of the moduli space.</span>
 
+<span class="sd">        OUTPUT: the underlying quiver as an instance of the Quiver class</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The quiver of a Kronecker moduli space::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            sage: Q == X.quiver()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.dimension_vector">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.dimension_vector">[docs]</a>
     <span class="k">def</span> <span class="nf">dimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the dimension vector of the moduli space.</span>
 
+<span class="sd">        OUTPUT: the dimension vector</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The dimension vector of a Kronecker moduli space::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            sage: X.dimension_vector()</span>
+<span class="sd">            (2, 3)</span>
+
+<span class="sd">        The dimension vector is stored in the same format as it was given::</span>
+
+<span class="sd">            sage: Q = Quiver.from_string(&quot;foo---bar&quot;, forget_labels=False)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, {&quot;foo&quot;: 2, &quot;bar&quot;: 3})</span>
+<span class="sd">            sage: X.dimension_vector()</span>
+<span class="sd">            {&#39;bar&#39;: 3, &#39;foo&#39;: 2}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.stability_parameter">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.stability_parameter">[docs]</a>
     <span class="k">def</span> <span class="nf">stability_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the stability parameter of the moduli space.</span>
 
+<span class="sd">        OUTPUT: the stability parameter</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The stability parameter of a Kronecker moduli space::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, (2, 3), (3, -2))</span>
+<span class="sd">            sage: X.stability_parameter()</span>
+<span class="sd">            (3, -2)</span>
+
+<span class="sd">        The stability parameter is stored in the same format as it was given::</span>
+
+<span class="sd">            sage: Q = Quiver.from_string(&quot;foo---bar&quot;, forget_labels=False)</span>
+<span class="sd">            sage: d, theta = {&quot;foo&quot;: 2, &quot;bar&quot;: 3}, {&quot;foo&quot;: 3, &quot;bar&quot;: -2}</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, d, theta);</span>
+<span class="sd">            sage: X.stability_parameter()</span>
+<span class="sd">            {&#39;bar&#39;: -2, &#39;foo&#39;: 3}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.denominator">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.denominator">[docs]</a>
     <span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the denominator of the slope function used to define the moduli space.</span>
 
+<span class="sd">        OUTPUT: the denominator as a function</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: X.denominator()</span>
+<span class="sd">            &lt;built-in function sum&gt;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.is_nonempty">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.is_nonempty">[docs]</a>
     <span class="k">def</span> <span class="nf">is_nonempty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the moduli space is nonempty.</span>
+
+<span class="sd">        OUTPUT: whether there exist stable/semistable representations</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The 3-Kronecker quiver for `d = (2, 3)` has stable representations::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q, d = GeneralizedKroneckerQuiver(3), [2, 3]</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, d, condition=&quot;stable&quot;); X.is_nonempty()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        The Jordan quiver does not have stable representations, but it has semistable</span>
+<span class="sd">        ones::</span>
+
+<span class="sd">            sage: Q = JordanQuiver()</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, [3], condition=&quot;stable&quot;)</span>
+<span class="sd">            sage: X.is_nonempty()</span>
+<span class="sd">            False</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, [3], condition=&quot;semistable&quot;)</span>
+<span class="sd">            sage: X.is_nonempty()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condition</span> <span class="o">==</span> <span class="s2">&quot;stable&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">has_stable_representation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condition</span> <span class="o">==</span> <span class="s2">&quot;semistable&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">has_semistable_representation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">has_semistable_representation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span></div>
+
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    HN business</span>
+<span class="sd">    Harder--Narasimhan stratification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="QuiverModuli.all_harder_narasimhan_types">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.all_harder_narasimhan_types">[docs]</a>
     <span class="k">def</span> <span class="nf">all_harder_narasimhan_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the list of all HN types.</span>
+<span class="sd">        Returns the list of all Harder--Narasimhan types.</span>
 
 <span class="sd">        A Harder--Narasimhan (HN) type of :math:`d` with respect to :math:`\theta`</span>
 <span class="sd">        is a sequence :math:`d^* = (d^1,...,d^s)` of dimension vectors such that</span>
@@ -365,9 +661,11 @@ document.write(`
 
 <span class="sd">        INPUT:</span>
 
-<span class="sd">        - ``proper`` -- (default: False) whether to exclude the HN type corresponding to the stable locus</span>
+<span class="sd">        - ``proper`` -- (default: False) whether to exclude the HN-type corresponding</span>
+<span class="sd">          to the stable locus</span>
 
-<span class="sd">        - ``sorted`` -- (default: False) whether to sort the HN-types according to the given slope</span>
+<span class="sd">        - ``sorted`` -- (default: False) whether to sort the HN-types according to the</span>
+<span class="sd">          given slope</span>
 
 <span class="sd">        OUTPUT: list of tuples of dimension vectors encoding HN-types</span>
 
@@ -377,7 +675,7 @@ document.write(`
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
-<span class="sd">            sage: X = QuiverModuliSpace(Q, [2, 3])</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
 <span class="sd">            sage: X.all_harder_narasimhan_types()</span>
 <span class="sd">            [((1, 0), (1, 1), (0, 2)),</span>
 <span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
@@ -405,8 +703,7 @@ document.write(`
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = ThreeVertexQuiver(2, 3, 4)</span>
-<span class="sd">            sage: d = [2, 3, 2]</span>
-<span class="sd">            sage: Z = QuiverModuliSpace(Q, [2, 3, 2])</span>
+<span class="sd">            sage: Z = QuiverModuliSpace(Q, (2, 3, 2))</span>
 <span class="sd">            sage: Z.all_harder_narasimhan_types()</span>
 <span class="sd">            [((0, 1, 0), (1, 2, 1), (1, 0, 1)),</span>
 <span class="sd">             ((0, 1, 0), (2, 0, 1), (0, 2, 1)),</span>
@@ -480,13 +777,14 @@ document.write(`
 <span class="sd">             ((2, 3, 0), (0, 0, 2)),</span>
 <span class="sd">             ((2, 3, 1), (0, 0, 1)),</span>
 <span class="sd">             ((2, 3, 2),)]</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
 
-        <span class="n">all_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">all_hn_types</span><span class="p">(</span>
-            <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span>
+        <span class="n">all_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">_all_harder_narasimhan_types</span><span class="p">(</span>
+            <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_denom</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">proper</span> <span class="ow">and</span> <span class="p">(</span><span class="n">d</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">all_types</span><span class="p">:</span>
             <span class="n">all_types</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">d</span><span class="p">,))</span>
@@ -535,7 +833,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">dstar</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">di</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">di</span><span class="p">),</span> <span class="n">dstar</span><span class="p">))</span>
@@ -565,7 +863,7 @@ document.write(`
 <div class="viewcode-block" id="QuiverModuli.codimension_of_harder_narasimhan_stratum">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.codimension_of_harder_narasimhan_stratum">[docs]</a>
     <span class="k">def</span> <span class="nf">codimension_of_harder_narasimhan_stratum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dstar</span><span class="p">,</span> <span class="n">secure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the codimension of the HN stratum of ``dstar``</span>
 <span class="sd">        inside the representation variety.</span>
 
@@ -679,7 +977,7 @@ document.write(`
 <span class="sd">        A Luna type of d for theta is an unordered sequence (i.e. multiset)</span>
 <span class="sd">        :math:`((d^1,m_1),...,(d^s,m_s))` of dimension vectors</span>
 <span class="sd">        :math:`d^k` and positive integers :math:`m_k` such that</span>
-<span class="sd">        </span>
+
 <span class="sd">        - :math:`m_1d^1 + ... + m_sd^s = d`</span>
 <span class="sd">        - :math:`\mu_{\theta}(d^k) = \mu_{\theta}(d)`</span>
 <span class="sd">        - All :math:`d^k` admit a :math:`\theta`-stable representation</span>
@@ -687,7 +985,7 @@ document.write(`
 <span class="sd">        Example: Suppose that `d = 3e` and `e, 2e, d = 3e`</span>
 <span class="sd">        are the only stable subdimension vectors.</span>
 <span class="sd">        Then the Luna types are</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. MATH::</span>
 
 <span class="sd">            \begin{aligned}</span>
@@ -699,7 +997,7 @@ document.write(`
 <span class="sd">            \end{aligned}</span>
 
 <span class="sd">        We implement it as follows.</span>
-<span class="sd">        </span>
+
 <span class="sd">        A Luna type for us is a dictionary</span>
 <span class="sd">        ``{d^1: p_1^1,..., d^s: p_s^1,..., d_s: p_s^t}``</span>
 <span class="sd">        of dimension vectors d^k and non-empty partitions p^k such that</span>
@@ -753,7 +1051,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -837,12 +1135,13 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
         <span class="n">n</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
+        <span class="c1"># TODO shouldn&#39;t we test for Q._is_dimension_vector?</span>
         <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span> <span class="k">for</span> <span class="n">dn</span> <span class="ow">in</span> <span class="n">tau</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">assert</span> <span class="n">d</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">dim</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">tau</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">tau</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
 
@@ -890,9 +1189,9 @@ document.write(`
 <span class="sd">            [1, 2]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="n">secure</span><span class="p">:</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_luna_type</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="n">dn</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">dn</span><span class="p">,</span> <span class="n">dn</span><span class="p">))</span> <span class="k">for</span> <span class="n">dn</span> <span class="ow">in</span> <span class="n">tau</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
@@ -933,7 +1232,6 @@ document.write(`
 <span class="sd">            )</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="n">secure</span><span class="p">:</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_luna_type</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
 
@@ -943,6 +1241,8 @@ document.write(`
         <span class="c1"># iterate over the keys in the order they were inserted. This ensures</span>
         <span class="c1"># that the following is a well-defined adjacency matrix. Python sets</span>
         <span class="c1"># DO NOT have this property.</span>
+        <span class="c1"># TODO this looks fishy; why should this choice of order matter, as long as</span>
+        <span class="c1"># it is the same when defining dloc?</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="p">[</span><span class="n">Q</span><span class="o">.</span><span class="n">generic_ext</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">eq</span><span class="p">)</span> <span class="k">for</span> <span class="n">eq</span> <span class="ow">in</span> <span class="n">tau</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tau</span><span class="p">[</span><span class="n">eq</span><span class="p">]]</span>
@@ -1070,7 +1370,7 @@ document.write(`
 
         <span class="c1"># setup shorthand</span>
         <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
-        <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
         <span class="c1"># the computation of all Luna types takes so much time</span>
@@ -1079,7 +1379,8 @@ document.write(`
             <span class="k">return</span> <span class="kc">True</span>
 
         <span class="c1"># this is probably the fastest way as checking theta-coprimality is fast</span>
-        <span class="c1"># whereas checking for existence of a semi-stable representation is a bit slower</span>
+        <span class="c1"># whereas checking for existence of a semi-stable representation</span>
+        <span class="c1"># is a bit slower</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">Q</span><span class="o">.</span><span class="n">has_semistable_representation</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -1095,7 +1396,6 @@ document.write(`
 <span class="sd">    Ample stability</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO reimplement this with HN strata computation.</span>
 <div class="viewcode-block" id="QuiverModuli.is_amply_stable">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.is_amply_stable">[docs]</a>
     <span class="k">def</span> <span class="nf">is_amply_stable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1173,7 +1473,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
@@ -1198,15 +1498,43 @@ document.write(`
     <span class="k">def</span> <span class="nf">harder_narasimhan_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harder_narasimhan_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the Teleman weight of a Harder-Narasimhan type</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``harder_narasimhan_type`` -- list of vectors of Ints</span>
+
+<span class="sd">        OUTPUT: weight as a fraction</span>
+
+<span class="sd">        The weight of a Harder-Narasimhan type :math:`d^*`</span>
+<span class="sd">        is the weight of the associated 1-PS :math:`\lambda` acting on</span>
+<span class="sd">        :math:`\det(N_{S/R})^{\vee}|_Z`, where `S` is the</span>
+<span class="sd">        corresponding Harder--Narasimhan stratum.</span>
+
+<span class="sd">        .. SEEALSO:: :meth:`all_weight_bounds`, :meth:`if_rigidity_inequality_holds`</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, [2, 3], [3, -2])</span>
+<span class="sd">            sage: HN = X.all_harder_narasimhan_types(proper=True)</span>
+<span class="sd">            sage: {hntype: X.harder_narasimhan_weight(hntype) for hntype in HN}</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): 45,</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)): 100/3,</span>
+<span class="sd">             ((1, 0), (1, 3)): 30,</span>
+<span class="sd">             ((1, 1), (1, 2)): 5/2,</span>
+<span class="sd">             ((2, 0), (0, 3)): 90,</span>
+<span class="sd">             ((2, 1), (0, 2)): 100/3,</span>
+<span class="sd">             ((2, 2), (0, 1)): 10}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># setup shorthand</span>
-        <span class="n">Q</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span>
         <span class="n">HN</span> <span class="o">=</span> <span class="n">harder_narasimhan_type</span>
 
         <span class="k">return</span> <span class="o">-</span><span class="nb">sum</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="c1"># TODO can we make this cleaner-looking?</span>
-                <span class="c1"># = unordered tuples without repetition?</span>
                 <span class="p">(</span>
                     <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">HN</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
                     <span class="o">-</span> <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">HN</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
@@ -1224,9 +1552,9 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the list of all weights appearing in Teleman quantization.</span>
 
-<span class="sd">        For each HN type, the 1-PS lambda acts on :math:`\det(N_{S/R}|_Z)`</span>
+<span class="sd">        For each HN type, the 1-PS lambda acts on :math:`\det(N_{S/R}^{\vee}|_Z)`</span>
 <span class="sd">        with a certain weight. Teleman quantization gives a numerical condition</span>
-<span class="sd">        involving these weights to compute cohmology on the quotient.</span>
+<span class="sd">        involving these weights to compute cohomology on the quotient.</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -1286,7 +1614,7 @@ document.write(`
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># setup shorthand</span>
-        <span class="n">Q</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denominator</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span>
 
         <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_weight_bounds</span><span class="p">()</span>
 
@@ -1345,6 +1673,7 @@ document.write(`
         <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;stable&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">slope</span><span class="p">,</span> <span class="n">es</span><span class="p">))</span>
 
+    <span class="c1"># TODO make it private?</span>
 <div class="viewcode-block" id="QuiverModuli.all_minimal_forbidden_subdimension_vectors">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.all_minimal_forbidden_subdimension_vectors">[docs]</a>
     <span class="k">def</span> <span class="nf">all_minimal_forbidden_subdimension_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1498,8 +1827,8 @@ document.write(`
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;The antisymmetrization of f is the symmetrization</span>
 <span class="sd">                divided by the discriminant.&quot;&quot;&quot;</span>
 
-                <span class="c1"># I don&#39;t want to define W and delta here but globally because then we need to</span>
-                <span class="c1"># compute it just once. That&#39;s probably a bit faster.</span>
+                <span class="c1"># I don&#39;t want to define W and delta here but globally because then</span>
+                <span class="c1"># we need to compute it just once. That&#39;s probably a bit faster.</span>
                 <span class="k">def</span> <span class="nf">permute</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
                     <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">ngens</span><span class="p">())})</span>
 
@@ -1522,7 +1851,8 @@ document.write(`
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">supp</span>
             <span class="p">]</span>
 
-            <span class="c1"># TODO is this not something already implemented? if not, explain what it does!</span>
+            <span class="c1"># TODO is this not something already implemented?</span>
+            <span class="c1"># if not, explain what it does!</span>
             <span class="k">def</span> <span class="nf">product_lists</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
                 <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span>
@@ -1592,17 +1922,51 @@ document.write(`
         <span class="k">return</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;Relations&quot;</span><span class="p">]</span></div>
 
 
-    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="QuiverModuli.dimension">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.dimension">[docs]</a>
     <span class="k">def</span> <span class="nf">dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">pass</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the dimension of the moduli space.</span>
 
-    <span class="nd">@abstractmethod</span>
+<span class="sd">        Abstract method, see the concrete implementations for details.</span>
+
+<span class="sd">        .. SEEALSO::</span>
+
+<span class="sd">            - :meth:`QuiverModuliSpace.dimension`,</span>
+<span class="sd">            - :meth:`QuiverModuliStack.dimension`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.is_smooth">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.is_smooth">[docs]</a>
     <span class="k">def</span> <span class="nf">is_smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">pass</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the moduli space is smooth.</span>
 
-    <span class="nd">@abstractmethod</span>
+<span class="sd">        Abstract method, see the concrete implementations for details.</span>
+
+<span class="sd">        .. SEEALSO::</span>
+
+<span class="sd">            - :meth:`QuiverModuliSpace.is_smooth`</span>
+<span class="sd">            - :meth:`QuiverModuliStack.is_smooth`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.chow_ring">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.chow_ring">[docs]</a>
     <span class="k">def</span> <span class="nf">chow_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the Chow ring of the moduli space.</span>
+
+<span class="sd">        Abstract method, see the concrete implementations for details.</span>
+
+<span class="sd">        .. SEEALSO:: :meth:`QuiverModuliSpace.chow_ring`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+</div>
 
 
 
@@ -1610,6 +1974,37 @@ document.write(`
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace">[docs]</a>
 <span class="k">class</span> <span class="nc">QuiverModuliSpace</span><span class="p">(</span><span class="n">QuiverModuli</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;semistable&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Constructor for a quiver moduli space</span>
+
+<span class="sd">        This is the quiver moduli space as a variety.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``Q`` -- quiver</span>
+
+<span class="sd">        - ``d`` --- dimension vector</span>
+
+<span class="sd">        - ``theta`` -- stability parameter (default: canonical stability parameter)</span>
+
+<span class="sd">        - ``denom`` -- denominator for slope stability (default: ``sum``), needs to be</span>
+<span class="sd">          effective on the simple roots</span>
+
+<span class="sd">        - ``condition`` -- whether to include all semistables, or only stables</span>
+<span class="sd">          (default: &quot;semistable&quot;)</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        An example::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            moduli space of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">QuiverModuli</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">Q</span><span class="p">,</span>
@@ -1619,20 +2014,49 @@ document.write(`
             <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;A &quot;</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condition</span>
-            <span class="o">+</span> <span class="s2">&quot; quiver moduli space with:</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;Q = &quot;</span>
-            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;d = &quot;</span>
-            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;theta = &quot;</span>
-            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give a shorthand string presentation for the quiver moduli space</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        A Kronecker moduli space::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            moduli space of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_QuiverModuli__repr_helper</span><span class="p">(</span><span class="s2">&quot;moduli space&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QuiverModuliSpace.repr">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.repr">[docs]</a>
+    <span class="k">def</span> <span class="nf">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give a shorthand string presentation for the quiver moduli space</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        A Kronecker moduli space::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            moduli space of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="QuiverModuliSpace.dimension">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.dimension">[docs]</a>
@@ -1835,6 +2259,8 @@ document.write(`
         <span class="k">return</span> <span class="n">betti</span></div>
 
 
+<div class="viewcode-block" id="QuiverModuliSpace.is_smooth">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.is_smooth">[docs]</a>
     <span class="k">def</span> <span class="nf">is_smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="c1"># if theta-coprime then you can shortcut everything</span>
         <span class="c1"># if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)</span>
@@ -1844,7 +2270,8 @@ document.write(`
         <span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
 
     <span class="k">def</span> <span class="nf">is_projective</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -1884,8 +2311,9 @@ document.write(`
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">mukai_inequality_holds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.</span>
+
+    <span class="k">def</span> <span class="nf">mukai_inequality_holds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># setup shorthand</span>
         <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
 
@@ -2097,7 +2525,7 @@ document.write(`
                 <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
             <span class="p">]</span>
         <span class="p">)</span>
-        <span class="n">my_denominator</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
+        <span class="n">my_denom</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">total_chern_class_universal</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
                 <span class="o">**</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -2105,7 +2533,7 @@ document.write(`
             <span class="p">]</span>
         <span class="p">)</span>
 
-        <span class="n">quotient</span> <span class="o">=</span> <span class="n">my_numerator</span> <span class="o">/</span> <span class="n">my_denominator</span>
+        <span class="n">quotient</span> <span class="o">=</span> <span class="n">my_numerator</span> <span class="o">/</span> <span class="n">my_denom</span>
 
         <span class="k">return</span> <span class="n">pi</span><span class="p">(</span><span class="n">sect</span><span class="p">(</span><span class="n">quotient</span><span class="p">)</span><span class="o">.</span><span class="n">homogeneous_components</span><span class="p">()[</span><span class="n">N</span><span class="p">])</span></div>
 
@@ -2239,24 +2667,80 @@ document.write(`
 <div class="viewcode-block" id="QuiverModuliStack">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliStack">[docs]</a>
 <span class="k">class</span> <span class="nc">QuiverModuliStack</span><span class="p">(</span><span class="n">QuiverModuli</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;semistable&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor for a quiver moduli stack.</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;semistable&quot;</span><span class="p">):</span>
-        <span class="n">QuiverModuli</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+<span class="sd">        This is the quiver moduli space as a stack.</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;A &quot;</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condition</span>
-            <span class="o">+</span> <span class="s2">&quot; quiver moduli stack with:</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;Q = &quot;</span>
-            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;d = &quot;</span>
-            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span>
-            <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="o">+</span> <span class="s2">&quot;theta = &quot;</span>
-            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
-        <span class="p">)</span>
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``Q`` -- quiver</span>
+
+<span class="sd">        - ``d`` --- dimension vector</span>
+
+<span class="sd">        - ``theta`` -- stability parameter (default: canonical stability parameter)</span>
+
+<span class="sd">        - ``denom`` -- denominator for slope stability (default: ``sum``), needs to be</span>
+<span class="sd">          effective on the simple roots</span>
+
+<span class="sd">        - ``condition`` -- whether to include all semistables, or only stables</span>
+<span class="sd">          (default: &quot;semistable&quot;)</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        An example::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliStack(Q, [2, 3])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">QuiverModuli</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;.</span>
+<span class="sd">        Give a shorthand string presentation for the quiver moduli stack</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        A Kronecker moduli stack::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuliStack(Q, (2, 3))</span>
+<span class="sd">            moduli stack of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_QuiverModuli__repr_helper</span><span class="p">(</span><span class="s2">&quot;moduli stack&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QuiverModuliStack.repr">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuliStack.repr">[docs]</a>
+    <span class="k">def</span> <span class="nf">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give a shorthand string presentation for a quiver moduli stack.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        A Kronecker moduli spac::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuliStack(Q, (2, 3))</span>
+<span class="sd">            moduli stack of semistable representations, with</span>
+<span class="sd">            - Q = 3-Kronecker quiver</span>
+<span class="sd">            - d = (2, 3)</span>
+<span class="sd">            - θ = (9, -6)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repr_</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="QuiverModuliStack.dimension">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliStack.dimension">[docs]</a>
@@ -2284,9 +2768,12 @@ document.write(`
             <span class="k">return</span> <span class="o">-</span><span class="n">Infinity</span></div>
 
 
+<div class="viewcode-block" id="QuiverModuliStack.is_smooth">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuliStack.is_smooth">[docs]</a>
     <span class="k">def</span> <span class="nf">is_smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="c1"># TODO think about the empty case, should it be smooth?</span>
-        <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
 
 <div class="viewcode-block" id="QuiverModuliStack.motive">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliStack.motive">[docs]</a>
@@ -2415,7 +2902,10 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;How about this: instead of a separate class SmoothModel,</span>
 <span class="sd">    we could define a method framed_moduli_space(self,n)</span>
 <span class="sd">    inside the class QuiverModuliSpace which returns another quiver moduli space.</span>
-<span class="sd">    After all, it is itself a quiver moduli space.&quot;&quot;&quot;</span>
+<span class="sd">    After all, it is itself a quiver moduli space.</span>
+
+<span class="sd">    #TODO (Pieter) yes, I agree with this</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
