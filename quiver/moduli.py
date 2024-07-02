@@ -119,7 +119,7 @@ class QuiverModuli(Element):
         self._Q = Q
         self._d = d
         self._theta = theta
-        self._denominator = denom
+        self._denom = denom
         self._condition = condition
 
     def _repr_(self):
@@ -149,7 +149,7 @@ class QuiverModuli(Element):
         return self._theta
 
     def denominator(self):
-        return self._denominator
+        return self._denom
 
     def is_nonempty(self) -> bool:
         if self._condition == "stable":
@@ -294,9 +294,7 @@ class QuiverModuli(Element):
         d = self._Q._coerce_dimension_vector(self._d)
         theta = self._Q._coerce_vector(self._theta)
 
-        all_types = self._Q.all_hn_types(
-            d, theta, denom=self._denominator, sorted=sorted
-        )
+        all_types = self._Q.all_hn_types(d, theta, denom=self._denom, sorted=sorted)
         if proper and (d,) in all_types:
             all_types.remove((d,))
 
@@ -341,7 +339,7 @@ class QuiverModuli(Element):
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
+            self._denom,
         )
 
         dstar = list(map(lambda di: Q._coerce_dimension_vector(di), dstar))
@@ -550,7 +548,7 @@ class QuiverModuli(Element):
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
+            self._denom,
         )
 
         d = Q._coerce_dimension_vector(d)
@@ -631,7 +629,7 @@ class QuiverModuli(Element):
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
+            self._denom,
         )
 
         d = Q._coerce_dimension_vector(d)
@@ -854,7 +852,7 @@ class QuiverModuli(Element):
 
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
-        denom = self._denominator
+        denom = self._denom
         d = Q._coerce_dimension_vector(d)
 
         # the computation of all Luna types takes so much time
@@ -951,7 +949,7 @@ class QuiverModuli(Element):
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
+            self._denom,
         )
         d = Q._coerce_dimension_vector(d)
 
@@ -975,7 +973,7 @@ class QuiverModuli(Element):
         Returns the Teleman weight of a Harder-Narasimhan type
         """
         # setup shorthand
-        Q, theta, denom = self._Q, self._theta, self._denominator
+        Q, theta, denom = self._Q, self._theta, self._denom
         HN = harder_narasimhan_type
 
         return -sum(
@@ -1055,7 +1053,7 @@ class QuiverModuli(Element):
 
         """
         # setup shorthand
-        Q, theta, denom = self._Q, self._theta, self._denominator
+        Q, theta, denom = self._Q, self._theta, self._denom
 
         weights = self.all_weight_bounds()
 
@@ -1858,7 +1856,7 @@ class QuiverModuliSpace(QuiverModuli):
                 for j in range(n)
             ]
         )
-        my_denominator = prod(
+        my_denom = prod(
             [
                 self.total_chern_class_universal(i + 1, chi, chernClasses=chernClasses)
                 ** d[i]
@@ -1866,7 +1864,7 @@ class QuiverModuliSpace(QuiverModuli):
             ]
         )
 
-        quotient = my_numerator / my_denominator
+        quotient = my_numerator / my_denom
 
         return pi(sect(quotient).homogeneous_components()[N])
 
