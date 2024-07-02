@@ -1,15 +1,12 @@
-import copy
 from abc import ABC, abstractmethod
 from itertools import combinations_with_replacement, product
 
 from sage.arith.misc import bernoulli, factorial, gcd, xgcd
-from sage.categories.cartesian_product import cartesian_product
 from sage.combinat.partition import Partitions
 from sage.combinat.permutation import Permutations
 from sage.combinat.schubert_polynomial import SchubertPolynomialRing
 from sage.combinat.sf.sf import SymmetricFunctions
 from sage.matrix.constructor import matrix
-from sage.misc.cachefunc import cached_method
 from sage.misc.misc_c import prod
 from sage.modules.free_module_element import vector
 from sage.rings.function_field.constructor import FunctionField
@@ -19,7 +16,6 @@ from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.polynomial.term_order import TermOrder
 from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
-from sage.structure.element import Element
 
 from quiver import Quiver
 
@@ -96,8 +92,8 @@ class QuiverModuli(ABC):
         r"""
         Returns the list of all HN types.
 
-        A Harder--Narasimhan (HN) type of :math:`d` with respect to :math:`\theta` is a sequence
-        :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
+        A Harder--Narasimhan (HN) type of :math:`d` with respect to :math:`\theta`
+        is a sequence :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
 
         - :math:`d^1 + ... + d^s = d`
         - :math:`\mu_{\theta}(d^1) > ... > \mu_{\theta}(d^s)`
@@ -237,8 +233,8 @@ class QuiverModuli(ABC):
         r"""
         Checks if ``dstar`` is a HN type.
 
-        A Harder--Narasimhan (HN) type of `d` with respect to :math:`\theta` is a sequence
-        :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
+        A Harder--Narasimhan (HN) type of `d` with respect to :math:`\theta`
+        is a sequence :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
 
         - :math:`d^1 + ... + d^s = d`
         - :math:`\mu_{\theta}(d^1) > ... > \mu_{\theta}(d^s)`
@@ -300,7 +296,8 @@ class QuiverModuli(ABC):
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, secure=False):
         """
-        Computes the codimension of the HN stratum of ``dstar`` inside the representation variety.
+        Computes the codimension of the HN stratum of ``dstar``
+        inside the representation variety.
 
         INPUT:
 
@@ -312,14 +309,19 @@ class QuiverModuli(ABC):
         # It checks for dstar to be a HN type iff secure == True. This check is slow.
         # Be sure to be dealing with a HN type if you call it with secure == False. This is fast but yields nonsense, if dstar is not a HN type.
 
-        The codimension of the HN stratum of d^* = (d^1,...,d^s) is given by - sum_{k < l} <d^k,d^l>
+        The codimension of the HN stratum of :math:`d^* = (d^1,...,d^s)` is given by
+
+        .. MATH::
+
+            - sum_{k < l} <d^k,d^l>
 
         EXAMPLES
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,0])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
+            sage: theta = vector([1,0])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: hn = X.all_harder_narasimhan_types(); hn
             [((1, 0), (1, 1), (0, 2)),
@@ -349,7 +351,8 @@ class QuiverModuli(ABC):
 
     def codimension_unstable_locus(self):
         r"""
-        Computes the codimension of the unstable locus inside the representation variety.
+        Computes the codimension of the unstable locus
+        inside the representation variety.
 
         OUTPUT: codimension as Int
 
@@ -421,7 +424,8 @@ class QuiverModuli(ABC):
 
         We implement it as follows.
         
-        A Luna type for us is a dictionary ``{d^1: p_1^1,..., d^s: p_s^1,..., d_s: p_s^t}``
+        A Luna type for us is a dictionary
+        ``{d^1: p_1^1,..., d^s: p_s^1,..., d_s: p_s^t}``
         of dimension vectors d^k and non-empty partitions p^k such that
 
         .. MATH::
@@ -449,7 +453,8 @@ class QuiverModuli(ABC):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([3,3])
+            sage: theta = vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.all_luna_types()
             [{(3, 3): [1]},
@@ -506,7 +511,8 @@ class QuiverModuli(ABC):
                         else:
                             partial[taui] = 1
 
-                    # partial has the form {d^1: Partitions(p^1), ..., d^s: Partitions(p^s)}
+                    # partial has the form
+                    # {d^1: Partitions(p^1), ..., d^s: Partitions(p^s)}
                     for key in partial.keys():
                         partial[key] = Partitions(partial[key]).list()
 
@@ -523,9 +529,9 @@ class QuiverModuli(ABC):
 
         INPUT:
 
-        - ``tau``: a dictionary with dimension vectors as keys and lists of integers as values
+        - ``tau`` -- dictionary with dimension vectors as keys and lists of ints as values
 
-        OUTPUT: whether tau is a Luna type.
+        OUTPUT: whether ``tau`` is a Luna type.
 
         EXAMPLES:
 
@@ -623,15 +629,19 @@ class QuiverModuli(ABC):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,2]), vector([1,-1])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,2])
+            sage: theta = vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: L = X.all_luna_types(); L
             [{(2, 2): [1]}, {(1, 1): [2]}, {(1, 1): [1, 1]}]
-            sage: Qloc, dloc = X.local_quiver_setting(L[0]); Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(L[0]);
+            sage: Qloc.adjacency_matrix() , dloc
             ([4], (1))
-            sage: Qloc, dloc = X.local_quiver_setting(L[1]); Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(L[1]);
+            sage: Qloc.adjacency_matrix() , dloc
             ([1], (2))
-            sage: Qloc, dloc = X.local_quiver_setting(L[2]); Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(L[2]);
+            sage: Qloc.adjacency_matrix() , dloc
             (
             [1 1]
             [1 1], (1, 1)
@@ -673,14 +683,17 @@ class QuiverModuli(ABC):
 
         OUTPUT: codimension as Int
 
-        For ``tau = {d^1: p^1,...,d^s: p^s}`` the codimension of :math:`\pi^{-1}(S_{tau})` is
+        For ``tau = {d^1: p^1,...,d^s: p^s}``
+        the codimension of :math:`\pi^{-1}(S_{tau})` is
 
         .. MATH::
 
             -\langle d,d \rangle + \sum_{k=1}^s
-            (\langle d^k,d^k\rangle - l(p^k) + ||p^k||^2) - \mathrm{dim} N(Q_{tau}, d_{tau}),
+            (\langle d^k,d^k\rangle - l(p^k) + ||p^k||^2) -
+            \mathrm{dim} N(Q_{tau}, d_{tau}),
 
-        where for a partition :math:`p = (n_1,...,n_l)`, we define :math:`||p||^2 = \sum_v n_v^2`
+        where for a partition :math:`p = (n_1,...,n_l)`, we define
+        :math:`||p||^2 = \sum_v n_v^2`
         and :math:`N(Q_{tau}, d_{tau})` is the nullcone of the local quiver setting.
         """
         # setup shorthand
@@ -703,8 +716,8 @@ class QuiverModuli(ABC):
 
     def codimension_properly_semistable_locus(self):
         r"""
-        Computes the codimension of :math:`R^{\theta-sst}(Q,d) \setminus R^{\theta-st}(Q,d)`
-        inside :math:`R(Q,d)`.
+        Computes the codimension of :math:`R^{\theta-sst}(Q,d)
+        \setminus R^{\theta-st}(Q,d)` inside :math:`R(Q,d)`.
 
         OUTPUT: codimension as Int
 
@@ -724,19 +737,23 @@ class QuiverModuli(ABC):
 
     def semistable_equals_stable(self):
         r"""
-        Checks whether every semistable representation is stable for the given stability parameter.
+        Checks whether every semistable representation is stable
+        for the given stability parameter.
 
-        Every :math:`\theta`-semistable representation is :math:`\theta`-stable if and only if
+        Every :math:`\theta`-semistable representation is
+        :math:`\theta`-stable if and only if
         there are no Luna types other than (possibly) ``{d: [1]}``.
 
-        OUTPUT: whether every theta-semistable representation is theta-stable for ``self._theta``
+        OUTPUT: whether every theta-semistable representation is theta-stable
+        for ``self._theta``
 
         EXAMPLES:
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([3,3]), vector([1,-1])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([3,3])
+            sage: theta = vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.semistable_equals_stable()
             False
@@ -791,7 +808,8 @@ class QuiverModuli(ABC):
         r"""Checks if the dimension vector is amply stable for the stability parameter
 
         By definition, a dimension vector `d` is :math:`\theta`-amply stable if the
-        codimension of the :math:`\theta`-semistable locus inside `R(Q,d)` is at least 2.
+        codimension of the :math:`\theta`-semistable locus
+        inside `R(Q,d)` is at least 2.
 
         OUTPUT: whether the data for the quiver moduli space is amply stable
 
@@ -826,7 +844,8 @@ class QuiverModuli(ABC):
         r"""Checks if the dimension vector is strongly amply stable for the stability
         parameter
 
-        We call `d` strongly amply stable for :math:`\theta` if :math:`\langle e,d-e\rangle \leq -2`
+        We call `d` strongly amply stable for :math:`\theta` if
+        :math:`\langle e,d-e\rangle \leq -2`
         holds for all subdimension vectors :math:`e` of :math:`d` which satisfy
         :math:`\mu_{\theta}(e) >= \mu_{\theta}(d)`.
 
@@ -942,10 +961,11 @@ class QuiverModuli(ABC):
     def if_rigidity_inequality_holds(self) -> bool:
         r"""
 
-        OUTPUT: True if the rigidity inequality holds for `d` and `theta`, False otherwise.
+        OUTPUT: whether the rigidity inequality holds on the given moduli
 
         If the weights of the 1-PS lambda on :math:`\det(N_{S/R}|_Z)` for each HN type
-        are all strictly larger than the weights of the tensors of the universal bundles :math:`U_i^\vee \otimes U_j`,
+        are all strictly larger than the weights of the tensors of the universal bundles
+        :math:`U_i^\vee \otimes U_j`,
         then the resulting moduli space is infinitesimally rigid.
 
         EXAMPLES:
@@ -1021,9 +1041,10 @@ class QuiverModuli(ABC):
     def all_minimal_forbidden_subdimension_vectors(self):
         r"""Returns the list of all `minimal` forbidden subdimension vectors
 
-        Minimality is with respect to the partial order `e << d` which means :math:`e_i \leq d_i`
-        for every source `i`, :math:`e_j \geq d_j` for every sink `j`, and :math:`e_k = d_k` for every
-        vertex which is neither a source nor a sink. See also :meth:`Quiver.division_order`.
+        Minimality is with respect to the partial order `e << d` which means
+        :math:`e_i \leq d_i` for every source `i`, :math:`e_j \geq d_j`
+        for every sink `j`, and :math:`e_k = d_k` for every vertex which is neither
+        a source nor a sink. See also :meth:`Quiver.division_order`.
 
         OUTPUT: list of minimal forbidden dimension vectors
 
@@ -1086,11 +1107,9 @@ class QuiverModuli(ABC):
         # TODO
         """
         # setup shorthand
-        Q, d, theta, denom = (
+        Q, d = (
             self._Q,
             self._d,
-            self._theta,
-            self._denominator,
         )
 
         if chernClasses is None:
@@ -1112,8 +1131,11 @@ class QuiverModuli(ABC):
             r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
             return R.gen(r + sum([d[j] for j in range(i)]))
 
-        """Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T]).
-        For a forbidden subdimension vector e of d, the forbidden polynomial in Chern roots is given by prod_{a: i --> j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r) = prod_{i,j} prod_{r=1}^{e_i} prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
+        r"""Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T]).
+        For a forbidden subdimension vector e of d, the forbidden polynomial in Chern
+        roots is given by :math:`\prod_{a: i \to j} \prod_{r=1}^{e_i}
+        \prod_{s=e_j+1}^{d_j} (tj_s - ti_r) =
+        \prod_{i,j} \prod_{r=1}^{e_i} \prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
         forbiddenPolynomials = [
             prod(
                 [
@@ -1153,7 +1175,8 @@ class QuiverModuli(ABC):
                 ]
             )
 
-            """longest is the longest Weyl group element when regarding W as a subgroup of S_{sum d_i}"""
+            """longest is the longest Weyl group element
+            when regarding W as a subgroup of S_{sum d_i}"""
             longest = []
             r = 0
             for i in range(Q.number_of_vertices()):
@@ -1162,7 +1185,8 @@ class QuiverModuli(ABC):
             W = Permutations(bruhat_smaller=longest)
 
             def antisymmetrization(f):
-                """The antisymmetrization of f is the symmetrization divided by the discriminant."""
+                """The antisymmetrization of f is the symmetrization
+                divided by the discriminant."""
 
                 # I don't want to define W and delta here but globally because then we need to
                 # compute it just once. That's probably a bit faster.
@@ -1207,7 +1231,8 @@ class QuiverModuli(ABC):
             A = PolynomialRing(QQ, chernClasses, order=TermOrder("wdegrevlex", degrees))
 
             E = SymmetricFunctions(ZZ).e()
-            """The Chern classes of U_i on [R/G] are the elementary symmetric functions in the Chern roots ti_1,...,ti_{d_i}."""
+            """The Chern classes of U_i on [R/G] are the elementary symmetric functions
+            in the Chern roots ti_1,...,ti_{d_i}."""
             elementarySymmetric = []
             for i in range(Q.number_of_vertices()):
                 elementarySymmetric = elementarySymmetric + [
@@ -1217,7 +1242,8 @@ class QuiverModuli(ABC):
                     )
                     for k in range(1, d[i] + 1)
                 ]
-            """Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i}."""
+            """Map xi_r to the r-th elementary symmetric function
+            in ti_1,...,ti_{d_i}."""
             inclusion = A.hom(elementarySymmetric, R)
 
             """Tautological relations in Chern classes."""
@@ -1236,7 +1262,8 @@ class QuiverModuli(ABC):
 
     def tautological_relations(self, inRoots=False, chernClasses=None, chernRoots=None):
         r"""
-        Returns the tautological relations in Chern classes (if inRoots == False) or in Chern roots.
+        Returns the tautological relations in
+        Chern classes (if inRoots == False) or in Chern roots.
 
         INPUT:
 
@@ -1298,10 +1325,12 @@ class QuiverModuliSpace(QuiverModuli):
         This involves several cases:
 
         - If there are :math:`\theta`-stable representations then
-          :math:`\mathrm{dim} M^{\theta-sst}(Q,d) = M^{\theta-st}(Q,d) = 1 - \langle d,d\rangle`;
+          :math:`\mathrm{dim} M^{\theta-sst}(Q,d) =
+          M^{\theta-st}(Q,d) = 1 - \langle d,d\rangle`;
         - if there are no :math:`\theta`-stable representations then
-          :math:`\mathrm{dim} M^{\theta-st}(Q,d) = -\infty` by convention, and we define
-          :math:`\mathrm{dim} M^{\theta-sst} = \mathrm{max}_{\tau} \{\mathrm{dim} S_{\tau}\}`,
+          :math:`\mathrm{dim} M^{\theta-st}(Q,d) = -\infty` by convention,
+          and we define :math:`\mathrm{dim} M^{\theta-sst} =
+          \mathrm{max}_{\tau} \{\mathrm{dim} S_{\tau}\}`,
           the maximum of the dimension of all Luna strata.
 
         EXAMPLES
@@ -1362,11 +1391,10 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
         # setup shorthand
-        Q, d, theta, denom = (
+        Q, d, theta = (
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
         )
 
         # if there are stable representations then both the stable and
@@ -1380,7 +1408,8 @@ class QuiverModuliSpace(QuiverModuli):
 
         # we care about the semistable locus
         if Q.has_semistable_representation(d, theta):
-            # in this case the dimension is given by the maximum of the dimensions of the Luna strata
+            # in this case the dimension is given by
+            # the maximum of the dimensions of the Luna strata
             return max(
                 self.dimension_of_luna_stratum(tau) for tau in self.all_luna_types()
             )
@@ -1455,7 +1484,8 @@ class QuiverModuliSpace(QuiverModuli):
             q + 1
             sage: X.betti_numbers()
             [1, 0, 1]
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([1,-1])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
+            sage: theta = vector([1,-1])
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
             sage: X.betti_numbers()
             [1, 0, 1, 0, 3, 0, 3, 0, 3, 0, 1, 0, 1]
@@ -1526,7 +1556,7 @@ class QuiverModuliSpace(QuiverModuli):
     def mukai_inequality_holds(self):
         # TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.
         # setup shorthand
-        Q, d, theta = self._Q, self._d, self._theta
+        Q, d = self._Q, self._d
 
         return 1 - Q.tits_form(d) >= self.picard_rank() * (self.index() - 1)
 
@@ -1558,7 +1588,8 @@ class QuiverModuliSpace(QuiverModuli):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
+            sage: theta = vector([3,-2])
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
             sage: chi = vector([-1,1])
             sage: A = X.chow_ring(chi=chi)
@@ -1575,7 +1606,8 @@ class QuiverModuliSpace(QuiverModuli):
         The 5-subspaces quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = SubspaceQuiver(5), vector([1,1,1,1,1,2]), vector([2,2,2,2,2,-5])
+            sage: Q, d = SubspaceQuiver(5), vector([1,1,1,1,1,2])
+            sage: theta = vector([2,2,2,2,2,-5])
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
             sage: chi = vector([-1,-1,-1,-1,-1,3])
             sage: A = X.chow_ring(chi=chi)
@@ -1587,7 +1619,8 @@ class QuiverModuliSpace(QuiverModuli):
         Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
 
-        # This implementation only works if d is theta-coprime which implies that d is indivisible.
+        # This implementation only works if d is theta-coprime
+        # which implies that d is indivisible.
         assert Q.is_theta_coprime(d, theta)
 
         if chernClasses is None:
@@ -1605,7 +1638,8 @@ class QuiverModuliSpace(QuiverModuli):
             chi = vector(m)
 
         # TODO assert that chi has integer entries.
-        """Make sure that chi has weight one, i.e. provides a retraction for X*(PG) --> X*(G)."""
+        """Make sure that chi has weight one, i.e.,
+        provides a retraction for X*(PG) --> X*(G)."""
         assert chi * d == 1
 
         I = A.ideal(rels) + A.ideal(sum([chi[i] * generator(i, 0) for i in range(n)]))
@@ -1648,7 +1682,8 @@ class QuiverModuliSpace(QuiverModuli):
 
     def point_class(self, chi=None, chernClasses=None):
         r"""
-        Returns the point class as an expression in Chern classes of the :math:`U_i` (``chi``).
+        Returns the point class as an expression in Chern classes of the
+        :math:`U_i` (``chi``).
 
         The point class is given as the homogeneous component of degree
         :math:`\mathrm{dim} X` of the expression
@@ -1659,7 +1694,8 @@ class QuiverModuliSpace(QuiverModuli):
 
         EXAMPLES
 
-        :math:`\mathbb{P}^7` as a quiver moduli space of a generalized Kronecker quiver::
+        :math:`\mathbb{P}^7` as a quiver moduli space
+        of a generalized Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(8)
@@ -1681,7 +1717,9 @@ class QuiverModuliSpace(QuiverModuli):
             sage: X.point_class(chi,chernClasses=['x1','x2','y1','y2','y3'])
             y3^2
 
-        A moduli space of the 5-subspaces quiver; it agrees with the blow-up of :math:`\mathbb{P}^2` in 4 points in general position::
+        A moduli space of the 5-subspaces quiver;
+        it agrees with the blow-up of :math:`\mathbb{P}^2` in 4 points
+        in general position::
 
             sage: from quiver import *
             sage: Q = SubspaceQuiver(5)
@@ -1753,7 +1791,8 @@ class QuiverModuliSpace(QuiverModuli):
         """
 
         def todd_generating_series(t, n):
-            r"""We call the series :math:`Q(t) = t/(1-e^{-t})` the Todd generating series.
+            r"""
+            We call the series :math:`Q(t) = t/(1-e^{-t})` the Todd generating series.
 
             The function computes the terms of this series up to degree n."""
             B = [bernoulli(i) for i in range(n + 1)]
@@ -1913,14 +1952,16 @@ class QuiverModuliStack(QuiverModuli):
 
         The 3-Kronecker quiver::
 
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), vector([2,3]), vector([3,-2])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
+            sage: theta = vector([3,-2])
             sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
             sage: X.motive()
             (-L^6 - L^5 - 3*L^4 - 3*L^3 - 3*L^2 - L - 1)/(L - 1)
 
         """
 
-        # Only for semistable. For stable, we don't know what the motive is. It's not pure in general.
+        # Only for semistable.
+        # For stable, we don't know what the motive is. It's not pure in general.
         assert self._condition == "semistable"
         # TODO well: if we have stable == semistable then we can also compute it!
 
@@ -1952,7 +1993,9 @@ class QuiverModuliStack(QuiverModuli):
             # TODO I believe max(d) on a dict should give the wrong result
             I.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
 
-            # Now define a matrix T of size NxN whose entry at position (i,j) is L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j] and 0 otherwise
+            # Now define a matrix T of size NxN whose entry at position (i,j) is
+            # L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j]
+            # and 0 otherwise
             # TODO it's bad to have a function motive inside a motive method
             def motive(e):
                 return QuiverModuliStack(
@@ -1967,7 +2010,8 @@ class QuiverModuliStack(QuiverModuli):
                     if Q.is_subdimension_vector(e, f):
                         T[i, j] = L ** (Q.euler_form(e - f, e)) * motive(f - e)
 
-            # Solve system of linear equations T*x = e_N and extract entry 0 of the solution x.
+            # Solve system of linear equations T*x = e_N
+            # and extract entry 0 of the solution x.
             y = vector([0 for i in range(N)])
             y[N - 1] = 1
             x = T.solve_right(y)
@@ -2020,7 +2064,8 @@ class SmoothModel:
 
 def extended_gcd(x):
     """Computes the gcd and the Bezout coefficients of a list of integers."""
-    # This exists for two integers but there seems to be no implementation for more than one.
+    # This exists for two integers but there seems to be
+    # no implementation for more than one.
     # That's astonishing.
 
     n = len(x)

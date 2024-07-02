@@ -466,8 +466,9 @@ class Quiver(Element):
         r"""
         Coerces ``x`` to be a vector in :math:`\mathbb{Z}Q_0`.
 
-        The input ``x`` must be a data structure that is indexed by the vertices of
-        the quiver, so most likely a dict, list, tuple, or vector.
+        The input ``x`` must be a data structure that is indexed by
+        the vertices of the quiver,
+        so most likely a dict, list, tuple, or vector.
 
         It raises a `ValueError` if it is not a data structure of length the number
         of vertices in the quiver.
@@ -2528,7 +2529,7 @@ class Quiver(Element):
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: where there is a ``theta``-stable representation of ``d``
+        OUTPUT: whether there is a ``theta``-stable representation of dimension vector ``d``
 
         By MR1162487_ `d` admits a theta-stable representation if and only if
         :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all proper generic subdimension
