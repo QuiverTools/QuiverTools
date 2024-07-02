@@ -658,7 +658,8 @@ class QuiverModuli(ABC):
         # iterate over the keys in the order they were inserted. This ensures
         # that the following is a well-defined adjacency matrix. Python sets
         # DO NOT have this property.
-        # TODO this looks fishy; Q.vertices() is the canonical order of vertices
+        # TODO this looks fishy; why should this choice of order matter, as long as
+        # it is the same when defining dloc?
         A = matrix(
             [
                 [Q.generic_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
