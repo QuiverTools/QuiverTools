@@ -2698,17 +2698,3 @@ class Quiver(Element):
                 for a in self.graph().edges()
             )
         )
-
-    """
-    Some things that don't below anywhere else yet?
-    """
-
-    def is_cofree(self, d) -> bool:
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=2394691
-        # we don't really know what this means
-        raise NotImplementedError()
-
-    def perpendicular_category(self, d):
-        # something from Schofield
-        # see Theorem 11.4.6 in the Derksen--Weyman book
-        raise NotImplementedError()
