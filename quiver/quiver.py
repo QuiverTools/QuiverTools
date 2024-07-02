@@ -232,10 +232,10 @@ class Quiver(Element):
         r"""
         Basic description of the quiver
 
-        To override the output, one uses :meth:`Quiver.rename` from the `Element` class.
-        The output of :meth:`Quiver.repr` is that of
-        :meth:`Quiver.get_custom_name` if it is set,
-        else it is the default specifying the number of vertices and arrows.
+        To override the output, one uses :meth:`Quiver.rename` from the `Element`
+        class. The output of :meth:`Quiver.repr` is that of
+        :meth:`Quiver.get_custom_name` if it is set, else it is the default specifying
+        the number of vertices and arrows.
 
         OUTPUT: a basic description of the quiver
 
@@ -1103,7 +1103,8 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``framing`` -- list of integers saying how many arrows from the framed vertex should go to ``i``
+        - ``framing`` -- list of non-negative integers saying how many arrows from the
+          framed vertex to ``i``
 
         - ``vertex`` (default: "-oo") -- name of the framing vertex
 
@@ -1174,7 +1175,8 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``coframing`` -- list of non-negative integers saying how many arrows go from the framed vertex to `i`
+        - ``coframing`` -- list of non-negative integers saying how many arrows go from
+          the framed vertex to `i`
 
         - ``vertex`` (default: None) -- name of the framing vertex
 
@@ -1489,11 +1491,10 @@ class Quiver(Element):
         i.e., a representation whose endomorphism ring is the field itself.
         It is necessarily indecomposable.
 
-        # TODO set up referencing in docstrings, and give precise result
-        By [a result of Schofield]
-        (https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487)
-        `d` is a Schur root if and only if `d` admits a stable representation for
-        the canonical stability parameter.
+        By MR1162487_ `d` is a Schur root if and only if `d` admits a stable
+        representation for the canonical stability parameter.
+
+        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
         EXAMPLES:
 
@@ -1639,7 +1640,7 @@ class Quiver(Element):
 
         - ``e`` -- dimension vector
 
-        - ``b`` (default: `max(e)+1` -- the "base" of the key
+        - ``b`` -- the "base" of the key (default: `max(e)+1`)
 
         OUTPUT: the base-`b` expansion of the dimension vector
 
@@ -1685,7 +1686,7 @@ class Quiver(Element):
 
         - ``forget_labels`` (default: False) -- whether to forget the vertex labels
 
-        OUTPUT: all subdimension vectors of ``d`` satisfying the conditions
+        OUTPUT: all subdimension vectors of ``d`` (maybe excluding zero and/or ``d``)
 
         EXAMPLES:
 
@@ -1887,11 +1888,12 @@ class Quiver(Element):
     def in_fundamental_domain(self, d, depth=0):
         r"""Checks if a dimension vector is in the fundamental domain.
 
-        The fundamental domain of :math:`Q`
-        is the set of dimension vectors :math:`d` such that
+        The fundamental domain of :math:`Q` is the set of dimension vectors :math:`d`
+        such that
 
         - :math:`\operatorname{supp}(\mathbf{d})` is connected
-        - :math:`\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for all simple roots
+        - :math:`\langle d,e_i\rangle + \langle e_i,d\rangle\leq 0` for every simple
+          root
 
         Every :math:`d` in the fundamental domain is an imaginary root and the set of
         imaginary roots is the Weyl group saturation of the fundamental domain.
@@ -1961,12 +1963,15 @@ class Quiver(Element):
         r"""
         Checks if `d << e`.
 
-        This means that :math:`d_i \leq e_i` for every source `i`,
-        :math:`d_j \geq e_j` for every sink `j`,
-        and `d_k = e_k` for every vertex `k` which is neither a source nor a sink.
+        This means that
+
+        - :math:`d_i \leq e_i` for every source `i`
+        - :math:`d_j \geq e_j` for every sink `j`,
+        - :math:`d_k = e_k` for every vertex `k` which is neither a source nor a sink.
 
         # TODO: Think of a better name.
         # Good name?
+        # TODO give reference for its origin
 
         EXAMPLES
 
@@ -2032,6 +2037,7 @@ class Quiver(Element):
 
         OUTPUT: whether e is a generic subdimension vector of d
 
+        # TODO reference
         Using the notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf:
         a dimension vector `e` is a generic subdimension vector of `d`
         if a generic representation of dimension vector `d` possesses
@@ -2171,14 +2177,12 @@ class Quiver(Element):
         if not self.is_subdimension_vector(e, d):
             return False
 
-        subdims = filter(
+        ds = filter(
             lambda eprime: self.euler_form(eprime, d - e) < 0,
             self.all_subdimension_vectors(e),
         )
 
-        return not any(
-            self.is_generic_subdimension_vector(eprime, e) for eprime in subdims
-        )
+        return not any(self.is_generic_subdimension_vector(eprime, e) for eprime in ds)
 
     def all_generic_subdimension_vectors(self, d, proper=False, nonzero=False):
         r"""Returns the list of all generic subdimension vectors of ``d``.
@@ -2257,8 +2261,9 @@ class Quiver(Element):
         .. MATH::
 
             \operatorname{ext}(a,b) =
-            \operatorname{max}\{-\langle c,b\rangle
-            \mid c~gen.~subdimension~vector~of~a\}.
+            \operatorname{max}\{-\langle c,b\rangle\}.
+
+        where :math:`c` runs over the generic subdimension vectors of :math:`a`.
 
         EXAMPLES:
 
@@ -2305,13 +2310,14 @@ class Quiver(Element):
 
             \operatorname{dim}(\operatorname{Ext}(M,N)) = \operatorname{ext}(d,e),
 
-        i.e., :math:`\operatorname{dim}(\operatorname{Ext}(M,N))` is minimal
-        for all `(M,N)` in `U`.
+        i.e., :math:`\operatorname{dim}(\operatorname{Ext}(M,N))` is minimal for all
+        `(M,N)` in `U`.
 
-        Therefore, :math:`\operatorname{dim}(\operatorname{Hom}(M,N)) =
-        \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`
-        is minimal, and :math:`\operatorname{hom}(a,b) =
-        \langle a,b\rangle + \operatorname{ext}(a,b)`.
+        # TODO can we define macros?
+        Therefore,
+        :math:`\operatorname{dim}(\operatorname{Hom}(M,N)) = \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`
+        is minimal, and
+        :math:`\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.
 
         EXAMPLES:
 
@@ -2338,16 +2344,6 @@ class Quiver(Element):
 
         return self.euler_form(d, e) + self.generic_ext(d, e)
 
-    # TODO remove
-    def generic_ext_vanishing(self, a, b):
-        return self.is_generic_subdimension_vector(a, a + b)
-
-    # TODO remove
-    def generic_hom_vanishing(self, a, b):
-        # TODO figure out a way to implement this.
-        # How about this:
-        return self.generic_hom(a, b) == 0
-
     def is_left_orthogonal(self, a, b) -> bool:
         if self.generic_ext_vanishing(a, b):
             return self.euler_form(a, b) == 0
@@ -2364,13 +2360,13 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``d``: dimension vector
+        - ``d`` -- dimension vector
 
-        - ``theta``: stability parameter
+        - ``theta` -- stability parameter
 
-        - ``denom`` (default: sum) -- the denominator function
+        - ``denom`` -- the denominator function (default: sum)
 
-        OUTPUT: list of vectors
+        OUTPUT: list of Harder--Narasimhan types
 
         EXAMPLES:
 
@@ -2389,27 +2385,28 @@ class Quiver(Element):
              ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
              ((2, 3),)]
+
         """
         d = self._coerce_dimension_vector(d)
         theta = self._coerce_vector(theta)
 
-        subdims = filter(
+        ds = filter(
             lambda e: self.slope(e, theta, denom=denom)
             > self.slope(d, theta, denom=denom),
             self.all_subdimension_vectors(d, proper=True, nonzero=True),
         )
-        subdims = list(
+        ds = list(
             filter(
                 lambda e: self.has_semistable_representation(e, theta, denom=denom),
-                subdims,
+                ds,
             )
         )
 
         if sorted:
-            subdims.sort(key=(lambda e: self.slope(e, theta, denom=denom)))
+            ds.sort(key=(lambda e: self.slope(e, theta, denom=denom)))
 
         all_types = []
-        for e in subdims:
+        for e in ds:
             for estar in filter(
                 lambda fstar: self.slope(e, theta, denom=denom)
                 > self.slope(fstar[0], theta, denom=denom),
@@ -2426,10 +2423,13 @@ class Quiver(Element):
     (Semi-)stability
     """
 
+    # TODO some checks
     def canonical_stability_parameter(self, d):
         # TODO theta needs to work with dicts too
         # on it
         r"""
+        Returns the canonical stability parameter for ``d``
+
         The canonical stability parameter is given by
         :math:`\langle d,-\rangle - \langle -,d\rangle`.
 
@@ -2486,18 +2486,14 @@ class Quiver(Element):
         d = self._coerce_dimension_vector(d)
         theta = self._coerce_vector(theta)
 
-        # TODO no need for denominator?!
-        # denominator is needed for slope stability
         return all(
             self.slope(e, theta, denom=denom) <= self.slope(d, theta, denom=denom)
             for e in self.all_generic_subdimension_vectors(d, nonzero=True)
         )
 
-    # TODO make a GitHub issue for King algorithm (is there actually one?)
-    # and Andriaenssens--Le Bruyn algorithm
     def has_stable_representation(self, d, theta=None, denom=sum):
         r"""
-        Checks if there is a ``theta``-stable representation of this dimension vector.
+        Checks if there is a ``theta``-stable representation of this dimension vector
 
         INPUT:
 
@@ -2507,10 +2503,11 @@ class Quiver(Element):
 
         OUTPUT: whether there is a ``theta``-stable representation of dimension vector ``d``
 
+        TODO reference
         See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf:
         a dimension vector d admits a theta-stable representation if and only if
-        :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all
-        proper generic subdimension vectors :math:`e` of :math:`d`.
+        :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all proper generic subdimension
+        vectors :math:`e` of :math:`d`.
 
         EXAMPLES:
 
@@ -2567,14 +2564,13 @@ class Quiver(Element):
 
         OUTPUT: canonical decomposition as list of dimension vectors
 
-        The canonical decomposition of a dimension vector `d` is
-        the unique decomposition :math:`d = e_1 + e_2 + ... + e_k` such that
-        :math:`e_1, e_2, ..., e_k` are such that
-        for all :math:`i \neq j, \mathrm{ext}(e_i, e_j) = \mathrm{ext}(e_j, e_i) = 0`.
+        The canonical decomposition of a dimension vector `d` is the unique
+        decomposition :math:`d = e_1 + e_2 + ... + e_k` such that
+        :math:`e_1, e_2, ..., e_k` are such that for all
+        :math:`i \neq j, \mathrm{ext}(e_i, e_j) = \mathrm{ext}(e_j, e_i) = 0`.
 
-        The general representation of dimension vector `d` is isomorphic
-        to the direct sum of representations of dimension vectors
-        :math:`e_1, e_2, ..., e_k`.
+        The general representation of dimension vector `d` is isomorphic to the direct
+        sum of representations of dimension vectors :math:`e_1, e_2, ..., e_k`.
 
         EXAMPLES:
 
@@ -2626,11 +2622,9 @@ class Quiver(Element):
 
         d = self._coerce_dimension_vector(d)
 
-        generic_subdims = self.all_generic_subdimension_vectors(
-            d, proper=True, nonzero=True
-        )
-        for e in generic_subdims:
-            if d - e in generic_subdims:
+        ds = self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
+        for e in ds:
+            if d - e in ds:
                 return self.canonical_decomposition(e) + self.canonical_decomposition(
                     d - e
                 )
@@ -2640,10 +2634,11 @@ class Quiver(Element):
     Nilpotent cone and Hesselink
     """
 
+    # TODO tests and documentation
     def dimension_nullcone(self, d):
-        r"""
-        Returns the dimension of the nullcone
-        which is the set of all nilpotent representations.
+        r"""Returns the dimension of the nullcone
+
+        The nullcone is the set of all nilpotent representations.
 
         INPUT:
 
@@ -2692,17 +2687,3 @@ class Quiver(Element):
                 for a in self.graph().edges()
             )
         )
-
-    """
-    Some things that don't below anywhere else yet?
-    """
-
-    def is_cofree(self, d) -> bool:
-        # https://mathscinet.ams.org/mathscinet-getitem?mr=2394691
-        # we don't really know what this means
-        raise NotImplementedError()
-
-    def perpendicular_category(self, d):
-        # something from Schofield
-        # see Theorem 11.4.6 in the Derksen--Weyman book
-        raise NotImplementedError()
