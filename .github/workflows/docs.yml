@@ -2,7 +2,7 @@ name: Documentation
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - ".github/workflows/docs.yml"
 
