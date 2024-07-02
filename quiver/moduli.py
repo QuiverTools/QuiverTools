@@ -67,15 +67,92 @@ class QuiverModuli(ABC):
         self._condition = condition
 
     def quiver(self):
+        r""" "
+        Returns the quiver of the moduli space.
+
+        OUTPUT: Quiver object
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3]); X.quiver()
+            3-Kronecker quiver
+        """
         return self._Q
 
     def dimension_vector(self):
+        r"""
+        Returns the dimension vector of the moduli space.
+
+        OUTPUT: the dimension vector, either as vector of ints or as a dict
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q1 = GeneralizedKroneckerQuiver(3)
+            sage: X1 = QuiverModuliSpace(Q1, [2, 3]); X1.dimension_vector()
+            [2, 3]
+
+        The dimension vector is stored in the same format as given::
+
+            sage: Q2 = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: X2 = QuiverModuliSpace(Q2, {"foo": 2, "bar": 3});
+            sage: X2.dimension_vector()
+            {'bar': 3, 'foo': 2}
+            sage: X3 = QuiverModuliSpace(Q2, vector([2, 3])); X3.dimension_vector()
+            (2, 3)
+
+        """
+
         return self._d
 
     def stability_parameter(self):
+        r"""
+        Returns the stability parameter of the moduli space.
+
+        OUTPUT: the stability parameter, either as vector of ints or as a dict
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q1 = GeneralizedKroneckerQuiver(3)
+            sage: X1 = QuiverModuliSpace(Q1, [2, 3], [3, -2]); X1.stability_parameter()
+            [3, -2]
+
+            sage: Q2 = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: d, theta = {"foo": 2, "bar": 3}, {"foo": 3, "bar": -2}
+            sage: X2 = QuiverModuliSpace(Q2, d, theta);
+            sage: X2.stability_parameter()
+            {'bar': -2, 'foo': 3}
+        """
+
         return self._theta
 
     def denominator(self):
+        r"""
+        Returns the denominator of the slope function used to define the moduli space.
+
+        OUTPUT: the denominator as a function
+
+        If the denominator is not specified, it will be the sum function, i.e.,
+        the function sending ``d`` to ``sum(d)``.
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3]); X.denominator()
+            <built-in function sum>
+        """
         return self._denominator
 
     def is_nonempty(self) -> bool:
