@@ -23,31 +23,10 @@ from quiver import Quiver
 Permutations.options(mult="r2l")
 
 
-"""
-a brainstorm
-
-What about an abstract base class QuiverModuli which deals with all the things common to moduli spaces and moduli stacks?
-There'd be abstract methods for things like dimension.
-
-Then we'd have implementations in
-- QuiverModuliSpace
-- QuiverModuliStack
-
-This avoids the ugly distinction between the two.
-The stack would also allow _not_ specifying stable or semistable,
-whereas for the quiver moduli space this is a necessity.
-
-
-Something like enumerating Harder-Narasimhan strata is then a method of QuiverModuliStack?
-
-Something like computing Betti numbers is then only implemented for QuiverModuliSpace.
-
-"""
-
-
 class QuiverModuli(Element):
     def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
-        r"""Constructor for an abstract quiver moduli space
+        r"""
+        Constructor for an abstract quiver moduli space.
 
         This base class contains everything that is common between
         - quiver moduli spaces, i.e., varieties
@@ -75,12 +54,12 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: X = QuiverModuli(Q, [2, 3])
+            sage: X = QuiverModuli(Q, (2, 3))
             sage: X
             abstract moduli of semistable representations, with
-            Q = 3-Kronecker quiver
-            d = [2, 3]
-            theta = (9, -6)
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
 
         It has functionality common to both varieties and stacks, i.e., when it really
         concerns something involving the representation variety::
@@ -110,7 +89,6 @@ class QuiverModuli(Element):
         assert Q._is_dimension_vector(d), "`d` is not a dimension vector of `Q`"
         assert Q._is_vector(theta), "`theta` is not a stability parameter for `Q`"
         assert condition in ["semistable", "stable"]
-        # TODO this effectivity condition needs to be documented, and maybe be part of Quiver?
         assert all(
             denom(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
             for i in Q.vertices()
@@ -119,40 +97,158 @@ class QuiverModuli(Element):
         self._Q = Q
         self._d = d
         self._theta = theta
-        self._denominator = denom
+        self._denom = denom
         self._condition = condition
 
-    def _repr_(self):
+    def __repr_helper(self, description):
         r"""
-        Give a shorthand string presentation for an abstract quiver moduli space
-        """
-        if self.get_custom_name():
-            return self.get_custom_name()
+        Standard format for shorthand string presentation.
 
-        output = "abstract moduli of {} representations, with".format(self._condition)
-        output += "\nQ = {}\nd = {}\ntheta = {}".format(
+        EXAMPLES:
+
+        A Kronecker moduli space with non-standard description::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: print(X._QuiverModuli__repr_helper("Kronecker moduli space"))
+            Kronecker moduli space of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
+        output = "{} of {} representations, with".format(description, self._condition)
+        output += "\n- Q = {}\n- d = {}\n- θ = {}".format(
             self._Q.repr(), self._d, self._theta
         )
 
         return output
 
+    def _repr_(self):
+        r"""
+        Give a shorthand string presentation for an abstract quiver moduli space.
+
+        EXAMPLES:
+
+        A Kronecker moduli space::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuli(Q, (2, 3))
+            abstract moduli of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
+        if self.get_custom_name():
+            return self.get_custom_name()
+
+        return self.__repr_helper("abstract moduli")
+
     def repr(self):
+        r"""
+        Give a shorthand string presentation for an abstract quiver moduli space.
+
+        EXAMPLES:
+
+        A Kronecker moduli spac::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuli(Q, (2, 3))
+            abstract moduli of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
         return self._repr_()
+
+    def to_space(self):
+        r"""
+        Make the abstract quiver moduli a variety.
+
+        This is an explicit way of casting.
+
+        EXAMPLES::
+
+        From an abstract quiver moduli to a space::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: X.to_space()
+            moduli space of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        From a stack to a space::
+
+            sage: X = QuiverModuliStack(Q, (2, 3))
+            sage: X.to_space()
+            moduli space of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
+
+        return QuiverModuliSpace(
+            self._Q, self._d, self._theta, self._denom, self._condition
+        )
+
+    def to_stack(self):
+        r"""
+        Make the abstract quiver moduli a stack.
+
+        This is an explicit way of casting.
+
+        EXAMPLES::
+
+        From an abstract quiver moduli to a stack::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: X.to_stack()
+            moduli stack of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        From a space to a stack::
+
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.to_stack()
+            moduli stack of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
+        return QuiverModuliStack(
+            self._Q, self._d, self._theta, self._denom, self._condition
+        )
 
     def quiver(self):
         r""" "
         Returns the quiver of the moduli space.
 
-        OUTPUT: Quiver object
+        OUTPUT: the underlying quiver as an instance of the Quiver class
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        The quiver of a Kronecker moduli space::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3]); X.quiver()
-            3-Kronecker quiver
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: Q == X.quiver()
+            True
+
         """
         return self._Q
 
@@ -160,52 +256,53 @@ class QuiverModuli(Element):
         r"""
         Returns the dimension vector of the moduli space.
 
-        OUTPUT: the dimension vector, either as vector of ints or as a dict
+        OUTPUT: the dimension vector
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        The dimension vector of a Kronecker moduli space::
 
             sage: from quiver import *
-            sage: Q1 = GeneralizedKroneckerQuiver(3)
-            sage: X1 = QuiverModuliSpace(Q1, [2, 3]); X1.dimension_vector()
-            [2, 3]
-
-        The dimension vector is stored in the same format as given::
-
-            sage: Q2 = Quiver.from_string("foo---bar", forget_labels=False)
-            sage: X2 = QuiverModuliSpace(Q2, {"foo": 2, "bar": 3});
-            sage: X2.dimension_vector()
-            {'bar': 3, 'foo': 2}
-            sage: X3 = QuiverModuliSpace(Q2, vector([2, 3])); X3.dimension_vector()
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: X.dimension_vector()
             (2, 3)
 
-        """
+        The dimension vector is stored in the same format as it was given::
 
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: X = QuiverModuli(Q, {"foo": 2, "bar": 3})
+            sage: X.dimension_vector()
+            {'bar': 3, 'foo': 2}
+
+        """
         return self._d
 
     def stability_parameter(self):
         r"""
         Returns the stability parameter of the moduli space.
 
-        OUTPUT: the stability parameter, either as vector of ints or as a dict
+        OUTPUT: the stability parameter
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        The stability parameter of a Kronecker moduli space::
 
             sage: from quiver import *
-            sage: Q1 = GeneralizedKroneckerQuiver(3)
-            sage: X1 = QuiverModuliSpace(Q1, [2, 3], [3, -2]); X1.stability_parameter()
-            [3, -2]
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3), (3, -2))
+            sage: X.stability_parameter()
+            (3, -2)
 
-            sage: Q2 = Quiver.from_string("foo---bar", forget_labels=False)
+        The stability parameter is stored in the same format as it was given::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
             sage: d, theta = {"foo": 2, "bar": 3}, {"foo": 3, "bar": -2}
-            sage: X2 = QuiverModuliSpace(Q2, d, theta);
-            sage: X2.stability_parameter()
+            sage: X = QuiverModuliSpace(Q, d, theta);
+            sage: X.stability_parameter()
             {'bar': -2, 'foo': 3}
-        """
 
+        """
         return self._theta
 
     def denominator(self):
@@ -214,19 +311,18 @@ class QuiverModuli(Element):
 
         OUTPUT: the denominator as a function
 
-        If the denominator is not specified, it will be the sum function, i.e.,
-        the function sending ``d`` to ``sum(d)``.
-
         EXAMPLES:
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3]); X.denominator()
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.denominator()
             <built-in function sum>
+
         """
-        return self._denominator
+        return self._denom
 
     def is_nonempty(self) -> bool:
         r"""
@@ -247,25 +343,26 @@ class QuiverModuli(Element):
         ones::
 
             sage: Q = JordanQuiver()
-            sage: X = QuiverModuliSpace(Q, [3], condition="stable"); X.is_nonempty()
+            sage: X = QuiverModuliSpace(Q, [3], condition="stable")
+            sage: X.is_nonempty()
             False
             sage: X = QuiverModuliSpace(Q, [3], condition="semistable")
             sage: X.is_nonempty()
             True
-        """
 
+        """
         if self._condition == "stable":
             return self._Q.has_stable_representation(self._d, self._theta)
         if self._condition == "semistable":
             return self._Q.has_semistable_representation(self._d, self._theta)
 
     """
-    HN business
+    Harder--Narasimhan stratification
     """
 
     def all_harder_narasimhan_types(self, proper=False, sorted=False):
         r"""
-        Returns the list of all HN types.
+        Returns the list of all Harder--Narasimhan types.
 
         A Harder--Narasimhan (HN) type of :math:`d` with respect to :math:`\theta`
         is a sequence :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
@@ -276,9 +373,11 @@ class QuiverModuli(Element):
 
         INPUT:
 
-        - ``proper`` -- (default: False) whether to exclude the HN type corresponding to the stable locus
+        - ``proper`` -- (default: False) whether to exclude the HN-type corresponding
+          to the stable locus
 
-        - ``sorted`` -- (default: False) whether to sort the HN-types according to the given slope
+        - ``sorted`` -- (default: False) whether to sort the HN-types according to the
+          given slope
 
         OUTPUT: list of tuples of dimension vectors encoding HN-types
 
@@ -288,7 +387,7 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3])
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: X.all_harder_narasimhan_types()
             [((1, 0), (1, 1), (0, 2)),
              ((1, 0), (1, 2), (0, 1)),
@@ -316,8 +415,7 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(2, 3, 4)
-            sage: d = [2, 3, 2]
-            sage: Z = QuiverModuliSpace(Q, [2, 3, 2])
+            sage: Z = QuiverModuliSpace(Q, (2, 3, 2))
             sage: Z.all_harder_narasimhan_types()
             [((0, 1, 0), (1, 2, 1), (1, 0, 1)),
              ((0, 1, 0), (2, 0, 1), (0, 2, 1)),
@@ -391,13 +489,14 @@ class QuiverModuli(Element):
              ((2, 3, 0), (0, 0, 2)),
              ((2, 3, 1), (0, 0, 1)),
              ((2, 3, 2),)]
+
         """
 
         d = self._Q._coerce_dimension_vector(self._d)
         theta = self._Q._coerce_vector(self._theta)
 
-        all_types = self._Q.all_hn_types(
-            d, theta, denom=self._denominator, sorted=sorted
+        all_types = self._Q._all_harder_narasimhan_types(
+            d, theta, denom=self._denom, sorted=sorted
         )
         if proper and (d,) in all_types:
             all_types.remove((d,))
@@ -443,7 +542,7 @@ class QuiverModuli(Element):
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
+            self._denom,
         )
 
         dstar = list(map(lambda di: Q._coerce_dimension_vector(di), dstar))
@@ -578,7 +677,7 @@ class QuiverModuli(Element):
         A Luna type of d for theta is an unordered sequence (i.e. multiset)
         :math:`((d^1,m_1),...,(d^s,m_s))` of dimension vectors
         :math:`d^k` and positive integers :math:`m_k` such that
-        
+
         - :math:`m_1d^1 + ... + m_sd^s = d`
         - :math:`\mu_{\theta}(d^k) = \mu_{\theta}(d)`
         - All :math:`d^k` admit a :math:`\theta`-stable representation
@@ -586,7 +685,7 @@ class QuiverModuli(Element):
         Example: Suppose that `d = 3e` and `e, 2e, d = 3e`
         are the only stable subdimension vectors.
         Then the Luna types are
-        
+
         .. MATH::
 
             \begin{aligned}
@@ -598,7 +697,7 @@ class QuiverModuli(Element):
             \end{aligned}
 
         We implement it as follows.
-        
+
         A Luna type for us is a dictionary
         ``{d^1: p_1^1,..., d^s: p_s^1,..., d_s: p_s^t}``
         of dimension vectors d^k and non-empty partitions p^k such that
@@ -652,7 +751,7 @@ class QuiverModuli(Element):
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
+            self._denom,
         )
 
         d = Q._coerce_dimension_vector(d)
@@ -733,12 +832,13 @@ class QuiverModuli(Element):
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
+            self._denom,
         )
 
         d = Q._coerce_dimension_vector(d)
 
         n = Q.number_of_vertices()
+        # TODO shouldn't we test for Q._is_dimension_vector?
         assert all(len(dn) == n for dn in tau.keys())
         assert d == sum(k * dim for k in tau.keys() for dim in tau[k])
 
@@ -783,9 +883,9 @@ class QuiverModuli(Element):
             [1, 2]
 
         """
-
         if secure:
             assert self.is_luna_type(tau)
+
         return sum(len(tau[dn]) * (1 - self._Q.euler_form(dn, dn)) for dn in tau.keys())
 
     def local_quiver_setting(self, tau, secure=True):
@@ -823,7 +923,6 @@ class QuiverModuli(Element):
             )
 
         """
-
         if secure:
             assert self.is_luna_type(tau)
 
@@ -956,7 +1055,7 @@ class QuiverModuli(Element):
 
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
-        denom = self._denominator
+        denom = self._denom
         d = Q._coerce_dimension_vector(d)
 
         # the computation of all Luna types takes so much time
@@ -1053,7 +1152,7 @@ class QuiverModuli(Element):
             self._Q,
             self._d,
             self._theta,
-            self._denominator,
+            self._denom,
         )
         d = Q._coerce_dimension_vector(d)
 
@@ -1107,7 +1206,7 @@ class QuiverModuli(Element):
              ((2, 2), (0, 1)): 10}
         """
         # setup shorthand
-        Q, theta, denom = self._Q, self._theta, self._denominator
+        Q, theta, denom = self._Q, self._theta, self._denom
         HN = harder_narasimhan_type
 
         return -sum(
@@ -1185,7 +1284,7 @@ class QuiverModuli(Element):
 
         """
         # setup shorthand
-        Q, theta, denom = self._Q, self._theta, self._denominator
+        Q, theta, denom = self._Q, self._theta, self._denom
 
         weights = self.all_weight_bounds()
 
@@ -1546,11 +1645,11 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: QuiverModuliSpace(Q, [2, 3])
+            sage: QuiverModuliSpace(Q, (2, 3))
             moduli space of semistable representations, with
-            Q = 3-Kronecker quiver
-            d = [2, 3]
-            theta = (9, -6)
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
 
         """
         QuiverModuli.__init__(
@@ -1565,18 +1664,42 @@ class QuiverModuliSpace(QuiverModuli):
     def _repr_(self):
         r"""
         Give a shorthand string presentation for the quiver moduli space
+
+        EXAMPLES:
+
+        A Kronecker moduli space::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3))
+            moduli space of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
         """
         if self.get_custom_name():
             return self.get_custom_name()
 
-        output = "moduli space of {} representations, with".format(self._condition)
-        output += "\nQ = {}\nd = {}\ntheta = {}".format(
-            self._Q.repr(), self._d, self._theta
-        )
-
-        return output
+        return super()._QuiverModuli__repr_helper("moduli space")
 
     def repr(self):
+        r"""
+        Give a shorthand string presentation for the quiver moduli space
+
+        EXAMPLES:
+
+        A Kronecker moduli space::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3))
+            moduli space of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
         return self._repr_()
 
     def dimension(self):
@@ -2014,7 +2137,7 @@ class QuiverModuliSpace(QuiverModuli):
                 for j in range(n)
             ]
         )
-        my_denominator = prod(
+        my_denom = prod(
             [
                 self.total_chern_class_universal(i + 1, chi, chernClasses=chernClasses)
                 ** d[i]
@@ -2022,7 +2145,7 @@ class QuiverModuliSpace(QuiverModuli):
             ]
         )
 
-        quotient = my_numerator / my_denominator
+        quotient = my_numerator / my_denom
 
         return pi(sect(quotient).homogeneous_components()[N])
 
@@ -2147,7 +2270,8 @@ class QuiverModuliSpace(QuiverModuli):
 
 class QuiverModuliStack(QuiverModuli):
     def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
-        r"""Constructor for a quiver moduli stack
+        r"""
+        Constructor for a quiver moduli stack.
 
         This is the quiver moduli space as a stack.
 
@@ -2176,20 +2300,46 @@ class QuiverModuliStack(QuiverModuli):
         """
         QuiverModuli.__init__(self, Q, d, theta=theta, denom=denom, condition=condition)
 
-    def __repr__(self):
-        return (
-            "A "
-            + self._condition
-            + " quiver moduli stack with:\n"
-            + "Q = "
-            + str(self._Q)
-            + "\n"
-            + "d = "
-            + str(self._d)
-            + "\n"
-            + "theta = "
-            + str(self._theta)
-        )
+    def _repr_(self):
+        r""".
+        Give a shorthand string presentation for the quiver moduli stack
+
+        EXAMPLES:
+
+        A Kronecker moduli stack::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliStack(Q, (2, 3))
+            moduli stack of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
+        if self.get_custom_name():
+            return self.get_custom_name()
+
+        return super()._QuiverModuli__repr_helper("moduli stack")
+
+    def repr(self):
+        r"""
+        Give a shorthand string presentation for a quiver moduli stack.
+
+        EXAMPLES:
+
+        A Kronecker moduli spac::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliStack(Q, (2, 3))
+            moduli stack of semistable representations, with
+            - Q = 3-Kronecker quiver
+            - d = (2, 3)
+            - θ = (9, -6)
+
+        """
+        return self._repr_()
 
     def dimension(self):
         r"""
@@ -2338,7 +2488,10 @@ class SmoothModel:
     """How about this: instead of a separate class SmoothModel,
     we could define a method framed_moduli_space(self,n)
     inside the class QuiverModuliSpace which returns another quiver moduli space.
-    After all, it is itself a quiver moduli space."""
+    After all, it is itself a quiver moduli space.
+
+    #TODO (Pieter) yes, I agree with this
+    """
 
     def __init__(self):
         pass
