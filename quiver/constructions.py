@@ -144,6 +144,14 @@ def LoopQuiver(m: int):
 
     This is a synonym for :func:`GeneralizedJordanQuiver`.
 
+    EXAMPLES:
+
+    This is a synonym::
+
+        sage: from quiver import *
+        sage: LoopQuiver(7) == GeneralizedJordanQuiver(7)
+        True
+
     .. SEEALSO::
 
         :func:`GeneralizedJordanQuiver`
@@ -160,6 +168,12 @@ def JordanQuiver(m: int = 1):
     Return the generalized Jordan quiver with ``m`` loops
 
     The default value for ``m`` is 1.
+
+    This is a synonym::
+
+        sage: from quiver import *
+        sage: JordanQuiver(7) == GeneralizedJordanQuiver(7)
+        True
 
     .. SEEALSO::
 

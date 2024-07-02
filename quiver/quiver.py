@@ -219,6 +219,37 @@ class Quiver(Element):
         return cls.from_digraph(G, name)
 
     def _repr_(self) -> str:
+        r"""
+        Give a shorthand string presentation for the quiver
+
+        If a name is set, use that, if not, just give information on number of vertices
+        and arrows.
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = Quiver.from_string("1---2"); Q
+            a quiver with 2 vertices and 3 arrows
+            sage: Q.rename("3-Kronecker quiver"); Q
+            3-Kronecker quiver
+
+        Renaming and resetting the name::
+
+            sage: Q = Quiver.from_string("1---2")
+            sage: Q.get_custom_name()
+
+            sage: Q.rename("3-Kronecker quiver")
+            sage: Q.get_custom_name()
+            '3-Kronecker quiver'
+            sage: Q.reset_name()
+            sage: Q.get_custom_name()
+
+            sage: Q
+            a quiver with 2 vertices and 3 arrows
+
+        """
         if self.get_custom_name():
             return self.get_custom_name()
         else:
@@ -227,6 +258,29 @@ class Quiver(Element):
             )
 
     def __str__(self) -> str:
+        r"""
+        Detailed description of the quiver
+
+        Everything you get from :meth:`Quiver.repr()` together with the adjacency
+        matrix.
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = Quiver.from_string("1---2"); print(Q)
+            a quiver with 2 vertices and 3 arrows
+            adjacency matrix:
+            [0 3]
+            [0 0]
+            sage: Q.rename("3-Kronecker quiver"); print(Q)
+            3-Kronecker quiver
+            adjacency matrix:
+            [0 3]
+            [0 0]
+
+        """
         return "{}\nadjacency matrix:\n{}".format(self.repr(), self.adjacency_matrix())
 
     def repr(self) -> str:
