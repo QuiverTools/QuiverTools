@@ -397,7 +397,7 @@ class QuiverModuli(ABC):
         return True
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, secure=False):
-        """
+        r"""
         Computes the codimension of the HN stratum of ``dstar``
         inside the representation variety.
 
@@ -892,7 +892,8 @@ class QuiverModuli(ABC):
             return True
 
         # this is probably the fastest way as checking theta-coprimality is fast
-        # whereas checking for existence of a semi-stable representation is a bit slower
+        # whereas checking for existence of a semi-stable representation
+        # is a bit slower
 
         if not Q.has_semistable_representation(d, theta, denom=denom):
             return True
@@ -907,7 +908,6 @@ class QuiverModuli(ABC):
     Ample stability
     """
 
-    # TODO reimplement this with HN strata computation.
     def is_amply_stable(self) -> bool:
         r"""Checks if the dimension vector is amply stable for the stability parameter
 
@@ -1002,6 +1002,36 @@ class QuiverModuli(ABC):
     def harder_narasimhan_weight(self, harder_narasimhan_type):
         r"""
         Returns the Teleman weight of a Harder-Narasimhan type
+
+        INPUT:
+
+        - ``harder_narasimhan_type`` -- list of vectors of Ints
+
+        OUTPUT: weight as a fraction
+
+        The weight of a Harder-Narasimhan type :math:`d^*`
+        is the weight of the associated 1-PS :math:`\lambda` acting on
+        :math:`\det(N_{S/R})^{\vee}|_Z`, where `S` is the
+        corresponding Harder--Narasimhan stratum.
+
+        .. SEEALSO:: :meth:`all_weight_bounds`, :meth:`if_rigidity_inequality_holds`
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3], [3, -2])
+            sage: HN = X.all_harder_narasimhan_types(proper=True)
+            sage: {hntype: X.harder_narasimhan_weight(hntype) for hntype in HN}
+            {((1, 0), (1, 1), (0, 2)): 45,
+             ((1, 0), (1, 2), (0, 1)): 100/3,
+             ((1, 0), (1, 3)): 30,
+             ((1, 1), (1, 2)): 5/2,
+             ((2, 0), (0, 3)): 90,
+             ((2, 1), (0, 2)): 100/3,
+             ((2, 2), (0, 1)): 10}
         """
         # setup shorthand
         Q, theta, denom = self._Q, self._theta, self._denominator
@@ -1009,8 +1039,6 @@ class QuiverModuli(ABC):
 
         return -sum(
             [
-                # TODO can we make this cleaner-looking?
-                # = unordered tuples without repetition?
                 (
                     Q.slope(HN[s], theta, denom=denom)
                     - Q.slope(HN[t], theta, denom=denom)
@@ -1025,9 +1053,9 @@ class QuiverModuli(ABC):
         r"""
         Returns the list of all weights appearing in Teleman quantization.
 
-        For each HN type, the 1-PS lambda acts on :math:`\det(N_{S/R}|_Z)`
+        For each HN type, the 1-PS lambda acts on :math:`\det(N_{S/R}^{\vee}|_Z)`
         with a certain weight. Teleman quantization gives a numerical condition
-        involving these weights to compute cohmology on the quotient.
+        involving these weights to compute cohomology on the quotient.
 
         INPUT:
 
@@ -1292,8 +1320,8 @@ class QuiverModuli(ABC):
                 """The antisymmetrization of f is the symmetrization
                 divided by the discriminant."""
 
-                # I don't want to define W and delta here but globally because then we need to
-                # compute it just once. That's probably a bit faster.
+                # I don't want to define W and delta here but globally because then
+                # we need to compute it just once. That's probably a bit faster.
                 def permute(f, w):
                     return f.subs({R.gen(i): R.gen(w[i] - 1) for i in range(R.ngens())})
 
@@ -1316,7 +1344,8 @@ class QuiverModuli(ABC):
                 for i in supp
             ]
 
-            # TODO is this not something already implemented? if not, explain what it does!
+            # TODO is this not something already implemented?
+            # if not, explain what it does!
             def product_lists(L):
                 n = len(L)
                 assert n > 0
@@ -1385,14 +1414,38 @@ class QuiverModuli(ABC):
 
     @abstractmethod
     def dimension(self) -> int:
+        r""" "
+        Returns the dimension of the moduli space.
+
+        Abstract method, see the concrete implementations for details.
+
+        .. SEEALSO:: :meth:`QuiverModuliSpace.dimension`,
+        :meth:`QuiverModuliStack.dimension`.
+        """
         pass
 
     @abstractmethod
     def is_smooth(self) -> bool:
+        r""" "
+        Checks if the moduli space is smooth.
+
+        Abstract method, see the concrete implementations for details.
+
+        .. SEEALSO:: :meth:`QuiverModuliSpace.is_smooth`,
+        :meth:`QuiverModuliStack.is_smooth`.
+        """
+
         pass
 
     @abstractmethod
     def chow_ring(self):
+        r"""
+        Returns the Chow ring of the moduli space.
+        
+        Abstract method, see the concrete implementations for details.
+
+        .. SEEALSO:: :meth:`QuiverModuliSpace.chow_ring`
+        """
         pass
 
 
@@ -1657,8 +1710,8 @@ class QuiverModuliSpace(QuiverModuli):
         else:
             raise NotImplementedError()
 
-    def mukai_inequality_holds(self):
         # TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.
+    def mukai_inequality_holds(self):
         # setup shorthand
         Q, d = self._Q, self._d
 
