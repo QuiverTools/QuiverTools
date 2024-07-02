@@ -252,10 +252,10 @@ class Quiver(Element):
         """
         if self.get_custom_name():
             return self.get_custom_name()
-        else:
-            return "a quiver with {} vertices and {} arrows".format(
-                self.adjacency_matrix().nrows(), sum(sum(self.adjacency_matrix()))
-            )
+
+        return "a quiver with {} vertices and {} arrows".format(
+            self.adjacency_matrix().nrows(), sum(sum(self.adjacency_matrix()))
+        )
 
     def __str__(self) -> str:
         r"""
