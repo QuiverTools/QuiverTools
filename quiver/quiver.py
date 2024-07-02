@@ -2238,7 +2238,7 @@ class Quiver(Element):
         key=lambda self, e, d: (self._coerce_vector(e), self._coerce_vector(d))
     )
     def __is_generic_subdimension_vector(self, e, d) -> bool:
-        r""""
+        r"""
         The cacheable implementation of :meth:`Quiver.is_generic_subdimension_vector`.
         """
         d = self._coerce_dimension_vector(d)
