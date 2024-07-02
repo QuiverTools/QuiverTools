@@ -1970,7 +1970,7 @@ class Quiver(Element):
         - :math:`d_k = e_k` for every vertex `k` which is neither a source nor a sink.
 
         This is used when dealing with Chow rings of quiver moduli, see also
-        :meth:`QuiverModuliSpace.all_minimal_forbidden_subdimension_vectors`.
+        :meth:`QuiverModuli._all_minimal_forbidden_subdimension_vectors`.
 
         EXAMPLES:
 

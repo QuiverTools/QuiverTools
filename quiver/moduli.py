@@ -982,7 +982,7 @@ class QuiverModuli(ABC):
     Tautological relations
     """
 
-    def all_forbidden_subdimension_vectors(self):
+    def _all_forbidden_subdimension_vectors(self):
         r"""Returns the list of all forbidden subdimension vectors
 
         These are the dimension vectors `d'` of d for which
@@ -999,10 +999,10 @@ class QuiverModuli(ABC):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="semistable")
-            sage: X.all_forbidden_subdimension_vectors()
+            sage: X._all_forbidden_subdimension_vectors()
             [(1, 0), (2, 0), (2, 1), (3, 0), (3, 1), (3, 2)]
             sage: X = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="stable")
-            sage: X.all_forbidden_subdimension_vectors()
+            sage: X._all_forbidden_subdimension_vectors()
             [(1, 0), (1, 1), (2, 0), (2, 1), (2, 2), (3, 0), (3, 1), (3, 2)]
 
         """
@@ -1044,7 +1044,7 @@ class QuiverModuli(ABC):
         # setup shorthand
         Q = self._Q
 
-        forbidden = self.all_forbidden_subdimension_vectors()
+        forbidden = self._all_forbidden_subdimension_vectors()
 
         def is_minimal(e):
             return not any(
