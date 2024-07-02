@@ -417,7 +417,7 @@ class QuiverModuli(Element):
 
         INPUT:
 
-        - ``dstar`` -- list of vectors of Ints
+        - ``dstar`` -- list of dimension vectors
 
         OUTPUT: statement truth value as Bool
 
@@ -1509,11 +1509,10 @@ class QuiverModuli(Element):
 
         raise NotImplementedError()
 
-
     def chow_ring(self):
         r"""
         Returns the Chow ring of the moduli space.
-        
+
         Abstract method, see the concrete implementations for details.
 
         .. SEEALSO:: :meth:`QuiverModuliSpace.chow_ring`
@@ -1816,6 +1815,7 @@ class QuiverModuliSpace(QuiverModuli):
             raise NotImplementedError()
 
         # TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.
+
     def mukai_inequality_holds(self):
         # setup shorthand
         Q, d = self._Q, self._d
