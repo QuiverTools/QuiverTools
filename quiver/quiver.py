@@ -2345,16 +2345,6 @@ class Quiver(Element):
 
         return self.euler_form(d, e) + self.generic_ext(d, e)
 
-    # TODO remove
-    def generic_ext_vanishing(self, a, b):
-        return self.is_generic_subdimension_vector(a, a + b)
-
-    # TODO remove
-    def generic_hom_vanishing(self, a, b):
-        # TODO figure out a way to implement this.
-        # How about this:
-        return self.generic_hom(a, b) == 0
-
     def is_left_orthogonal(self, a, b) -> bool:
         if self.generic_ext_vanishing(a, b):
             return self.euler_form(a, b) == 0
