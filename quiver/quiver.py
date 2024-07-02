@@ -2037,6 +2037,7 @@ class Quiver(Element):
 
         OUTPUT: whether e is a generic subdimension vector of d
 
+        # TODO reference
         Using the notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf:
         a dimension vector `e` is a generic subdimension vector of `d`
         if a generic representation of dimension vector `d` possesses
@@ -2176,14 +2177,12 @@ class Quiver(Element):
         if not self.is_subdimension_vector(e, d):
             return False
 
-        subdims = filter(
+        ds = filter(
             lambda eprime: self.euler_form(eprime, d - e) < 0,
             self.all_subdimension_vectors(e),
         )
 
-        return not any(
-            self.is_generic_subdimension_vector(eprime, e) for eprime in subdims
-        )
+        return not any(self.is_generic_subdimension_vector(eprime, e) for eprime in ds)
 
     def all_generic_subdimension_vectors(self, d, proper=False, nonzero=False):
         r"""Returns the list of all generic subdimension vectors of ``d``.
@@ -2361,13 +2360,13 @@ class Quiver(Element):
 
         INPUT:
 
-        - ``d``: dimension vector
+        - ``d`` -- dimension vector
 
-        - ``theta``: stability parameter
+        - ``theta` -- stability parameter
 
-        - ``denom`` (default: sum) -- the denominator function
+        - ``denom`` -- the denominator function (default: sum)
 
-        OUTPUT: list of vectors
+        OUTPUT: list of Harder--Narasimhan types
 
         EXAMPLES:
 
@@ -2386,27 +2385,28 @@ class Quiver(Element):
              ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
              ((2, 3),)]
+
         """
         d = self._coerce_dimension_vector(d)
         theta = self._coerce_vector(theta)
 
-        subdims = filter(
+        ds = filter(
             lambda e: self.slope(e, theta, denom=denom)
             > self.slope(d, theta, denom=denom),
             self.all_subdimension_vectors(d, proper=True, nonzero=True),
         )
-        subdims = list(
+        ds = list(
             filter(
                 lambda e: self.has_semistable_representation(e, theta, denom=denom),
-                subdims,
+                ds,
             )
         )
 
         if sorted:
-            subdims.sort(key=(lambda e: self.slope(e, theta, denom=denom)))
+            ds.sort(key=(lambda e: self.slope(e, theta, denom=denom)))
 
         all_types = []
-        for e in subdims:
+        for e in ds:
             for estar in filter(
                 lambda fstar: self.slope(e, theta, denom=denom)
                 > self.slope(fstar[0], theta, denom=denom),
@@ -2484,8 +2484,6 @@ class Quiver(Element):
         d = self._coerce_dimension_vector(d)
         theta = self._coerce_vector(theta)
 
-        # TODO no need for denominator?!
-        # denominator is needed for slope stability
         return all(
             self.slope(e, theta, denom=denom) <= self.slope(d, theta, denom=denom)
             for e in self.all_generic_subdimension_vectors(d, nonzero=True)
@@ -2622,11 +2620,9 @@ class Quiver(Element):
 
         d = self._coerce_dimension_vector(d)
 
-        generic_subdims = self.all_generic_subdimension_vectors(
-            d, proper=True, nonzero=True
-        )
-        for e in generic_subdims:
-            if d - e in generic_subdims:
+        ds = self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
+        for e in ds:
+            if d - e in ds:
                 return self.canonical_decomposition(e) + self.canonical_decomposition(
                     d - e
                 )
@@ -2636,6 +2632,7 @@ class Quiver(Element):
     Nilpotent cone and Hesselink
     """
 
+    # TODO tests and documentation
     def dimension_nullcone(self, d):
         r"""Returns the dimension of the nullcone
 
