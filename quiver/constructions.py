@@ -173,7 +173,7 @@ def JordanQuiver(m: int = 1):
 
         :func:`GeneralizedJordanQuiver`
 
-        
+
     EXAMPLES::
 
     The Jordan quiver has one loop::

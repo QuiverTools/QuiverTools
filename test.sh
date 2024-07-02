@@ -1,4 +1,3 @@
-#!bin/sh
 
 # doctests
 sage -t quiver/constructions.py
