@@ -627,7 +627,7 @@ class QuiverModuli(Element):
         A Luna type of d for theta is an unordered sequence (i.e. multiset)
         :math:`((d^1,m_1),...,(d^s,m_s))` of dimension vectors
         :math:`d^k` and positive integers :math:`m_k` such that
-        
+
         - :math:`m_1d^1 + ... + m_sd^s = d`
         - :math:`\mu_{\theta}(d^k) = \mu_{\theta}(d)`
         - All :math:`d^k` admit a :math:`\theta`-stable representation
@@ -635,7 +635,7 @@ class QuiverModuli(Element):
         Example: Suppose that `d = 3e` and `e, 2e, d = 3e`
         are the only stable subdimension vectors.
         Then the Luna types are
-        
+
         .. MATH::
 
             \begin{aligned}
@@ -647,7 +647,7 @@ class QuiverModuli(Element):
             \end{aligned}
 
         We implement it as follows.
-        
+
         A Luna type for us is a dictionary
         ``{d^1: p_1^1,..., d^s: p_s^1,..., d_s: p_s^t}``
         of dimension vectors d^k and non-empty partitions p^k such that
