@@ -156,6 +156,31 @@ class QuiverModuli(ABC):
         return self._denominator
 
     def is_nonempty(self) -> bool:
+        r"""
+        Checks if the moduli space is nonempty.
+
+        OUTPUT: whether there exist stable/semistable representations
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver for `d = (2, 3)` has stable representations::
+
+            sage: from quiver import *
+            sage: Q, d = GeneralizedKroneckerQuiver(3), [2, 3]
+            sage: X = QuiverModuliSpace(Q, d, condition="stable"); X.is_nonempty()
+            True
+
+        The Jordan quiver does not have stable representations, but it has semistable
+        ones::
+
+            sage: Q = JordanQuiver()
+            sage: X = QuiverModuliSpace(Q, [3], condition="stable"); X.is_nonempty()
+            False
+            sage: X = QuiverModuliSpace(Q, [3], condition="semistable")
+            sage: X.is_nonempty()
+            True
+        """
+
         if self._condition == "stable":
             return self._Q.has_stable_representation(self._d, self._theta)
         if self._condition == "semistable":
