@@ -2343,12 +2343,6 @@ class Quiver(Element):
 
         return self.euler_form(d, e) + self.generic_ext(d, e)
 
-    def is_left_orthogonal(self, a, b) -> bool:
-        if self.generic_ext_vanishing(a, b):
-            return self.euler_form(a, b) == 0
-        else:
-            return False
-
     """
     Harder--Narasimhan types
     """
