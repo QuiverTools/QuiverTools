@@ -144,6 +144,14 @@ def LoopQuiver(m: int):
 
     This is a synonym for :func:`GeneralizedJordanQuiver`.
 
+    EXAMPLES:
+
+    This is a synonym::
+
+        sage: from quiver import *
+        sage: LoopQuiver(7) == GeneralizedJordanQuiver(7)
+        True
+
     .. SEEALSO::
 
         :func:`GeneralizedJordanQuiver`
@@ -166,8 +174,15 @@ def LoopQuiver(m: int):
 
 def JordanQuiver(m: int = 1):
     r"""
-    Return the generalized Jordan quiver with ``m`` loops,
-    where ``m`` has default value 1.
+    Return the generalized Jordan quiver with ``m`` loops
+
+    The default value for ``m`` is 1.
+
+    This is a synonym::
+
+        sage: from quiver import *
+        sage: JordanQuiver(7) == GeneralizedJordanQuiver(7)
+        True
 
     .. SEEALSO::
 
@@ -222,8 +237,8 @@ def SubspaceQuiver(m: int):
     r"""
     Return the subspace quiver with ``m`` sources
 
-    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`; there are is one arrow
-    from every source to the sink.
+    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`; there is
+    one arrow from every source to the sink.
 
     INPUT:
 
@@ -261,8 +276,8 @@ def ThickenedSubspaceQuiver(m, k):
     r"""
     Return the thickened subspace quiver with ``m`` sources
 
-    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`; there are ``k`` arrows
-    from every source to the sink.
+    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`; there are
+    ``k`` arrows from every source to the sink.
 
     - ``m`` -- integer; the number of sources in the subspace quiver
 
@@ -272,7 +287,8 @@ def ThickenedSubspaceQuiver(m, k):
 
     EXAMPLES:
 
-    The ``k``-thickened subspace quiver with ``m`` sources has ``km`` arrows, ``m+1`` vertices::
+    The ``k``-thickened subspace quiver with ``m`` sources has ``km`` arrows, ``m+1``
+    vertices::
 
         sage: from quiver import *
         sage: Q = ThickenedSubspaceQuiver(6, 2)

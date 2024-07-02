@@ -112,12 +112,12 @@ class Quiver(Element):
 
     @classmethod
     def from_string(cls, Q: str, forget_labels=True, name=None):
-        r"""Construct a quiver from a comma-separated list of chains like `i-j-k-...`
+        r"""Construct a quiver from a comma-separated list of chains like ``i-j-k-...``
 
-        You specify an arrow from `i` to `j` by writing `i-j`.
-        Multiple arrows are specified by repeating the hyphen, so that `1--2` is the
-        Kronecker quiver. If you write `i-j-k` then you have 1 arrow from `i` to `j`
-        and one from `j` to `k`. The full quiver is specified by concatenating
+        You specify an arrow from ``i`` to ``j`` by writing ``i-j``.
+        Multiple arrows are specified by repeating the hyphen, so that ``1--2`` is the
+        Kronecker quiver. If you write ``i-j-k`` then you have 1 arrow from ``i`` to
+        ``j``and one from ``j`` to ``k``. The full quiver is specified by concatenating
         (multiple) arrows by commas.
 
         The values for a vertex can be anything, and the chosen names will be used for
@@ -130,7 +130,8 @@ class Quiver(Element):
 
         - ``Q`` -- a string of the format described above giving a quiver
 
-        - ``forget_labels`` -- (default: True): whether to renumber vertices `0,...,n-1`
+        - ``forget_labels`` -- (default: True): whether to use labels for vertices or
+          to number them ``0,...,n-1``
 
         - ``name`` -- optional name for the quiver
 
@@ -217,9 +218,37 @@ class Quiver(Element):
 
         return cls.from_digraph(G, name)
 
-    def __repr__(self) -> str:
+    def _repr_(self) -> str:
         r"""
-        Internal method for :meth:`Quiver.repr`
+        Give a shorthand string presentation for the quiver
+
+        If a name is set, use that, if not, just give information on number of vertices
+        and arrows.
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = Quiver.from_string("1---2"); Q
+            a quiver with 2 vertices and 3 arrows
+            sage: Q.rename("3-Kronecker quiver"); Q
+            3-Kronecker quiver
+
+        Renaming and resetting the name::
+
+            sage: Q = Quiver.from_string("1---2")
+            sage: Q.get_custom_name()
+
+            sage: Q.rename("3-Kronecker quiver")
+            sage: Q.get_custom_name()
+            '3-Kronecker quiver'
+            sage: Q.reset_name()
+            sage: Q.get_custom_name()
+
+            sage: Q
+            a quiver with 2 vertices and 3 arrows
+
         """
         if self.get_custom_name():
             return self.get_custom_name()
@@ -230,7 +259,27 @@ class Quiver(Element):
 
     def __str__(self) -> str:
         r"""
-        Internal method for :meth:`Quiver.str`
+        Detailed description of the quiver
+
+        Everything you get from :meth:`Quiver.repr()` together with the adjacency
+        matrix.
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = Quiver.from_string("1---2"); print(Q)
+            a quiver with 2 vertices and 3 arrows
+            adjacency matrix:
+            [0 3]
+            [0 0]
+            sage: Q.rename("3-Kronecker quiver"); print(Q)
+            3-Kronecker quiver
+            adjacency matrix:
+            [0 3]
+            [0 0]
+
         """
         return "{}\nadjacency matrix:\n{}".format(self.repr(), self.adjacency_matrix())
 
@@ -270,7 +319,7 @@ class Quiver(Element):
             a quiver with 2 vertices and 3 arrows
 
         """
-        return self.__repr__()
+        return self._repr_()
 
     def str(self) -> str:
         r"""
@@ -689,7 +738,7 @@ class Quiver(Element):
 
         INPUT:
 
-        ``i`` -- a vertex of the underlying graph
+        - ``i`` -- a vertex of the underlying graph
 
         OUTPUT: The in-degree of the vertex ``i``
 
@@ -724,7 +773,9 @@ class Quiver(Element):
 
         The out-degree of ``i`` is the number of outgoing arrows at ``i``.
 
-        ``i`` -- a vertex of the underlying graph
+        INPUT:
+
+        - ``i`` -- a vertex of the underlying graph
 
         OUTPUT: The out-degree of the vertex ``i``
 
@@ -1328,8 +1379,8 @@ class Quiver(Element):
         """
         if self.__has_vertex_labels():
             return {i: 0 for i in self.vertices()}
-        else:
-            return vector([0] * self.number_of_vertices())
+
+        return vector([0] * self.number_of_vertices())
 
     @cached_method
     def thin_dimension_vector(self):
@@ -1359,8 +1410,8 @@ class Quiver(Element):
         """
         if self.__has_vertex_labels():
             return {i: 1 for i in self.vertices()}
-        else:
-            return vector([1] * self.number_of_vertices())
+
+        return vector([1] * self.number_of_vertices())
 
     @cached_method
     def simple_root(self, i):
@@ -1496,7 +1547,6 @@ class Quiver(Element):
         A Schur root is a dimension vector which admits a Schurian representation,
         i.e., a representation whose endomorphism ring is the field itself.
         It is necessarily indecomposable.
-
         By MR1162487_ `d` is a Schur root if and only if `d` admits a stable
         representation for the canonical stability parameter.
 
@@ -1967,7 +2017,7 @@ class Quiver(Element):
 
     def division_order(self, d, e):
         r"""
-        Checks if `d << e`.
+        Checks if `d\ll e`
 
         This means that
 
@@ -1975,13 +2025,12 @@ class Quiver(Element):
         - :math:`d_j \geq e_j` for every sink `j`,
         - :math:`d_k = e_k` for every vertex `k` which is neither a source nor a sink.
 
-        # TODO: Think of a better name.
-        # Good name?
-        # TODO give reference for its origin
+        This is used when dealing with Chow rings of quiver moduli, see also
+        :meth:`QuiverModuli._all_minimal_forbidden_subdimension_vectors`.
 
-        EXAMPLES
+        EXAMPLES:
 
-        Order on some dimension vectors for the 3-Kronecker quiver::
+        The division order on some dimension vectors for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -2001,7 +2050,7 @@ class Quiver(Element):
             sage: Q.division_order(f, e)
             True
 
-        Order on some dimension vectors for a 3-vertex quiver::
+        The division order on some dimension vectors for a 3-vertex quiver::
 
             sage: Q = ThreeVertexQuiver(2, 2, 2)
             sage: d = [1, 1, 1]
@@ -2043,16 +2092,15 @@ class Quiver(Element):
 
         OUTPUT: whether e is a generic subdimension vector of d
 
-        # TODO reference
-        Using the notation from Section 5 of https://arxiv.org/pdf/0802.2147.pdf:
-        a dimension vector `e` is a generic subdimension vector of `d`
+        A dimension vector `e` is a generic subdimension vector of `d`
         if a generic representation of dimension vector `d` possesses
         a subrepresentation of dimension vector `e`.
-
         By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf)
-        `e` is a generic subdimension vector of `d` if and only if `e` is
+        By MR1162487_ `e` is a generic subdimension vector of `d` if and only if `e` is
         a subdimension vector of `d` and :math:`\langle f,d-e\rangle` is non-negative
         for all generic subdimension vectors `f` of `e`.
+
+        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
         EXAMPLES:
 
@@ -2319,11 +2367,10 @@ class Quiver(Element):
         i.e., :math:`\operatorname{dim}(\operatorname{Ext}(M,N))` is minimal for all
         `(M,N)` in `U`.
 
-        # TODO can we define macros?
-        Therefore,
-        :math:`\operatorname{dim}(\operatorname{Hom}(M,N)) = \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`
+        Therefore, `\operatorname{dim}(\operatorname{Hom}(M,N)) =
+        \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`
         is minimal, and
-        :math:`\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.
+        `\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.
 
         EXAMPLES:
 
@@ -2349,37 +2396,6 @@ class Quiver(Element):
         e = self._coerce_dimension_vector(e)
 
         return self.euler_form(d, e) + self.generic_ext(d, e)
-
-    def is_left_orthogonal(self, a, b) -> bool:
-        r"""
-        Checks if a is left orthogonal to b.
-
-        INPUT:
-
-        - ``a``: dimension vector
-        - ``b``: dimension vector
-
-        OUTPUT: whether a is left orthogonal to b
-
-        A dimension vector `a` is said to be left orthogonal
-        to another dimension vector `b` if
-        :math:`\operatorname{hom}(a,b) = \operatorname{ext}(a, b) = 0`.
-
-        EXAMPLES:
-
-        Left orthogonality on the 3-Kronecker quiver::
-
-            sage: from quiver import *
-            sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: ds = [Q.simple_root(0), Q.simple_root(1)]
-            sage: Q.is_left_orthogonal(ds[0], ds[1])
-            False
-            sage: Q.is_left_orthogonal(ds[1], ds[0])
-            True
-
-        """
-
-        return self.generic_hom(a, b) == 0 and self.generic_ext(a, b) == 0
 
     """
     Harder--Narasimhan types
@@ -2454,10 +2470,7 @@ class Quiver(Element):
     (Semi-)stability
     """
 
-    # TODO some checks
     def canonical_stability_parameter(self, d):
-        # TODO theta needs to work with dicts too
-        # on it
         r"""
         Returns the canonical stability parameter for ``d``
 
@@ -2468,7 +2481,34 @@ class Quiver(Element):
         OUTPUT: canonical stability parameter
 
         The canonical stability parameter is given by
-        :math:`\langle d,-\rangle - \langle -,d\rangle`.
+        `\langle d,-\rangle - \langle -,d\rangle`.
+
+        INPUT:
+
+        - ``d`` -- dimension vector to be used
+
+        OUTPUT: canonical stability parameter for ``d``
+
+        EXAMPLES:
+
+        Our usual example of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.canonical_stability_parameter([2, 3])
+            (9, -6)
+
+        For the 5-subspace quiver::
+
+            sage: Q = SubspaceQuiver(5)
+            sage: Q.canonical_stability_parameter([1, 1, 1, 1, 1, 2])
+            (2, 2, 2, 2, 2, -5)
+
+        It takes vertex labels (if present) into account::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Q.canonical_stability_parameter([2, 3])
+            {'bar': -6, 'foo': 9}
 
         EXAMPLES:
 
@@ -2487,13 +2527,12 @@ class Quiver(Element):
             sage: Q.canonical_stability_parameter(d)
             {'bar': -6, 'foo': 9}
         """
+        d = self._coerce_dimension_vector(d)
+        theta = vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
+
         if self.__has_vertex_labels():
-            d = self._coerce_dimension_vector(d)
-            theta = vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
             return dict(zip(self.vertices(), theta))
-        else:
-            d = self._coerce_dimension_vector(d)
-            return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
+        return theta
 
     def has_semistable_representation(self, d, theta=None, denom=sum):
         r"""Checks if there is a ``theta``-semistable of dimension vector `d`
@@ -2504,13 +2543,13 @@ class Quiver(Element):
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: whether there is a ``theta``-semistable representation of dimension vector `d`
+        OUTPUT: whether there is a ``theta``-semistable of dimension vector `d`
 
-        By a theorem of Schofield
-        [Theorem 5.4(1) of Reineke's overview](https://arxiv.org/pdf/0802.2147.pdf),
-        a dimension vector `d` admits a :math:`\theta`-semi-stable representation
-        if and only if :math:`\mu_{\theta}(e) <= \mu_{\theta}(d)`
-        for all generic subdimension vectors `e` of `d`.
+        By MR1162486_ a dimension vector `d` admits a :math:`\theta`-semi-stable
+        representation if and only if :math:`\mu_{\theta}(e) <= \mu_{\theta}(d)` for
+        all generic subdimension vectors `e` of `d`.
+
+        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
         EXAMPLES:
 
@@ -2560,11 +2599,11 @@ class Quiver(Element):
 
         OUTPUT: whether there is a ``theta``-stable representation of dimension vector ``d``
 
-        TODO reference
-        See Thm. 5.4(1) of Reineke's overview paper https://arxiv.org/pdf/0802.2147.pdf:
-        a dimension vector d admits a theta-stable representation if and only if
+        By MR1162487_ `d` admits a theta-stable representation if and only if
         :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all proper generic subdimension
         vectors :math:`e` of :math:`d`.
+
+        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
         EXAMPLES:
 
@@ -2687,28 +2726,33 @@ class Quiver(Element):
                 )
         return [d]
 
-    """
-    Nilpotent cone and Hesselink
-    """
-
-    # TODO tests and documentation
     def dimension_nullcone(self, d):
-        r"""Returns the dimension of the nullcone
+        r"""
+        Returns the dimension of the nullcone
 
         The nullcone is the set of all nilpotent representations.
 
         INPUT:
 
-        - ``d`` -- vector of Ints
+        - ``d`` -- dimension vector
 
-        OUTPUT: dimension as Int
+        OUTPUT: dimension of the nullcone
+
+        EXAMPLES:
+
+        The usual example of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.dimension_nullcone([2, 3])
+            18
+
         """
         d = self._coerce_dimension_vector(d)
 
         if self.is_acyclic():
-            return d.transpose() * self.adjacency_matrix() * d
+            return d * self.adjacency_matrix() * d
         else:
-            # TODO where is the algorithm?
             raise NotImplementedError()
 
     def first_hochschild_cohomology(self):
