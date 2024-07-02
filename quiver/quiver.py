@@ -112,12 +112,12 @@ class Quiver(Element):
 
     @classmethod
     def from_string(cls, Q: str, forget_labels=True, name=None):
-        r"""Construct a quiver from a comma-separated list of chains like `i-j-k-...`
+        r"""Construct a quiver from a comma-separated list of chains like ``i-j-k-...``
 
-        You specify an arrow from `i` to `j` by writing `i-j`.
-        Multiple arrows are specified by repeating the hyphen, so that `1--2` is the
-        Kronecker quiver. If you write `i-j-k` then you have 1 arrow from `i` to `j`
-        and one from `j` to `k`. The full quiver is specified by concatenating
+        You specify an arrow from ``i`` to ``j`` by writing ``i-j``.
+        Multiple arrows are specified by repeating the hyphen, so that ``1--2`` is the
+        Kronecker quiver. If you write ``i-j-k`` then you have 1 arrow from ``i`` to
+        ``j``and one from ``j`` to ``k``. The full quiver is specified by concatenating
         (multiple) arrows by commas.
 
         The values for a vertex can be anything, and the chosen names will be used for
@@ -131,7 +131,7 @@ class Quiver(Element):
         - ``Q`` -- a string of the format described above giving a quiver
 
         - ``forget_labels`` -- (default: True): whether to use labels for vertices or
-          to number them `0,...,n-1`
+          to number them ``0,...,n-1``
 
         - ``name`` -- optional name for the quiver
 
@@ -218,7 +218,7 @@ class Quiver(Element):
 
         return cls.from_digraph(G, name)
 
-    def __repr__(self) -> str:
+    def _repr_(self) -> str:
         if self.get_custom_name():
             return self.get_custom_name()
         else:
@@ -265,7 +265,7 @@ class Quiver(Element):
             a quiver with 2 vertices and 3 arrows
 
         """
-        return self.__repr__()
+        return self._repr_()
 
     def str(self) -> str:
         r"""
@@ -683,7 +683,7 @@ class Quiver(Element):
 
         INPUT:
 
-        ``i`` -- a vertex of the underlying graph
+        - ``i`` -- a vertex of the underlying graph
 
         OUTPUT: The in-degree of the vertex ``i``
 
@@ -718,7 +718,9 @@ class Quiver(Element):
 
         The out-degree of ``i`` is the number of outgoing arrows at ``i``.
 
-        ``i`` -- a vertex of the underlying graph
+        INPUT:
+
+        - ``i`` -- a vertex of the underlying graph
 
         OUTPUT: The out-degree of the vertex ``i``
 
@@ -1490,7 +1492,6 @@ class Quiver(Element):
         A Schur root is a dimension vector which admits a Schurian representation,
         i.e., a representation whose endomorphism ring is the field itself.
         It is necessarily indecomposable.
-
         By MR1162487_ `d` is a Schur root if and only if `d` admits a stable
         representation for the canonical stability parameter.
 
