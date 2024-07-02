@@ -331,7 +331,7 @@ class Quiver(Element):
 
         OUTPUT: a complete description of the quiver
 
-        EXAMPLES::
+        EXAMPLES:
 
         The 3-Kronecker quiver::
 
@@ -573,7 +573,7 @@ class Quiver(Element):
         OUTPUT: The square matrix ``M`` whose entry ``M[i,j]`` is the number of arrows
         from the vertex ``i`` to the vertex ``j``
 
-        EXAMPLES::
+        EXAMPLES:
 
         The adjacency matrix of a quiver construct from an adjacency matrix::
 
@@ -990,7 +990,7 @@ class Quiver(Element):
 
         OUTPUT: the Cartan matrix of the quiver
 
-        EXAMPLES::
+        EXAMPLES:
 
         The Kronecker 3-quiver::
 
@@ -2564,7 +2564,7 @@ class Quiver(Element):
 
         OUTPUT: whether there is a ``theta``-semistable of dimension vector `d`
 
-        By MR1162486_ a dimension vector `d` admits a :math:`\theta`-semi-stable
+        By MR1162487_ a dimension vector `d` admits a :math:`\theta`-semi-stable
         representation if and only if :math:`\mu_{\theta}(e) <= \mu_{\theta}(d)` for
         all generic subdimension vectors `e` of `d`.
 
