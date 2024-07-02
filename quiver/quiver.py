@@ -2658,7 +2658,6 @@ class Quiver(Element):
                 )
         return [d]
 
-    # TODO tests and documentation
     def dimension_nullcone(self, d):
         r"""
         Returns the dimension of the nullcone
