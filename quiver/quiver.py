@@ -252,10 +252,10 @@ class Quiver(Element):
         """
         if self.get_custom_name():
             return self.get_custom_name()
-        else:
-            return "a quiver with {} vertices and {} arrows".format(
-                self.adjacency_matrix().nrows(), sum(sum(self.adjacency_matrix()))
-            )
+
+        return "a quiver with {} vertices and {} arrows".format(
+            self.adjacency_matrix().nrows(), sum(sum(self.adjacency_matrix()))
+        )
 
     def __str__(self) -> str:
         r"""
@@ -2437,17 +2437,17 @@ class Quiver(Element):
         d = self._coerce_dimension_vector(d)
         theta = self._coerce_vector(theta)
 
+        ds = self.all_subdimension_vectors(d, proper=True, nonzero=True)
         ds = filter(
             lambda e: self.slope(e, theta, denom=denom)
             > self.slope(d, theta, denom=denom),
-            self.all_subdimension_vectors(d, proper=True, nonzero=True),
+            ds,
         )
-        ds = list(
-            filter(
-                lambda e: self.has_semistable_representation(e, theta, denom=denom),
-                ds,
-            )
+        ds = filter(
+            lambda e: self.has_semistable_representation(e, theta, denom=denom),
+            ds,
         )
+        ds = list(ds)
 
         if sorted:
             ds.sort(key=(lambda e: self.slope(e, theta, denom=denom)))
