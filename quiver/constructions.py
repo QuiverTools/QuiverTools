@@ -148,6 +148,15 @@ def LoopQuiver(m: int):
 
         :func:`GeneralizedJordanQuiver`
 
+    EXAMPLES::
+
+    The loop quiver with 7 loops::
+
+        sage: from quiver import *
+        sage: Q = LoopQuiver(7)
+        sage: Q.adjacency_matrix()
+        [7]
+
     """
     Q = GeneralizedJordanQuiver(m)
     Q.rename("{}-loop quiver".format(m))
@@ -157,11 +166,22 @@ def LoopQuiver(m: int):
 
 def JordanQuiver(m: int = 1):
     r"""
-    Return the generalized Jordan quiver with ``m`` loops, where ``m`` has default value 1.
+    Return the generalized Jordan quiver with ``m`` loops,
+    where ``m`` has default value 1.
 
     .. SEEALSO::
 
         :func:`GeneralizedJordanQuiver`
+
+        
+    EXAMPLES::
+
+    The Jordan quiver has one loop::
+
+        sage: from quiver import *
+        sage: Q = JordanQuiver()
+        sage: Q.adjacency_matrix()
+        [1]
 
     """
 
