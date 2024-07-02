@@ -23,28 +23,6 @@ from quiver import Quiver
 Permutations.options(mult="r2l")
 
 
-"""
-a brainstorm
-
-What about an abstract base class QuiverModuli which deals with all the things common to moduli spaces and moduli stacks?
-There'd be abstract methods for things like dimension.
-
-Then we'd have implementations in
-- QuiverModuliSpace
-- QuiverModuliStack
-
-This avoids the ugly distinction between the two.
-The stack would also allow _not_ specifying stable or semistable,
-whereas for the quiver moduli space this is a necessity.
-
-
-Something like enumerating Harder-Narasimhan strata is then a method of QuiverModuliStack?
-
-Something like computing Betti numbers is then only implemented for QuiverModuliSpace.
-
-"""
-
-
 class QuiverModuli(Element):
     def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
         r"""Constructor for an abstract quiver moduli space
