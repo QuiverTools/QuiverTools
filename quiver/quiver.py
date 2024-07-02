@@ -1324,8 +1324,8 @@ class Quiver(Element):
         """
         if self.__has_vertex_labels():
             return {i: 0 for i in self.vertices()}
-        else:
-            return vector([0] * self.number_of_vertices())
+
+        return vector([0] * self.number_of_vertices())
 
     @cached_method
     def thin_dimension_vector(self):
@@ -1355,8 +1355,8 @@ class Quiver(Element):
         """
         if self.__has_vertex_labels():
             return {i: 1 for i in self.vertices()}
-        else:
-            return vector([1] * self.number_of_vertices())
+
+        return vector([1] * self.number_of_vertices())
 
     @cached_method
     def simple_root(self, i):
@@ -2421,20 +2421,49 @@ class Quiver(Element):
     (Semi-)stability
     """
 
-    # TODO some checks
     def canonical_stability_parameter(self, d):
-        # TODO theta needs to work with dicts too
-        # on it
         r"""
         Returns the canonical stability parameter for ``d``
 
         The canonical stability parameter is given by
-        :math:`\langle d,-\rangle - \langle -,d\rangle`.
+        `\langle d,-\rangle - \langle -,d\rangle`.
+
+        INPUT:
+
+        - ``d`` -- dimension vector to be used
+
+        OUTPUT: canonical stability parameter for ``d``
+
+        EXAMPLES:
+
+        Our usual example of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: Q.canonical_stability_parameter([2, 3])
+            (9, -6)
+
+        For the 5-subspace quiver::
+
+            sage: Q = SubspaceQuiver(5)
+            sage: Q.canonical_stability_parameter([1, 1, 1, 1, 1, 2])
+            (2, 2, 2, 2, 2, -5)
+
+        It takes vertex labels (if present) into account::
+
+            sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
+            sage: Q.canonical_stability_parameter([2, 3])
+            {'bar': -6, 'foo': 9}
 
         """
         d = self._coerce_dimension_vector(d)
 
-        return vector(d) * (-self.euler_matrix().transpose() + self.euler_matrix())
+        theta = d * (-self.euler_matrix().transpose() + self.euler_matrix())
+
+        if self.__has_vertex_labels():
+            return dict(zip(self.vertices(), theta))
+
+        return theta
 
     def has_semistable_representation(self, d, theta=None, denom=sum):
         r"""Checks if there is a ``theta``-semistable of dimension vector `d`
