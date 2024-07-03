@@ -2658,7 +2658,6 @@ class QuiverModuliStack(QuiverModuli):
         d = Q._coerce_dimension_vector(d)
         theta = Q._coerce_vector(theta)
 
-        # TODO allow some other ring?
         K = FunctionField(QQ, "L")
         L = K.gen(0)
 
