@@ -1898,6 +1898,9 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: QuiverModuliSpace(JordanQuiver(1), (0,)).dimension()
             0
+            sage: X = QuiverModuliSpace(JordanQuiver(1), (0,), condition="stable")
+            sage: X.dimension()
+            -Infinity
             sage: QuiverModuliSpace(JordanQuiver(1), (1,)).dimension()
             1
             sage: QuiverModuliSpace(JordanQuiver(1), (2,)).dimension()
@@ -1941,9 +1944,12 @@ class QuiverModuliSpace(QuiverModuli):
             self._theta,
         )
 
-        # the zero dimension vector only has the zero representation which is stable
+        # the zero dimension vector only has the zero representation which is semistable
+        # but not stable
         if Q._coerce_dimension_vector(d) == Q.zero_vector():
-            return 0
+            if self._condition == "semistable":
+                return 0
+            return -Infinity
 
         # if there are stable representations then both the stable and
         # the semi-stable moduli space have dimension `1-<d,d>`
