@@ -1120,9 +1120,9 @@ class QuiverModuli(Element):
             sage: Q = ThreeVertexQuiver(1, 6, 1)
             sage: QuiverModuliSpace(Q, [1, 6, 6]).is_amply_stable()
             False
-
         """
         HNs = self.all_harder_narasimhan_types(proper=True)
+
         return (
             min(
                 self.codimension_of_harder_narasimhan_stratum(dstar, secure=False)
@@ -1135,10 +1135,10 @@ class QuiverModuli(Element):
         r"""Checks if the dimension vector is strongly amply stable for the stability
         parameter
 
-        We call `d` strongly amply stable for :math:`\theta` if
-        :math:`\langle e,d-e\rangle \leq -2`
-        holds for all subdimension vectors :math:`e` of :math:`d` which satisfy
-        :math:`\mu_{\theta}(e) >= \mu_{\theta}(d)`.
+        We call :math:`{\bf d}` strongly amply stable for :math:`\theta` if
+        :math:`\langle{\bf e},{\bf d}-{\bf e}\rangle \leq -2`
+        holds for all subdimension vectors :math:`{\bf e}` of :math:`{\bf d}` for which
+        :math:`\mu_{\theta}({\bf e})\geq\mu_{\theta}({\bf d})`.
 
         OUTPUT: whether the data for the quiver moduli space is strongly amply stable
 
@@ -1160,7 +1160,6 @@ class QuiverModuli(Element):
             True
             sage: X.is_strongly_amply_stable()
             False
-
         """
         # setup shorthand
         Q, d, theta, denom = (
@@ -1209,16 +1208,16 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3], [3, -2])
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: HN = X.all_harder_narasimhan_types(proper=True)
-            sage: {hntype: X.harder_narasimhan_weight(hntype) for hntype in HN}
-            {((1, 0), (1, 1), (0, 2)): 45,
-             ((1, 0), (1, 2), (0, 1)): 100/3,
-             ((1, 0), (1, 3)): 30,
-             ((1, 1), (1, 2)): 5/2,
-             ((2, 0), (0, 3)): 90,
-             ((2, 1), (0, 2)): 100/3,
-             ((2, 2), (0, 1)): 10}
+            sage: {dstar: X.harder_narasimhan_weight(dstar) for dstar in HN}
+            {((1, 0), (1, 1), (0, 2)): 135,
+             ((1, 0), (1, 2), (0, 1)): 100,
+             ((1, 0), (1, 3)): 90,
+             ((1, 1), (1, 2)): 15/2,
+             ((2, 0), (0, 3)): 270,
+             ((2, 1), (0, 2)): 100,
+             ((2, 2), (0, 1)): 30}
         """
         # setup shorthand
         Q, theta, denom = self._Q, self._theta, self._denom
@@ -1265,7 +1264,6 @@ class QuiverModuli(Element):
              ((2, 0), (0, 3)): 270,
              ((2, 1), (0, 2)): 100,
              ((2, 2), (0, 1)): 30}
-
         """
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
