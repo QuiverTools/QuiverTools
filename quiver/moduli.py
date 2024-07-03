@@ -2170,6 +2170,8 @@ class QuiverModuliSpace(QuiverModuli):
         Q, d, theta = self._Q, self._d, self._theta
         n = Q.number_of_vertices()
 
+        d = Q._coerce_dimension_vector(d)
+        theta = Q._coerce_vector(theta)
         # This implementation only works if d is theta-coprime
         # which implies that d is indivisible.
         assert Q.is_theta_coprime(d, theta)
@@ -2178,6 +2180,8 @@ class QuiverModuliSpace(QuiverModuli):
         if chi is None:
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
+        else:
+            chi = Q._coerce_vector(chi)
 
         # chi must have integer entries
         assert all(QQ(c).denominator() == 1 for c in chi)
@@ -2300,6 +2304,8 @@ class QuiverModuliSpace(QuiverModuli):
         a = Q.adjacency_matrix()
         N = self.dimension()
 
+        d = Q._coerce_dimension_vector(d)
+
         A = self.chow_ring(chi=chi, chernClasses=chernClasses)
         pi = A.cover()  # The quotient map
         sect = A.lifting_map()  # A choice of a section of pi
@@ -2307,6 +2313,8 @@ class QuiverModuliSpace(QuiverModuli):
         if chi is None:
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
+        else:
+            chi = Q._coerce_vector(chi)
 
         my_numerator = prod(
             [
@@ -2581,6 +2589,9 @@ class QuiverModuliStack(QuiverModuli):
 
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+
+        d = Q._coerce_dimension_vector(d)
+        theta = Q._coerce_vector(theta)
 
         # TODO allow some other ring?
         K = FunctionField(QQ, "L")
