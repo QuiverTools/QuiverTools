@@ -323,6 +323,7 @@ class QuiverModuli(Element):
         """
         return self._denom
 
+    @cached_method
     def is_nonempty(self) -> bool:
         r"""
         Checks if the moduli space is nonempty.
@@ -1099,7 +1100,7 @@ class QuiverModuli(Element):
             sage: d = (1, 2, 3, 1)
             sage: theta = (1, 300, -200, -1)
             sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: Q.is_theta_coprime(d, theta)
+            sage: X.is_theta_coprime()
             False
             sage: X.semistable_equals_stable()
             True
@@ -1110,7 +1111,7 @@ class QuiverModuli(Element):
 
         # the computation of all Luna types takes so much time
         # thus we should first tests if ``d`` is ``theta``-coprime
-        if Q.is_theta_coprime(d, theta):
+        if self.is_theta_coprime():
             return True
 
         # this is probably the fastest way as checking theta-coprimality is fast
@@ -2040,7 +2041,7 @@ class QuiverModuliSpace(QuiverModuli):
         d = Q._coerce_dimension_vector(d)
         theta = Q._coerce_vector(theta)
 
-        assert Q.is_theta_coprime(d, theta), "need coprime"
+        assert self.is_theta_coprime(), "need coprime"
 
         k = FunctionField(QQ, "L")
         K = FunctionField(QQ, "q")
@@ -2089,7 +2090,7 @@ class QuiverModuliSpace(QuiverModuli):
         d = Q._coerce_dimension_vector(d)
         theta = Q._coerce_vector(theta)
 
-        assert Q.is_theta_coprime(d, theta), "need coprime"
+        assert self.is_theta_coprime(), "need coprime"
 
         N = self.dimension()
 
@@ -2108,6 +2109,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         return betti
 
+    @cached_method
     def is_smooth(self) -> bool:
         # stable locus is always smooth
         if self._condition == "stable":
@@ -2149,7 +2151,6 @@ class QuiverModuliSpace(QuiverModuli):
             sage: X = QuiverModuliSpace(Q, (3,))
             sage: X.dimension()
             10
-
         """
         # setup shorthand
         Q, d = (
@@ -2159,6 +2160,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         return QuiverModuliSpace(Q, d, theta=Q.zero_vector())
 
+    @cached_method
     def is_projective(self) -> bool:
         r"""
         Check whether the moduli space is projective
