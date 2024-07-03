@@ -2702,14 +2702,6 @@ class QuiverModuliStack(QuiverModuli):
         # setup shorthand
         Q, d = self._Q, self._d
 
-        # TODO there is very similar code earlier
-        if chernClasses is None:
-            chernClasses = [
-                "x%s_%s" % (i, r)
-                for i in range(Q.number_of_vertices())
-                for r in range(1, d[i] + 1)
-            ]
-
         taut = self._QuiverModuli__tautological_presentation(
             inRoots=False, chernClasses=chernClasses
         )
