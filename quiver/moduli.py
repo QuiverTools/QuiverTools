@@ -541,6 +541,10 @@ class QuiverModuli(Element):
             self._denom,
         )
 
+        assert all(
+            Q._is_dimension_vector(di) for di in dstar
+        ), "elements of ``dstar`` need to be dimension vectors"
+
         dstar = list(map(lambda di: Q._coerce_dimension_vector(di), dstar))
 
         # first condition: sum to dimension vector
@@ -1358,18 +1362,22 @@ class QuiverModuli(Element):
 
         """
         # setup shorthand
-        Q, d, theta, condition = self._Q, self._d, self._theta, self._condition
+        Q, d, theta, denom, condition = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denom,
+            self._condition,
+        )
 
         es = Q.all_subdimension_vectors(d, proper=True, nonzero=True)
 
-        # TODO need for denominator?
-        slope = Q.slope(d, theta)
+        slope = Q.slope(d, theta, denom=denom)
         if condition == "semistable":
-            return list(filter(lambda e: Q.slope(e, theta) > slope, es))
+            return list(filter(lambda e: Q.slope(e, theta, denom=denom) > slope, es))
         elif condition == "stable":
-            return list(filter(lambda e: Q.slope(e, theta) >= slope, es))
+            return list(filter(lambda e: Q.slope(e, theta, denom=denom) >= slope, es))
 
-    # TODO make it private?
     def _all_minimal_forbidden_subdimension_vectors(self):
         r"""Returns the list of all `minimal` forbidden subdimension vectors
 
@@ -2028,6 +2036,8 @@ class QuiverModuliSpace(QuiverModuli):
             raise NotImplementedError()
 
     def is_projective(self) -> bool:
+        # TODO is this not just stable==semistable if condition is stable, and True if
+        # condition is semistable?
         raise NotImplementedError()
 
     def picard_rank(self):
@@ -2302,6 +2312,8 @@ class QuiverModuliSpace(QuiverModuli):
 
         For quiver moduli it computes as
 
+        # TODO reference Chow paper
+
         .. MATH::
 
             td(X) =
@@ -2479,21 +2491,18 @@ class QuiverModuliStack(QuiverModuli):
         r"""
         Computes the dimension of the moduli stack :math:`[R^{(s)st}/G]`.
 
+        This is the dimension of a quotient stack, thus we use
+
         .. MATH::
 
-            dim [R^{(s)st}/G] = dim R^{(s)st} - dim G
+            dim [R^{{\rm (s)st}}/G] = dim R^{{\rm (s)st}} - dim G
 
         The dimension turns out to be :math:`-\langle d,d\rangle`
         if the (semi-)stable locus is non-empty"""
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
 
-        if self._condition == "stable" and Q.has_stable_representation(d, theta):
-            return -Q.euler_form(d, d)
-        # TODO is this one correct? we need to check for existence of a stable I think?
-        if self._condition == "semistable" and Q.has_semistable_representation(
-            d, theta
-        ):
+        if self.is_nonempty():
             return -Q.euler_form(d, d)
         else:
             return -Infinity
