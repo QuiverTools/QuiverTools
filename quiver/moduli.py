@@ -838,7 +838,6 @@ class QuiverModuli(Element):
 
         d = Q._coerce_dimension_vector(d)
 
-        n = Q.number_of_vertices()
         assert all(Q._is_dimension_vector(di) for di in tau.keys())
 
         if d == Q.zero_vector():
