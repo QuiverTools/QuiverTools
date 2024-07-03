@@ -81,7 +81,6 @@ class QuiverModuli(Element):
             Traceback (most recent call last):
             ...
             NotImplementedError
-
         """
         if theta is None:
             theta = Q.canonical_stability_parameter(d)
@@ -116,7 +115,6 @@ class QuiverModuli(Element):
             - Q = 3-Kronecker quiver
             - d = (2, 3)
             - θ = (9, -6)
-
         """
         output = "{} of {} representations, with".format(description, self._condition)
         output += "\n- Q = {}\n- d = {}\n- θ = {}".format(
@@ -140,7 +138,6 @@ class QuiverModuli(Element):
             - Q = 3-Kronecker quiver
             - d = (2, 3)
             - θ = (9, -6)
-
         """
         if self.get_custom_name():
             return self.get_custom_name()
@@ -162,7 +159,6 @@ class QuiverModuli(Element):
             - Q = 3-Kronecker quiver
             - d = (2, 3)
             - θ = (9, -6)
-
         """
         return self._repr_()
 
@@ -193,9 +189,7 @@ class QuiverModuli(Element):
             - Q = 3-Kronecker quiver
             - d = (2, 3)
             - θ = (9, -6)
-
         """
-
         return QuiverModuliSpace(
             self._Q, self._d, self._theta, self._denom, self._condition
         )
@@ -227,7 +221,6 @@ class QuiverModuli(Element):
             - Q = 3-Kronecker quiver
             - d = (2, 3)
             - θ = (9, -6)
-
         """
         return QuiverModuliStack(
             self._Q, self._d, self._theta, self._denom, self._condition
@@ -248,7 +241,6 @@ class QuiverModuli(Element):
             sage: X = QuiverModuli(Q, (2, 3))
             sage: Q == X.quiver()
             True
-
         """
         return self._Q
 
@@ -274,7 +266,6 @@ class QuiverModuli(Element):
             sage: X = QuiverModuli(Q, {"foo": 2, "bar": 3})
             sage: X.dimension_vector()
             {'bar': 3, 'foo': 2}
-
         """
         return self._d
 
@@ -301,7 +292,6 @@ class QuiverModuli(Element):
             sage: X = QuiverModuliSpace(Q, d, theta);
             sage: X.stability_parameter()
             {'bar': -2, 'foo': 3}
-
         """
         return self._theta
 
@@ -320,7 +310,6 @@ class QuiverModuli(Element):
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: X.denominator()
             <built-in function sum>
-
         """
         return self._denom
 
@@ -349,7 +338,6 @@ class QuiverModuli(Element):
             sage: X = QuiverModuliSpace(Q, [3], condition="semistable")
             sage: X.is_nonempty()
             True
-
         """
         if self._condition == "stable":
             return self._Q.has_stable_representation(self._d, self._theta)
@@ -364,12 +352,13 @@ class QuiverModuli(Element):
         r"""
         Returns the list of all Harder--Narasimhan types.
 
-        A Harder--Narasimhan (HN) type of :math:`d` with respect to :math:`\theta`
-        is a sequence :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
+        A Harder--Narasimhan (HN) type of `d` with respect to :math:`\theta`
+        is a sequence :math:`{\bf d}^* = ({\bf d}^1,...,{\bf d}^s)` of dimension vectors
+        such that
 
-        - :math:`d^1 + ... + d^s = d`
-        - :math:`\mu_{\theta}(d^1) > ... > \mu_{\theta}(d^s)`
-        - Every :math:`d^k` is :math:`\theta`-semi-stable.
+        - :math:`{\bf d}^1 + ... + {\bf d}^s = {\bf d}`
+        - :math:`\mu_{\theta}({\bf d}^1) > ... > \mu_{\theta}({\bf d}^s)`
+        - Every :math:`{\bf d}^k` is :math:`\theta`-semistable.
 
         INPUT:
 
@@ -489,9 +478,7 @@ class QuiverModuli(Element):
              ((2, 3, 0), (0, 0, 2)),
              ((2, 3, 1), (0, 0, 1)),
              ((2, 3, 2),)]
-
         """
-
         d = self._Q._coerce_dimension_vector(self._d)
         theta = self._Q._coerce_vector(self._theta)
 
@@ -505,20 +492,21 @@ class QuiverModuli(Element):
 
     def is_harder_narasimhan_type(self, dstar) -> bool:
         r"""
-        Checks if ``dstar`` is a HN type.
+        Checks if ``dstar`` is a Harder--Narasimhan type.
 
         A Harder--Narasimhan (HN) type of `d` with respect to :math:`\theta`
-        is a sequence :math:`d^* = (d^1,...,d^s)` of dimension vectors such that
+        is a sequence :math:`{\bf d}^* = ({\bf d}^1,...,{\bf d}^s)` of dimension vectors
+        such that
 
-        - :math:`d^1 + ... + d^s = d`
-        - :math:`\mu_{\theta}(d^1) > ... > \mu_{\theta}(d^s)`
-        - Every :math:`d^k` is theta-semi-stable.
+        - :math:`{\bf d}^1 + ... + {\bf d}^s = {\bf d}`
+        - :math:`\mu_{\theta}({\bf d}^1) > ... > \mu_{\theta}({\bf d}^s)`
+        - Every :math:`{\bf d}^k` is :math:`\theta`-semistable.
 
         INPUT:
 
         - ``dstar`` -- list of dimension vectors
 
-        OUTPUT: statement truth value as Bool
+        OUTPUT: whether ``dstar`` is a Harder--Narasimhan type
 
         EXAMPLES:
 
@@ -535,7 +523,6 @@ class QuiverModuli(Element):
             False
             sage: X.is_harder_narasimhan_type([Q.zero_vector()])
             False
-
         """
         # setup shorthand
         Q, d, theta, denom = (
@@ -561,6 +548,7 @@ class QuiverModuli(Element):
         ):
             return False
 
+        # third condition
         if not all(
             Q.has_semistable_representation(di, theta, denom=denom) for di in dstar
         ):
