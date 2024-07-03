@@ -541,6 +541,10 @@ class QuiverModuli(Element):
             self._denom,
         )
 
+        assert all(
+            Q._is_dimension_vector(di) for di in dstar
+        ), "elements of ``dstar`` need to be dimension vectors"
+
         dstar = list(map(lambda di: Q._coerce_dimension_vector(di), dstar))
 
         # first condition: sum to dimension vector
