@@ -837,19 +837,19 @@ class QuiverModuli(Element):
         d = Q._coerce_dimension_vector(d)
 
         n = Q.number_of_vertices()
-        # TODO shouldn't we test for Q._is_dimension_vector?
-        assert all(len(dn) == n for dn in tau.keys())
-        assert d == sum(k * dim for k in tau.keys() for dim in tau[k])
+        assert all(Q._is_dimension_vector(di) for di in tau.keys())
 
         if d == Q.zero_vector():
             # Q.zero_vector() can't be hashed a priori
             z = Q._coerce_vector(Q.zero_vector())
             return tau == {z: [1]}
 
+        # we check the 3 conditions in that order
         return all(
-            Q.slope(key, theta, denom=denom) == Q.slope(d, theta, denom=denom)
-            and Q.has_semistable_representation(key, theta, denom=denom)
-            for key in tau.keys()
+            sum(m * di for (m, di) in tau)
+            and Q.slope(di, theta, denom=denom) == Q.slope(d, theta, denom=denom)
+            and Q.has_semistable_representation(di, theta, denom=denom)
+            for di in tau.keys()
         )
 
     def dimension_of_luna_stratum(self, tau, secure=True):
