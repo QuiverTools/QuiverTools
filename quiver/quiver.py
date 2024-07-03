@@ -2105,7 +2105,6 @@ class Quiver(Element):
         A dimension vector `e` is a generic subdimension vector of `d`
         if a generic representation of dimension vector `d` possesses
         a subrepresentation of dimension vector `e`.
-        By a result of Schofield (see Thm. 5.3 of https://arxiv.org/pdf/0802.2147.pdf)
         By MR1162487_ `e` is a generic subdimension vector of `d` if and only if `e` is
         a subdimension vector of `d` and :math:`\langle f,d-e\rangle` is non-negative
         for all generic subdimension vectors `f` of `e`.
