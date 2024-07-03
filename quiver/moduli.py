@@ -862,7 +862,7 @@ class QuiverModuli(Element):
         d = Q._coerce_dimension_vector(d)
 
         assert all(
-            Q._is_dimension_vector(di) for di in tau.keys()
+            Q._is_dimension_vector(dk) for dk in tau.keys()
         ), "elements of ``tau`` need to be dimension vectors"
 
         if d == Q.zero_vector():
@@ -871,11 +871,10 @@ class QuiverModuli(Element):
             return tau == {z: [1]}
 
         # we check the 3 conditions in that order
-        return all(
-            sum(m * di for (m, di) in tau)
-            and Q.slope(di, theta, denom=denom) == Q.slope(d, theta, denom=denom)
-            and Q.has_semistable_representation(di, theta, denom=denom)
-            for di in tau.keys()
+        return d == sum(sum(m) * dk for (dk, m) in tau.items()) and all(
+            Q.slope(dk, theta, denom=denom) == Q.slope(d, theta, denom=denom)
+            and Q.has_semistable_representation(dk, theta, denom=denom)
+            for dk in tau.keys()
         )
 
     def dimension_of_luna_stratum(self, tau, secure=True):
