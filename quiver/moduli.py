@@ -1378,7 +1378,6 @@ class QuiverModuli(Element):
         elif condition == "stable":
             return list(filter(lambda e: Q.slope(e, theta, denom=denom) >= slope, es))
 
-    # TODO make it private?
     def _all_minimal_forbidden_subdimension_vectors(self):
         r"""Returns the list of all `minimal` forbidden subdimension vectors
 
