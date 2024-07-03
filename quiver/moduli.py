@@ -672,9 +672,14 @@ class QuiverModuli(Element):
     Luna
     """
 
-    def all_luna_types(self, exclude_generic=False):
+    def all_luna_types(self, exclude_stable=False):
         r"""
         Returns the unordered list of all Luna types of d for theta.
+
+        INPUT:
+
+        - ``exclude_stable`` -- whether to exclude the stable Luna type ``{d: [1]}``
+          (default: False)
 
         OUTPUT: list of tuples containing Int-vector and Int
 
@@ -711,11 +716,6 @@ class QuiverModuli(Element):
         Section 4 in MR2511752_.
 
         .. _MR2511752: https://mathscinet.ams.org/mathscinet/relay-station?mr=2511752
-
-        INPUT:
-
-        - ``exclude_generic`` -- whether to include the generic Luna type ``{d: [1]}``
-          (default: False)
 
         EXAMPLES:
 
@@ -806,9 +806,9 @@ class QuiverModuli(Element):
                     for values in product(*partial.values())
                 ]
 
-        generic = {d: [1]}
-        if exclude_generic and generic in Ls:
-            Ls.remove(generic)
+        stable = {d: [1]}
+        if exclude_stable and stable in Ls:
+            Ls.remove(stable)
 
         return Ls
 
@@ -972,7 +972,6 @@ class QuiverModuli(Element):
 
         return Qloc, dloc
 
-    # TODO: The codimension computation requires the dimension of the nullcone. This is hard, it turns out. It can be done with the Hesselink stratification, but I wasn't willing to go thourgh Lieven's treatment of this.
     def _codimension_inverse_image_luna_stratum(self, tau):
         r"""
         Computes the codimension of the preimage of the Luna stratum
@@ -1028,17 +1027,14 @@ class QuiverModuli(Element):
         Computes the codimension of :math:`R^{\theta-sst}(Q,d)
         \setminus R^{\theta-st}(Q,d)` inside :math:`R(Q,d)`.
 
-        OUTPUT: codimension as Int
+        OUTPUT: codimension of the properly semistable locus
 
         The codimension of the properly semistable locus
         is the minimal codimension of the inverse image
         of the non-stable Luna strata."""
+        Ls = self.all_luna_types(exclude_stable=True)
 
-        L = self.all_luna_types()
-        # This is the stable Luna type; remove it if it occurs
-        dstable = [tuple([self._d, [1]])]
-        L = list(filter(lambda tau: tau != dstable, L))
-        return min([self._codimension_inverse_image_luna_stratum(tau) for tau in L])
+        return min(self._codimension_inverse_image_luna_stratum(tau) for tau in Ls)
 
     """
     (Semi-)stability
@@ -1101,7 +1097,7 @@ class QuiverModuli(Element):
         if not Q.has_semistable_representation(d, theta, denom=denom):
             return True
         else:
-            Ls = self.all_luna_types(exclude_generic=True)
+            Ls = self.all_luna_types(exclude_stable=True)
             return not Ls  # this checks if the list is empty
 
     """
