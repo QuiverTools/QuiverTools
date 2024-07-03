@@ -590,7 +590,7 @@ class QuiverModuli(Element):
 
         .. MATH::
 
-            - sum_{k < l} <d^k,d^l>
+            - \sum_{k < l} \langle d^k,d^l\rangle
 
         EXAMPLES
 
