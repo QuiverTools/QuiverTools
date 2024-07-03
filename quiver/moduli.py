@@ -1676,7 +1676,7 @@ class QuiverModuli(Element):
         for every forbidden subdimension vector `e` of `d`.
 
         The tautological relations in `A` are then given by the image of
-        :math:`I_{taut}` under the `antisymmetrization` map
+        :math:`I_{\rm taut}` under the `antisymmetrization` map
 
         .. MATH::
 
