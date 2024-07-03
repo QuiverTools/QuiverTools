@@ -1416,21 +1416,6 @@ class QuiverModuli(Element):
 
         OUTPUT: dict
 
-        The Chow ring of a quiver moduli space
-
-        Notation for explanations:
-        G = G_d = prod_{i in Q_0} GL_{d_i}
-        T = maximal torus of diagonal matrices
-        PG = G/G_m
-        PT = T/G_m maximal torus of PT
-        W = Weyl group of T in G = Weyl group of PT in PG
-          = prod_{i in Q_0} S_{d_i}
-        R = bigoplus_{a in Q_1} Hom(k^{d_{s(a)}},k^{d_{t(a)}})
-        R^{sst}, R^{st} semi-stable/stable locus
-
-        EXAMPLES:
-
-        # TODO
         """
         # setup shorthand
         Q, d = (
@@ -2097,16 +2082,7 @@ class QuiverModuliSpace(QuiverModuli):
         # which implies that d is indivisible.
         assert Q.is_theta_coprime(d, theta)
 
-        if chernClasses is None:
-            chernClasses = [
-                "x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)
-            ]
-
-        taut = self._QuiverModuli__tautological_presentation(
-            inRoots=False, chernClasses=chernClasses
-        )
-        A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
-
+        # if a linearization is not given we compute one here.
         if chi is None:
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
@@ -2116,6 +2092,16 @@ class QuiverModuliSpace(QuiverModuli):
         """Make sure that chi has weight one, i.e.,
         provides a retraction for X*(PG) --> X*(G)."""
         assert chi * d == 1
+
+        if chernClasses is None:
+            chernClasses = [
+                "x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)
+            ]
+
+        taut = self._QuiverModuli__tautological_presentation(
+            inRoots=False, chernClasses=chernClasses
+        )
+        A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
         I = A.ideal(rels) + A.ideal(sum([chi[i] * generator(i, 0) for i in range(n)]))
 
