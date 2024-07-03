@@ -1341,7 +1341,7 @@ class QuiverModuli(Element):
             return list(filter(lambda e: Q.slope(e, theta) >= slope, es))
 
     # TODO make it private?
-    def all_minimal_forbidden_subdimension_vectors(self):
+    def _all_minimal_forbidden_subdimension_vectors(self):
         r"""Returns the list of all `minimal` forbidden subdimension vectors
 
         Minimality is with respect to the partial order `e << d` which means
@@ -1453,7 +1453,7 @@ class QuiverModuli(Element):
                     for j in range(Q.number_of_vertices())
                 ]
             )
-            for e in self.all_minimal_forbidden_subdimension_vectors()
+            for e in self._all_minimal_forbidden_subdimension_vectors()
         ]
 
         if inRoots:
