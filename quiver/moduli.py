@@ -655,62 +655,46 @@ class QuiverModuli(Element):
 
         OUTPUT: list of tuples containing Int-vector and Int
 
-        A Luna type of d for theta is an unordered sequence (i.e. multiset)
-        :math:`((d^1,m_1),...,(d^s,m_s))` of dimension vectors
-        :math:`d^k` and positive integers :math:`m_k` such that
+        The Luna stratification of the representation variety concerns the étale-local
+        structure of the moduli space of semistable quiver representations. It is
+        studied in MR1972892_, and for more details one is referred there.
 
-        - :math:`m_1d^1 + ... + m_sd^s = d`
-        - :math:`\mu_{\theta}(d^k) = \mu_{\theta}(d)`
-        - All :math:`d^k` admit a :math:`\theta`-stable representation
+        .. _MR1972892: https://mathscinet.ams.org/mathscinet/relay-station?mr=1972892
 
-        Example: Suppose that `d = 3e` and `e, 2e, d = 3e`
-        are the only stable subdimension vectors.
-        Then the Luna types are
+        A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence
+        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of dimension vectors
+        :math:`{\bf d}^k` and positive integers :math:`m_k` such that
 
-        .. MATH::
-
-            \begin{aligned}
-                ((3e,1)) \\
-                ((2e,1),(e,1))\\
-                ((e,3))\\
-                ((e,2),(e,1))\\
-                ((e,1),(e,1),(e,1)).
-            \end{aligned}
+        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`
+        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`
+        - All :math:`{\bf d}^k` admit a :math:`\theta`-stable representation
 
         We implement it as follows.
 
         A Luna type for us is a dictionary
         ``{d^1: p_1^1,..., d^s: p_s^1,..., d_s: p_s^t}``
-        of dimension vectors d^k and non-empty partitions p^k such that
+        of dimension vectors :math:`{\bf d}^k` and non-empty partitions :math:`p^k`
+        such that
 
         .. MATH::
 
-            |p_1^1|d^1 + ... + |p_s^t|d^s = d
-
-        So in the above example, the Luna types are::
-
-            {3e: [1]}
-            {2e: [1], e: [1]}
-            {e: [3]}
-            {e: [2, 1]}
-            {e: [1, 1, 1]}
+            |p_1^1|{\bf d}^1 + ... + |p_s^t|{\bf d}^s = {\bf d}
 
         EXAMPLES:
 
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (3, 3), (1, -1))
             sage: X.all_luna_types()
             [{(1, 1): [3]}, {(1, 1): [2, 1]}, {(1, 1): [1, 1, 1]}]
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([3,3])
-            sage: theta = vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (3, 3), (1, -1))
             sage: X.all_luna_types()
             [{(3, 3): [1]},
              {(1, 1): [1], (2, 2): [1]},
@@ -721,8 +705,8 @@ class QuiverModuli(Element):
         The zero vector::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([0,0]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (0, 0), (1, -1))
             sage: X.all_luna_types()
             [{(0, 0): [1]}]
 
@@ -776,6 +760,7 @@ class QuiverModuli(Element):
                         for values in product(*partial.values())
                     ]
                     luna_types += new_types
+
         return luna_types
 
     def is_luna_type(self, tau) -> bool:
