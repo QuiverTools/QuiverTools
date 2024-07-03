@@ -2111,6 +2111,22 @@ class QuiverModuliSpace(QuiverModuli):
             sage: QuiverModuliSpace(Q, (3, 3), condition="stable").is_projective()
             False
 
+        In pathological cases we can have that the affine moduli space of semisimples
+        is reduced to a point, and the projective-over-affine becomes projective::
+
+            sage: Q = CyclicQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 0, 2)).is_projective()
+            True
+
+        For the zero dimension vector we get either a point or an empty space, which is
+        always projective::
+
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (0, 0)).is_projective()
+            True
+            sage: QuiverModuliSpace(Q, (0, 0), condition="stable").is_projective()
+            True
+
         """
         # if Q has oriented cycles then the moduli space is projective if it is a point
         if not self._Q.is_acyclic():
