@@ -54,9 +54,10 @@ class Quiver(Element):
         """
 
         if isinstance(G, DiGraph):
+            # it is the user's responsibility to not change the graph afterwards
             self.__G = G
         else:
-            self.__G = DiGraph(matrix(G))
+            self.__G = DiGraph(matrix(G), immutable=True)
 
         # if name is None this doesn't do anything
         self.rename(name)
@@ -110,7 +111,7 @@ class Quiver(Element):
             [0 0]
 
         """
-        return cls(DiGraph(matrix(M)), name)
+        return cls(matrix(M), name)
 
     @classmethod
     def from_string(cls, Q: str, forget_labels=True, name=None):
