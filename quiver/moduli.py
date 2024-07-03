@@ -2036,8 +2036,20 @@ class QuiverModuliSpace(QuiverModuli):
             raise NotImplementedError()
 
     def is_projective(self) -> bool:
+        r"""
+        Checks if the moduli space is projective.
+
+        OUTPUT: whether the moduli space is projective
+
+        The moduli space of semistable representations is always projective, while
+        the moduli space of stable representations is only always quasiprojective.
+        The latter will be projective if and only if
+        :math:`R^{\theta\mathrm{sst}}(Q,d) = R^{\theta\mathrm{st}}(Q,d)`, i.e., if
+        there are no properly semistable representations.
+        """
         # TODO is this not just stable==semistable if condition is stable, and True if
         # condition is semistable?
+        # Gianni thinks that the quiver also needs to be acyclic, but that should be it?
         raise NotImplementedError()
 
     def picard_rank(self):
