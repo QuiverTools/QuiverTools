@@ -2111,6 +2111,30 @@ class QuiverModuliSpace(QuiverModuli):
 
     @cached_method
     def is_smooth(self) -> bool:
+        r"""
+        Returns whether the moduli space is smooth.
+
+        This is easy if the condition is "stable", because this moduli space is always
+        smooth. In the "semistable" case there is an algorithm, by combining the work
+        of Adriaenssens--Le Bruyn and Bocklandt, which is currently not implemented.
+
+        EXAMPLES:
+
+        Some 3-Kronecker example::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).is_smooth()
+            True
+            sage: QuiverModuliSpace(Q, (2, 3), condition="stable").is_smooth()
+            True
+            sage: QuiverModuliSpace(Q, (3, 3), condition="stable").is_smooth()
+            True
+            sage: QuiverModuliSpace(Q, (3, 3)).is_smooth()
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
+        """
         # stable locus is always smooth
         if self._condition == "stable":
             return True
