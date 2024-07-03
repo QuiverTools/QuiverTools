@@ -2084,18 +2084,22 @@ class QuiverModuliSpace(QuiverModuli):
         return betti
 
     def is_smooth(self) -> bool:
-        # if theta-coprime then you can shortcut everything
-        # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
-        # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
-        # stable locus
+        # stable locus is always smooth
         if self._condition == "stable":
             return True
+
+        # if we have semistables, it is more subtle
+        # this guarantees smoothness without an expensive calculation
         if self._Q.is_theta_coprime(self._d, self._theta):
             return True
-        # TODO if stable==semistable we are also good?
-        else:
-            # TODO
-            raise NotImplementedError()
+        # also guarantees smoothness
+        if self.semistable_equals_stable():
+            return True
+
+        # need to combine the local quivers from Adriaenssens--Le Bruyn
+        # with Bocklandt's criterion for smoothness
+        # see https://github.com/QuiverTools/QuiverTools/issues/24
+        raise NotImplementedError()
 
     def is_projective(self) -> bool:
         # TODO need more tests
