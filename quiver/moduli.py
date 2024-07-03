@@ -1357,10 +1357,10 @@ class QuiverModuli(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="semistable")
-            sage: X.all_minimal_forbidden_subdimension_vectors()
+            sage: X._all_minimal_forbidden_subdimension_vectors()
             [(1, 0), (2, 1), (3, 2)]
             sage: Y = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="stable")
-            sage: Y.all_minimal_forbidden_subdimension_vectors()
+            sage: Y._all_minimal_forbidden_subdimension_vectors()
             [(1, 1), (2, 2)]
 
         """
@@ -1380,19 +1380,18 @@ class QuiverModuli(Element):
     def __tautological_presentation(
         self, inRoots=False, chernClasses=None, chernRoots=None
     ):
-        r"""Returns the tautological relations in Chern classes
-        (if ``inRoots == False``) or in Chern roots.
+        r"""
+        Returns the tautological presentation of the Chow ring of the moduli space.
 
         INPUT:
 
-        - ``inRoots`` -- Bool
-        - ``chernClasses`` -- list of Strings
-        - ``chernRoots`` -- list of Strings
+        - ``inRoots`` -- (default: False) whether to return the relations in Chern roots
+        - ``chernClasses`` -- (default: None) optional list of strings to name the Chern classes
+        - ``chernRoots`` -- (default: None) optional list of strings to name the Chern roots
 
         OUTPUT: dict
 
-        # TODO
-        Explanation ...
+        The Chow ring of a quiver moduli space 
 
         Notation for explanations:
         G = G_d = prod_{i in Q_0} GL_{d_i}
@@ -1559,7 +1558,7 @@ class QuiverModuli(Element):
 
             return {
                 "ParentRing": A,
-                "Generators": lambda i, r: generator(A, i, r),
+                "Generators": lambda i, r: generator(A, i, r), # is this going to work?
                 "Relations": tautological,
             }
 
@@ -1615,7 +1614,28 @@ class QuiverModuli(Element):
 
         Abstract method, see the concrete implementations for details.
 
+        The Chow ring of a quiver moduli space
+
+        Notation:
+
+        - :math:`G = G_{\bf d} = \prod_{i \in Q_0} GL_{{\bf d}_i}`
+        - `T` = maximal torus of diagonal matrices
+        - :math:`PG = G/G_m`
+        - :math:`PT = T/G_m` maximal torus of `PG`
+        - `W` = Weyl group of `T` in `G` = Weil group of `PT` in :math:`PG = \prod_{i \in Q_0} S_{{\bf d}_i}`
+        - :math:`R = \bigoplus_{a in Q_1} Hom(k^{{\bf d}_{s(a)}},k^{{\bf d}_{t(a)}})`
+        - :math:`R^{sst}, R^{st}` semi-stable/stable locus
+
+        For a given datum :math:`(Q, {\bf d}, \theta)` such that
+        `Q` is acyclic and :math:`{\bf d}` is :math:`\theta`-coprime,
+        the Chow ring of the moduli space of quiver representations
+        is described in MR3318266_ and arXiv.2307.01711_.
+
         .. SEEALSO:: :meth:`QuiverModuliSpace.chow_ring`
+
+        _MR3318266: https://mathscinet.ams.org/mathscinet-getitem?mr=3318266
+        _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711
+
         """
         raise NotImplementedError()
 
@@ -2035,8 +2055,18 @@ class QuiverModuliSpace(QuiverModuli):
     def chern_class_line_bundle(self, eta, chernClasses=None):
         r"""
         Returns the first Chern class of the line bundle
-        :math:`L(\eta) = \bigotimes_{i \in Q_0} \det(U_i)^{-\eta_i}`,
-        where :math:`\eta` is a character of :math:`PG_d`."""
+
+        .. MATH::
+
+            L(\eta) = \bigotimes_{i \in Q_0} \det(U_i)^{-\eta_i},
+
+        where :math:`\eta` is a character of :math:`PG_d`.
+        
+        INPUT:
+
+        - ``eta`` -- character of :math:`PG_d` as vector in :math:`\mathbb{Z}Q_0`
+
+        """
 
         A = self.chow_ring(chi=None, chernClasses=chernClasses)
         n = self._Q.number_of_vertices()
