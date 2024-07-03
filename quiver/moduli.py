@@ -2116,6 +2116,9 @@ class QuiverModuliSpace(QuiverModuli):
             chi = vector(m)
 
         # chi must have integer entries
+        # TODO why do we need this? nowhere have we put our own function called
+        # `denominator` in scope?
+        # alternative: do QQ(c).denominator()?
         assert all(sage_denominator(c) == 1 for c in chi)
         """Make sure that chi has weight one, i.e.,
         provides a retraction for X*(PG) --> X*(G)."""
