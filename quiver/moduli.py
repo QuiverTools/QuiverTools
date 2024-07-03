@@ -745,40 +745,48 @@ class QuiverModuli(Element):
             z = Q._coerce_vector(Q.zero_vector())
             return [{z: [1]}]
 
-        same_slope = filter(
-            lambda e: Q.slope(e, theta, denom=denom) == Q.slope(d, theta, denom=denom),
-            Q.all_subdimension_vectors(d, nonzero=True, forget_labels=True),
-        )
-        same_slope = list(
-            filter(
-                lambda e: Q.has_stable_representation(e, theta, denom=denom),
-                same_slope,
-            )
-        )
-
-        bound = (sum(d) / min(sum(e) for e in same_slope)).ceil()
+        # we will build all possible Luna types from the bottom up
         luna_types = []
+
+        # start with all subdimension vectors
+        ds = Q.all_subdimension_vectors(d, nonzero=True, forget_labels=True)
+        # look for subdimension vectors with the same slope as ``d``
+        # and which admit a stable representation:
+        # this encodes the second and third condition in the definition
+        same_slope = filter(
+            lambda e: Q.slope(e, theta, denom=denom) == Q.slope(d, theta, denom=denom)
+            and Q.has_stable_representation(e, theta, denom=denom),
+            ds,
+        )
+        same_slope = list(same_slope)
+
+        # bounds how long a Luna type can be
+        bound = (sum(d) / min(sum(e) for e in same_slope)).ceil()
+
         for i in range(1, bound + 1):
             for tau in combinations_with_replacement(same_slope, i):
-                if sum(tau) == d:
-                    # from tau we build all possible Luna types
-                    partial = {}
-                    for taui in tuple(tau):
-                        if taui in partial.keys():
-                            partial[taui] += 1
-                        else:
-                            partial[taui] = 1
+                # first condition is not satisfied
+                if not sum(tau) == d:
+                    continue
 
-                    # partial has the form
-                    # {d^1: Partitions(p^1), ..., d^s: Partitions(p^s)}
-                    for key in partial.keys():
-                        partial[key] = Partitions(partial[key]).list()
+                # from tau we build all possible Luna types
+                partial = {}
+                for taui in tuple(tau):
+                    if taui in partial.keys():
+                        partial[taui] += 1
+                    else:
+                        partial[taui] = 1
 
-                    new_types = [
-                        dict(zip(partial.keys(), values))
-                        for values in product(*partial.values())
-                    ]
-                    luna_types += new_types
+                # partial has the form
+                # {d^1: Partitions(p^1), ..., d^s: Partitions(p^s)}
+                for key in partial.keys():
+                    partial[key] = Partitions(partial[key]).list()
+
+                # we add all possible Luna types we can build to our list
+                luna_types += [
+                    dict(zip(partial.keys(), values))
+                    for values in product(*partial.values())
+                ]
 
         return luna_types
 
