@@ -2128,15 +2128,26 @@ class QuiverModuliSpace(QuiverModuli):
             True
 
         """
-        # if Q has oriented cycles then the moduli space is projective if it is a point
-        if not self._Q.is_acyclic():
-            return self.dimension() == 0
+        # setup shorthand
+        Q, condition = self._Q, self._condition
+
         # in the acyclic case the semistable moduli space is always projective
-        if self._condition == "semistable":
-            return True
-        # in the acyclic case the stable moduli space needs semistable == stable
-        if self._condition == "stable":
-            return self.semistable_equals_stable()
+        # the stable moduli space is projective if semistability is stability
+        if Q.is_acyclic():
+            if condition == "semistable":
+                return True
+            if condition == "stable":
+                return self.semistable_equals_stable()
+        # so now Q has oriented cycles: the moduli space is projective-over-affine
+        # if we have semistable, or quasiprojective-over-affine is we have stable
+        # it suffices that the affine is just a point then
+        if condition == "semistable":
+            return self.semisimple_moduli_space().dimension() <= 0
+        if condition == "stable":
+            return (
+                self.semisimple_moduli_space().dimension() <= 0
+                and self.semistable_equals_stable()
+            )
 
     def picard_rank(self):
         r"""
