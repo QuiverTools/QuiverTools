@@ -397,18 +397,18 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q._is_vector([2, 3])
+            sage: Q._is_vector((2, 3))
             True
-            sage: Q._is_vector([0, 0])
+            sage: Q._is_vector((0, 0))
             True
-            sage: Q._is_vector([-2, -2])
+            sage: Q._is_vector((-2, -2))
             True
-            sage: Q._is_vector([1, 2, 3])
+            sage: Q._is_vector((1, 2, 3))
             False
 
         We allow non-integral values, because this can be useful for stability::
 
-            sage: Q._is_vector([1/2, 3])
+            sage: Q._is_vector((1/2, 3))
             True
 
         An example with vertex labels::
@@ -450,13 +450,13 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q._is_dimension_vector([2, 3])
+            sage: Q._is_dimension_vector((2, 3))
             True
-            sage: Q._is_dimension_vector([0, 0])
+            sage: Q._is_dimension_vector((0, 0))
             True
-            sage: Q._is_dimension_vector([-2, -2])
+            sage: Q._is_dimension_vector((-2, -2))
             False
-            sage: Q._is_dimension_vector([1, 2, 3])
+            sage: Q._is_dimension_vector((1, 2, 3))
             False
 
         An example with vertex labels::
@@ -501,13 +501,13 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q._coerce_dimension_vector([1, 2])
+            sage: Q._coerce_dimension_vector((1, 2))
             (1, 2)
-            sage: Q._coerce_dimension_vector([1, 2, 3, 4])
+            sage: Q._coerce_dimension_vector((1, 2, 3, 4))
             Traceback (most recent call last):
             ...
             ValueError: The input is not an element of :math:`\mathbb{Z}Q_0`.
-            sage: Q._coerce_dimension_vector([1, -3])
+            sage: Q._coerce_dimension_vector((1, -3))
             Traceback (most recent call last):
             ...
             ValueError: The input is not a dimension vector of the quiver.
@@ -542,9 +542,9 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q._coerce_vector([-1, 2])
+            sage: Q._coerce_vector((-1, 2))
             (-1, 2)
-            sage: Q._coerce_vector([1, 2, 3, 4])
+            sage: Q._coerce_vector((1, 2, 3, 4))
             Traceback (most recent call last):
             ...
             ValueError: The input is not an element of :math:`\mathbb{Z}Q_0`.
@@ -1672,11 +1672,11 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.is_subdimension_vector([1, 2], [2, 3])
+            sage: Q.is_subdimension_vector((1, 2), (2, 3))
             True
-            sage: Q.is_subdimension_vector([2, 3], [2, 3])
+            sage: Q.is_subdimension_vector((2, 3), (2, 3))
             True
-            sage: Q.is_subdimension_vector([6, 6], [2, 3])
+            sage: Q.is_subdimension_vector((6, 6), (2, 3))
             False
 
         We can also work with vertex labels::
@@ -1940,10 +1940,10 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(2, 0, 4)
-            sage: d = vector([1, 1, 1])
+            sage: d = (1, 1, 1)
             sage: Q.support(d)
             [0, 1, 2]
-            sage: d = vector([1, 0, 1])
+            sage: d = (1, 0, 1)
             sage: Q.support(d)
             [0, 2]
 
@@ -2277,7 +2277,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: d = vector([3,3])
+            sage: d = (3, 3)
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0),
              (0, 1),
@@ -2545,7 +2545,7 @@ class Quiver(Element):
         Canonical stability parameter for the 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2, 3])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), (2, 3)
             sage: Q.canonical_stability_parameter(d)
             (9, -6)
 
