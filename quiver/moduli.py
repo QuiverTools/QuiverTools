@@ -568,7 +568,8 @@ class QuiverModuli(Element):
         INPUT:
 
         - ``dstar`` -- the HN type as a list of dimension vectors
-        - ``secure`` -- (default: False): Bool
+
+        - ``secure`` -- whether to first check it is an HN-type (default: False)
 
         OUTPUT: codimension as an integer
 
@@ -668,62 +669,53 @@ class QuiverModuli(Element):
 
         OUTPUT: list of tuples containing Int-vector and Int
 
-        A Luna type of d for theta is an unordered sequence (i.e. multiset)
-        :math:`((d^1,m_1),...,(d^s,m_s))` of dimension vectors
-        :math:`d^k` and positive integers :math:`m_k` such that
+        The Luna stratification of the representation variety concerns the étale-local
+        structure of the moduli space of semistable quiver representations. It is
+        studied in MR1972892_, and for more details one is referred there.
 
-        - :math:`m_1d^1 + ... + m_sd^s = d`
-        - :math:`\mu_{\theta}(d^k) = \mu_{\theta}(d)`
-        - All :math:`d^k` admit a :math:`\theta`-stable representation
+        .. _MR1972892: https://mathscinet.ams.org/mathscinet/relay-station?mr=1972892
 
-        Example: Suppose that `d = 3e` and `e, 2e, d = 3e`
-        are the only stable subdimension vectors.
-        Then the Luna types are
+        A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence
+        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of dimension vectors
+        :math:`{\bf d}^k` and positive integers :math:`m_k` such that
 
-        .. MATH::
-
-            \begin{aligned}
-                ((3e,1)) \\
-                ((2e,1),(e,1))\\
-                ((e,3))\\
-                ((e,2),(e,1))\\
-                ((e,1),(e,1),(e,1)).
-            \end{aligned}
+        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`
+        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`
+        - All :math:`{\bf d}^k` admit a :math:`\theta`-stable representation
 
         We implement it as follows.
 
         A Luna type for us is a dictionary
         ``{d^1: p_1^1,..., d^s: p_s^1,..., d_s: p_s^t}``
-        of dimension vectors d^k and non-empty partitions p^k such that
+        of dimension vectors :math:`{\bf d}^k` and non-empty partitions :math:`p^k`
+        such that
 
         .. MATH::
 
-            |p_1^1|d^1 + ... + |p_s^t|d^s = d
+            |p_1^1|{\bf d}^1 + ... + |p_s^t|{\bf d}^s = {\bf d}
 
-        So in the above example, the Luna types are::
+        ALGORITHM:
 
-            {3e: [1]}
-            {2e: [1], e: [1]}
-            {e: [3]}
-            {e: [2, 1]}
-            {e: [1, 1, 1]}
+        The way we compute the Luna types of a quiver moduli space is taken from
+        Section 4 in MR2511752_.
+
+        .. _MR2511752: https://mathscinet.ams.org/mathscinet/relay-station?mr=2511752
 
         EXAMPLES:
 
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (3, 3), (1, -1))
             sage: X.all_luna_types()
             [{(1, 1): [3]}, {(1, 1): [2, 1]}, {(1, 1): [1, 1, 1]}]
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([3,3])
-            sage: theta = vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (3, 3), (1, -1))
             sage: X.all_luna_types()
             [{(3, 3): [1]},
              {(1, 1): [1], (2, 2): [1]},
@@ -734,8 +726,8 @@ class QuiverModuli(Element):
         The zero vector::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([0,0]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (0, 0), (1, -1))
             sage: X.all_luna_types()
             [{(0, 0): [1]}]
 
@@ -755,72 +747,88 @@ class QuiverModuli(Element):
             z = Q._coerce_vector(Q.zero_vector())
             return [{z: [1]}]
 
-        same_slope = filter(
-            lambda e: Q.slope(e, theta, denom=denom) == Q.slope(d, theta, denom=denom),
-            Q.all_subdimension_vectors(d, nonzero=True, forget_labels=True),
-        )
-        same_slope = list(
-            filter(
-                lambda e: Q.has_stable_representation(e, theta, denom=denom),
-                same_slope,
-            )
-        )
-
-        bound = (sum(d) / min(sum(e) for e in same_slope)).ceil()
+        # we will build all possible Luna types from the bottom up
         luna_types = []
+
+        # start with all subdimension vectors
+        ds = Q.all_subdimension_vectors(d, nonzero=True, forget_labels=True)
+        # look for subdimension vectors with the same slope as ``d``
+        # and which admit a stable representation:
+        # this encodes the second and third condition in the definition
+        same_slope = filter(
+            lambda e: Q.slope(e, theta, denom=denom) == Q.slope(d, theta, denom=denom)
+            and Q.has_stable_representation(e, theta, denom=denom),
+            ds,
+        )
+        same_slope = list(same_slope)
+
+        # bounds how long a Luna type can be
+        bound = (sum(d) / min(sum(e) for e in same_slope)).ceil()
+
         for i in range(1, bound + 1):
             for tau in combinations_with_replacement(same_slope, i):
-                if sum(tau) == d:
-                    # from tau we build all possible Luna types
-                    partial = {}
-                    for taui in tuple(tau):
-                        if taui in partial.keys():
-                            partial[taui] += 1
-                        else:
-                            partial[taui] = 1
+                # first condition is not satisfied
+                if not sum(tau) == d:
+                    continue
 
-                    # partial has the form
-                    # {d^1: Partitions(p^1), ..., d^s: Partitions(p^s)}
-                    for key in partial.keys():
-                        partial[key] = Partitions(partial[key]).list()
+                # from tau we build all possible Luna types
+                partial = {}
+                for taui in tuple(tau):
+                    if taui in partial.keys():
+                        partial[taui] += 1
+                    else:
+                        partial[taui] = 1
 
-                    new_types = [
-                        dict(zip(partial.keys(), values))
-                        for values in product(*partial.values())
-                    ]
-                    luna_types += new_types
+                # partial has the form
+                # {d^1: Partitions(p^1), ..., d^s: Partitions(p^s)}
+                for key in partial.keys():
+                    partial[key] = Partitions(partial[key]).list()
+
+                # we add all possible Luna types we can build to our list
+                luna_types += [
+                    dict(zip(partial.keys(), values))
+                    for values in product(*partial.values())
+                ]
+
         return luna_types
 
     def is_luna_type(self, tau) -> bool:
         r"""
-        Checks if tau is a Luna type for theta.
+        Checks if ``tau`` is a Luna type.
+
+        A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence
+        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of dimension vectors
+        :math:`{\bf d}^k` and positive integers :math:`m_k` such that
+
+        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`
+        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`
+        - All :math:`{\bf d}^k` admit a :math:`\theta`-stable representation
 
         INPUT:
 
-        - ``tau`` -- dictionary with dimension vectors as keys and lists of ints as values
+        - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by
+          dimension vectors
 
-        OUTPUT: whether ``tau`` is a Luna type.
+        OUTPUT: whether ``tau`` is a Luna type
 
         EXAMPLES:
 
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: l = X.all_luna_types()
-            sage: all(X.is_luna_type(tau) for tau in l)
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (3, 3), (1, -1))
+            sage: Ls = X.all_luna_types()
+            sage: all(X.is_luna_type(tau) for tau in Ls)
             True
 
         The 3-Kronecker quiver with zero vector::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([0,0]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: d.set_immutable()
-            sage: X.is_luna_type({d: [1]})
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (0, 0), (1, -1))
+            sage: X.is_luna_type({Q.zero_vector(): [1]})
             True
-
         """
         Q, d, theta, denom = (
             self._Q,
@@ -831,20 +839,19 @@ class QuiverModuli(Element):
 
         d = Q._coerce_dimension_vector(d)
 
-        n = Q.number_of_vertices()
-        # TODO shouldn't we test for Q._is_dimension_vector?
-        assert all(len(dn) == n for dn in tau.keys())
-        assert d == sum(k * dim for k in tau.keys() for dim in tau[k])
+        assert all(Q._is_dimension_vector(di) for di in tau.keys())
 
         if d == Q.zero_vector():
             # Q.zero_vector() can't be hashed a priori
             z = Q._coerce_vector(Q.zero_vector())
             return tau == {z: [1]}
 
+        # we check the 3 conditions in that order
         return all(
-            Q.slope(key, theta, denom=denom) == Q.slope(d, theta, denom=denom)
-            and Q.has_semistable_representation(key, theta, denom=denom)
-            for key in tau.keys()
+            sum(m * di for (m, di) in tau)
+            and Q.slope(di, theta, denom=denom) == Q.slope(d, theta, denom=denom)
+            and Q.has_semistable_representation(di, theta, denom=denom)
+            for di in tau.keys()
         )
 
     def dimension_of_luna_stratum(self, tau, secure=True):
@@ -853,81 +860,85 @@ class QuiverModuli(Element):
 
         INPUT:
 
-        - ``tau`` -- list of tuples
-        - ``secure`` -- Bool
+        - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by
+          dimension vectors
 
-        OUTPUT: Dimension as Int
+        - ``secure`` -- whether to first check it is a Luna type (default: False)
 
-        The dimension of the Luna stratum of
-        ``tau = {d^1: p^1,...,d^s: p^s}`` is
-        :math:`\sum_k l(p^k)(1 - <\langle d^k,d^k\rangle)`,
+        OUTPUT: dimension of the corresponding Luna stratum
+
+        The dimension of the Luna stratum of ``tau = {d^1: p^1,...,d^s: p^s}`` is
+
+        .. MATH::
+
+            \sum_k l(p^k)(1 - \langle {\bf d}^k,{\bf d}^k\rangle)
+
         where for a partition :math:`p = (n_1,...,n_l)`,
-        the length `l(p)` is `l`, i.e. the number of summands.
+        the length `l(p)` is `l`, i.e., the number of summands.
 
         EXAMPLES:
 
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: L = X.all_luna_types(); L
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (2, 2), (1, -1))
+            sage: Ls = X.all_luna_types(); Ls
             [{(1, 1): [2]}, {(1, 1): [1, 1]}]
-            sage: [X.dimension_of_luna_stratum(tau) for tau in L]
+            sage: [X.dimension_of_luna_stratum(tau) for tau in Ls]
             [1, 2]
-
         """
         if secure:
             assert self.is_luna_type(tau)
 
-        return sum(len(tau[dn]) * (1 - self._Q.euler_form(dn, dn)) for dn in tau.keys())
+        return sum(len(tau[di]) * (1 - self._Q.euler_form(di, di)) for di in tau.keys())
 
     def local_quiver_setting(self, tau, secure=True):
         r"""
         Returns the local quiver and dimension vector for the given Luna type.
 
+        The local quiver describes the singularities of a moduli space,
+        and is introduced and studied in studied in MR1972892_.
+
+        .. _MR1972892: https://mathscinet.ams.org/mathscinet/relay-station?mr=1972892
+
         INPUT:
 
-        - ``tau`` -- list of tuples
-        - ``secure`` -- Bool
+        - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by
+          dimension vectors
 
-        OUTPUT: tuple consisting of a Quiver object and a vector
+        - ``secure`` -- whether to first check it is a Luna type (default: False)
+
+        OUTPUT: tuple consisting of a Quiver object and a dimension vector
 
         EXAMPLES:
 
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,2])
-            sage: theta = vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: L = X.all_luna_types(); L
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 2), (1, -1))
+            sage: Ls = X.all_luna_types(); Ls
             [{(2, 2): [1]}, {(1, 1): [2]}, {(1, 1): [1, 1]}]
-            sage: Qloc, dloc = X.local_quiver_setting(L[0]);
-            sage: Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(Ls[0]);
+            sage: Qloc.adjacency_matrix(), dloc
             ([4], (1))
-            sage: Qloc, dloc = X.local_quiver_setting(L[1]);
-            sage: Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(Ls[1]);
+            sage: Qloc.adjacency_matrix(), dloc
             ([1], (2))
-            sage: Qloc, dloc = X.local_quiver_setting(L[2]);
-            sage: Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(Ls[2]);
+            sage: Qloc.adjacency_matrix(), dloc
             (
             [1 1]
             [1 1], (1, 1)
             )
-
         """
         if secure:
             assert self.is_luna_type(tau)
 
         Q = self._Q
 
-        # a word of caution to the future maintainer: Python dictionaries
-        # iterate over the keys in the order they were inserted. This ensures
-        # that the following is a well-defined adjacency matrix. Python sets
-        # DO NOT have this property.
-        # TODO this looks fishy; why should this choice of order matter, as long as
-        # it is the same when defining dloc?
+        # we use the order of vertices provided by ``tau.keys()`` for Qloc and dloc
         A = matrix(
             [
                 [Q.generic_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
@@ -936,7 +947,7 @@ class QuiverModuli(Element):
             ]
         )
         Qloc = Quiver(A)
-        dloc = vector(dim for dp in tau.keys() for dim in tau[dp])
+        dloc = vector(m for dp in tau.keys() for m in tau[dp])
 
         return Qloc, dloc
 
