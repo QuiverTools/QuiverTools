@@ -702,14 +702,14 @@ class QuiverModuli(Element):
 
     def all_luna_types(self, exclude_stable=False):
         r"""
-        Returns the unordered list of all Luna types of d for theta.
+        Returns the unordered list of all Luna types of ``d`` for ``theta``.
 
         INPUT:
 
         - ``exclude_stable`` -- whether to exclude the stable Luna type ``{d: [1]}``
           (default: False)
 
-        OUTPUT: list of tuples containing Int-vector and Int
+        OUTPUT: the list of all the Luna types as dictionaries.
 
         The Luna stratification of the representation variety concerns the étale-local
         structure of the moduli space of semistable quiver representations. It is
@@ -718,25 +718,38 @@ class QuiverModuli(Element):
         .. _MR1972892: https://mathscinet.ams.org/mathscinet/relay-station?mr=1972892
 
         A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence
-        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of dimension vectors
+        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of couples of dimension vectors
         :math:`{\bf d}^k` and positive integers :math:`m_k` such that
 
-        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`
-        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`
-        - All :math:`{\bf d}^k` admit a :math:`\theta`-stable representation
+        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`,
+        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`, and
+        - all the :math:`{\bf d}^k` admit a :math:`\theta`-stable representation.
 
-        We implement it as follows.
+        Note that a couple :math:`({\bf d}^i, m_i)`
+        can appear multiple times in a Luna type, and the same dimension vector
+        :math:`{\bf d}^i` can appear coupled with different integers.
 
-        A Luna type for us is a dictionary
-        ``{d^1: p_1^1,..., d^s: p_s^1,..., d_s: p_s^t}``
-        of dimension vectors :math:`{\bf d}^k` and non-empty partitions :math:`p^k`
-        such that
+        IMPLEMENTATION:
 
-        # TODO why are we using partitions? why is there a ``t`` in ``p_s^t``?
+        Here a Luna type is a dictionary
+        ``{d^1: p^1, ... d^s: p^s}``
+        whose keys are dimension vectors :math:`{\bf d}^k` and values are non-empty
+        lists of positive integers
+        ``p^k = [p_{k, 1}, ..., p_{k, t_k}]``.
+
+        The corresponding Luna type is then the unordered sequence of tuples
 
         .. MATH::
 
-            |p_1^1|{\bf d}^1 + ... + |p_s^t|{\bf d}^s = {\bf d}
+            ({\bf d}^1, p_{1, 1}), \dots, ({\bf d}^1, p_{1, t_1}), \dots
+            ({\bf d}^s, p_{s, 1}), \dots, ({\bf d}^s, p_{s, t_s}),
+
+        such that
+
+        .. MATH::
+
+            (p_{1, 1} + \dots + p_{1, t_1}) \cdot {\bf d}^1 + \dots +
+            (p_{s, 1} + \dots + p_{s, t_s}) \cdot {\bf d}^s = {\bf d}.
 
         ALGORITHM:
 
@@ -2837,8 +2850,6 @@ class QuiverModuliStack(QuiverModuli):
 
         OUTPUT: ring
         """
-        # setup shorthand
-        Q, d = self._Q, self._d
 
         taut = self._QuiverModuli__tautological_presentation(
             inRoots=False, chernClasses=chernClasses
