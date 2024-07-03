@@ -1,5 +1,6 @@
 from sage.arith.misc import gcd
 from sage.categories.cartesian_product import cartesian_product
+from sage.combinat.root_system.cartan_matrix import CartanMatrix
 from sage.graphs.digraph import DiGraph
 from sage.matrix.constructor import matrix
 from sage.matrix.special import zero_matrix
@@ -725,6 +726,74 @@ class Quiver(Element):
             True
         """
         return self.graph().is_connected()
+
+    def is_finite_type(self) -> bool:
+        r"""
+        Returns whether the quiver is of finite type representation type.
+
+        This is the case if and only the connected components of the underlying
+        undirected graph are isomorphic to Dynkin diagrams.
+
+        EXAMPLES:
+
+        The generalized Kronecker quiver is finite only for :math:`m=1`:
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(1).is_finite_type()
+            True
+            sage: GeneralizedKroneckerQuiver(2).is_finite_type()
+            False
+            sage: GeneralizedKroneckerQuiver(3).is_finite_type()
+            False
+
+        """
+        return CartanMatrix(self.cartan_matrix()).is_finite()
+
+    def is_tame_type(self) -> bool:
+        r"""
+        Returns whether the quiver is of tame type representation type.
+
+        This is the case if and only the connected components of the underlying
+        undirected graph are isomorphic to (extended) Dynkin diagrams, with at least one
+        being extended Dynkin.
+
+        EXAMPLES:
+
+        The generalized Kronecker quiver is tame only for :math:`m=2`:
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(1).is_tame_type()
+            False
+            sage: GeneralizedKroneckerQuiver(2).is_tame_type()
+            True
+            sage: GeneralizedKroneckerQuiver(3).is_tame_type()
+            False
+
+        """
+        M = CartanMatrix(self.cartan_matrix())
+        return M.is_affine() and not M.is_finite()
+
+    def is_wild_type(self) -> bool:
+        r"""
+        Returns whether the quiver is of wild type representation type.
+
+        This is the case if and only the connected components of the underlying
+        undirected graph are not all isomorphic to (extended) Dynkin diagrams.
+
+        EXAMPLES:
+
+        The generalized Kronecker quiver is wild for all :math:`m\geq 3`:
+
+            sage: from quiver import *
+            sage: GeneralizedKroneckerQuiver(1).is_wild_type()
+            False
+            sage: GeneralizedKroneckerQuiver(2).is_wild_type()
+            False
+            sage: GeneralizedKroneckerQuiver(3).is_wild_type()
+            True
+
+        """
+        return not self.is_finite_type() and not self.is_tame_type()
 
     """
     Some graph-theoretic properties of the quiver
