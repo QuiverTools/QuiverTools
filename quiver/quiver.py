@@ -2035,7 +2035,7 @@ class Quiver(Element):
 
     def division_order(self, d, e):
         r"""
-        Checks if `d\ll e`
+        Checks if :math:`d\ll e`
 
         This means that
 
@@ -2044,6 +2044,7 @@ class Quiver(Element):
         - :math:`d_k = e_k` for every vertex `k` which is neither a source nor a sink.
 
         This is used when dealing with Chow rings of quiver moduli, see also
+        :meth:`QuiverModuli.chow_ring` and
         :meth:`QuiverModuli._all_minimal_forbidden_subdimension_vectors`.
 
         EXAMPLES:
