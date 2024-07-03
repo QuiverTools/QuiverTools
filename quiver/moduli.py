@@ -1362,16 +1362,21 @@ class QuiverModuli(Element):
 
         """
         # setup shorthand
-        Q, d, theta, condition = self._Q, self._d, self._theta, self._condition
+        Q, d, theta, denom, condition = (
+            self._Q,
+            self._d,
+            self._theta,
+            self._denom,
+            self._condition,
+        )
 
         es = Q.all_subdimension_vectors(d, proper=True, nonzero=True)
 
-        # TODO need for denominator?
-        slope = Q.slope(d, theta)
+        slope = Q.slope(d, theta, denom=denom)
         if condition == "semistable":
-            return list(filter(lambda e: Q.slope(e, theta) > slope, es))
+            return list(filter(lambda e: Q.slope(e, theta, denom=denom) > slope, es))
         elif condition == "stable":
-            return list(filter(lambda e: Q.slope(e, theta) >= slope, es))
+            return list(filter(lambda e: Q.slope(e, theta, denom=denom) >= slope, es))
 
     # TODO make it private?
     def _all_minimal_forbidden_subdimension_vectors(self):
