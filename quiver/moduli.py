@@ -5,9 +5,10 @@ from sage.combinat.partition import Partitions
 from sage.combinat.permutation import Permutations
 from sage.combinat.schubert_polynomial import SchubertPolynomialRing
 from sage.combinat.sf.sf import SymmetricFunctions
+from sage.combinat.tuple import UnorderedTuples
 from sage.matrix.constructor import matrix
 from sage.misc.misc_c import prod
-from sage.modules.free_module_element import vector
+from sage.modules.free_module_element import vector, zero_vector
 from sage.rings.function_field.constructor import FunctionField
 from sage.rings.infinity import Infinity
 from sage.rings.integer_ring import ZZ
@@ -1977,17 +1978,21 @@ class QuiverModuliSpace(QuiverModuli):
         Returns the Poincare polynomial of the moduli space.
 
         OUTPUT: polynomial in one variable
-        # TODO allow a user-supplied ring?
 
         The Poincare polynomial is defined as
 
         .. MATH::
-            P_X(q) = \sum_{i \geq 0} (-1)^i \mathrm{dim} H^i(X;\mathbb{C}) q^{i/2}.
+            P_X(q) = \sum_{i \geq 0} (-1)^i \mathrm{dim}{\rm H}^i(X;\mathbb{C}) q^{i/2}
 
         For a quiver moduli space whose dimension vector is
         :math:`\theta`-coprime, the odd cohomology vanishes
-        and this is a Polynomial in :math:`q`.
-        We use Cor. 6.9 in Reineke's Harder--Narasimhan paper to compute it.
+        and this is a polynomial in :math:`q`.
+
+        ALGORITHM:
+
+        Corollary 6.9 in MR1974891_.
+
+        .. _MR1974891: https://mathscinet.ams.org/mathscinet/relay-station?mr=1974891
 
         EXAMPLES:
 
@@ -2006,7 +2011,6 @@ class QuiverModuliSpace(QuiverModuli):
             sage: X = QuiverModuliSpace(Q, [1, 1, 1, 1, 1, 2])
             sage: X.poincare_polynomial()
             q^2 + 5*q + 1
-
         """
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
@@ -2591,9 +2595,9 @@ class QuiverModuliStack(QuiverModuli):
 
     def motive(self):
         r"""Gives an expression for the motive of the semistable moduli stack
-        in an appropriate localization of K_0(Var)
 
-        # TODO more explanation
+        This really lives inside an appropriate localization of K_0(Var), but it only
+        involves the Lefschetz class.
 
         EXAMPLES:
 
@@ -2619,63 +2623,54 @@ class QuiverModuliStack(QuiverModuli):
 
         """
 
-        # Only for semistable.
-        # For stable, we don't know what the motive is. It's not pure in general.
+        # only for semistable.
+        # for stable, we don't know what the motive is: it's not pure in general.
         assert self._condition == "semistable"
-        # TODO well: if we have stable == semistable then we can also compute it!
 
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+        d = Q._coerce_dimension_vector(d)
 
-        # TODO allow some other ring?
         K = FunctionField(QQ, "L")
         L = K.gen(0)
 
-        # TODO coercion needs to be checked here
         if theta == Q.zero_vector():
-            num = L ** (-Q.tits_form(d))
-            den = prod(
-                [
-                    prod([(1 - L ** (-nu)) for nu in range(1, d[i] + 1)])
-                    for i in range(Q.number_of_vertices())
-                ]
+            return L ** (-Q.tits_form(d)) / prod(
+                prod(1 - L ** (-nu) for nu in range(1, d[i] + 1))
+                for i in range(Q.number_of_vertices())
             )
-            return num / den
-        else:
-            # TODO use proper=True, nonzero=True, or maybe not?
-            # in any case, the next 6 lines are an atrocity
-            I = Q.all_subdimension_vectors(d)
-            I = list(filter(lambda e: e != Q.zero_vector() and e != d, I))
-            I = list(filter(lambda e: Q.slope(e, theta) > Q.slope(d, theta), I))
-            I = I + [Q.zero_vector(), d]
-            I = [Q._coerce_dimension_vector(e) for e in I]
-            # TODO I believe max(d) on a dict should give the wrong result
-            I.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
 
-            # Now define a matrix T of size NxN whose entry at position (i,j) is
-            # L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j]
-            # and 0 otherwise
-            # TODO it's bad to have a function motive inside a motive method
-            def motive(e):
-                return QuiverModuliStack(
-                    Q, e, Q.zero_vector(), condition="semistable"
+        # start with all subdimension vectors
+        ds = Q.all_subdimension_vectors(d, proper=True, nonzero=True)
+        # only consider those of greater slope
+        ds = list(filter(lambda e: Q.slope(e, theta) > Q.slope(d, theta), ds))
+        # put zero and ``d`` back in and sort them conveniently
+        ds = ds + [Q.zero_vector(), d]
+        ds.sort(key=(lambda e: Q._deglex_key(e, b=max(d) + 1)))
+
+        # Now define a matrix T of size NxN whose entry at position (i,j) is
+        # L^<e-f,e>*mot(f-e) if e = I[i] is a subdimension vector of f = I[j]
+        # and 0 otherwise
+        T = matrix(K, len(ds))
+        for i, j in UnorderedTuples(range(len(ds)), 2):
+            e, f = ds[i], ds[j]
+            if not Q.is_subdimension_vector(e, f):
+                continue
+
+            T[i, j] = (
+                L ** (Q.euler_form(e - f, e))
+                * QuiverModuliStack(
+                    Q, f - e, Q.zero_vector(), condition="semistable"
                 ).motive()
+            )
 
-            N = len(I)
-            T = matrix(K, N)
-            for i in range(N):
-                for j in range(i, N):
-                    e, f = I[i], I[j]
-                    if Q.is_subdimension_vector(e, f):
-                        T[i, j] = L ** (Q.euler_form(e - f, e)) * motive(f - e)
+        # solve system of linear equations T*x = e_N
+        # and extract entry 0 of the solution x.
+        y = zero_vector(len(ds))
+        y[len(ds) - 1] = 1
+        x = T.solve_right(y)
 
-            # Solve system of linear equations T*x = e_N
-            # and extract entry 0 of the solution x.
-            y = vector([0 for i in range(N)])
-            y[N - 1] = 1
-            x = T.solve_right(y)
-
-            return x[0]
+        return x[0]
 
     def chow_ring(self, chernClasses=None):
         r"""Returns the Chow ring of the quotient stack.
