@@ -2003,6 +2003,8 @@ class QuiverModuliSpace(QuiverModuli):
             raise NotImplementedError()
 
     def is_projective(self) -> bool:
+        # TODO is this not just stable==semistable if condition is stable, and True if
+        # condition is semistable?
         raise NotImplementedError()
 
     def picard_rank(self):
@@ -2278,6 +2280,8 @@ class QuiverModuliSpace(QuiverModuli):
         The Todd class of `X` is the Todd class of the tangent bundle.
 
         For quiver moduli it computes as
+
+        # TODO reference Chow paper
 
         .. MATH::
 
