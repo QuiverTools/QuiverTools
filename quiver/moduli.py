@@ -2030,9 +2030,35 @@ class QuiverModuliSpace(QuiverModuli):
             raise NotImplementedError()
 
     def is_projective(self) -> bool:
-        # TODO is this not just stable==semistable if condition is stable, and True if
-        # condition is semistable?
-        raise NotImplementedError()
+        # TODO need more tests
+        r"""
+        Check whether the moduli space is projective
+
+        EXAMPLES:
+
+        For acyclic quivers the semistable moduli space is always projective::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).is_projective()
+            True
+
+        If we have strictly semistable representations, then the stable moduli space
+        is only quasiprojective but not projective::
+
+            sage: QuiverModuliSpace(Q, (3, 3), condition="stable").is_projective()
+            False
+
+        """
+        # if Q has oriented cycles then the moduli space is projective if it is a point
+        if not self._Q.is_acyclic():
+            return self.dimension() == 0
+        # in the acyclic case have that the semistable moduli space is always projective
+        if self._condition == "semistable":
+            return True
+        # in the stable case we need semistable == stable
+        if self._condition == "stable":
+            return self.semistable_equals_stable()
 
     def picard_rank(self):
         """Computes the Picard rank of the moduli space for known cases."""
