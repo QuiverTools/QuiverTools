@@ -16,6 +16,7 @@ from sage.rings.polynomial.term_order import TermOrder
 from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
 from sage.structure.element import Element
+from sage.misc.functional import denominator as sage_denominator # TODO not the best name
 
 from quiver import Quiver
 
@@ -2043,7 +2044,8 @@ class QuiverModuliSpace(QuiverModuli):
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
 
-        # TODO assert that chi has integer entries.
+        # chi must have integer entries
+        assert all(sage_denominator(c) == 1 for c in chi)
         """Make sure that chi has weight one, i.e.,
         provides a retraction for X*(PG) --> X*(G)."""
         assert chi * d == 1
