@@ -1462,7 +1462,7 @@ class Quiver(Element):
         If we specified a non-standard labeling on the vertices it is used::
 
             sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
-            sage: Q.__zero_vector()
+            sage: Q._Quiver__zero_vector()
             {'a': 0, 'b': 0, 'c': 0}
         """
         if self.__has_vertex_labels():
@@ -1512,7 +1512,7 @@ class Quiver(Element):
         If we specified a non-standard labeling on the vertices it is used::
 
             sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
-            sage: Q.__thin_dimension_vector()
+            sage: Q._Quiver__thin_dimension_vector()
             {'a': 1, 'b': 1, 'c': 1}
         """
         if self.__has_vertex_labels():
@@ -1561,7 +1561,7 @@ class Quiver(Element):
         If we specified a non-standard labeling on the vertices it is used::
 
             sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
-            sage: Q.__simple_root("a")
+            sage: Q._Quiver__simple_root("a")
             {'a': 1, 'b': 0, 'c': 0}
         """
         if self.__has_vertex_labels():
@@ -2365,7 +2365,7 @@ class Quiver(Element):
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
             sage: for e in Q.all_subdimension_vectors(d):
             ....:     print("{} is generic subdimension vector of {}: {}".format(
-            ....:         e, d, Q.__is_generic_subdimension_vector(e, d))
+            ....:         e, d, Q._Quiver__is_generic_subdimension_vector(e, d))
             ....:     )
             (0, 0) is generic subdimension vector of (2, 3): True
             (0, 1) is generic subdimension vector of (2, 3): True
@@ -2890,7 +2890,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(2)
-            sage: Q.__canonical_decomposition((5, 5))
+            sage: Q._Quiver__canonical_decomposition((5, 5))
             [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
         """
         d = self._coerce_dimension_vector(d)
