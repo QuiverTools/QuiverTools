@@ -915,36 +915,29 @@ class QuiverModuli(Element):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,2])
-            sage: theta = vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: L = X.all_luna_types(); L
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 2), (1, -1))
+            sage: Ls = X.all_luna_types(); Ls
             [{(2, 2): [1]}, {(1, 1): [2]}, {(1, 1): [1, 1]}]
-            sage: Qloc, dloc = X.local_quiver_setting(L[0]);
-            sage: Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(Ls[0]);
+            sage: Qloc.adjacency_matrix(), dloc
             ([4], (1))
-            sage: Qloc, dloc = X.local_quiver_setting(L[1]);
-            sage: Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(Ls[1]);
+            sage: Qloc.adjacency_matrix(), dloc
             ([1], (2))
-            sage: Qloc, dloc = X.local_quiver_setting(L[2]);
-            sage: Qloc.adjacency_matrix() , dloc
+            sage: Qloc, dloc = X.local_quiver_setting(Ls[2]);
+            sage: Qloc.adjacency_matrix(), dloc
             (
             [1 1]
             [1 1], (1, 1)
             )
-
         """
         if secure:
             assert self.is_luna_type(tau)
 
         Q = self._Q
 
-        # a word of caution to the future maintainer: Python dictionaries
-        # iterate over the keys in the order they were inserted. This ensures
-        # that the following is a well-defined adjacency matrix. Python sets
-        # DO NOT have this property.
-        # TODO this looks fishy; why should this choice of order matter, as long as
-        # it is the same when defining dloc?
+        # we use the order of vertices provided by ``tau.keys()`` for Qloc and dloc
         A = matrix(
             [
                 [Q.generic_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
@@ -953,7 +946,7 @@ class QuiverModuli(Element):
             ]
         )
         Qloc = Quiver(A)
-        dloc = vector(dim for dp in tau.keys() for dim in tau[dp])
+        dloc = vector(m for dp in tau.keys() for m in tau[dp])
 
         return Qloc, dloc
 
