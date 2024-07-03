@@ -1430,21 +1430,6 @@ class QuiverModuli(Element):
 
         OUTPUT: dict
 
-        The Chow ring of a quiver moduli space
-
-        Notation for explanations:
-        G = G_d = prod_{i in Q_0} GL_{d_i}
-        T = maximal torus of diagonal matrices
-        PG = G/G_m
-        PT = T/G_m maximal torus of PT
-        W = Weyl group of T in G = Weyl group of PT in PG
-          = prod_{i in Q_0} S_{d_i}
-        R = bigoplus_{a in Q_1} Hom(k^{d_{s(a)}},k^{d_{t(a)}})
-        R^{sst}, R^{st} semi-stable/stable locus
-
-        EXAMPLES:
-
-        # TODO
         """
         # setup shorthand
         Q, d = (
@@ -1652,7 +1637,7 @@ class QuiverModuli(Element):
 
         Abstract method, see the concrete implementations for details.
 
-        ## The Chow ring of a quiver moduli space
+        The Chow ring of a quiver moduli space
 
         For a given datum :math:`(Q, {\bf d}, \theta)` such that
         `Q` is acyclic and :math:`{\bf d}` is :math:`\theta`-coprime,
@@ -1712,6 +1697,50 @@ class QuiverModuli(Element):
 
         The Chow ring :math:`\operatorname{Ch}(M^{\theta-st}(Q,d))` is then
         the quotient of `A` by :math:`(\sum_{i\in Q_0} a_i c_1(U_i)) + \rho(I_{taut})`.
+
+
+        EXAMPLES:
+
+        The Chow ring for our favourite 6-fold::
+
+            sage: from quiver import *
+            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2, 3])
+            sage: theta = vector([3, -2])
+            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: chi = vector([-1, 1])
+            sage: R = X.chow_ring(chi=chi);
+            sage: R.ambient()
+            Multivariate Polynomial Ring in x0_1, x0_2, x1_1, x1_2, x1_3
+            over Rational Field
+            sage: R
+            Quotient of Multivariate Polynomial Ring in x0_1, x0_2, x1_1, x1_2, x1_3
+            over Rational Field by the ideal (0, 0, 6*x0_1^3 - 12*x0_1*x0_2 -
+            8*x0_1^2*x1_1 + 8*x0_2*x1_1 + 3*x0_1*x1_1^2 + 3*x0_1*x1_2 - 3*x1_1*x1_2 +
+            3*x1_3, 0, 0, 0, 3*x0_1^4 - 9*x0_1^2*x0_2 + 3*x0_2^2 - 3*x0_1^3*x1_1 +
+            6*x0_1*x0_2*x1_1 + x0_1^2*x1_1^2 - x0_2*x1_1^2 - x0_1^2*x1_2 + x0_2*x1_2 +
+            6*x0_1*x1_3 - 3*x1_1*x1_3, 0, 0, 0, x0_1^5 - 4*x0_1^3*x0_2 +
+            3*x0_1*x0_2^2 - 3*x0_1^3*x1_2 + 6*x0_1*x0_2*x1_2 + x0_1^2*x1_1*x1_2 -
+            x0_2*x1_1*x1_2 + 7*x0_1^2*x1_3 - 7*x0_2*x1_3 - 3*x0_1*x1_1*x1_3, 0, 0, 0,
+            6*x0_1^4 - 18*x0_1^2*x0_2 + 6*x0_2^2 - 8*x0_1^3*x1_1 + 16*x0_1*x0_2*x1_1 +
+            3*x0_1^2*x1_1^2 - 3*x0_2*x1_1^2 + 3*x0_1^2*x1_2 - 3*x0_2*x1_2 -
+            3*x0_1*x1_1*x1_2 + x1_2^2 + 3*x0_1*x1_3 - x1_1*x1_3, 0, 0, 3*x0_1^2*x0_2 +
+            3*x0_2^2 - x0_1^3*x1_1 - 6*x0_1*x0_2*x1_1 + 3*x0_1^2*x1_1^2 +
+            3*x0_2*x1_1^2 - 3*x0_1*x1_1^3 + x1_1^4 - 3*x0_1^2*x1_2 - 3*x0_2*x1_2 +
+            6*x0_1*x1_1*x1_2 - 3*x1_1^2*x1_2 + x1_2^2 - 3*x0_1*x1_3 + 2*x1_1*x1_3,
+            3*x0_1^5 - 12*x0_1^3*x0_2 + 9*x0_1*x0_2^2 - 3*x0_1^4*x1_1 +
+            9*x0_1^2*x0_2*x1_1 - 3*x0_2^2*x1_1 + x0_1^3*x1_1^2 - 2*x0_1*x0_2*x1_1^2 -
+            x0_1^3*x1_2 + 2*x0_1*x0_2*x1_2 + 6*x0_1^2*x1_3 - 6*x0_2*x1_3 -
+            3*x0_1*x1_1*x1_3 + x1_2*x1_3, 0, 0, 3*x0_1*x0_2^2 - x0_1^3*x1_2 -
+            6*x0_1*x0_2*x1_2 + 3*x0_1^2*x1_1*x1_2 + 3*x0_2*x1_1*x1_2 -
+            3*x0_1*x1_1^2*x1_2 + x1_1^3*x1_2 + 3*x0_1*x1_2^2 - 2*x1_1*x1_2^2 -
+            3*x0_1^2*x1_3 - 3*x0_2*x1_3 + 3*x0_1*x1_1*x1_3 - x1_1^2*x1_3 + 2*x1_2*x1_3,
+            x0_1^6 - 5*x0_1^4*x0_2 + 6*x0_1^2*x0_2^2 - x0_2^3 - 3*x0_1^4*x1_2 +
+            9*x0_1^2*x0_2*x1_2 - 3*x0_2^2*x1_2 + x0_1^3*x1_1*x1_2 -
+            2*x0_1*x0_2*x1_1*x1_2 + 7*x0_1^3*x1_3 - 14*x0_1*x0_2*x1_3 -
+            3*x0_1^2*x1_1*x1_3 + 3*x0_2*x1_1*x1_3 + x1_3^2, x0_2^3 - x0_1^3*x1_3 -
+            6*x0_1*x0_2*x1_3 + 3*x0_1^2*x1_1*x1_3 + 3*x0_2*x1_1*x1_3 -
+            3*x0_1*x1_1^2*x1_3 + x1_1^3*x1_3 + 3*x0_1*x1_2*x1_3 - 2*x1_1*x1_2*x1_3 +
+            x1_3^2, -x0_1 + x1_1)
 
         .. SEEALSO:: :meth:`QuiverModuliSpace.chow_ring`
 
@@ -2171,6 +2200,17 @@ class QuiverModuliSpace(QuiverModuli):
         # which implies that d is indivisible.
         assert Q.is_theta_coprime(d, theta)
 
+        # if a linearization is not given we compute one here.
+        if chi is None:
+            [g, m] = extended_gcd(d.list())
+            chi = vector(m)
+
+        # chi must have integer entries
+        assert all(QQ(c).denominator() == 1 for c in chi)
+        """Make sure that chi has weight one, i.e.,
+        provides a retraction for X*(PG) --> X*(G)."""
+        assert chi * d == 1
+
         if chernClasses is None:
             chernClasses = [
                 "x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)
@@ -2180,19 +2220,6 @@ class QuiverModuliSpace(QuiverModuli):
             inRoots=False, chernClasses=chernClasses
         )
         A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
-
-        if chi is None:
-            [g, m] = extended_gcd(d.list())
-            chi = vector(m)
-
-        # chi must have integer entries
-        # TODO why do we need this? nowhere have we put our own function called
-        # `denominator` in scope?
-        # alternative: do QQ(c).denominator()?
-        assert all(sage_denominator(c) == 1 for c in chi)
-        """Make sure that chi has weight one, i.e.,
-        provides a retraction for X*(PG) --> X*(G)."""
-        assert chi * d == 1
 
         I = A.ideal(rels) + A.ideal(sum([chi[i] * generator(i, 0) for i in range(n)]))
 
