@@ -2101,6 +2101,39 @@ class QuiverModuliSpace(QuiverModuli):
         # see https://github.com/QuiverTools/QuiverTools/issues/24
         raise NotImplementedError()
 
+    def semisimple_moduli_space(self):
+        r"""
+        Return the moduli space with `theta` replaced by zero.
+
+        This is the moduli space of semisimple representations for the same quiver
+        and the same dimension vector.
+
+        EXAMPLES:
+
+        For an acyclic quiver this moduli space is a point::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.semisimple_moduli_space().dimension()
+            0
+
+        For a quiver with oriented cycles we get an affine variety::
+
+            sage: Q = JordanQuiver(2)
+            sage: X = QuiverModuliSpace(Q, (3,))
+            sage: X.dimension()
+            10
+
+        """
+        # setup shorthand
+        Q, d = (
+            self._Q,
+            self._d,
+        )
+
+        return QuiverModuliSpace(Q, d, theta=Q.zero_vector())
+
     def is_projective(self) -> bool:
         # TODO need more tests
         r"""
