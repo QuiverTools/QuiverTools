@@ -2049,11 +2049,16 @@ class QuiverModuliSpace(QuiverModuli):
         """
         # TODO is this not just stable==semistable if condition is stable, and True if
         # condition is semistable?
-        # Gianni thinks that the quiver also needs to be acyclic, but that should be it?
-        if self._condition == "stable":
-            return self.semistable_equals_stable()
-        elif self._condition == "semistable":
-            return self.is_nonempty()
+        # Gianni thinks that the quiver also needs to be acyclic, but that sufficent?
+
+        if self._Q.is_acyclic():
+            if self._condition == "stable" and self.is_nonempty():
+                return self.semistable_equals_stable()
+            elif self._condition == "semistable":
+                return self.is_nonempty()
+        else:
+            # projective over affine is never projective?
+            raise NotImplementedError()
 
     def picard_rank(self):
         """Computes the Picard rank of the moduli space for known cases."""
