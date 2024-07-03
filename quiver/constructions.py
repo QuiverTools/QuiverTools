@@ -53,7 +53,7 @@ def GeneralizedKroneckerQuiver(m: int):
 
     OUTPUT: the generalized Kronecker quiver as Quiver instance
 
-    TESTS::
+    EXAMPLES:
 
     The generalized Kronecker quiver is as claimed::
 
@@ -82,7 +82,7 @@ def KroneckerQuiver(m: int = 2):
 
     OUTPUT: the Kronecker quiver as Quiver instance
 
-    TESTS::
+    EXAMPLES:
 
     The Kronecker quiver is as claimed::
 
@@ -117,7 +117,7 @@ def ThreeVertexQuiver(m12: int, m13: int, m23: int):
 
     - ``m23`` -- integer; number of arrows from 2 to 3
 
-    EXAMPLES::
+    EXAMPLES:
 
     A 3-vertex quiver with 5 arrows::
 
@@ -156,7 +156,7 @@ def LoopQuiver(m: int):
 
         :func:`GeneralizedJordanQuiver`
 
-    EXAMPLES::
+    EXAMPLES:
 
     The loop quiver with 7 loops::
 
@@ -189,7 +189,7 @@ def JordanQuiver(m: int = 1):
         :func:`GeneralizedJordanQuiver`
 
 
-    EXAMPLES::
+    EXAMPLES:
 
     The Jordan quiver has one loop::
 
@@ -213,7 +213,7 @@ def GeneralizedJordanQuiver(m: int):
 
     OUTPUT: the generalized Jordan quiver
 
-    EXAMPLES::
+    EXAMPLES:
 
     The generalized Jordan quiver has 1 vertex and ``m`` arrows::
 
