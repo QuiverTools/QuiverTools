@@ -2263,23 +2263,38 @@ class QuiverModuliSpace(QuiverModuli):
         return self.betti_numbers()[2]
 
     def index(self):
-        """Computes the index of the moduli space for known cases,
-        i.e., the largest integer dividing the canonical divisor in Pic."""
-        # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
+        r"""
+        Computes the index of the moduli space
+
+        The index is the largest integer dividing the canonical divisor in Pic.
+        For now this is only implemented for the canonical stability condition.
+
+        EXAMPLES:
+
+        The usual 3-Kronecker example::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).index()
+            3
+
+        Subspace quiver moduli have index 1::
+
+            sage: Q = SubspaceQuiver(7)
+            sage: QuiverModuliSpace(Q, (1, 1, 1, 1, 1, 1, 1, 2)).index()
+            1
+        """
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
-        if (
-            # TODO at the very least check for multiple of canonical
-            theta == Q.canonical_stability_parameter(d)
-            and Q.is_theta_coprime(d, theta)
-            and Q.is_amply_stable(Q, d, theta)
-        ):
-            # TODO what if theta is rescaled?
-            return gcd(Q._to_vector(theta))
-        else:
-            raise NotImplementedError()
 
-        # TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.
+        if (
+            theta == Q.canonical_stability_parameter(d)
+            and self.is_theta_coprime()
+            and self.is_amply_stable()
+        ):
+            return gcd(Q._coerce_vector(theta))
+
+        raise NotImplementedError()
 
     def chow_ring(self, chi=None, chernClasses=None):
         r"""
