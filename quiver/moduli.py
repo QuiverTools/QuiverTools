@@ -333,7 +333,7 @@ class QuiverModuli(Element):
         The 3-Kronecker quiver for `d = (2, 3)` has stable representations::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), [2, 3]
+            sage: Q, d = GeneralizedKroneckerQuiver(3), (2, 3)
             sage: X = QuiverModuliSpace(Q, d, condition="stable"); X.is_nonempty()
             True
 
@@ -523,7 +523,7 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3], [1, 0])
+            sage: X = QuiverModuliSpace(Q, (2, 3), [1, 0])
             sage: HNs = X.all_harder_narasimhan_types()
             sage: all(X.is_harder_narasimhan_type(dstar) for dstar in HNs)
             True
@@ -604,8 +604,7 @@ class QuiverModuli(Element):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
-            sage: theta = vector([1,0])
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (1, 0)
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: HNs = X.all_harder_narasimhan_types()
             sage: [X.codimension_of_harder_narasimhan_stratum(dstar) for dstar in HNs]
@@ -642,7 +641,7 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3], [1, 0])
+            sage: X = QuiverModuliSpace(Q, (2, 3), [1, 0])
             sage: X.codimension_unstable_locus()
             3
 
@@ -656,7 +655,7 @@ class QuiverModuli(Element):
         The :math:`\mathrm{A}_2` quiver is of finite type::
 
             sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: X = QuiverModuliSpace(Q, [2, 3], [1, 0])
+            sage: X = QuiverModuliSpace(Q, (2, 3), [1, 0])
             sage: X.codimension_unstable_locus()
             0
 
@@ -1063,12 +1062,12 @@ class QuiverModuli(Element):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([3,3])
-            sage: theta = vector([1,-1])
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (3, 3), (1, -1)
+            sage: theta = (1, -1)
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.semistable_equals_stable()
             False
-            sage: e = vector([2,3])
+            sage: e = (2, 3)
             sage: Y = QuiverModuliSpace(Q, e, theta)
             sage: Y.semistable_equals_stable()
             True
@@ -1124,9 +1123,9 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: QuiverModuliSpace(Q, [2, 3]).is_amply_stable()
+            sage: QuiverModuliSpace(Q, (2, 3)).is_amply_stable()
             True
-            sage: QuiverModuliSpace(Q, [2, 3], [-3, 2]).is_amply_stable()
+            sage: QuiverModuliSpace(Q, (2, 3), [-3, 2]).is_amply_stable()
             False
 
         A three-vertex example from the rigidity paper::
@@ -1162,7 +1161,7 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: QuiverModuliSpace(Q, [2, 3]).is_strongly_amply_stable()
+            sage: QuiverModuliSpace(Q, (2, 3)).is_strongly_amply_stable()
             True
 
         A 3-vertex quiver::
@@ -1267,7 +1266,7 @@ class QuiverModuli(Element):
         The 6-dimensional 3-Kronecker example::
 
             sage: from quiver import *
-            sage: X = QuiverModuliSpace(KroneckerQuiver(3), [2, 3])
+            sage: X = QuiverModuliSpace(KroneckerQuiver(3), (2, 3))
             sage: X.all_weight_bounds()
             [135, 100, 90, 15/2, 270, 100, 30]
             sage: X.all_weight_bounds(as_dict=True)
@@ -1304,7 +1303,7 @@ class QuiverModuli(Element):
         Kronecker moduli satisfy the rigidity inequality::
 
             sage: from quiver import *
-            sage: X = QuiverModuliSpace(KroneckerQuiver(3), [2, 3])
+            sage: X = QuiverModuliSpace(KroneckerQuiver(3), (2, 3))
             sage: X.if_rigidity_inequality_holds()
             True
 
@@ -1703,10 +1702,9 @@ class QuiverModuli(Element):
         The Chow ring for our favourite 6-fold::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2, 3])
-            sage: theta = vector([3, -2])
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
-            sage: chi = vector([-1, 1])
+            sage: chi = (-1, 1)
             sage: R = X.chow_ring(chi=chi);
             sage: R.ambient()
             Multivariate Polynomial Ring in x0_1, x0_2, x1_1, x1_2, x1_3
@@ -1887,7 +1885,7 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3], condition="semistable")
+            sage: X = QuiverModuliSpace(Q, (2, 3), condition="semistable")
             sage: X.dimension()
             6
             sage: X = QuiverModuliSpace(Q, [3, 3],condition="semistable")
@@ -1958,7 +1956,7 @@ class QuiverModuliSpace(QuiverModuli):
             sage: X.poincare_polynomial()
             q + 1
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [2, 3])
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: X.poincare_polynomial()
             q^6 + q^5 + 3*q^4 + 3*q^3 + 3*q^2 + q + 1
             sage: Q = SubspaceQuiver(5)
@@ -1992,14 +1990,13 @@ class QuiverModuliSpace(QuiverModuli):
         Some Kronecker quivers::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
+            sage: Q, d, theta = KroneckerQuiver(), (1, 1), (1, -1)
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
             sage: X.poincare_polynomial()
             q + 1
             sage: X.betti_numbers()
             [1, 0, 1]
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
-            sage: theta = vector([1,-1])
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (1, -1)
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
             sage: X.betti_numbers()
             [1, 0, 1, 0, 3, 0, 3, 0, 3, 0, 1, 0, 1]
@@ -2052,16 +2049,14 @@ class QuiverModuliSpace(QuiverModuli):
         Being :math:`\theta`-coprime ensures that properly semistables don't exist::
 
             sage: from quiver import *
-            sage: Q, d= GeneralizedKroneckerQuiver(3), vector([2, 3])
-            sage: theta = vector([3, -2])
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
             sage: X = QuiverModuliSpace(Q, d, theta, condition="stable")
             sage: X.is_projective()
             True
 
         Without this assumption, the moduli space is not necessarily projective::
 
-            sage: Q, d= GeneralizedKroneckerQuiver(3), vector([3, 3])
-            sage: theta = vector([1, -1])
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (3, 3), (1, -1)
             sage: X = QuiverModuliSpace(Q, d, theta, condition="stable")
             sage: X.is_projective()
             False
@@ -2133,9 +2128,9 @@ class QuiverModuliSpace(QuiverModuli):
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
+            sage: Q, d, theta = KroneckerQuiver(), (1, 1), (1, -1)
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
-            sage: chi = vector([1,0])
+            sage: chi = (1, 0)
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
             sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
@@ -2145,10 +2140,9 @@ class QuiverModuliSpace(QuiverModuli):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
-            sage: theta = vector([3,-2])
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
-            sage: chi = vector([-1,1])
+            sage: chi = (-1, 1)
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
             sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
@@ -2163,10 +2157,10 @@ class QuiverModuliSpace(QuiverModuli):
         The 5-subspaces quiver::
 
             sage: from quiver import *
-            sage: Q, d = SubspaceQuiver(5), vector([1,1,1,1,1,2])
-            sage: theta = vector([2,2,2,2,2,-5])
+            sage: Q, d = SubspaceQuiver(5), (1, 1, 1, 1, 1, 2)
+            sage: theta = (2, 2, 2, 2, 2, -5)
             sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
-            sage: chi = vector([-1,-1,-1,-1,-1,3])
+            sage: chi = (-1, -1, -1, -1, -1, 3)
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
             sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
@@ -2268,10 +2262,10 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(8)
-            sage: d = vector([1,1])
-            sage: theta = vector([1,-1])
+            sage: d = (1, 1)
+            sage: theta = (1, -1)
             sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-            sage: chi = vector([1,0])
+            sage: chi = (1, 0)
             sage: X.point_class(chi,chernClasses=['o','h'])
             h^7
 
@@ -2279,10 +2273,10 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: d = vector([2,3])
-            sage: theta = vector([3,-2])
+            sage: d = (2, 3)
+            sage: theta = (3, -2)
             sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-            sage: chi = vector([-1,1])
+            sage: chi = (-1, 1)
             sage: X.point_class(chi,chernClasses=['x1','x2','y1','y2','y3'])
             y3^2
 
@@ -2292,10 +2286,10 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = SubspaceQuiver(5)
-            sage: d = vector([1,1,1,1,1,2])
-            sage: theta = vector([2,2,2,2,2,-5])
+            sage: d = (1, 1, 1, 1, 1, 2)
+            sage: theta = (2, 2, 2, 2, 2, -5)
             sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
-            sage: chi = vector([-1,-1,-1,-1,-1,3])
+            sage: chi = (-1, -1, -1, -1, -1, 3)
             sage: X.point_class(chi,chernClasses=['x1','x2','x3','x4','x5','y','z'])
             1/2*z
 
@@ -2481,7 +2475,7 @@ class QuiverModuliStack(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: X = QuiverModuliStack(Q, [2, 3])
+            sage: X = QuiverModuliStack(Q, (2, 3))
 
         """
         QuiverModuli.__init__(self, Q, d, theta=theta, denom=denom, condition=condition)
@@ -2562,19 +2556,18 @@ class QuiverModuliStack(QuiverModuli):
         Loop quivers::
 
             sage: from quiver import *
-            sage: Q, d, theta = LoopQuiver(0), vector([2]), vector([0])
+            sage: Q, d, theta = LoopQuiver(0), (2, ), (0, )
             sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
             sage: X.motive()
             1/(L^4 - L^3 - L^2 + L)
-            sage: Q, d, theta = LoopQuiver(1), vector([2]), vector([0])
+            sage: Q, d, theta = LoopQuiver(1), (2, ), (0, )
             sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
             sage: X.motive()
             L^3/(L^3 - L^2 - L + 1)
 
         The 3-Kronecker quiver::
 
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
-            sage: theta = vector([3,-2])
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
             sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
             sage: X.motive()
             (-L^6 - L^5 - 3*L^4 - 3*L^3 - 3*L^2 - L - 1)/(L - 1)
