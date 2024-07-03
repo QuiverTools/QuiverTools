@@ -2046,6 +2046,26 @@ class QuiverModuliSpace(QuiverModuli):
         The latter will be projective if and only if
         :math:`R^{\theta\mathrm{sst}}(Q,d) = R^{\theta\mathrm{st}}(Q,d)`, i.e., if
         there are no properly semistable representations.
+
+        EXAMPLES:
+
+        Being :math:`\theta`-coprime ensures that properly semistables don't exist::
+
+            sage: from quiver import *
+            sage: Q, d= GeneralizedKroneckerQuiver(3), vector([2, 3])
+            sage: theta = vector([3, -2])
+            sage: X = QuiverModuliSpace(Q, d, theta, condition="stable")
+            sage: X.is_projective()
+            True
+
+        Without this assumption, the moduli space is not necessarily projective::
+
+            sage: Q, d= GeneralizedKroneckerQuiver(3), vector([3, 3])
+            sage: theta = vector([1, -1])
+            sage: X = QuiverModuliSpace(Q, d, theta, condition="stable")
+            sage: X.is_projective()
+            False
+
         """
         # TODO is this not just stable==semistable if condition is stable, and True if
         # condition is semistable?
