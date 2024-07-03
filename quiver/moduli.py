@@ -558,26 +558,25 @@ class QuiverModuli(Element):
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, secure=False):
         r"""
-        Computes the codimension of the HN stratum of ``dstar``
-        inside the representation variety.
+        Computes codimension of the Harder--Narasimhan stratum of ``dstar``.
 
-        INPUT:
-
-        - ``dstar`` -- list of vectors of Ints
-        - ``secure`` -- (default: False): Bool
-
-        OUTPUT: codimension as Int
-        # TODO
-        # It checks for dstar to be a HN type iff secure == True. This check is slow.
-        # Be sure to be dealing with a HN type if you call it with secure == False. This is fast but yields nonsense, if dstar is not a HN type.
-
-        The codimension of the HN stratum of :math:`d^* = (d^1,...,d^s)` is given by
+        The codimension of the Harder--Narasimhan stratum inside the representation
+        variety for the HN-type given by :math:`{\bf d}^* = ({\bf d}^1,...,{\bf d}^s)`
+        is given by
 
         .. MATH::
 
-            - sum_{k < l} <d^k,d^l>
+            - sum_{k < l} \langle{\bf d}^k,{\bf d}^l\rangle
 
-        EXAMPLES
+        INPUT:
+
+        - ``dstar`` -- list of dimension vectors
+
+        - ``secure`` -- whether to check ``dstar`` is an HN-type (default: False)
+
+        OUTPUT: codimension of the HN-stratum
+
+        EXAMPLES:
 
         The 3-Kronecker quiver::
 
@@ -585,16 +584,8 @@ class QuiverModuli(Element):
             sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
             sage: theta = vector([1,0])
             sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: hn = X.all_harder_narasimhan_types(); hn
-            [((1, 0), (1, 1), (0, 2)),
-             ((1, 0), (1, 2), (0, 1)),
-             ((1, 0), (1, 3)),
-             ((1, 1), (1, 2)),
-             ((2, 0), (0, 3)),
-             ((2, 1), (0, 2)),
-             ((2, 2), (0, 1)),
-             ((2, 3),)]
-            sage: [X.codimension_of_harder_narasimhan_stratum(dstar) for dstar in hn]
+            sage: HNs = X.all_harder_narasimhan_types()
+            sage: [X.codimension_of_harder_narasimhan_stratum(dstar) for dstar in HNs]
             [12, 9, 8, 3, 18, 10, 4, 0]
 
         """
@@ -613,10 +604,12 @@ class QuiverModuli(Element):
 
     def codimension_unstable_locus(self):
         r"""
-        Computes the codimension of the unstable locus
-        inside the representation variety.
+        Computes codimension of the unstable locus inside the representation variety.
 
-        OUTPUT: codimension as Int
+        This is the minimum of the codimensions of the proper Harder--Narasimhan strata
+        of the representation variety.
+
+        OUTPUT: codimension of the unstable locus
 
         EXAMPLES:
 
@@ -635,7 +628,7 @@ class QuiverModuli(Element):
             sage: X.codimension_unstable_locus()
             1
 
-        The Kronecker quiver::
+        The :math:`\mathrm{A}_2` quiver is of finite type::
 
             sage: Q = GeneralizedKroneckerQuiver(1)
             sage: X = QuiverModuliSpace(Q, [2, 3], [1, 0])
