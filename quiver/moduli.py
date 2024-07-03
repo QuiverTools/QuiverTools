@@ -2037,15 +2037,14 @@ class QuiverModuliSpace(QuiverModuli):
         Some Kronecker quivers::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([1,1]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (1, 1), (1, -1), condition="semistable")
             sage: X.poincare_polynomial()
             q + 1
             sage: X.betti_numbers()
             [1, 0, 1]
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2,3])
-            sage: theta = vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3), (1, -1), condition="semistable")
             sage: X.betti_numbers()
             [1, 0, 1, 0, 3, 0, 3, 0, 3, 0, 1, 0, 1]
 
@@ -2632,9 +2631,7 @@ class QuiverModuliStack(QuiverModuli):
             sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
             sage: X.motive()
             (-L^6 - L^5 - 3*L^4 - 3*L^3 - 3*L^2 - L - 1)/(L - 1)
-
         """
-
         # only for semistable.
         # for stable, we don't know what the motive is: it's not pure in general.
         assert self._condition == "semistable"
