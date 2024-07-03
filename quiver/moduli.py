@@ -7,6 +7,7 @@ from sage.combinat.schubert_polynomial import SchubertPolynomialRing
 from sage.combinat.sf.sf import SymmetricFunctions
 from sage.combinat.tuple import UnorderedTuples
 from sage.matrix.constructor import matrix
+from sage.misc.cachefunc import cached_method
 from sage.misc.misc_c import prod
 from sage.modules.free_module_element import vector, zero_vector
 from sage.rings.function_field.constructor import FunctionField
@@ -353,6 +354,30 @@ class QuiverModuli(Element):
             return self._Q.has_stable_representation(self._d, self._theta)
         if self._condition == "semistable":
             return self._Q.has_semistable_representation(self._d, self._theta)
+
+    @cached_method
+    def is_theta_coprime(self) -> bool:
+        r"""
+        Checks whether the combination of `d` and `theta` is coprime.
+
+        This just calls :meth:`Quiver.is_theta_coprime` for the data defining the
+        moduli space.
+
+        EXAMPLES:
+
+        A coprime example::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).is_theta_coprime()
+            True
+
+        And a non-example:
+
+            sage: QuiverModuliSpace(Q, (3, 3)).is_theta_coprime()
+            False
+        """
+        return self._Q.is_theta_coprime(self._d, self._theta)
 
     """
     Harder--Narasimhan stratification
