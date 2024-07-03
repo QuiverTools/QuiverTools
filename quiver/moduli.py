@@ -1875,6 +1875,28 @@ class QuiverModuliSpace(QuiverModuli):
             sage: X.dimension()
             -Infinity
 
+        The Jordan quiver::
+
+            sage: QuiverModuliSpace(JordanQuiver(1), (0,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(1), (1,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(1), (2,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(1), (2,)).dimension()
+            0
+
+        Some generalized Jordan quivers::
+
+            sage: QuiverModuliSpace(JordanQuiver(2), (0,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(2), (1,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(2), (2,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(2), (3,)).dimension()
+            0
+
         """
         # setup shorthand
         Q, d, theta = (
