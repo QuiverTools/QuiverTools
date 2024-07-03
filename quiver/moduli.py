@@ -2590,7 +2590,19 @@ class QuiverModuliStack(QuiverModuli):
             return -Infinity
 
     def is_smooth(self) -> bool:
-        # TODO think about the empty case, should it be smooth?
+        r"""
+        Return whether the stack is smooth.
+
+        The stack is a quotient of a smooth variety, thus it is always smooth.
+
+        EXAMPLES:
+
+        Nothing interesting to see here::
+
+            sage: from quiver import *
+            sage: QuiverModuliSpace(KroneckerQuiver(3), (2, 3)).is_smooth()
+            True
+        """
         return True
 
     def motive(self):
