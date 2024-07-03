@@ -1243,7 +1243,7 @@ class QuiverModuli(Element):
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
 
-        weights = map(lambda HN: self.harder_narasimhan_weight(HN), HNs)
+        weights = map(lambda dstar: self.harder_narasimhan_weight(dstar), HNs)
 
         if as_dict:
             return dict(zip(HNs, weights))
@@ -1286,8 +1286,8 @@ class QuiverModuli(Element):
 
         tensor_weights = list(
             map(
-                lambda HN: Q.slope(HN[0], theta, denom=denom)
-                - Q.slope(HN[-1], theta, denom=denom),
+                lambda dstar: Q.slope(dstar[0], theta, denom=denom)
+                - Q.slope(dstar[-1], theta, denom=denom),
                 HNs,
             )
         )
