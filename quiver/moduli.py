@@ -2698,7 +2698,7 @@ class QuiverModuliStack(QuiverModuli):
             sage: X = QuiverModuliStack(Q, (2,), (0,))
             sage: X.motive()
             1/(L^4 - L^3 - L^2 + L)
-            sage: Q= LoopQuiver(1), (2, ), (0, )
+            sage: Q = LoopQuiver(1)
             sage: X = QuiverModuliStack(Q, (2,), (0,))
             sage: X.motive()
             L^3/(L^3 - L^2 - L + 1)
