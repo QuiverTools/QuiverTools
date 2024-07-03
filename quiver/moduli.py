@@ -1934,6 +1934,10 @@ class QuiverModuliSpace(QuiverModuli):
             self._theta,
         )
 
+        # the zero dimension vector only has the zero representation which is stable
+        if Q._coerce_dimension_vector(d) == Q.zero_vector():
+            return 0
+
         # if there are stable representations then both the stable and
         # the semi-stable moduli space have dimension `1-<d,d>`
         if Q.has_stable_representation(d, theta):
