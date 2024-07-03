@@ -2135,7 +2135,6 @@ class QuiverModuliSpace(QuiverModuli):
         return QuiverModuliSpace(Q, d, theta=Q.zero_vector())
 
     def is_projective(self) -> bool:
-        # TODO need more tests
         r"""
         Check whether the moduli space is projective
 
@@ -2230,12 +2229,6 @@ class QuiverModuliSpace(QuiverModuli):
             raise NotImplementedError()
 
         # TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.
-
-    def mukai_inequality_holds(self):
-        # setup shorthand
-        Q, d = self._Q, self._d
-
-        return 1 - Q.tits_form(d) >= self.picard_rank() * (self.index() - 1)
 
     def chow_ring(self, chi=None, chernClasses=None):
         r"""
