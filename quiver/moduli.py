@@ -953,24 +953,32 @@ class QuiverModuli(Element):
     # TODO: The codimension computation requires the dimension of the nullcone. This is hard, it turns out. It can be done with the Hesselink stratification, but I wasn't willing to go thourgh Lieven's treatment of this.
     def _codimension_inverse_image_luna_stratum(self, tau):
         r"""
-        Computes the codimension of :math:`\pi^{-1}(S_{tau})`
-        inside `R(Q,d)` where :math:`\pi: R(Q,d)^{\theta-sst} --> M^{\theta-sst}(Q,d)`
+        Computes the codimension of the preimage of the Luna stratum
+
+        This is the codimension of :math:`\pi^{-1}(S_{tau})`
+        inside `R(Q,d)` where
+
+        .. MATH::
+
+            \pi\colon R(Q,d)^{\theta{\rm-sst}}\to M^{\theta{\rm-sst}}(Q,d)
+
         is the semistable quotient map.
 
         INPUT:
 
-        - ``tau``: list of tuples
+        - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by
+          dimension vectors
 
-        OUTPUT: codimension as Int
+        OUTPUT: the codimension of the inverse image of the Luna stratum
 
         For ``tau = {d^1: p^1,...,d^s: p^s}``
         the codimension of :math:`\pi^{-1}(S_{tau})` is
 
         .. MATH::
 
-            -\langle d,d \rangle + \sum_{k=1}^s
-            (\langle d^k,d^k\rangle - l(p^k) + ||p^k||^2) -
-            \mathrm{dim} N(Q_{tau}, d_{tau}),
+            -\langle {\bf d},{\bf d} \rangle + \sum_{k=1}^s
+            (\langle {\bf d}^k,{\bf d}^k\rangle - l(p^k) + ||p^k||^2) -
+            \mathrm{dim} N(Q_{tau}, {\mathbf{d}_{tau}),
 
         where for a partition :math:`p = (n_1,...,n_l)`, we define
         :math:`||p||^2 = \sum_v n_v^2`
@@ -980,7 +988,6 @@ class QuiverModuli(Element):
         Q, d = self._Q, self._d
 
         Qtau, dtau = self.local_quiver_setting(tau, secure=False)
-        dimNull = Qtau.dimension_nullcone(dtau)
         return (
             -Q.euler_form(d, d)
             + sum(
@@ -991,7 +998,7 @@ class QuiverModuli(Element):
                     for dk in tau
                 ]
             )
-            - dimNull
+            - Qtau.dimension_nullcone(dtau)
         )
 
     def codimension_properly_semistable_locus(self):
