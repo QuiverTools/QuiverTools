@@ -692,6 +692,13 @@ class QuiverModuli(Element):
 
             |p_1^1|{\bf d}^1 + ... + |p_s^t|{\bf d}^s = {\bf d}
 
+        ALGORITHM:
+
+        The way we compute the Luna types of a quiver moduli space is taken from
+        Section 4 in MR2511752_.
+
+        .. _MR2511752: https://mathscinet.ams.org/mathscinet/relay-station?mr=2511752
+
         EXAMPLES:
 
         The Kronecker quiver::
