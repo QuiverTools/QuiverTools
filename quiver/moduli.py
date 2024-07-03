@@ -1992,7 +1992,7 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver()
-            sage: X = QuiverModuliSpace(Q, [1, 1])
+            sage: X = QuiverModuliSpace(Q, (1, 1))
             sage: X.poincare_polynomial()
             q + 1
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -2000,14 +2000,16 @@ class QuiverModuliSpace(QuiverModuli):
             sage: X.poincare_polynomial()
             q^6 + q^5 + 3*q^4 + 3*q^3 + 3*q^2 + q + 1
             sage: Q = SubspaceQuiver(5)
-            sage: X = QuiverModuliSpace(Q, [1, 1, 1, 1, 1, 2])
+            sage: X = QuiverModuliSpace(Q, (1, 1, 1, 1, 1, 2))
             sage: X.poincare_polynomial()
             q^2 + 5*q + 1
         """
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+        d = Q._coerce_dimension_vector(d)
+        theta = Q._coerce_vector(theta)
 
-        assert Q.is_theta_coprime(d, theta), "need coprimality"
+        assert Q.is_theta_coprime(d, theta), "need coprime"
 
         k = FunctionField(QQ, "L")
         K = FunctionField(QQ, "q")
@@ -2028,6 +2030,12 @@ class QuiverModuliSpace(QuiverModuli):
 
         OUTPUT: Betti numbers of the moduli space
 
+        ALGORITHM:
+
+        Corollary 6.9 in MR1974891_.
+
+        .. _MR1974891: https://mathscinet.ams.org/mathscinet/relay-station?mr=1974891
+
         EXAMPLES:
 
         Some Kronecker quivers::
@@ -2045,8 +2053,13 @@ class QuiverModuliSpace(QuiverModuli):
             [1, 0, 1, 0, 3, 0, 3, 0, 3, 0, 1, 0, 1]
 
         """
-        # TODO is stable = semistable not enough?
-        assert self._Q.is_theta_coprime(self._d, self._theta), "need coprimality"
+        # setup shorthand
+        Q, d, theta = self._Q, self._d, self._theta
+        d = Q._coerce_dimension_vector(d)
+        theta = Q._coerce_vector(theta)
+
+        assert Q.is_theta_coprime(d, theta), "need coprime"
+
         N = self.dimension()
 
         K = FunctionField(QQ, "q")
