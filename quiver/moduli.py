@@ -1031,6 +1031,8 @@ class QuiverModuli(Element):
     (Semi-)stability
     """
 
+    # TODO document the reasoning; at the moment this looks rather like checking whether
+    # there are no singularities?
     def semistable_equals_stable(self):
         r"""
         Checks whether every semistable representation is stable
@@ -1040,8 +1042,7 @@ class QuiverModuli(Element):
         :math:`\theta`-stable if and only if
         there are no Luna types other than (possibly) ``{d: [1]}``.
 
-        OUTPUT: whether every theta-semistable representation is theta-stable
-        for ``self._theta``
+        OUTPUT: whether every theta-semistable representation is :math:`\theta`-stable
 
         EXAMPLES:
 
@@ -1070,16 +1071,13 @@ class QuiverModuli(Element):
             sage: X = QuiverModuliSpace(Q, d, theta)
             sage: X.semistable_equals_stable()
             True
-
         """
-
         # setup shorthand
-        Q, d, theta = self._Q, self._d, self._theta
-        denom = self._denom
+        Q, d, theta, denom = self._Q, self._d, self._theta, self._denom
         d = Q._coerce_dimension_vector(d)
 
         # the computation of all Luna types takes so much time
-        # thus we should first tests if d is theta-coprime
+        # thus we should first tests if ``d`` is ``theta``-coprime
         if Q.is_theta_coprime(d, theta):
             return True
 
