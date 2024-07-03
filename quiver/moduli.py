@@ -88,7 +88,7 @@ class QuiverModuli(Element):
         if theta is None:
             theta = Q.canonical_stability_parameter(d)
 
-        assert self._is_dimension_vector(d), "``d`` needs to be a dimension vector"
+        assert Q._is_dimension_vector(d), "``d`` needs to be a dimension vector"
         assert Q._is_vector(theta), "`theta` needs to be a stability parameter"
         assert condition in [
             "semistable",
