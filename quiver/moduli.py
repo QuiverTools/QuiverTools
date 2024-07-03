@@ -792,34 +792,40 @@ class QuiverModuli(Element):
 
     def is_luna_type(self, tau) -> bool:
         r"""
-        Checks if tau is a Luna type for theta.
+        Checks if ``tau`` is a Luna type.
+
+        A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence
+        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of dimension vectors
+        :math:`{\bf d}^k` and positive integers :math:`m_k` such that
+
+        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`
+        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`
+        - All :math:`{\bf d}^k` admit a :math:`\theta`-stable representation
 
         INPUT:
 
-        - ``tau`` -- dictionary with dimension vectors as keys and lists of ints as values
+        - ``tau`` -- dictionary of multiplicities indexed by dimension vectors
 
-        OUTPUT: whether ``tau`` is a Luna type.
+        OUTPUT: whether ``tau`` is a Luna type
 
         EXAMPLES:
 
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([3,3]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: l = X.all_luna_types()
-            sage: all(X.is_luna_type(tau) for tau in l)
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (3, 3), (1, -1))
+            sage: Ls = X.all_luna_types()
+            sage: all(X.is_luna_type(tau) for tau in Ls)
             True
 
         The 3-Kronecker quiver with zero vector::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([0,0]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: d.set_immutable()
-            sage: X.is_luna_type({d: [1]})
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (0, 0), (1, -1))
+            sage: X.is_luna_type({Q.zero_vector(): [1]})
             True
-
         """
         Q, d, theta, denom = (
             self._Q,
