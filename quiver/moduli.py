@@ -2700,31 +2700,20 @@ class QuiverModuliStack(QuiverModuli):
         return QuotientRing(A, A.ideal(rels), names=chernClasses)
 
 
-class SmoothModel:
-    """How about this: instead of a separate class SmoothModel,
-    we could define a method framed_moduli_space(self,n)
-    inside the class QuiverModuliSpace which returns another quiver moduli space.
-    After all, it is itself a quiver moduli space.
-
-    #TODO (Pieter) yes, I agree with this
-    """
-
-    def __init__(self):
-        pass
-
-    def betti_numbers(self):
-        raise NotImplementedError()
-
-
-"""Auxiliary methods:"""
-
-
 def extended_gcd(x):
-    """Computes the gcd and the Bezout coefficients of a list of integers."""
-    # This exists for two integers but there seems to be
-    # no implementation for more than one.
-    # That's astonishing.
+    r"""
+    Computes the gcd and the Bezout coefficients of a list of integers.
 
+    This exists for two integers but there seems to be no implementation for more.
+
+    EXAMPLES:
+
+    An example with 3 integers::
+
+        sage: from quiver import *
+        sage: extended_gcd([4, 6, 8])
+        [2, [-1, 1, 0]]
+    """
     n = len(x)
     if n == 1:
         return [x, [1]]
