@@ -567,7 +567,8 @@ class QuiverModuli(Element):
         INPUT:
 
         - ``dstar`` -- the HN type as a list of dimension vectors
-        - ``secure`` -- (default: False): Bool
+
+        - ``secure`` -- whether to first check it is an HN-type (default: False)
 
         OUTPUT: codimension as an integer
 
@@ -804,7 +805,8 @@ class QuiverModuli(Element):
 
         INPUT:
 
-        - ``tau`` -- dictionary of multiplicities indexed by dimension vectors
+        - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by
+          dimension vectors
 
         OUTPUT: whether ``tau`` is a Luna type
 
@@ -858,45 +860,56 @@ class QuiverModuli(Element):
 
         INPUT:
 
-        - ``tau`` -- list of tuples
-        - ``secure`` -- Bool
+        - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by
+          dimension vectors
 
-        OUTPUT: Dimension as Int
+        - ``secure`` -- whether to first check it is a Luna type (default: False)
 
-        The dimension of the Luna stratum of
-        ``tau = {d^1: p^1,...,d^s: p^s}`` is
-        :math:`\sum_k l(p^k)(1 - <\langle d^k,d^k\rangle)`,
+        OUTPUT: dimension of the corresponding Luna stratum
+
+        The dimension of the Luna stratum of ``tau = {d^1: p^1,...,d^s: p^s}`` is
+
+        .. MATH::
+
+            \sum_k l(p^k)(1 - \langle {\bf d}^k,{\bf d}^k\rangle)
+
         where for a partition :math:`p = (n_1,...,n_l)`,
-        the length `l(p)` is `l`, i.e. the number of summands.
+        the length `l(p)` is `l`, i.e., the number of summands.
 
         EXAMPLES:
 
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), vector([2,2]), vector([1,-1])
-            sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: L = X.all_luna_types(); L
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (2, 2), (1, -1))
+            sage: Ls = X.all_luna_types(); Ls
             [{(1, 1): [2]}, {(1, 1): [1, 1]}]
-            sage: [X.dimension_of_luna_stratum(tau) for tau in L]
+            sage: [X.dimension_of_luna_stratum(tau) for tau in Ls]
             [1, 2]
-
         """
         if secure:
             assert self.is_luna_type(tau)
 
-        return sum(len(tau[dn]) * (1 - self._Q.euler_form(dn, dn)) for dn in tau.keys())
+        return sum(len(tau[di]) * (1 - self._Q.euler_form(di, di)) for di in tau.keys())
 
     def local_quiver_setting(self, tau, secure=True):
         r"""
         Returns the local quiver and dimension vector for the given Luna type.
 
+        The local quiver describes the singularities of a moduli space,
+        and is introduced and studied in studied in MR1972892_.
+
+        .. _MR1972892: https://mathscinet.ams.org/mathscinet/relay-station?mr=1972892
+
         INPUT:
 
-        - ``tau`` -- list of tuples
-        - ``secure`` -- Bool
+        - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by
+          dimension vectors
 
-        OUTPUT: tuple consisting of a Quiver object and a vector
+        - ``secure`` -- whether to first check it is a Luna type (default: False)
+
+        OUTPUT: tuple consisting of a Quiver object and a dimension vector
 
         EXAMPLES:
 
