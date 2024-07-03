@@ -2452,21 +2452,18 @@ class QuiverModuliStack(QuiverModuli):
         r"""
         Computes the dimension of the moduli stack :math:`[R^{(s)st}/G]`.
 
+        This is the dimension of a quotient stack, thus we use
+
         .. MATH::
 
-            dim [R^{(s)st}/G] = dim R^{(s)st} - dim G
+            dim [R^{{\rm (s)st}}/G] = dim R^{{\rm (s)st}} - dim G
 
         The dimension turns out to be :math:`-\langle d,d\rangle`
         if the (semi-)stable locus is non-empty"""
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
 
-        if self._condition == "stable" and Q.has_stable_representation(d, theta):
-            return -Q.euler_form(d, d)
-        # TODO is this one correct? we need to check for existence of a stable I think?
-        if self._condition == "semistable" and Q.has_semistable_representation(
-            d, theta
-        ):
+        if self.is_nonempty():
             return -Q.euler_form(d, d)
         else:
             return -Infinity
