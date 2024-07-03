@@ -662,7 +662,7 @@ class QuiverModuli(Element):
     Luna
     """
 
-    def all_luna_types(self):
+    def all_luna_types(self, exclude_generic=False):
         r"""
         Returns the unordered list of all Luna types of d for theta.
 
@@ -699,6 +699,11 @@ class QuiverModuli(Element):
         Section 4 in MR2511752_.
 
         .. _MR2511752: https://mathscinet.ams.org/mathscinet/relay-station?mr=2511752
+
+        INPUT:
+
+        - ``exclude_generic`` -- whether to include the generic Luna type ``{d: [1]}``
+          (default: False)
 
         EXAMPLES:
 
@@ -747,7 +752,7 @@ class QuiverModuli(Element):
             return [{z: [1]}]
 
         # we will build all possible Luna types from the bottom up
-        luna_types = []
+        Ls = []
 
         # start with all subdimension vectors
         ds = Q.all_subdimension_vectors(d, nonzero=True, forget_labels=True)
@@ -784,12 +789,16 @@ class QuiverModuli(Element):
                     partial[key] = Partitions(partial[key]).list()
 
                 # we add all possible Luna types we can build to our list
-                luna_types += [
+                Ls += [
                     dict(zip(partial.keys(), values))
                     for values in product(*partial.values())
                 ]
 
-        return luna_types
+        generic = {d: [1]}
+        if exclude_generic and generic in Ls:
+            Ls.remove(generic)
+
+        return Ls
 
     def is_luna_type(self, tau) -> bool:
         r"""
@@ -1081,11 +1090,8 @@ class QuiverModuli(Element):
         if not Q.has_semistable_representation(d, theta, denom=denom):
             return True
         else:
-            allLunaTypes = self.all_luna_types()
-            genericType = {d: [1]}
-            if genericType in allLunaTypes:
-                allLunaTypes.remove(genericType)
-            return not allLunaTypes  # This checks if the list is empty
+            Ls = self.all_luna_types(exclude_generic=True)
+            return not Ls  # this checks if the list is empty
 
     """
     Ample stability
