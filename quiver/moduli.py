@@ -6,9 +6,6 @@ from sage.combinat.permutation import Permutations
 from sage.combinat.schubert_polynomial import SchubertPolynomialRing
 from sage.combinat.sf.sf import SymmetricFunctions
 from sage.matrix.constructor import matrix
-from sage.misc.functional import (
-    denominator as sage_denominator,  # TODO not the best name
-)
 from sage.misc.misc_c import prod
 from sage.modules.free_module_element import vector
 from sage.rings.function_field.constructor import FunctionField
@@ -2581,7 +2578,7 @@ class QuiverModuliStack(QuiverModuli):
         The dimension turns out to be :math:`-\langle d,d\rangle`
         if the (semi-)stable locus is non-empty"""
         # setup shorthand
-        Q, d, theta = self._Q, self._d, self._theta
+        Q, d = self._Q, self._d
 
         if self.is_nonempty():
             return -Q.euler_form(d, d)
