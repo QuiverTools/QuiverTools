@@ -6,6 +6,9 @@ from sage.combinat.permutation import Permutations
 from sage.combinat.schubert_polynomial import SchubertPolynomialRing
 from sage.combinat.sf.sf import SymmetricFunctions
 from sage.matrix.constructor import matrix
+from sage.misc.functional import (
+    denominator as sage_denominator,  # TODO not the best name
+)
 from sage.misc.misc_c import prod
 from sage.modules.free_module_element import vector
 from sage.rings.function_field.constructor import FunctionField
@@ -16,7 +19,6 @@ from sage.rings.polynomial.term_order import TermOrder
 from sage.rings.quotient_ring import QuotientRing
 from sage.rings.rational_field import QQ
 from sage.structure.element import Element
-from sage.misc.functional import denominator as sage_denominator # TODO not the best name
 
 from quiver import Quiver
 
@@ -1419,7 +1421,7 @@ class QuiverModuli(Element):
 
         OUTPUT: dict
 
-        The Chow ring of a quiver moduli space 
+        The Chow ring of a quiver moduli space
 
         Notation for explanations:
         G = G_d = prod_{i in Q_0} GL_{d_i}
@@ -1586,7 +1588,7 @@ class QuiverModuli(Element):
 
             return {
                 "ParentRing": A,
-                "Generators": lambda i, r: generator(A, i, r), # is this going to work?
+                "Generators": lambda i, r: generator(A, i, r),  # is this going to work?
                 "Relations": tautological,
             }
 
@@ -1649,7 +1651,7 @@ class QuiverModuli(Element):
         is described in MR3318266_ and arXiv.2307.01711_.
 
         Let :math`R = \bigotimes{i \in Q_0} \mathbb{Q}[x_{i, 1}, \dots, x_{i,d_i}]`.
-        
+
         Let :math:`e_{i, j}` be the elementary symmetric function of degree `j`
         in `d_i` variables, and let :math:`\xi_{i, j}` be
         :math:`e_{i, j}(x_{i, 1},\dots,x_{i, d_i})`.
@@ -1657,7 +1659,7 @@ class QuiverModuli(Element):
         We denote by :math:`A` the ring of invariants
 
         .. MATH::
-        
+
             A := R^{S_{\bf d}} = \mathbb{Q}[\xi_{i, j}],
 
         where :math:`S_{\bf d} = \prod_{i \in Q_0} S_{{\bf d}_i}` acts by permuting
@@ -1665,8 +1667,8 @@ class QuiverModuli(Element):
 
         The ring :math:`\operatorname{Ch}(M^{\theta-st}(Q,d))` is a quotient of `A`
         by two types of relations:
-        a single linear relation, given by the choice of linearization upon which 
-        the universal bundles are constructed, and the so-called 
+        a single linear relation, given by the choice of linearization upon which
+        the universal bundles are constructed, and the so-called
         tautological relations, which we define below.
 
         The linear relation given by the linearization `a` is the identity
@@ -1688,14 +1690,14 @@ class QuiverModuli(Element):
 
         for every forbidden subdimension vector `e` of `d`.
 
-        The tautological relations in `A` are then given by the image of 
+        The tautological relations in `A` are then given by the image of
         :math:`I_{taut}` under the `antisymmetrization` map
 
         .. MATH::
 
             \rho : R \to A: \frac{1}{\delta}
             \sum_{\sigma \in S_{\bf d}} sign(\sigma) \sigma \cdot f,
-        
+
         where :math:`\delta` is the discriminant
         :math:`\prod_{i\in Q_0}\prod_{1\leq k<\ell\leq d_i}(x_{i,\ell}-x_{i,k})`.
 
@@ -2132,7 +2134,7 @@ class QuiverModuliSpace(QuiverModuli):
             L(\eta) = \bigotimes_{i \in Q_0} \det(U_i)^{-\eta_i},
 
         where :math:`\eta` is a character of :math:`PG_d`.
-        
+
         INPUT:
 
         - ``eta`` -- character of :math:`PG_d` as vector in :math:`\mathbb{Z}Q_0`
