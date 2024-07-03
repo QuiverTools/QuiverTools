@@ -2064,16 +2064,24 @@ class QuiverModuliSpace(QuiverModuli):
             return self.semistable_equals_stable()
 
     def picard_rank(self):
-        """Computes the Picard rank of the moduli space for known cases."""
-        # setup shorthand
-        Q, d, theta = self._Q, self._d, self._theta
-        # TODO requires smooth and projective?
+        r"""
+        Computes the Picard rank of the moduli space.
 
-        if Q.is_theta_coprime(d, theta) and Q.is_amply_stable(Q, d, theta):
-            return Q.number_of_vertices() - 1
-        else:
-            # TODO if smooth: compute the Betti numbers and return b_2
-            raise NotImplementedError()
+        We compute this as the Betti number :math:`\mathrm{b}_2`.
+
+        EXAMPLES:
+
+        Kronecker moduli are rank 1::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).picard_rank()
+            1
+
+        """
+        assert self.is_smooth and self.is_projective(), "must be smooth and projective"
+
+        return self.betti_numbers()[2]
 
     def index(self):
         """Computes the index of the moduli space for known cases,
