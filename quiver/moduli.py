@@ -85,9 +85,12 @@ class QuiverModuli(Element):
         if theta is None:
             theta = Q.canonical_stability_parameter(d)
 
-        assert Q._is_dimension_vector(d), "`d` is not a dimension vector of `Q`"
-        assert Q._is_vector(theta), "`theta` is not a stability parameter for `Q`"
-        assert condition in ["semistable", "stable"]
+        assert self._is_dimension_vector(d), "``d`` needs to be a dimension vector"
+        assert Q._is_vector(theta), "`theta` needs to be a stability parameter"
+        assert condition in [
+            "semistable",
+            "stable",
+        ], "condition needs to be (semi)stable"
         assert all(
             denom(Q._coerce_dimension_vector(Q.simple_root(i))) > 0
             for i in Q.vertices()
@@ -604,10 +607,12 @@ class QuiverModuli(Element):
         """
         Q = self._Q
 
-        assert all(Q._is_dimension_vector(di) for di in dstar)
+        assert all(
+            Q._is_dimension_vector(di) for di in dstar
+        ), "elements of ``dstar`` need to be dimension vectors"
 
         if secure:
-            assert self.is_harder_narasimhan_type(dstar)
+            assert self.is_harder_narasimhan_type(dstar), "``dstar`` must be HN-type"
 
         return -sum(
             Q.euler_form(dstar[k], dstar[l])
@@ -847,7 +852,9 @@ class QuiverModuli(Element):
 
         d = Q._coerce_dimension_vector(d)
 
-        assert all(Q._is_dimension_vector(di) for di in tau.keys())
+        assert all(
+            Q._is_dimension_vector(di) for di in tau.keys()
+        ), "elements of ``tau`` need to be dimension vectors"
 
         if d == Q.zero_vector():
             # Q.zero_vector() can't be hashed a priori
@@ -897,7 +904,7 @@ class QuiverModuli(Element):
             [1, 2]
         """
         if secure:
-            assert self.is_luna_type(tau)
+            assert self.is_luna_type(tau), "``tau`` needs to be a Luna type"
 
         return sum(len(tau[di]) * (1 - self._Q.euler_form(di, di)) for di in tau.keys())
 
@@ -942,7 +949,7 @@ class QuiverModuli(Element):
             )
         """
         if secure:
-            assert self.is_luna_type(tau)
+            assert self.is_luna_type(tau), "``tau`` needs to be a Luna type"
 
         Q = self._Q
 
@@ -1626,7 +1633,6 @@ class QuiverModuli(Element):
             - :meth:`QuiverModuliSpace.is_smooth`
             - :meth:`QuiverModuliStack.is_smooth`
         """
-
         raise NotImplementedError()
 
     def chow_ring(self):
@@ -1861,7 +1867,7 @@ class QuiverModuliSpace(QuiverModuli):
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
 
-        assert Q.is_theta_coprime(d, theta)
+        assert Q.is_theta_coprime(d, theta), "need coprimality"
 
         k = FunctionField(QQ, "L")
         K = FunctionField(QQ, "q")
@@ -1876,7 +1882,7 @@ class QuiverModuliSpace(QuiverModuli):
         r"""
         Returns the Betti numbers of the moduli space.
 
-        OUTPUT: List of Ints
+        OUTPUT: Betti numbers of the moduli space
 
         EXAMPLES:
 
@@ -1896,8 +1902,8 @@ class QuiverModuliSpace(QuiverModuli):
             [1, 0, 1, 0, 3, 0, 3, 0, 3, 0, 1, 0, 1]
 
         """
-
-        assert self._Q.is_theta_coprime(self._d, self._theta)
+        # TODO is stable = semistable not enough?
+        assert self._Q.is_theta_coprime(self._d, self._theta), "need coprimality"
         N = self.dimension()
 
         K = FunctionField(QQ, "q")

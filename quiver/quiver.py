@@ -1646,7 +1646,7 @@ class Quiver(Element):
 
         """
         d = self._coerce_dimension_vector(d)
-        assert denom(d) > 0
+        assert denom(d) > 0, "denominator needs to be strictly positive on ``d``"
 
         if theta is None:
             theta = self.canonical_stability_parameter(d)
@@ -1838,7 +1838,7 @@ class Quiver(Element):
             [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
 
         """
-        assert self._is_dimension_vector(d)
+        assert self._is_dimension_vector(d), "``d`` needs to be a dimension vector"
 
         # if zero dimension vector we deal with it separately
         if sum(self._coerce_dimension_vector(d)) == 0:
@@ -1891,8 +1891,8 @@ class Quiver(Element):
         if theta is None:
             theta = self.canonical_stability_parameter(d)
 
-        assert self._is_dimension_vector(d)
-        assert self._is_vector(theta)
+        assert self._is_dimension_vector(d), "``d`` needs to be a dimension vector"
+        assert self._is_vector(theta), "`theta` needs to be a stability parameter"
 
         vectors = self.all_subdimension_vectors(d, proper=True, nonzero=True)
 
@@ -1955,7 +1955,7 @@ class Quiver(Element):
             ['a', 'b']
 
         """
-        assert self._is_dimension_vector(d)
+        assert self._is_dimension_vector(d), "``d`` needs to be a dimension vector"
 
         return [i for i in self.vertices() if d[i] > 0]
 
@@ -2019,7 +2019,7 @@ class Quiver(Element):
             False
 
         """
-        assert self._is_dimension_vector(d)
+        assert self._is_dimension_vector(d), "``d`` needs to be a dimension vector"
 
         # check if `\langle d,e_i\rangle + \langle e_i,d\rangle \leq 0`
         # for all vertices `i\in Q_0`
@@ -2792,7 +2792,8 @@ class Quiver(Element):
         Compute the dimension of the first Hochschild cohomology
 
         This uses the formula of Happel from Proposition 1.6 in [MR1035222].
-        One needs the quiver to be acyclic for this.
+        One needs the quiver to be acyclic for this, otherwise it is not necessarily
+        finite-dimensional.
 
         EXAMPLES:
 
@@ -2810,7 +2811,7 @@ class Quiver(Element):
             0
 
         """
-        assert self.is_acyclic()
+        assert self.is_acyclic(), "the quiver needs to be acyclic"
 
         return (
             1
