@@ -1042,8 +1042,6 @@ class QuiverModuli(Element):
     (Semi-)stability
     """
 
-    # TODO document the reasoning; at the moment this looks rather like checking whether
-    # there are no singularities?
     def semistable_equals_stable(self):
         r"""
         Checks whether every semistable representation is stable
@@ -1093,7 +1091,6 @@ class QuiverModuli(Element):
         # this is probably the fastest way as checking theta-coprimality is fast
         # whereas checking for existence of a semi-stable representation
         # is a bit slower
-
         if not Q.has_semistable_representation(d, theta, denom=denom):
             return True
         else:
