@@ -7,6 +7,7 @@ from sage.combinat.schubert_polynomial import SchubertPolynomialRing
 from sage.combinat.sf.sf import SymmetricFunctions
 from sage.combinat.tuple import UnorderedTuples
 from sage.matrix.constructor import matrix
+from sage.misc.cachefunc import cached_method
 from sage.misc.misc_c import prod
 from sage.modules.free_module_element import vector, zero_vector
 from sage.rings.function_field.constructor import FunctionField
@@ -322,6 +323,7 @@ class QuiverModuli(Element):
         """
         return self._denom
 
+    @cached_method
     def is_nonempty(self) -> bool:
         r"""
         Checks if the moduli space is nonempty.
@@ -353,6 +355,30 @@ class QuiverModuli(Element):
             return self._Q.has_stable_representation(self._d, self._theta)
         if self._condition == "semistable":
             return self._Q.has_semistable_representation(self._d, self._theta)
+
+    @cached_method
+    def is_theta_coprime(self) -> bool:
+        r"""
+        Checks whether the combination of `d` and `theta` is coprime.
+
+        This just calls :meth:`Quiver.is_theta_coprime` for the data defining the
+        moduli space.
+
+        EXAMPLES:
+
+        A coprime example::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).is_theta_coprime()
+            True
+
+        And a non-example:
+
+            sage: QuiverModuliSpace(Q, (3, 3)).is_theta_coprime()
+            False
+        """
+        return self._Q.is_theta_coprime(self._d, self._theta)
 
     """
     Harder--Narasimhan stratification
@@ -1074,7 +1100,7 @@ class QuiverModuli(Element):
             sage: d = (1, 2, 3, 1)
             sage: theta = (1, 300, -200, -1)
             sage: X = QuiverModuliSpace(Q, d, theta)
-            sage: Q.is_theta_coprime(d, theta)
+            sage: X.is_theta_coprime()
             False
             sage: X.semistable_equals_stable()
             True
@@ -1085,7 +1111,7 @@ class QuiverModuli(Element):
 
         # the computation of all Luna types takes so much time
         # thus we should first tests if ``d`` is ``theta``-coprime
-        if Q.is_theta_coprime(d, theta):
+        if self.is_theta_coprime():
             return True
 
         # this is probably the fastest way as checking theta-coprimality is fast
@@ -1676,7 +1702,7 @@ class QuiverModuli(Element):
         for every forbidden subdimension vector `e` of `d`.
 
         The tautological relations in `A` are then given by the image of
-        :math:`I_{taut}` under the `antisymmetrization` map
+        :math:`I_{\rm taut}` under the `antisymmetrization` map
 
         .. MATH::
 
@@ -1695,8 +1721,8 @@ class QuiverModuli(Element):
         The Chow ring for our favourite 6-fold::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: chi = (-1, 1)
             sage: R = X.chow_ring(chi=chi);
             sage: R.ambient()
@@ -1898,6 +1924,9 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: QuiverModuliSpace(JordanQuiver(1), (0,)).dimension()
             0
+            sage: X = QuiverModuliSpace(JordanQuiver(1), (0,), condition="stable")
+            sage: X.dimension()
+            -Infinity
             sage: QuiverModuliSpace(JordanQuiver(1), (1,)).dimension()
             1
             sage: QuiverModuliSpace(JordanQuiver(1), (2,)).dimension()
@@ -1941,9 +1970,12 @@ class QuiverModuliSpace(QuiverModuli):
             self._theta,
         )
 
-        # the zero dimension vector only has the zero representation which is stable
+        # the zero dimension vector only has the zero representation which is semistable
+        # but not stable
         if Q._coerce_dimension_vector(d) == Q.zero_vector():
-            return 0
+            if self._condition == "semistable":
+                return 0
+            return -Infinity
 
         # if there are stable representations then both the stable and
         # the semi-stable moduli space have dimension `1-<d,d>`
@@ -2009,7 +2041,7 @@ class QuiverModuliSpace(QuiverModuli):
         d = Q._coerce_dimension_vector(d)
         theta = Q._coerce_vector(theta)
 
-        assert Q.is_theta_coprime(d, theta), "need coprime"
+        assert self.is_theta_coprime(), "need coprime"
 
         k = FunctionField(QQ, "L")
         K = FunctionField(QQ, "q")
@@ -2058,7 +2090,7 @@ class QuiverModuliSpace(QuiverModuli):
         d = Q._coerce_dimension_vector(d)
         theta = Q._coerce_vector(theta)
 
-        assert Q.is_theta_coprime(d, theta), "need coprime"
+        assert self.is_theta_coprime(), "need coprime"
 
         N = self.dimension()
 
@@ -2077,22 +2109,83 @@ class QuiverModuliSpace(QuiverModuli):
 
         return betti
 
+    @cached_method
     def is_smooth(self) -> bool:
-        # if theta-coprime then you can shortcut everything
-        # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
-        # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
-        # stable locus
+        r"""
+        Returns whether the moduli space is smooth.
+
+        This is easy if the condition is "stable", because this moduli space is always
+        smooth. In the "semistable" case there is an algorithm, by combining the work
+        of Adriaenssens--Le Bruyn and Bocklandt, which is currently not implemented.
+
+        EXAMPLES:
+
+        Some 3-Kronecker example::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).is_smooth()
+            True
+            sage: QuiverModuliSpace(Q, (2, 3), condition="stable").is_smooth()
+            True
+            sage: QuiverModuliSpace(Q, (3, 3), condition="stable").is_smooth()
+            True
+            sage: QuiverModuliSpace(Q, (3, 3)).is_smooth()
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
+        """
+        # stable locus is always smooth
         if self._condition == "stable":
             return True
+
+        # if we have semistables, it is more subtle
+        # this guarantees smoothness without an expensive calculation
         if self._Q.is_theta_coprime(self._d, self._theta):
             return True
-        # TODO if stable==semistable we are also good?
-        else:
-            # TODO
-            raise NotImplementedError()
+        # also guarantees smoothness
+        if self.semistable_equals_stable():
+            return True
 
+        # need to combine the local quivers from Adriaenssens--Le Bruyn
+        # with Bocklandt's criterion for smoothness
+        # see https://github.com/QuiverTools/QuiverTools/issues/24
+        raise NotImplementedError()
+
+    def semisimple_moduli_space(self):
+        r"""
+        Return the moduli space with `theta` replaced by zero.
+
+        This is the moduli space of semisimple representations for the same quiver
+        and the same dimension vector.
+
+        EXAMPLES:
+
+        For an acyclic quiver this moduli space is a point::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.semisimple_moduli_space().dimension()
+            0
+
+        For a quiver with oriented cycles we get an affine variety::
+
+            sage: Q = JordanQuiver(2)
+            sage: X = QuiverModuliSpace(Q, (3,))
+            sage: X.dimension()
+            10
+        """
+        # setup shorthand
+        Q, d = (
+            self._Q,
+            self._d,
+        )
+
+        return QuiverModuliSpace(Q, d, theta=Q.zero_vector())
+
+    @cached_method
     def is_projective(self) -> bool:
-        # TODO need more tests
         r"""
         Check whether the moduli space is projective
 
@@ -2111,16 +2204,43 @@ class QuiverModuliSpace(QuiverModuli):
             sage: QuiverModuliSpace(Q, (3, 3), condition="stable").is_projective()
             False
 
+        In pathological cases we can have that the affine moduli space of semisimples
+        is reduced to a point, and the projective-over-affine becomes projective::
+
+            sage: Q = CyclicQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 0, 2)).is_projective()
+            True
+
+        For the zero dimension vector we get either a point or an empty space, which is
+        always projective::
+
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (0, 0)).is_projective()
+            True
+            sage: QuiverModuliSpace(Q, (0, 0), condition="stable").is_projective()
+            True
+
         """
-        # if Q has oriented cycles then the moduli space is projective if it is a point
-        if not self._Q.is_acyclic():
-            return self.dimension() == 0
+        # setup shorthand
+        Q, condition = self._Q, self._condition
+
         # in the acyclic case the semistable moduli space is always projective
-        if self._condition == "semistable":
-            return True
-        # in the acyclic case the stable moduli space needs semistable == stable
-        if self._condition == "stable":
-            return self.semistable_equals_stable()
+        # the stable moduli space is projective if semistability is stability
+        if Q.is_acyclic():
+            if condition == "semistable":
+                return True
+            if condition == "stable":
+                return self.semistable_equals_stable()
+        # so now Q has oriented cycles: the moduli space is projective-over-affine
+        # if we have semistable, or quasiprojective-over-affine is we have stable
+        # it suffices that the affine is just a point then
+        if condition == "semistable":
+            return self.semisimple_moduli_space().dimension() <= 0
+        if condition == "stable":
+            return (
+                self.semisimple_moduli_space().dimension() <= 0
+                and self.semistable_equals_stable()
+            )
 
     def picard_rank(self):
         r"""
@@ -2143,29 +2263,38 @@ class QuiverModuliSpace(QuiverModuli):
         return self.betti_numbers()[2]
 
     def index(self):
-        """Computes the index of the moduli space for known cases,
-        i.e., the largest integer dividing the canonical divisor in Pic."""
-        # TODO this should really be a check for theta belonging to the canonical chamber, rather than being equal to the canonical stability.
+        r"""
+        Computes the index of the moduli space
+
+        The index is the largest integer dividing the canonical divisor in Pic.
+        For now this is only implemented for the canonical stability condition.
+
+        EXAMPLES:
+
+        The usual 3-Kronecker example::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).index()
+            3
+
+        Subspace quiver moduli have index 1::
+
+            sage: Q = SubspaceQuiver(7)
+            sage: QuiverModuliSpace(Q, (1, 1, 1, 1, 1, 1, 1, 2)).index()
+            1
+        """
         # setup shorthand
         Q, d, theta = self._Q, self._d, self._theta
+
         if (
-            # TODO at the very least check for multiple of canonical
             theta == Q.canonical_stability_parameter(d)
-            and Q.is_theta_coprime(d, theta)
-            and Q.is_amply_stable(Q, d, theta)
+            and self.is_theta_coprime()
+            and self.is_amply_stable()
         ):
-            # TODO what if theta is rescaled?
-            return gcd(Q._to_vector(theta))
-        else:
-            raise NotImplementedError()
+            return gcd(Q._coerce_vector(theta))
 
-        # TODO ample stability for the canonical stability parameter should be an attribute of the object, so that it is only computed once. Verbatim for many other attributes.
-
-    def mukai_inequality_holds(self):
-        # setup shorthand
-        Q, d = self._Q, self._d
-
-        return 1 - Q.tits_form(d) >= self.picard_rank() * (self.index() - 1)
+        raise NotImplementedError()
 
     def chow_ring(self, chi=None, chernClasses=None):
         r"""
@@ -2183,8 +2312,8 @@ class QuiverModuliSpace(QuiverModuli):
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), (1, 1), (1, -1)
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: Q= KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (1, 1))
             sage: chi = (1, 0)
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
@@ -2195,8 +2324,8 @@ class QuiverModuliSpace(QuiverModuli):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: chi = (-1, 1)
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
@@ -2631,19 +2760,19 @@ class QuiverModuliStack(QuiverModuli):
         Loop quivers::
 
             sage: from quiver import *
-            sage: Q, d, theta = LoopQuiver(0), (2, ), (0, )
-            sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+            sage: Q = LoopQuiver(0)
+            sage: X = QuiverModuliStack(Q, (2,), (0,))
             sage: X.motive()
             1/(L^4 - L^3 - L^2 + L)
-            sage: Q, d, theta = LoopQuiver(1), (2, ), (0, )
-            sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+            sage: Q = LoopQuiver(1)
+            sage: X = QuiverModuliStack(Q, (2,), (0,))
             sage: X.motive()
             L^3/(L^3 - L^2 - L + 1)
 
         The 3-Kronecker quiver::
 
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
-            sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliStack(Q, (2, 3))
             sage: X.motive()
             (-L^6 - L^5 - 3*L^4 - 3*L^3 - 3*L^2 - L - 1)/(L - 1)
         """
