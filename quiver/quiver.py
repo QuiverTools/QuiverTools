@@ -9,8 +9,6 @@ from sage.modules.free_module_element import vector
 from sage.rings.integer_ring import ZZ
 from sage.structure.element import Element
 
-# TODO use tuple notation, not list notation, for dimension vectors and stability
-
 
 class Quiver(Element):
     def __init__(self, G, name=None):
