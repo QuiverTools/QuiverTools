@@ -1382,7 +1382,22 @@ class Quiver(Element):
 
     @cached_method
     def __zero_vector(self):
-        r"""The cacheable implementation of :meth:`Quiver.zero_vector`"""
+        r"""The cacheable implementation of :meth:`Quiver.zero_vector`
+
+        EXAMPLES:
+
+        The zero vector of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).zero_vector()
+            (0, 0)
+
+        If we specified a non-standard labeling on the vertices it is used::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.zero_vector()
+            {'a': 0, 'b': 0, 'c': 0}
+        """
         if self.__has_vertex_labels():
             return {i: 0 for i in self.vertices()}
 
@@ -1417,7 +1432,22 @@ class Quiver(Element):
 
     @cached_method
     def __thin_dimension_vector(self):
-        r"""The cacheable implementation of :meth:`Quiver.thin_dimension_vector`"""
+        r"""The cacheable implementation of :meth:`Quiver.thin_dimension_vector`
+
+        EXAMPLES:
+
+        The thin dimension vector of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).thin_dimension_vector()
+            (1, 1)
+
+        If we specified a non-standard labeling on the vertices it is used::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.thin_dimension_vector()
+            {'a': 1, 'b': 1, 'c': 1}
+        """
         if self.__has_vertex_labels():
             return {i: 1 for i in self.vertices()}
 
@@ -1446,13 +1476,27 @@ class Quiver(Element):
             sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
             sage: Q.simple_root("b")
             {'a': 0, 'b': 1, 'c': 0}
-
         """
         return self.__simple_root(i)
 
     @cached_method
     def __simple_root(self, i):
-        r"""The cacheable implementation of :meth:`Quiver.simple_root`"""
+        r"""The cacheable implementation of :meth:`Quiver.simple_root`
+
+        EXAMPLES:
+
+        The simple root at the source of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).simple_root(0)
+            (1, 0)
+
+        If we specified a non-standard labeling on the vertices it is used::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.simple_root("a")
+            {'a': 1, 'b': 0, 'c': 0}
+        """
         if self.__has_vertex_labels():
             root = {i: 0 for i in self.vertices()}
             root[i] = 1
@@ -2245,6 +2289,29 @@ class Quiver(Element):
     def __is_generic_subdimension_vector(self, e, d) -> bool:
         r"""
         The cacheable implementation of :meth:`Quiver.is_generic_subdimension_vector`.
+
+        EXAMPLES:
+
+        Generic subdimension vectors for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
+            sage: for e in Q.all_subdimension_vectors(d):
+            ....:     print("{} is generic subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_generic_subdimension_vector(e, d))
+            ....:     )
+            (0, 0) is generic subdimension vector of (2, 3): True
+            (0, 1) is generic subdimension vector of (2, 3): True
+            (0, 2) is generic subdimension vector of (2, 3): True
+            (0, 3) is generic subdimension vector of (2, 3): True
+            (1, 0) is generic subdimension vector of (2, 3): False
+            (1, 1) is generic subdimension vector of (2, 3): False
+            (1, 2) is generic subdimension vector of (2, 3): True
+            (1, 3) is generic subdimension vector of (2, 3): True
+            (2, 0) is generic subdimension vector of (2, 3): False
+            (2, 1) is generic subdimension vector of (2, 3): False
+            (2, 2) is generic subdimension vector of (2, 3): False
+            (2, 3) is generic subdimension vector of (2, 3): True
         """
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
@@ -2748,7 +2815,17 @@ class Quiver(Element):
 
     @cached_method(key=lambda self, d: self._coerce_vector(d))
     def __canonical_decomposition(self, d):
-        r"""The cacheable implementation of :meth:`Quiver.canonical_decomposition`"""
+        r"""The cacheable implementation of :meth:`Quiver.canonical_decomposition`
+
+        EXAMPLES:
+
+        Canonical decomposition of `(5, 3)` for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(2)
+            sage: Q.canonical_decomposition((5, 5))
+            [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+        """
         d = self._coerce_dimension_vector(d)
 
         ds = self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
