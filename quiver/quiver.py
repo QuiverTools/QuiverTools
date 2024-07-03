@@ -1385,7 +1385,7 @@ class Quiver(Element):
         if self.__has_vertex_labels():
             return {i: 0 for i in self.vertices()}
 
-        return vector([0] * self.number_of_vertices())
+        return vector([0] * self.number_of_vertices(), immutable=True)
 
     def thin_dimension_vector(self):
         r"""
@@ -1420,7 +1420,7 @@ class Quiver(Element):
         if self.__has_vertex_labels():
             return {i: 1 for i in self.vertices()}
 
-        return vector([1] * self.number_of_vertices())
+        return vector([1] * self.number_of_vertices(), immutable=True)
 
     def simple_root(self, i):
         r"""
@@ -1454,9 +1454,13 @@ class Quiver(Element):
         r"""The cacheable implementation of :meth:`Quiver.simple_root`"""
         if self.__has_vertex_labels():
             root = {i: 0 for i in self.vertices()}
-        else:
-            root = vector([0] * self.number_of_vertices())
+            root[i] = 1
+
+            return root
+
+        root = vector([0] * self.number_of_vertices())
         root[i] = 1
+        root.set_immutable()
 
         return root
 
