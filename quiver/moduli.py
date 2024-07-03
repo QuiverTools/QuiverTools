@@ -700,6 +700,8 @@ class QuiverModuli(Element):
         of dimension vectors :math:`{\bf d}^k` and non-empty partitions :math:`p^k`
         such that
 
+        # TODO why are we using partitions? why is there a ``t`` in ``p_s^t``?
+
         .. MATH::
 
             |p_1^1|{\bf d}^1 + ... + |p_s^t|{\bf d}^s = {\bf d}
@@ -859,7 +861,7 @@ class QuiverModuli(Element):
         d = Q._coerce_dimension_vector(d)
 
         assert all(
-            Q._is_dimension_vector(di) for di in tau.keys()
+            Q._is_dimension_vector(dk) for dk in tau.keys()
         ), "elements of ``tau`` need to be dimension vectors"
 
         if d == Q.zero_vector():
@@ -868,11 +870,10 @@ class QuiverModuli(Element):
             return tau == {z: [1]}
 
         # we check the 3 conditions in that order
-        return all(
-            sum(m * di for (m, di) in tau)
-            and Q.slope(di, theta, denom=denom) == Q.slope(d, theta, denom=denom)
-            and Q.has_semistable_representation(di, theta, denom=denom)
-            for di in tau.keys()
+        return d == sum(sum(m) * dk for (dk, m) in tau.items()) and all(
+            Q.slope(dk, theta, denom=denom) == Q.slope(d, theta, denom=denom)
+            and Q.has_semistable_representation(dk, theta, denom=denom)
+            for dk in tau.keys()
         )
 
     def dimension_of_luna_stratum(self, tau, secure=True):
@@ -1901,6 +1902,28 @@ class QuiverModuliSpace(QuiverModuli):
             sage: X.dimension()
             -Infinity
 
+        The Jordan quiver::
+
+            sage: QuiverModuliSpace(JordanQuiver(1), (0,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(1), (1,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(1), (2,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(1), (2,)).dimension()
+            0
+
+        Some generalized Jordan quivers::
+
+            sage: QuiverModuliSpace(JordanQuiver(2), (0,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(2), (1,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(2), (2,)).dimension()
+            0
+            sage: QuiverModuliSpace(JordanQuiver(2), (3,)).dimension()
+            0
+
         """
         # setup shorthand
         Q, d, theta = (
@@ -2025,67 +2048,66 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta-coprime then you can shortcut everything
         # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
-        if (self._condition == "stable") or (
-            self._Q.is_theta_coprime(self._d, self._theta)
-        ):
+        # stable locus
+        if self._condition == "stable":
             return True
+        if self._Q.is_theta_coprime(self._d, self._theta):
+            return True
+        # TODO if stable==semistable we are also good?
         else:
+            # TODO
             raise NotImplementedError()
 
     def is_projective(self) -> bool:
+        # TODO need more tests
         r"""
-        Checks if the moduli space is projective.
-
-        OUTPUT: whether the moduli space is projective
-
-        The moduli space of semistable representations is always projective, while
-        the moduli space of stable representations is only always quasiprojective.
-        The latter will be projective if and only if
-        :math:`R^{\theta\mathrm{sst}}(Q,d) = R^{\theta\mathrm{st}}(Q,d)`, i.e., if
-        there are no properly semistable representations.
+        Check whether the moduli space is projective
 
         EXAMPLES:
 
-        Being :math:`\theta`-coprime ensures that properly semistables don't exist::
+        For acyclic quivers the semistable moduli space is always projective::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="stable")
-            sage: X.is_projective()
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).is_projective()
             True
 
-        Without this assumption, the moduli space is not necessarily projective::
+        If we have strictly semistable representations, then the stable moduli space
+        is only quasiprojective but not projective::
 
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (3, 3), (1, -1)
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="stable")
-            sage: X.is_projective()
+            sage: QuiverModuliSpace(Q, (3, 3), condition="stable").is_projective()
             False
 
         """
-        # TODO is this not just stable==semistable if condition is stable, and True if
-        # condition is semistable?
-        # Gianni thinks that the quiver also needs to be acyclic, but that sufficent?
-
-        if self._Q.is_acyclic():
-            if self._condition == "stable" and self.is_nonempty():
-                return self.semistable_equals_stable()
-            elif self._condition == "semistable":
-                return self.is_nonempty()
-        else:
-            # projective over affine is never projective?
-            raise NotImplementedError()
+        # if Q has oriented cycles then the moduli space is projective if it is a point
+        if not self._Q.is_acyclic():
+            return self.dimension() == 0
+        # in the acyclic case have that the semistable moduli space is always projective
+        if self._condition == "semistable":
+            return True
+        # in the stable case we need semistable == stable
+        if self._condition == "stable":
+            return self.semistable_equals_stable()
 
     def picard_rank(self):
-        """Computes the Picard rank of the moduli space for known cases."""
-        # setup shorthand
-        Q, d, theta = self._Q, self._d, self._theta
-        # TODO requires smooth and projective?
+        r"""
+        Computes the Picard rank of the moduli space.
 
-        if Q.is_theta_coprime(d, theta) and Q.is_amply_stable(Q, d, theta):
-            return Q.number_of_vertices() - 1
-        else:
-            # TODO if smooth: compute the Betti numbers and return b_2
-            raise NotImplementedError()
+        We compute this as the Betti number :math:`\mathrm{b}_2`.
+
+        EXAMPLES:
+
+        Kronecker moduli are rank 1::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).picard_rank()
+            1
+
+        """
+        assert self.is_smooth and self.is_projective(), "must be smooth and projective"
+
+        return self.betti_numbers()[2]
 
     def index(self):
         """Computes the index of the moduli space for known cases,
