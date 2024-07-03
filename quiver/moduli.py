@@ -701,6 +701,8 @@ class QuiverModuli(Element):
         of dimension vectors :math:`{\bf d}^k` and non-empty partitions :math:`p^k`
         such that
 
+        # TODO why are we using partitions? why is there a ``t`` in ``p_s^t``?
+
         .. MATH::
 
             |p_1^1|{\bf d}^1 + ... + |p_s^t|{\bf d}^s = {\bf d}
