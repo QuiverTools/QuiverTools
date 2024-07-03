@@ -1907,22 +1907,39 @@ class QuiverModuliSpace(QuiverModuli):
             sage: QuiverModuliSpace(JordanQuiver(1), (0,)).dimension()
             0
             sage: QuiverModuliSpace(JordanQuiver(1), (1,)).dimension()
-            0
+            1
             sage: QuiverModuliSpace(JordanQuiver(1), (2,)).dimension()
-            0
-            sage: QuiverModuliSpace(JordanQuiver(1), (2,)).dimension()
-            0
+            2
+            sage: QuiverModuliSpace(JordanQuiver(1), (3,)).dimension()
+            3
+            sage: QuiverModuliSpace(JordanQuiver(1), (4,)).dimension()
+            4
 
         Some generalized Jordan quivers::
 
             sage: QuiverModuliSpace(JordanQuiver(2), (0,)).dimension()
             0
             sage: QuiverModuliSpace(JordanQuiver(2), (1,)).dimension()
-            0
+            2
             sage: QuiverModuliSpace(JordanQuiver(2), (2,)).dimension()
-            0
+            5
             sage: QuiverModuliSpace(JordanQuiver(2), (3,)).dimension()
+            10
+            sage: QuiverModuliSpace(JordanQuiver(2), (4,)).dimension()
+            17
+
+        More generalized Jordan quivers::
+
+            sage: QuiverModuliSpace(JordanQuiver(3), (0,)).dimension()
             0
+            sage: QuiverModuliSpace(JordanQuiver(3), (1,)).dimension()
+            3
+            sage: QuiverModuliSpace(JordanQuiver(3), (2,)).dimension()
+            9
+            sage: QuiverModuliSpace(JordanQuiver(3), (3,)).dimension()
+            19
+            sage: QuiverModuliSpace(JordanQuiver(3), (4,)).dimension()
+            33
 
         """
         # setup shorthand
@@ -1931,6 +1948,10 @@ class QuiverModuliSpace(QuiverModuli):
             self._d,
             self._theta,
         )
+
+        # the zero dimension vector only has the zero representation which is stable
+        if Q._coerce_dimension_vector(d) == Q.zero_vector():
+            return 0
 
         # if there are stable representations then both the stable and
         # the semi-stable moduli space have dimension `1-<d,d>`
@@ -2082,10 +2103,10 @@ class QuiverModuliSpace(QuiverModuli):
         # if Q has oriented cycles then the moduli space is projective if it is a point
         if not self._Q.is_acyclic():
             return self.dimension() == 0
-        # in the acyclic case have that the semistable moduli space is always projective
+        # in the acyclic case the semistable moduli space is always projective
         if self._condition == "semistable":
             return True
-        # in the stable case we need semistable == stable
+        # in the acyclic case the stable moduli space needs semistable == stable
         if self._condition == "stable":
             return self.semistable_equals_stable()
 
