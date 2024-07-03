@@ -398,18 +398,18 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q._is_vector([2, 3])
+            sage: Q._is_vector((2, 3))
             True
-            sage: Q._is_vector([0, 0])
+            sage: Q._is_vector((0, 0))
             True
-            sage: Q._is_vector([-2, -2])
+            sage: Q._is_vector((-2, -2))
             True
-            sage: Q._is_vector([1, 2, 3])
+            sage: Q._is_vector((1, 2, 3))
             False
 
         We allow non-integral values, because this can be useful for stability::
 
-            sage: Q._is_vector([1/2, 3])
+            sage: Q._is_vector((1/2, 3))
             True
 
         An example with vertex labels::
@@ -451,13 +451,13 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q._is_dimension_vector([2, 3])
+            sage: Q._is_dimension_vector((2, 3))
             True
-            sage: Q._is_dimension_vector([0, 0])
+            sage: Q._is_dimension_vector((0, 0))
             True
-            sage: Q._is_dimension_vector([-2, -2])
+            sage: Q._is_dimension_vector((-2, -2))
             False
-            sage: Q._is_dimension_vector([1, 2, 3])
+            sage: Q._is_dimension_vector((1, 2, 3))
             False
 
         An example with vertex labels::
@@ -502,13 +502,13 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q._coerce_dimension_vector([1, 2])
+            sage: Q._coerce_dimension_vector((1, 2))
             (1, 2)
-            sage: Q._coerce_dimension_vector([1, 2, 3, 4])
+            sage: Q._coerce_dimension_vector((1, 2, 3, 4))
             Traceback (most recent call last):
             ...
             ValueError: The input is not an element of :math:`\mathbb{Z}Q_0`.
-            sage: Q._coerce_dimension_vector([1, -3])
+            sage: Q._coerce_dimension_vector((1, -3))
             Traceback (most recent call last):
             ...
             ValueError: The input is not a dimension vector of the quiver.
@@ -543,9 +543,9 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q._coerce_vector([-1, 2])
+            sage: Q._coerce_vector((-1, 2))
             (-1, 2)
-            sage: Q._coerce_vector([1, 2, 3, 4])
+            sage: Q._coerce_vector((1, 2, 3, 4))
             Traceback (most recent call last):
             ...
             ValueError: The input is not an element of :math:`\mathbb{Z}Q_0`.
@@ -1036,14 +1036,14 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.euler_form([1, 3], [2, -2])
+            sage: Q.euler_form((1, 3), (2, -2))
             2
 
         It uses the basis of the vertices, so we specify the entries of elements of
         :math:`\mathbb{Z}Q_0` in this order, thus the same example as before::
 
             sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
-            sage: Q.euler_form([1, 3], [2, -2])
+            sage: Q.euler_form((1, 3), (2, -2))
             2
 
         """
@@ -1089,14 +1089,14 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.symmetrized_euler_form([1, 3], [2, -2])
+            sage: Q.symmetrized_euler_form((1, 3), (2, -2))
             -20
 
         It uses the basis of the vertices, so we specify the entries of elements of
         :math:`\mathbb{Z}Q_0` in this order, thus the same example as before::
 
             sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
-            sage: Q.symmetrized_euler_form([1, 3], [2, -2])
+            sage: Q.symmetrized_euler_form((1, 3), (2, -2))
             -20
 
         """
@@ -1123,14 +1123,14 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.tits_form([2, 3])
+            sage: Q.tits_form((2, 3))
             -5
 
         It uses the basis of the vertices, so we specify the entries of elements of
         :math:`\mathbb{Z}Q_0` in this order, thus the same example as before::
 
             sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
-            sage: Q.tits_form([2, 3])
+            sage: Q.tits_form((2, 3))
             -5
 
         """
@@ -1451,7 +1451,22 @@ class Quiver(Element):
 
     @cached_method
     def __zero_vector(self):
-        r"""The cacheable implementation of :meth:`Quiver.zero_vector`"""
+        r"""The cacheable implementation of :meth:`Quiver.zero_vector`
+
+        EXAMPLES:
+
+        The zero vector of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).zero_vector()
+            (0, 0)
+
+        If we specified a non-standard labeling on the vertices it is used::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.zero_vector()
+            {'a': 0, 'b': 0, 'c': 0}
+        """
         if self.__has_vertex_labels():
             return {i: 0 for i in self.vertices()}
 
@@ -1486,7 +1501,22 @@ class Quiver(Element):
 
     @cached_method
     def __thin_dimension_vector(self):
-        r"""The cacheable implementation of :meth:`Quiver.thin_dimension_vector`"""
+        r"""The cacheable implementation of :meth:`Quiver.thin_dimension_vector`
+
+        EXAMPLES:
+
+        The thin dimension vector of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).thin_dimension_vector()
+            (1, 1)
+
+        If we specified a non-standard labeling on the vertices it is used::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.thin_dimension_vector()
+            {'a': 1, 'b': 1, 'c': 1}
+        """
         if self.__has_vertex_labels():
             return {i: 1 for i in self.vertices()}
 
@@ -1515,13 +1545,27 @@ class Quiver(Element):
             sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
             sage: Q.simple_root("b")
             {'a': 0, 'b': 1, 'c': 0}
-
         """
         return self.__simple_root(i)
 
     @cached_method
     def __simple_root(self, i):
-        r"""The cacheable implementation of :meth:`Quiver.simple_root`"""
+        r"""The cacheable implementation of :meth:`Quiver.simple_root`
+
+        EXAMPLES:
+
+        The simple root at the source of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: KroneckerQuiver(3).simple_root(0)
+            (1, 0)
+
+        If we specified a non-standard labeling on the vertices it is used::
+
+            sage: Q = Quiver.from_string("a--b----c,a---c", forget_labels=False)
+            sage: Q.simple_root("a")
+            {'a': 1, 'b': 0, 'c': 0}
+        """
         if self.__has_vertex_labels():
             root = {i: 0 for i in self.vertices()}
             root[i] = 1
@@ -1552,11 +1596,11 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.is_root([2, 3])
+            sage: Q.is_root((2, 3))
             True
             sage: Q.is_root(Q.zero_vector())
             False
-            sage: Q.is_root([4, 1])
+            sage: Q.is_root((4, 1))
             False
 
         """
@@ -1581,11 +1625,11 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.is_real_root([2, 3])
+            sage: Q.is_real_root((2, 3))
             False
             sage: Q.is_real_root(Q.zero_vector())
             False
-            sage: Q.is_real_root([3, 1])
+            sage: Q.is_real_root((3, 1))
             True
 
         """
@@ -1610,11 +1654,11 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.is_imaginary_root([2, 3])
+            sage: Q.is_imaginary_root((2, 3))
             True
             sage: Q.is_imaginary_root(Q.zero_vector())
             False
-            sage: Q.is_imaginary_root([4, 1])
+            sage: Q.is_imaginary_root((4, 1))
             False
 
         """
@@ -1652,13 +1696,13 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(1, 1, 1)
-            sage: Q.is_schur_root([1, 1, 2])
+            sage: Q.is_schur_root((1, 1, 2))
             True
-            sage: Q.is_schur_root([1, 2, 1])
+            sage: Q.is_schur_root((1, 2, 1))
             False
-            sage: Q.is_schur_root([1, 1, 1])
+            sage: Q.is_schur_root((1, 1, 1))
             True
-            sage: Q.is_schur_root([2, 2, 2])
+            sage: Q.is_schur_root((2, 2, 2))
             False
 
         """
@@ -1692,12 +1736,12 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: d = [2, 3]
-            sage: Q.slope(d, [9, -6])
+            sage: d = (2, 3)
+            sage: Q.slope(d, (9, -6))
             0
             sage: Q.slope(d)
             0
-            sage: Q.slope(d, [2, -2])
+            sage: Q.slope(d, (2, -2))
             -2/5
 
         We can use for instance a constant denominator::
@@ -1709,7 +1753,7 @@ class Quiver(Element):
         The only dependence on the quiver is the set of vertices, so if we don't
         use vertex labels, the choice of quiver doesn't matter::
 
-            sage: d, theta = [2, 3], [9, -6]
+            sage: d, theta = (2, 3), (9, -6)
             sage: KroneckerQuiver(3).slope(d, theta)
             0
 
@@ -1741,11 +1785,11 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.is_subdimension_vector([1, 2], [2, 3])
+            sage: Q.is_subdimension_vector((1, 2), (2, 3))
             True
-            sage: Q.is_subdimension_vector([2, 3], [2, 3])
+            sage: Q.is_subdimension_vector((2, 3), (2, 3))
             True
-            sage: Q.is_subdimension_vector([6, 6], [2, 3])
+            sage: Q.is_subdimension_vector((6, 6), (2, 3))
             False
 
         We can also work with vertex labels::
@@ -1794,10 +1838,10 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: d = [2, 3]
+            sage: d = (2, 3)
             sage: Q._deglex_key(d, max(d) + 1)
             91
-            sage: d = [3, 3]
+            sage: d = (3, 3)
             sage: Q._deglex_key(d)
             111
 
@@ -1837,7 +1881,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.all_subdimension_vectors([2, 3])
+            sage: Q.all_subdimension_vectors((2, 3))
                 [(0, 0),
                  (0, 1),
                  (0, 2),
@@ -1850,7 +1894,7 @@ class Quiver(Element):
                  (2, 1),
                  (2, 2),
                  (2, 3)]
-            sage: Q.all_subdimension_vectors([2, 3], proper=True)
+            sage: Q.all_subdimension_vectors((2, 3), proper=True)
                 [(0, 0),
                  (0, 1),
                  (0, 2),
@@ -1862,7 +1906,7 @@ class Quiver(Element):
                  (2, 0),
                  (2, 1),
                  (2, 2)]
-            sage: Q.all_subdimension_vectors([2, 3], nonzero=True)
+            sage: Q.all_subdimension_vectors((2, 3), nonzero=True)
                 [(0, 1),
                  (0, 2),
                  (0, 3),
@@ -1874,7 +1918,7 @@ class Quiver(Element):
                  (2, 1),
                  (2, 2),
                  (2, 3)]
-            sage: Q.all_subdimension_vectors([2, 3], proper=True, nonzero=True)
+            sage: Q.all_subdimension_vectors((2, 3), proper=True, nonzero=True)
                 [(0, 1),
                  (0, 2),
                  (0, 3),
@@ -1896,14 +1940,14 @@ class Quiver(Element):
         If we work with labeled vertices, then we get a list of dicts::
 
             sage: Q = Quiver.from_string("a---b", forget_labels=False)
-            sage: Q.all_subdimension_vectors([1, 2])
+            sage: Q.all_subdimension_vectors((1, 2))
             [{'a': 0, 'b': 0},
              {'a': 0, 'b': 1},
              {'a': 0, 'b': 2},
              {'a': 1, 'b': 0},
              {'a': 1, 'b': 1},
              {'a': 1, 'b': 2}]
-            sage: Q.all_subdimension_vectors([1, 2], forget_labels=True)
+            sage: Q.all_subdimension_vectors((1, 2), forget_labels=True)
             [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
 
         """
@@ -1948,12 +1992,12 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: d = [2, 3]
+            sage: d = (2, 3)
             sage: Q.is_theta_coprime(d, Q.canonical_stability_parameter(d))
             True
             sage: Q.is_theta_coprime(d)
             True
-            sage: Q.is_theta_coprime([3, 3], [1, -1])
+            sage: Q.is_theta_coprime((3, 3), (1, -1))
             False
 
         """
@@ -1983,9 +2027,9 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.is_indivisible([2, 3])
+            sage: Q.is_indivisible((2, 3))
             True
-            sage: Q.is_indivisible([2, 2])
+            sage: Q.is_indivisible((2, 2))
             False
 
         """
@@ -2009,10 +2053,10 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = ThreeVertexQuiver(2, 0, 4)
-            sage: d = vector([1, 1, 1])
+            sage: d = (1, 1, 1)
             sage: Q.support(d)
             [0, 1, 2]
-            sage: d = vector([1, 0, 1])
+            sage: d = (1, 0, 1)
             sage: Q.support(d)
             [0, 2]
 
@@ -2060,11 +2104,11 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.in_fundamental_domain([1, 1])
+            sage: Q.in_fundamental_domain((1, 1))
             True
-            sage: Q.in_fundamental_domain([1, 2])
+            sage: Q.in_fundamental_domain((1, 2))
             False
-            sage: Q.in_fundamental_domain([2, 3])
+            sage: Q.in_fundamental_domain((2, 3))
             True
 
         The same calculation now with vertex labels::
@@ -2082,9 +2126,9 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.in_fundamental_domain([1, 1], depth=1)
+            sage: Q.in_fundamental_domain((1, 1), depth=1)
             True
-            sage: Q.in_fundamental_domain([2, 3], depth=1)
+            sage: Q.in_fundamental_domain((2, 3), depth=1)
             False
 
         """
@@ -2122,9 +2166,9 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: d = [1, 1]
-            sage: e = [2, 1]
-            sage: f = [2, 2]
+            sage: d = (1, 1)
+            sage: e = (2, 1)
+            sage: f = (2, 2)
             sage: Q.division_order(d, e)
             True
             sage: Q.division_order(e, d)
@@ -2141,8 +2185,8 @@ class Quiver(Element):
         The division order on some dimension vectors for a 3-vertex quiver::
 
             sage: Q = ThreeVertexQuiver(2, 2, 2)
-            sage: d = [1, 1, 1]
-            sage: e = [1, 2, 1]
+            sage: d = (1, 1, 1)
+            sage: e = (1, 2, 1)
             sage: Q.division_order(d, e)
             False
             sage: Q.division_order(e, d)
@@ -2314,6 +2358,29 @@ class Quiver(Element):
     def __is_generic_subdimension_vector(self, e, d) -> bool:
         r"""
         The cacheable implementation of :meth:`Quiver.is_generic_subdimension_vector`.
+
+        EXAMPLES:
+
+        Generic subdimension vectors for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
+            sage: for e in Q.all_subdimension_vectors(d):
+            ....:     print("{} is generic subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_generic_subdimension_vector(e, d))
+            ....:     )
+            (0, 0) is generic subdimension vector of (2, 3): True
+            (0, 1) is generic subdimension vector of (2, 3): True
+            (0, 2) is generic subdimension vector of (2, 3): True
+            (0, 3) is generic subdimension vector of (2, 3): True
+            (1, 0) is generic subdimension vector of (2, 3): False
+            (1, 1) is generic subdimension vector of (2, 3): False
+            (1, 2) is generic subdimension vector of (2, 3): True
+            (1, 3) is generic subdimension vector of (2, 3): True
+            (2, 0) is generic subdimension vector of (2, 3): False
+            (2, 1) is generic subdimension vector of (2, 3): False
+            (2, 2) is generic subdimension vector of (2, 3): False
+            (2, 3) is generic subdimension vector of (2, 3): True
         """
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
@@ -2346,7 +2413,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: d = vector([3,3])
+            sage: d = (3, 3)
             sage: Q.all_generic_subdimension_vectors(d)
             [(0, 0),
              (0, 1),
@@ -2594,19 +2661,19 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.canonical_stability_parameter([2, 3])
+            sage: Q.canonical_stability_parameter((2, 3))
             (9, -6)
 
         For the 5-subspace quiver::
 
             sage: Q = SubspaceQuiver(5)
-            sage: Q.canonical_stability_parameter([1, 1, 1, 1, 1, 2])
+            sage: Q.canonical_stability_parameter((1, 1, 1, 1, 1, 2))
             (2, 2, 2, 2, 2, -5)
 
         It takes vertex labels (if present) into account::
 
             sage: Q = Quiver.from_string("foo---bar", forget_labels=False)
-            sage: Q.canonical_stability_parameter([2, 3])
+            sage: Q.canonical_stability_parameter((2, 3))
             {'bar': -6, 'foo': 9}
 
         EXAMPLES:
@@ -2614,7 +2681,7 @@ class Quiver(Element):
         Canonical stability parameter for the 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d = GeneralizedKroneckerQuiver(3), vector([2, 3])
+            sage: Q, d = GeneralizedKroneckerQuiver(3), (2, 3)
             sage: Q.canonical_stability_parameter(d)
             (9, -6)
 
@@ -2656,22 +2723,22 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
-            sage: Q.has_semistable_representation([1, 1], [1, -1])
+            sage: Q.has_semistable_representation((1, 1), (1, -1))
             True
-            sage: Q.has_semistable_representation([2, 2], [1, -1])
+            sage: Q.has_semistable_representation((2, 2), (1, -1))
             True
-            sage: Q.has_semistable_representation([1, 2], [1, -1])
+            sage: Q.has_semistable_representation((1, 2), (1, -1))
             False
-            sage: Q.has_semistable_representation([0, 0], [1, -1])
+            sage: Q.has_semistable_representation((0, 0), (1, -1))
             True
 
         Semistables for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.has_semistable_representation([2, 3])
+            sage: Q.has_semistable_representation((2, 3))
             True
-            sage: Q.has_semistable_representation([1, 4], [-3, 2])
+            sage: Q.has_semistable_representation((1, 4), (-3, 2))
             False
 
         """
@@ -2711,11 +2778,11 @@ class Quiver(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
             sage: theta = (1, -1)
-            sage: Q.has_stable_representation([1, 1], theta)
+            sage: Q.has_stable_representation((1, 1), theta)
             True
-            sage: Q.has_stable_representation([2, 2], theta)
+            sage: Q.has_stable_representation((2, 2), theta)
             False
-            sage: Q.has_stable_representation([0, 0], theta)
+            sage: Q.has_stable_representation((0, 0), theta)
             False
 
         Stables for the 3-Kronecker quiver::
@@ -2772,7 +2839,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.canonical_decomposition((2,3))
+            sage: Q.canonical_decomposition((2, 3))
             [(2, 3)]
             sage: for d in Q.all_subdimension_vectors((5, 5)):
             ....:     print(Q.canonical_decomposition(d))
@@ -2817,7 +2884,17 @@ class Quiver(Element):
 
     @cached_method(key=lambda self, d: self._coerce_vector(d))
     def __canonical_decomposition(self, d):
-        r"""The cacheable implementation of :meth:`Quiver.canonical_decomposition`"""
+        r"""The cacheable implementation of :meth:`Quiver.canonical_decomposition`
+
+        EXAMPLES:
+
+        Canonical decomposition of `(5, 3)` for the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(2)
+            sage: Q.canonical_decomposition((5, 5))
+            [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+        """
         d = self._coerce_dimension_vector(d)
 
         ds = self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
@@ -2846,7 +2923,7 @@ class Quiver(Element):
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
-            sage: Q.dimension_nullcone([2, 3])
+            sage: Q.dimension_nullcone((2, 3))
             18
 
         """
@@ -2861,7 +2938,7 @@ class Quiver(Element):
         r"""
         Compute the dimension of the first Hochschild cohomology
 
-        This uses the formula of Happel from Proposition 1.6 in [MR1035222].
+        This uses the formula of Happel from Proposition 1.6 in MR1035222_.
         One needs the quiver to be acyclic for this, otherwise it is not necessarily
         finite-dimensional.
 
@@ -2880,6 +2957,7 @@ class Quiver(Element):
             sage: SubspaceQuiver(7).first_hochschild_cohomology()
             0
 
+        .. _MR1035222: https://mathscinet.ams.org/mathscinet/relay-station?mr=1035222
         """
         assert self.is_acyclic(), "the quiver needs to be acyclic"
 
