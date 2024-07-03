@@ -150,7 +150,7 @@ class QuiverModuli(Element):
 
         EXAMPLES:
 
-        A Kronecker moduli spac::
+        A Kronecker moduli space::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
@@ -166,7 +166,8 @@ class QuiverModuli(Element):
         r"""
         Make the abstract quiver moduli a variety.
 
-        This is an explicit way of casting.
+        This is an explicit way of casting an abstract :class:`QuiverModuli`
+        to a :class:`QuiverModuliSpace`.
 
         EXAMPLES:
 
@@ -198,7 +199,8 @@ class QuiverModuli(Element):
         r"""
         Make the abstract quiver moduli a stack.
 
-        This is an explicit way of casting.
+        This is an explicit way of casting an abstract :class:`QuiverModuli`
+        to a :class:`QuiverModuliStack`.
 
         EXAMPLES:
 
@@ -230,7 +232,7 @@ class QuiverModuli(Element):
         r"""
         Returns the quiver of the moduli space.
 
-        OUTPUT: the underlying quiver as an instance of the Quiver class
+        OUTPUT: the underlying quiver as an instance of the :class:`Quiver` class
 
         EXAMPLES:
 
@@ -297,7 +299,7 @@ class QuiverModuli(Element):
 
     def denominator(self):
         r"""
-        Returns the denominator of the slope function used to define the moduli space.
+        Returns the denominator of the slope function :math:`\mu_{\theta}`.
 
         OUTPUT: the denominator as a function
 
@@ -317,7 +319,8 @@ class QuiverModuli(Element):
         r"""
         Checks if the moduli space is nonempty.
 
-        OUTPUT: whether there exist stable/semistable representations
+        OUTPUT: whether there exist stable/semistable representations, according
+        to the condition
 
         EXAMPLES:
 
@@ -394,7 +397,7 @@ class QuiverModuli(Element):
              ((2, 0), (0, 3)),
              ((2, 1), (0, 2)),
              ((2, 2), (0, 1))]
-            sage: d = [2, 3]
+            sage: d = (2, 3)
             sage: theta = -Q.canonical_stability_parameter(d)
             sage: Y = QuiverModuliSpace(Q, d, theta)
             sage: Y.all_harder_narasimhan_types()
@@ -506,7 +509,7 @@ class QuiverModuli(Element):
 
         - ``dstar`` -- list of dimension vectors
 
-        OUTPUT: whether ``dstar`` is a Harder--Narasimhan type
+        OUTPUT: whether ``dstar`` is a valid HN type for the moduli space
 
         EXAMPLES:
 
@@ -518,7 +521,7 @@ class QuiverModuli(Element):
             sage: HNs = X.all_harder_narasimhan_types()
             sage: all(X.is_harder_narasimhan_type(dstar) for dstar in HNs)
             True
-            sage: dstar = [[1, 0], [1, 0], [0, 3]]
+            sage: dstar = [(1, 0), (1, 0), (0, 3)]
             sage: X.is_harder_narasimhan_type(dstar)
             False
             sage: X.is_harder_narasimhan_type([Q.zero_vector()])
@@ -558,15 +561,24 @@ class QuiverModuli(Element):
 
     def codimension_of_harder_narasimhan_stratum(self, dstar, secure=False):
         r"""
-        Computes codimension of the Harder--Narasimhan stratum of ``dstar``.
+        Computes the codimension of the HN stratum of ``dstar``
+        inside the representation variety :math:`R(Q,d)`.
 
-        The codimension of the Harder--Narasimhan stratum inside the representation
-        variety for the HN-type given by :math:`{\bf d}^* = ({\bf d}^1,...,{\bf d}^s)`
-        is given by
+        INPUT:
+
+        - ``dstar`` -- the HN type as a list of dimension vectors
+        - ``secure`` -- (default: False): Bool
+
+        OUTPUT: codimension as an integer
+
+        By default, the method does not check if ``dstar`` is a valid HN type.
+        This can be enabled by passing ``secure=True``.
+
+        The codimension of the HN stratum of :math:`d^* = (d^1,...,d^s)` is given by
 
         .. MATH::
 
-            - sum_{k < l} \langle{\bf d}^k,{\bf d}^l\rangle
+            - \sum_{k < l} \langle {\bf d}^k,{\bf d}^l\rangle
 
         INPUT:
 
@@ -639,7 +651,7 @@ class QuiverModuli(Element):
         HNs = self.all_harder_narasimhan_types(proper=True)
 
         # note that while the HN types and strata depend on the denominator
-        # the list of all their codimensions does not
+        # the maximum of their codimensions does not
         return min(
             self.codimension_of_harder_narasimhan_stratum(dstar, secure=False)
             for dstar in HNs
