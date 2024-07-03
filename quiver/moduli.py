@@ -1977,7 +1977,7 @@ class QuiverModuliSpace(QuiverModuli):
         r"""
         Returns the Poincare polynomial of the moduli space.
 
-        OUTPUT: polynomial in one variable
+        OUTPUT: Poincaré polynomial in the variable ``q``
 
         The Poincare polynomial is defined as
 
@@ -2024,7 +2024,11 @@ class QuiverModuliSpace(QuiverModuli):
 
         X = QuiverModuliStack(Q, d, theta, condition="semistable")
 
-        return (1 - q) * f(X.motive())
+        P = (1 - q) * f(X.motive())
+
+        assert P.denominator() == 1, "must live in the polynomial ring"
+
+        return P.numerator()
 
     def betti_numbers(self):
         r"""
