@@ -1274,14 +1274,18 @@ class QuiverModuli(Element):
 
         EXAMPLES:
 
+        Kronecker moduli satisfy the rigidity inequality::
+
             sage: from quiver import *
             sage: X = QuiverModuliSpace(KroneckerQuiver(3), [2, 3])
             sage: X.if_rigidity_inequality_holds()
             True
+
+        The following 3-vertex example does not (however, it is rigid by other means)::
+
             sage: X = QuiverModuliSpace(ThreeVertexQuiver(1, 6, 1), [1, 6, 6])
             sage: X.if_rigidity_inequality_holds()
             False
-
         """
         # setup shorthand
         Q, theta, denom = self._Q, self._theta, self._denom
