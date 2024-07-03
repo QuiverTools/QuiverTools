@@ -2022,11 +2022,14 @@ class QuiverModuliSpace(QuiverModuli):
         # if theta-coprime then you can shortcut everything
         # if theta != 0 reduce to theta = 0 using https://mathscinet.ams.org/mathscinet-getitem?mr=1972892 (Adriaenssens--Le Bruyn)
         # if theta = 0, then use https://mathscinet.ams.org/mathscinet-getitem?mr=1929191 (Bocklandt)
-        if (self._condition == "stable") or (
-            self._Q.is_theta_coprime(self._d, self._theta)
-        ):
+        # stable locus
+        if self._condition == "stable":
             return True
+        if self._Q.is_theta_coprime(self._d, self._theta):
+            return True
+        # TODO if stable==semistable we are also good?
         else:
+            # TODO
             raise NotImplementedError()
 
     def is_projective(self) -> bool:
