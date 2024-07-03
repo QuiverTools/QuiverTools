@@ -1695,8 +1695,8 @@ class QuiverModuli(Element):
         The Chow ring for our favourite 6-fold::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: chi = (-1, 1)
             sage: R = X.chow_ring(chi=chi);
             sage: R.ambient()
@@ -2246,8 +2246,8 @@ class QuiverModuliSpace(QuiverModuli):
         The Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = KroneckerQuiver(), (1, 1), (1, -1)
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: Q= KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (1, 1))
             sage: chi = (1, 0)
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
@@ -2258,8 +2258,8 @@ class QuiverModuliSpace(QuiverModuli):
         The 3-Kronecker quiver::
 
             sage: from quiver import *
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
-            sage: X = QuiverModuliSpace(Q, d, theta, condition="semistable")
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: chi = (-1, 1)
             sage: A = X.chow_ring(chi=chi)
             sage: I = A.defining_ideal()
@@ -2694,19 +2694,19 @@ class QuiverModuliStack(QuiverModuli):
         Loop quivers::
 
             sage: from quiver import *
-            sage: Q, d, theta = LoopQuiver(0), (2, ), (0, )
-            sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+            sage: Q = LoopQuiver(0)
+            sage: X = QuiverModuliStack(Q, (2,), (0,))
             sage: X.motive()
             1/(L^4 - L^3 - L^2 + L)
-            sage: Q, d, theta = LoopQuiver(1), (2, ), (0, )
-            sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+            sage: Q= LoopQuiver(1), (2, ), (0, )
+            sage: X = QuiverModuliStack(Q, (2,), (0,))
             sage: X.motive()
             L^3/(L^3 - L^2 - L + 1)
 
         The 3-Kronecker quiver::
 
-            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
-            sage: X = QuiverModuliStack(Q, d, theta, condition="semistable")
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliStack(Q, (2, 3))
             sage: X.motive()
             (-L^6 - L^5 - 3*L^4 - 3*L^3 - 3*L^2 - L - 1)/(L - 1)
         """
