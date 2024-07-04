@@ -2585,17 +2585,33 @@ class QuiverModuliSpace(QuiverModuli):
         return pi(sect(quotient).homogeneous_components()[self.dimension()])
 
     def degree(self, eta=None, classes=None):
-        r"""Computes the degree of the ample line bundle given by eta."""
-        # TODO: Need check for ampleness first
+        r"""
+        Computes the degree of the line bundle given by eta.
 
+        INPUT:
+
+        - ``eta`` -- class of line bundle (default: anticanonical line bundle
+
+        - ``classes`` -- variables to be used (default: None)
+
+        EXAMPLES:
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: d = (2, 3)
+            sage: X = QuiverModuliSpace(Q, d)
+            sage: eta = Q.canonical_stability_parameter(d)
+            sage: eta = eta / 3
+            sage: X.degree(eta)
+            57
+        """
         if eta is None:
             eta = self._Q.canonical_stability_parameter(self._d)
 
-        N = self.dimension()
         c = self.chern_class_line_bundle(eta, classes=classes)
         p = self.point_class(classes=classes)
 
-        return c**N / p
+        return c ** self.dimension() / p
 
     def todd_class(self):
         r"""
