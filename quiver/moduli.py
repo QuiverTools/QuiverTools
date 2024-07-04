@@ -1476,18 +1476,21 @@ class QuiverModuli(Element):
 
         return list(filter(is_minimal, forbidden))
 
-    def __tautological_presentation(self, use_roots=False, classes=None, roots=None):
+    def tautological_ideal(self, use_roots=False, classes=None, roots=None):
         r"""
         Returns the tautological presentation of the Chow ring of the moduli space.
 
         INPUT:
 
-        - ``use_roots`` -- (default: False) whether to return the relations in Chern roots
-        - ``classes`` -- (default: None) optional list of strings to name the Chern classes
+        - ``use_roots`` -- (default: False) whether to return the relations in Chern
+          roots
+
+        - ``classes`` -- (default: None) optional list of strings to name the Chern
+          classes
+
         - ``roots`` -- (default: None) optional list of strings to name the Chern roots
 
-        OUTPUT: dict
-
+        OUTPUT: ideal of a polynomial ring
         """
         # setup shorthand
         Q, d = self._Q, self._d
@@ -1498,12 +1501,15 @@ class QuiverModuli(Element):
                 for i in range(Q.number_of_vertices())
                 for r in range(1, d[i] + 1)
             ]
+
         if roots is None:
             roots = [
                 "t{}_{}".format(i, r)
                 for i in range(Q.number_of_vertices())
                 for r in range(1, d[i] + 1)
             ]
+
+        # TODO check that there are enough classes and roots!
 
         R = PolynomialRing(QQ, roots)
 
@@ -1634,25 +1640,6 @@ class QuiverModuli(Element):
                 "Generators": lambda i, r: generator(A, i, r),  # is this going to work?
                 "Relations": tautological,
             }
-
-    # TODO this function is irrelevant: the method above should just return the relations
-    def tautological_relations(self, use_roots=False, classes=None, roots=None):
-        r"""
-        Returns the tautological relations in
-        Chern classes (if use_roots == False) or in Chern roots.
-
-        INPUT:
-
-        - ``use_roots`` -- Bool
-        - ``classes`` -- list of Strings
-        - ``roots`` -- list of Strings
-
-        OUTPUT: list
-        """
-        taut = self.__tautological_presentation(
-            use_roots=use_roots, classes=classes, roots=roots
-        )
-        return taut["Relations"]
 
     def dimension(self) -> int:
         r"""
@@ -2320,11 +2307,10 @@ class QuiverModuliSpace(QuiverModuli):
         The Chow ring :math:`\operatorname{CH}(M^{\theta\rm-st}(Q,d))` is then
         the quotient of `A` by :math:`(\sum_{i\in Q_0} a_i c_1(U_i)) + \rho(I_{taut})`.
 
-
-
         INPUT:
 
-        - ``chi`` -- vector of Ints
+        - ``chi`` -- choice of linearization, we need # TODO continue and implement assert
+
         - ``classes`` -- list of Strings
 
         OUTPUT: ring
@@ -2439,9 +2425,7 @@ class QuiverModuliSpace(QuiverModuli):
         if classes is None:
             classes = ["x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)]
 
-        taut = self._QuiverModuli__tautological_presentation(
-            use_roots=False, classes=classes
-        )
+        taut = self.tautological_ideal(use_roots=False, classes=classes)
         A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
         I = A.ideal(rels) + A.ideal(sum([chi[i] * generator(i, 0) for i in range(n)]))
@@ -2904,9 +2888,7 @@ class QuiverModuliStack(QuiverModuli):
         OUTPUT: ring
         """
 
-        taut = self._QuiverModuli__tautological_presentation(
-            use_roots=False, classes=classes
-        )
+        taut = self.tautological_ideal(use_roots=False, classes=classes)
         A, _, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
         return QuotientRing(A, A.ideal(rels), names=classes)
