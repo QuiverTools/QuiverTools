@@ -1696,6 +1696,15 @@ class QuiverModuli(Element):
 
             - :meth:`QuiverModuliSpace.is_smooth`
             - :meth:`QuiverModuliStack.is_smooth`
+
+        This is not implemented as it is ambiguous::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuli(Q, (2, 3)).is_smooth()
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
         """
         raise NotImplementedError()
 
