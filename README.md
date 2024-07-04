@@ -8,7 +8,7 @@ A SageMath package to deal with quivers and moduli of quiver representations.
 You can read its documentation as
 
 * [a webpage](https://sage.quiver.tools)
-* [a pdf](https://https://sage.quiver.tools/documentation.pdf)
+* [a pdf](https://sage.quiver.tools/documentation.pdf)
 
 A more detailed user guide is in the works.
 
