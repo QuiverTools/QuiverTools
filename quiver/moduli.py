@@ -715,14 +715,14 @@ class QuiverModuli(Element):
         .. _MR1972892: https://mathscinet.ams.org/mathscinet/relay-station?mr=1972892
 
         A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence
-        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of couples of dimension vectors
+        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of pairs of dimension vectors
         :math:`{\bf d}^k` and positive integers :math:`m_k` such that
 
         - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`,
         - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`, and
         - all the :math:`{\bf d}^k` admit a :math:`\theta`-stable representation.
 
-        Note that a couple :math:`({\bf d}^i, m_i)`
+        Note that a pair :math:`({\bf d}^i, m_i)`
         can appear multiple times in a Luna type, and the same dimension vector
         :math:`{\bf d}^i` can appear coupled with different integers.
 
