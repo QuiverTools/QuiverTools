@@ -1476,6 +1476,14 @@ class QuiverModuli(Element):
 
         return list(filter(is_minimal, forbidden))
 
+    def __tautological_generator(self, R, i, r):
+        r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
+        # setup shorthand
+        Q, d = self._Q, self._d
+        d = Q._coerce_dimension_vector(d)
+
+        return R.gen(r + sum(d[j] for j in range(i)))
+
     def tautological_ideal(self, use_roots=False, classes=None, roots=None):
         r"""
         Returns the tautological presentation of the Chow ring of the moduli space.
@@ -1515,19 +1523,18 @@ class QuiverModuli(Element):
 
         R = PolynomialRing(QQ, roots)
 
-        def generator(R, i, r):
-            r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
-            return R.gen(r + sum(d[j] for j in range(i)))
-
         r"""Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T]).
         For a forbidden subdimension vector e of d, the forbidden polynomial in Chern
         roots is given by :math:`\prod_{a: i \to j} \prod_{r=1}^{e_i}
         \prod_{s=e_j+1}^{d_j} (tj_s - ti_r) =
         \prod_{i,j} \prod_{r=1}^{e_i} \prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
-        forbiddenPolynomials = [
+        forbidden_polynomials = [
             prod(
                 prod(
-                    (generator(R, j, s) - generator(R, i, r))
+                    (
+                        self.__tautological_generator(R, j, s)
+                        - self.__tautological_generator(R, i, r)
+                    )
                     ** Q.adjacency_matrix()[i, j]
                     for r in range(e[i])
                     for s in range(e[j], d[j])
@@ -1538,110 +1545,106 @@ class QuiverModuli(Element):
             for e in self._all_minimal_forbidden_subdimension_vectors()
         ]
 
+        # the user wants to have the ideal in `R`
         if use_roots:
-            return {
-                "ParentRing": R,
-                "Generators": lambda i, r: generator(R, i, r),
-                "Relations": forbiddenPolynomials,
-            }
-        else:
-            """delta is the discriminant"""
-            delta = prod(
-                prod(
-                    generator(R, i, l) - generator(R, i, k)
-                    for k in range(d[i])
-                    for l in range(k + 1, d[i])
-                )
-                for i in range(Q.number_of_vertices())
+            return R.ideal(forbidden_polynomials)
+
+        # delta is the discriminant: precomputed for antisymmetrization(f)
+        delta = prod(
+            prod(
+                self.__tautological_generator(R, i, l)
+                - self.__tautological_generator(R, i, k)
+                for k in range(d[i])
+                for l in range(k + 1, d[i])
             )
+            for i in range(Q.number_of_vertices())
+        )
 
-            """longest is the longest Weyl group element
-            when regarding W as a subgroup of S_{sum d_i}"""
-            longest = []
-            r = 0
-            for i in range(Q.number_of_vertices()):
-                longest = longest + list(reversed(range(r + 1, r + d[i] + 1)))
-                r += d[i]
-            W = Permutations(bruhat_smaller=longest)
+        # longest is the longest Weyl group element
+        # regarding W as a subgroup of S_{sum d_i}
+        longest = []
+        r = 0
+        for i in range(Q.number_of_vertices()):
+            longest = longest + list(reversed(range(r + 1, r + d[i] + 1)))
+            r += d[i]
 
-            def antisymmetrization(f):
-                """The antisymmetrization of f is the symmetrization
-                divided by the discriminant."""
+        # Weyl group: precomputed for antisymmetrization(f)
+        W = Permutations(bruhat_smaller=longest)
 
-                # I don't want to define W and delta here but globally because then
-                # we need to compute it just once. That's probably a bit faster.
-                def permute(f, w):
-                    return f.subs({R.gen(i): R.gen(w[i] - 1) for i in range(R.ngens())})
+        def antisymmetrization(f):
+            r"""The antisymmetrization of a polynomial `f` is the symmetrization
+            divided by the discriminant."""
 
-                return sum(w.sign() * permute(f, w) for w in W) // delta
+            def permute(f, w):
+                return f.subs({R.gen(i): R.gen(w[i] - 1) for i in range(R.ngens())})
 
-            """Schubert basis of A^*([R/T]) over A^*([R/G])"""
-            X = SchubertPolynomialRing(ZZ)
-            supp = list(filter(lambda i: d[i] > 0, range(Q.number_of_vertices())))
+            return sum(w.sign() * permute(f, w) for w in W) // delta
 
-            def B(i):
-                return [X(p).expand() for p in Permutations(d[i])]
+        # Schubert basis of CH^*([R/T]) over CH^*([R/G])
+        X = SchubertPolynomialRing(ZZ)
 
-            Bprime = [
-                [
-                    f.parent().hom(
-                        [generator(R, i, r) for r in range(f.parent().ngens())], R
-                    )(f)
-                    for f in B(i)
-                ]
-                for i in supp
+        # TODO document B and Bprime better
+        def B(i):
+            return [X(p).expand() for p in Permutations(d[i])]
+
+        Bprime = [
+            [
+                f.parent().hom(
+                    [
+                        self.__tautological_generator(R, i, r)
+                        for r in range(f.parent().ngens())
+                    ],
+                    R,
+                )(f)
+                for f in B(i)
             ]
+            for i in Q.support(d)
+        ]
 
-            # TODO is this not something already implemented?
-            # if not, explain what it does!
-            def product_lists(L):
-                n = len(L)
-                assert n > 0
-                if n == 1:
-                    return L[0]
-                else:
-                    P = product_lists([L[i] for i in range(n - 1)])
-                    return [p * l for p in P for l in L[n - 1]]
+        # TODO is this not something already implemented?
+        # if not, explain what it does!
+        def product_lists(L):
+            n = len(L)
+            assert n > 0
+            if n == 1:
+                return L[0]
+            else:
+                P = product_lists([L[i] for i in range(n - 1)])
+                return [p * l for p in P for l in L[n - 1]]
 
-            schubert = product_lists(Bprime)
+        schubert = product_lists(Bprime)
 
-            """Define A = A*([R/G])."""
-            degrees = []
-            for i in range(Q.number_of_vertices()):
-                degrees = degrees + list(range(1, d[i] + 1))
-            A = PolynomialRing(QQ, classes, order=TermOrder("wdegrevlex", degrees))
+        # define A = CH^*([R/G])
+        degrees = []
+        for i in range(Q.number_of_vertices()):
+            degrees = degrees + list(range(1, d[i] + 1))
+        A = PolynomialRing(QQ, classes, order=TermOrder("wdegrevlex", degrees))
 
-            E = SymmetricFunctions(ZZ).e()
-            """The Chern classes of U_i on [R/G] are the elementary symmetric functions
-            in the Chern roots ti_1,...,ti_{d_i}."""
-            elementarySymmetric = []
-            for i in range(Q.number_of_vertices()):
-                elementarySymmetric = elementarySymmetric + [
-                    E([k]).expand(
-                        d[i],
-                        alphabet=[generator(R, i, r) for r in range(d[i])],
-                    )
-                    for k in range(1, d[i] + 1)
-                ]
-            """Map xi_r to the r-th elementary symmetric function
-            in ti_1,...,ti_{d_i}."""
-            inclusion = A.hom(elementarySymmetric, R)
-
-            """Tautological relations in Chern classes."""
-            tautological = [
-                antisymmetrization(b * f)
-                for b in schubert
-                for f in forbiddenPolynomials
+        E = SymmetricFunctions(ZZ).e()
+        """The Chern classes of U_i on [R/G] are the elementary symmetric functions
+        in the Chern roots ti_1,...,ti_{d_i}."""
+        elementarySymmetric = []
+        for i in range(Q.number_of_vertices()):
+            elementarySymmetric = elementarySymmetric + [
+                E([k]).expand(
+                    d[i],
+                    alphabet=[
+                        self.__tautological_generator(R, i, r) for r in range(d[i])
+                    ],
+                )
+                for k in range(1, d[i] + 1)
             ]
-            tautological = [inclusion.inverse_image(g) for g in tautological]
+        """Map xi_r to the r-th elementary symmetric function
+        in ti_1,...,ti_{d_i}."""
+        inclusion = A.hom(elementarySymmetric, R)
 
-            # TODO why return the ring and the generators? from the ideal we can get both
-            # so turn the list `tautological` into an ideal of `A`
-            return {
-                "ParentRing": A,
-                "Generators": lambda i, r: generator(A, i, r),  # is this going to work?
-                "Relations": tautological,
-            }
+        """Tautological relations in Chern classes."""
+        tautological = [
+            antisymmetrization(b * f) for b in schubert for f in forbidden_polynomials
+        ]
+        tautological = [inclusion.inverse_image(g) for g in tautological]
+
+        return A.ideal(tautological)
 
     def dimension(self) -> int:
         r"""
@@ -2422,10 +2425,17 @@ class QuiverModuliSpace(QuiverModuli):
         # X*(PG) --> X*(G).
         assert chi * d == 1
 
-        taut = self.tautological_ideal(use_roots=False, classes=classes)
-        A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
+        tautological = self.tautological_ideal(use_roots=False, classes=classes)
+        A = tautological.ring()
 
-        I = A.ideal(rels) + A.ideal(sum([chi[i] * generator(i, 0) for i in range(n)]))
+        I = tautological + A.ideal(
+            sum(
+                [
+                    chi[i] * self._QuiverModuli__tautological_generator(A, i, 0)
+                    for i in range(n)
+                ]
+            )
+        )
 
         return QuotientRing(A, I, names=classes)
 
