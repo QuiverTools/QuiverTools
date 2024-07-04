@@ -1041,7 +1041,19 @@ class QuiverModuli(Element):
 
         where for a partition :math:`p = (n_1,...,n_l)`, we define
         :math:`||p||^2 = \sum_v n_v^2`
-        and :math:`N(Q_{tau}, d_{tau})` is the nullcone of the local quiver setting.
+        and :math:`N(Q_{\tau}, d_{\tau})` is the nullcone of the local quiver setting.
+
+        This is currently not working properly because we cannot compute the dimension
+        of the nullcone::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (3, 3))
+            sage: Ls = X.all_luna_types()
+            sage: X._codimension_inverse_image_luna_stratum(Ls[0])
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
         """
         # setup shorthand
         Q, d = self._Q, self._d
@@ -1051,10 +1063,8 @@ class QuiverModuli(Element):
             -Q.euler_form(d, d)
             + sum(
                 [
-                    Q.euler_form(dk[0], dk[0])
-                    - len(dk[1])
-                    + sum([nkv**2 for nkv in dk[1]])
-                    for dk in tau
+                    Q.euler_form(dk, dk) - sum(m) + sum([nkv**2 for nkv in m])
+                    for (dk, m) in tau.items()
                 ]
             )
             - Qtau.dimension_nullcone(dtau)
@@ -1069,7 +1079,21 @@ class QuiverModuli(Element):
 
         The codimension of the properly semistable locus
         is the minimal codimension of the inverse image
-        of the non-stable Luna strata."""
+        of the non-stable Luna strata.
+
+        EXAMPLES:
+
+        This is currently not working properly because we cannot compute the dimension
+        of the nullcone::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (3, 3)).codimension_properly_semistable_locus()
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
+
+        """
         Ls = self.all_luna_types(exclude_stable=True)
 
         return min(self._codimension_inverse_image_luna_stratum(tau) for tau in Ls)
