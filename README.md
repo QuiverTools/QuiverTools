@@ -10,7 +10,7 @@ You can read its documentation as
 * [a webpage](https://sage.quiver.tools)
 * [a pdf](https://https://sage.quiver.tools/documentation.pdf)
 
-A more detailed user guide is planned.
+A more detailed user guide is in the works.
 
 # Instructions
 
