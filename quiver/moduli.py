@@ -2509,14 +2509,18 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = SubspaceQuiver(5)
-            sage: d = (1, 1, 1, 1, 1, 2)
             sage: theta = (2, 2, 2, 2, 2, -5)
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, (1, 1, 1, 1, 1, 2))
             sage: chi = (-1, -1, -1, -1, -1, 3)
-            sage: X.point_class(chi,classes=['x1','x2','x3','x4','x5','y','z'])
+            sage: X.point_class(chi, classes=['x1', 'x2', 'x3', 'x4', 'x5', 'y', 'z'])
             1/2*z
+
+        If we don't specify `chi` a default that will still work is used, but the
+        results do depend on it::
+
+            sage: X.point_class(classes=['x1', 'x2', 'x3', 'x4', 'x5', 'y', 'z'])
+            -1/3*y^2
         """
-        # TODO test one without chi given?
         # setup shorthand
         Q, d = self._Q, self._d
 
