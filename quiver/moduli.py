@@ -7,7 +7,6 @@ from sage.combinat.schubert_polynomial import SchubertPolynomialRing
 from sage.combinat.sf.sf import SymmetricFunctions
 from sage.combinat.tuple import UnorderedTuples
 from sage.matrix.constructor import matrix
-from sage.misc.cachefunc import cached_method
 from sage.misc.misc_c import prod
 from sage.modules.free_module_element import vector, zero_vector
 from sage.rings.function_field.constructor import FunctionField
@@ -323,7 +322,6 @@ class QuiverModuli(Element):
         """
         return self._denom
 
-    @cached_method
     def is_nonempty(self) -> bool:
         r"""
         Checks if the moduli space is nonempty.
@@ -356,7 +354,6 @@ class QuiverModuli(Element):
         if self._condition == "semistable":
             return self._Q.has_semistable_representation(self._d, self._theta)
 
-    @cached_method
     def is_theta_coprime(self) -> bool:
         r"""
         Checks whether the combination of `d` and `theta` is coprime.
@@ -2109,7 +2106,6 @@ class QuiverModuliSpace(QuiverModuli):
 
         return betti
 
-    @cached_method
     def is_smooth(self) -> bool:
         r"""
         Returns whether the moduli space is smooth.
@@ -2184,7 +2180,6 @@ class QuiverModuliSpace(QuiverModuli):
 
         return QuiverModuliSpace(Q, d, theta=Q.zero_vector())
 
-    @cached_method
     def is_projective(self) -> bool:
         r"""
         Check whether the moduli space is projective
