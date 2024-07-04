@@ -2427,13 +2427,28 @@ class QuiverModuliSpace(QuiverModuli):
 
         - ``eta`` -- character of :math:`PG_d` as vector in :math:`\mathbb{Z}Q_0`
 
+        EXAMPLES:
+
+        On the Kronecker 6-fold we can take the canonical line bundle, which we can
+        see to have index 3::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: eta = Q.canonical_stability_parameter((2, 3))
+            sage: X.chern_class_line_bundle(eta)
+            -3*x1_1bar
         """
+        # setup shorthand
+        Q, d = self._Q, self._d
+        d = Q._coerce_dimension_vector(d)
 
         A = self.chow_ring(chi=None, classes=classes)
-        n = self._Q.number_of_vertices()
-        d = self._d
 
-        return -sum([eta[i] * A.gen(sum(d[j] for j in range(i))) for i in range(n)])
+        return -sum(
+            eta[i] * A.gen(sum(d[j] for j in range(i)))
+            for i in range(Q.number_of_vertices())
+        )
 
     def chern_character_line_bundle(self, eta, classes=None):
         r"""
@@ -2441,8 +2456,23 @@ class QuiverModuliSpace(QuiverModuli):
 
         The Chern character of a line bundle `L` with first Chern class `x`
         is given by :math:`e^x = 1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \dots`
+
+        EXAMPLES:
+
+        On the Kronecker 6-fold the canonical line bundle has the following Chern
+        character::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: eta = Q.canonical_stability_parameter((2, 3))
+            sage: X.chern_character_line_bundle(eta)
+            4617/80*x1_3bar^2 - 1539/40*x1_2bar*x1_3bar + 81/8*x1_1bar^2*x1_2bar
+            - 27/8*x1_2bar^2 - 27/4*x1_1bar*x1_3bar - 9/2*x1_1bar^3 + 9/2*x1_1bar^2
+            - 3*x1_1bar + 1
         """
         x = self.chern_class_line_bundle(eta, classes=classes)
+
         return sum(x**i / factorial(i) for i in range(self.dimension() + 1))
 
     def total_chern_class_universal(self, i, chi, classes=None):
