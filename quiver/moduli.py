@@ -2639,7 +2639,7 @@ class QuiverModuliSpace(QuiverModuli):
 
             td(X) =
             (\prod_{a:i \to j \in Q_1} \prod_{p=1}^{d_j} \prod_{q=1}^{d_i} Q(t_{j,q} -
-            t_{i,p}))/(prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))
+            t_{i,p}))/(\prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))
 
         EXAMPLES:
 
