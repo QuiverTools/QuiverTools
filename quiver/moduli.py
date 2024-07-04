@@ -1666,14 +1666,23 @@ class QuiverModuli(Element):
 
     def dimension(self) -> int:
         r"""
-        Returns the dimension of the moduli space.
-
-        Abstract method, see the concrete implementations for details.
+        Returns the dimension of the moduli stack.
 
         .. SEEALSO::
 
-            - :meth:`QuiverModuliSpace.dimension`,
-            - :meth:`QuiverModuliStack.dimension`.
+            - :meth:`QuiverModuliSpace.dimension`
+            - :meth:`QuiverModuliStack.dimension`
+
+        EXAMPLES:
+
+        This is not implemented as it is ambiguous::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuli(Q, (2, 3)).dimension()
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
         """
         raise NotImplementedError()
 
