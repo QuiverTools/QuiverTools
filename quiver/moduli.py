@@ -2785,7 +2785,21 @@ class QuiverModuliStack(QuiverModuli):
             dim [R^{{\rm (s)st}}/G] = dim R^{{\rm (s)st}} - dim G
 
         The dimension turns out to be :math:`-\langle d,d\rangle`
-        if the (semi-)stable locus is non-empty"""
+        if the (semi-)stable locus is non-empty.
+
+        EXAMPLES:
+
+        The dimension of a moduli space of stable is off by one from the moduli stack
+        because of the generic stabilizer being 1-dimensional::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuli(Q, (2, 3))
+            sage: X.to_stack().dimension()
+            5
+            sage: X.to_space().dimension()
+            6
+        """
         # setup shorthand
         Q, d = self._Q, self._d
 
