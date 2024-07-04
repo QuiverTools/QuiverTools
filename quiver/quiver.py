@@ -29,7 +29,7 @@ class Quiver(Element):
     def __init__(self, G, name=None):
         r"""Constructor for a quiver.
 
-        This takes a directed graph as input. If it is not a DiGraph instance,
+        This takes a directed graph as input. If it is not a `DiGraph` instance,
         it is interpreted it as an adjacency matrix.
         For other constructions, see
 
@@ -45,25 +45,11 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        The 3-Kronecker quiver::
+        The 3-Kronecker quiver from an adjacency matrix::
 
             sage: from quiver import *
             sage: Q = Quiver([[0, 3], [0, 0]]); Q
             a quiver with 2 vertices and 3 arrows
-
-        A Dynkin quiver of type A_3::
-
-            sage: Q = Quiver.from_string("1-2-3"); Q.adjacency_matrix()
-            [0 1 0]
-            [0 0 1]
-            [0 0 0]
-
-        A triangle-shaped quiver::
-
-            sage: Q = Quiver.from_string("1-2-3, 1-3"); Q.adjacency_matrix()
-            [0 1 1]
-            [0 0 1]
-            [0 0 0]
 
         """
 
@@ -81,11 +67,11 @@ class Quiver(Element):
 
     @classmethod
     def from_digraph(cls, G, name=None):
-        r"""Construct a quiver from a DiGraph object.
+        r"""Construct a quiver from a `DiGraph` object.
 
         INPUT:
 
-        - ``G`` -- directed graph
+        - ``G`` -- directed graph as a `DiGraph` object
 
         - ``name`` -- optional name for the quiver
 
@@ -134,14 +120,12 @@ class Quiver(Element):
         You specify an arrow from ``i`` to ``j`` by writing ``i-j``.
         Multiple arrows are specified by repeating the hyphen, so that ``1--2`` is the
         Kronecker quiver. If you write ``i-j-k`` then you have 1 arrow from ``i`` to
-        ``j``and one from ``j`` to ``k``. The full quiver is specified by concatenating
+        ``j`` and one from ``j`` to ``k``. The full quiver is specified by concatenating
         (multiple) arrows by commas.
 
         The values for a vertex can be anything, and the chosen names will be used for
         the vertices in the underlying graph. Labels are cast to an integer, if
         possible, and otherwise to strings.
-
-        OUTPUT: the quiver
 
         INPUT:
 
@@ -151,6 +135,8 @@ class Quiver(Element):
           to number them ``0,...,n-1``
 
         - ``name`` -- optional name for the quiver
+
+        OUTPUT: the quiver
 
         EXAMPLES:
 
@@ -324,14 +310,14 @@ class Quiver(Element):
         Renaming and resetting the name::
 
             sage: Q = Quiver.from_string("1---2")
-            sage: Q.get_custom_name()
-
+            sage: Q.get_custom_name() is None
+            True
             sage: Q.rename("3-Kronecker quiver")
             sage: Q.get_custom_name()
             '3-Kronecker quiver'
             sage: Q.reset_name()
-            sage: Q.get_custom_name()
-
+            sage: Q.get_custom_name() is None
+            True
             sage: Q
             a quiver with 2 vertices and 3 arrows
 
@@ -1313,7 +1299,7 @@ class Quiver(Element):
         which defaults to `+oo`.
 
         The coframed quiver has one additional vertex, and `f_i` many arrows from
-        the vertex `i` to the coframed vertex, for every `i\in Q_0`.
+        the vertex `i` to the coframed vertex, for every :math:`i\in Q_0`.
 
         INPUT:
 
@@ -1691,7 +1677,8 @@ class Quiver(Element):
         A Schur root is a dimension vector which admits a Schurian representation,
         i.e., a representation whose endomorphism ring is the field itself.
         It is necessarily indecomposable.
-        By MR1162487_ `d` is a Schur root if and only if `d` admits a stable
+
+        By MR1162487_ :math:`{\bf d}` is a Schur root if and only if it admits a stable
         representation for the canonical stability parameter.
 
         .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
