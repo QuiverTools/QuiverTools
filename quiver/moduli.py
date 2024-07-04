@@ -2462,7 +2462,7 @@ class QuiverModuliSpace(QuiverModuli):
         n = self._Q.number_of_vertices()
         d = self._d
 
-        return -sum([eta[i] * A.gen(sum([d[j] for j in range(i)])) for i in range(n)])
+        return -sum([eta[i] * A.gen(sum(d[j] for j in range(i))) for i in range(n)])
 
     def chern_character_line_bundle(self, eta, chernClasses=None):
         r"""
@@ -2471,19 +2471,17 @@ class QuiverModuliSpace(QuiverModuli):
         The Chern character of a line bundle `L` with first Chern class `x`
         is given by :math:`e^x = 1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \dots`
         """
-
-        N = self.dimension()
         x = self.chern_class_line_bundle(eta, chernClasses=chernClasses)
-        return sum([x**i / factorial(i) for i in range(N + 1)])
+        return sum(x**i / factorial(i) for i in range(self.dimension() + 1))
 
     def total_chern_class_universal(self, i, chi, chernClasses=None):
         """Gives the total Chern class of the universal bundle U_i(chi)."""
 
+        d = self._Q._coerce_dimension_vector(self._d)
         A = self.chow_ring(chi, chernClasses=chernClasses)
-        d = self._d
 
         return 1 + sum(
-            [A.gen(r + sum([d[j] for j in range(i - 1)])) for r in range(d[i - 1])]
+            A.gen(r + sum([d[j] for j in range(i - 1)])) for r in range(d[i - 1])
         )
 
     def point_class(self, chi=None, chernClasses=None):
@@ -2537,13 +2535,13 @@ class QuiverModuliSpace(QuiverModuli):
             1/2*z
 
         """
-
+        # setup shorthand
         Q, d = self._Q, self._d
+
+        d = Q._coerce_dimension_vector(d)
         n = Q.number_of_vertices()
         a = Q.adjacency_matrix()
         N = self.dimension()
-
-        d = Q._coerce_dimension_vector(d)
 
         A = self.chow_ring(chi=chi, chernClasses=chernClasses)
         pi = A.cover()  # The quotient map
@@ -2556,18 +2554,14 @@ class QuiverModuliSpace(QuiverModuli):
             chi = Q._coerce_vector(chi)
 
         my_numerator = prod(
-            [
-                self.total_chern_class_universal(j + 1, chi, chernClasses=chernClasses)
-                ** (d * a.column(j))
-                for j in range(n)
-            ]
+            self.total_chern_class_universal(j + 1, chi, chernClasses=chernClasses)
+            ** (d * a.column(j))
+            for j in range(n)
         )
         my_denom = prod(
-            [
-                self.total_chern_class_universal(i + 1, chi, chernClasses=chernClasses)
-                ** d[i]
-                for i in range(n)
-            ]
+            self.total_chern_class_universal(i + 1, chi, chernClasses=chernClasses)
+            ** d[i]
+            for i in range(n)
         )
 
         quotient = my_numerator / my_denom
@@ -2608,7 +2602,7 @@ class QuiverModuliSpace(QuiverModuli):
 
             The function computes the terms of this series up to degree n."""
             B = [bernoulli(i) for i in range(n + 1)]
-            return sum([(-1) ^ i * B[i] / factorial(i) * t ^ i for i in range(n + 1)])
+            return sum((-1) ^ i * B[i] / factorial(i) * t ^ i for i in range(n + 1))
 
         def truncate(f, n):
             r"""
@@ -2616,7 +2610,7 @@ class QuiverModuliSpace(QuiverModuli):
             all homogeneous components of degree > n"""
             hom = f.homogeneous_components()
             keyList = [i for i in hom]
-            return sum([hom[i] for i in filter(lambda i: i <= n, keyList)])
+            return sum(hom[i] for i in filter(lambda i: i <= n, keyList))
 
         raise NotImplementedError()
 
