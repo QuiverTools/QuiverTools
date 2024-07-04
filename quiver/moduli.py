@@ -2555,18 +2555,10 @@ class QuiverModuliSpace(QuiverModuli):
         """
         # setup shorthand
         Q, d = self._Q, self._d
-
         d = Q._coerce_dimension_vector(d)
 
         A = self.chow_ring(chi=chi, classes=classes)
-        sect = A.lifting_map()  # A choice of a section of pi
-
-        # choose a convenient chi
-        if chi is None:
-            [g, m] = extended_gcd(d.list())
-            chi = vector(m)
-
-        chi = Q._coerce_vector(chi)
+        sect = A.lifting_map()  # a choice of a section of pi
 
         p = prod(
             self.total_chern_class_universal(j + 1, chi, classes=classes)
