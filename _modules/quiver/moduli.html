@@ -1021,14 +1021,14 @@ document.write(`
 <span class="sd">        .. _MR1972892: https://mathscinet.ams.org/mathscinet/relay-station?mr=1972892</span>
 
 <span class="sd">        A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence</span>
-<span class="sd">        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of couples of dimension vectors</span>
+<span class="sd">        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of pairs of dimension vectors</span>
 <span class="sd">        :math:`{\bf d}^k` and positive integers :math:`m_k` such that</span>
 
 <span class="sd">        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`,</span>
 <span class="sd">        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`, and</span>
 <span class="sd">        - all the :math:`{\bf d}^k` admit a :math:`\theta`-stable representation.</span>
 
-<span class="sd">        Note that a couple :math:`({\bf d}^i, m_i)`</span>
+<span class="sd">        Note that a pair :math:`({\bf d}^i, m_i)`</span>
 <span class="sd">        can appear multiple times in a Luna type, and the same dimension vector</span>
 <span class="sd">        :math:`{\bf d}^i` can appear coupled with different integers.</span>
 
@@ -1770,6 +1770,7 @@ document.write(`
         <span class="n">es</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">all_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">slope</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;semistable&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">slope</span><span class="p">,</span> <span class="n">es</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">condition</span> <span class="o">==</span> <span class="s2">&quot;stable&quot;</span><span class="p">:</span>
@@ -1778,7 +1779,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">_all_minimal_forbidden_subdimension_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the list of all `minimal` forbidden subdimension vectors</span>
 
-<span class="sd">        Minimality is with respect to the partial order `e &lt;&lt; d` which means</span>
+<span class="sd">        Minimality is with respect to the partial order :math`e\ll d` which means</span>
 <span class="sd">        :math:`e_i \leq d_i` for every source `i`, :math:`e_j \geq d_j`</span>
 <span class="sd">        for every sink `j`, and :math:`e_k = d_k` for every vertex which is neither</span>
 <span class="sd">        a source nor a sink. See also :meth:`Quiver.division_order`.</span>
@@ -1791,10 +1792,10 @@ document.write(`
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
-<span class="sd">            sage: X = QuiverModuliSpace(Q, [3, 3], [1, -1], condition=&quot;semistable&quot;)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (3, 3))</span>
 <span class="sd">            sage: X._all_minimal_forbidden_subdimension_vectors()</span>
 <span class="sd">            [(1, 0), (2, 1), (3, 2)]</span>
-<span class="sd">            sage: Y = QuiverModuliSpace(Q, [3, 3], [1, -1], condition=&quot;stable&quot;)</span>
+<span class="sd">            sage: Y = QuiverModuliSpace(Q, (3, 3), condition=&quot;stable&quot;)</span>
 <span class="sd">            sage: Y._all_minimal_forbidden_subdimension_vectors()</span>
 <span class="sd">            [(1, 1), (2, 2)]</span>
 
@@ -1812,210 +1813,227 @@ document.write(`
 
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">is_minimal</span><span class="p">,</span> <span class="n">forbidden</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__tautological_presentation</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">inRoots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chernRoots</span><span class="o">=</span><span class="kc">None</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__generator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the appropriate generator of R.</span>
+
+<span class="sd">        This is a repeatedly used helper function in dealing with Chow rings.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        We index some generators of the polynomial ring defining the Chow ring of the</span>
+<span class="sd">        Kronecker 6-fold::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: chi = (-1, 1)</span>
+<span class="sd">            sage: A = X.chow_ring(chi=chi, classes=[&quot;x1&quot;, &quot;x2&quot;, &quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;])</span>
+<span class="sd">            sage: R = A.defining_ideal().ring()</span>
+<span class="sd">            sage: R</span>
+<span class="sd">            Multivariate Polynomial Ring in x1, x2, y1, y2, y3 over Rational Field</span>
+<span class="sd">            sage: X._QuiverModuli__generator(R, 0, 0)</span>
+<span class="sd">            x1</span>
+<span class="sd">            sage: X._QuiverModuli__generator(R, 1, 2)</span>
+<span class="sd">            y3</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># setup shorthand</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="QuiverModuli.tautological_ideal">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.tautological_ideal">[docs]</a>
+    <span class="k">def</span> <span class="nf">tautological_ideal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_roots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">roots</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the tautological presentation of the Chow ring of the moduli space.</span>
 
 <span class="sd">        INPUT:</span>
 
-<span class="sd">        - ``inRoots`` -- (default: False) whether to return the relations in Chern roots</span>
-<span class="sd">        - ``chernClasses`` -- (default: None) optional list of strings to name the Chern classes</span>
-<span class="sd">        - ``chernRoots`` -- (default: None) optional list of strings to name the Chern roots</span>
+<span class="sd">        - ``use_roots`` -- (default: False) whether to return the relations in Chern</span>
+<span class="sd">          roots</span>
 
-<span class="sd">        OUTPUT: dict</span>
+<span class="sd">        - ``classes`` -- (default: None) optional list of strings to name the Chern</span>
+<span class="sd">          classes</span>
+
+<span class="sd">        - ``roots`` -- (default: None) optional list of strings to name the Chern roots</span>
+
+<span class="sd">        OUTPUT: ideal of a polynomial ring</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The tautological ideal for our favourite 6-fold has 9 non-zero generators::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: len(X.tautological_ideal().gens())</span>
+<span class="sd">            9</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># setup shorthand</span>
-        <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">chernClasses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">chernClasses</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="s2">&quot;x</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
-                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="k">if</span> <span class="n">chernRoots</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">chernRoots</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="s2">&quot;t</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">classes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;x</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
                 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">]</span>
 
-        <span class="n">R</span> <span class="o">=</span> <span class="n">PolynomialRing</span><span class="p">(</span><span class="n">QQ</span><span class="p">,</span> <span class="n">chernRoots</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">roots</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">roots</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;t</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">]</span>
 
-        <span class="k">def</span> <span class="nf">generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns generator(R, i, r) = t{i+1}_{r+1}.&quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)]))</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="s2">&quot;number of classes must be number of generators&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="s2">&quot;number of roots must be number of generators&quot;</span>
+
+        <span class="n">R</span> <span class="o">=</span> <span class="n">PolynomialRing</span><span class="p">(</span><span class="n">QQ</span><span class="p">,</span> <span class="n">roots</span><span class="p">)</span>
 
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T]).</span>
 <span class="sd">        For a forbidden subdimension vector e of d, the forbidden polynomial in Chern</span>
 <span class="sd">        roots is given by :math:`\prod_{a: i \to j} \prod_{r=1}^{e_i}</span>
 <span class="sd">        \prod_{s=e_j+1}^{d_j} (tj_s - ti_r) =</span>
 <span class="sd">        \prod_{i,j} \prod_{r=1}^{e_i} \prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}.&quot;&quot;&quot;</span>
-        <span class="n">forbiddenPolynomials</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">forbidden_polynomials</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">prod</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="n">prod</span><span class="p">(</span>
-                        <span class="p">[</span>
-                            <span class="p">(</span><span class="n">generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="n">generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
-                            <span class="o">**</span> <span class="n">Q</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
-                            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-                        <span class="p">]</span>
-                    <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
-                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
-                <span class="p">]</span>
+                <span class="n">prod</span><span class="p">(</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
+                    <span class="o">**</span> <span class="n">Q</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_minimal_forbidden_subdimension_vectors</span><span class="p">()</span>
         <span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">inRoots</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span>
-                <span class="s2">&quot;ParentRing&quot;</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span>
-                <span class="s2">&quot;Generators&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span>
-                <span class="s2">&quot;Relations&quot;</span><span class="p">:</span> <span class="n">forbiddenPolynomials</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;delta is the discriminant&quot;&quot;&quot;</span>
-            <span class="n">delta</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="n">prod</span><span class="p">(</span>
-                        <span class="p">[</span>
-                            <span class="n">generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="n">generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                        <span class="p">]</span>
-                    <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
-                <span class="p">]</span>
+        <span class="c1"># the user wants to have the ideal in `R`</span>
+        <span class="k">if</span> <span class="n">use_roots</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">R</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="n">forbidden_polynomials</span><span class="p">)</span>
+
+        <span class="c1"># delta is the discriminant: precomputed for antisymmetrization(f)</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
+            <span class="n">prod</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="p">)</span>
-
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;longest is the longest Weyl group element</span>
-<span class="sd">            when regarding W as a subgroup of S_{sum d_i}&quot;&quot;&quot;</span>
-            <span class="n">longest</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()):</span>
-                <span class="n">longest</span> <span class="o">=</span> <span class="n">longest</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span>
-                <span class="n">r</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">W</span> <span class="o">=</span> <span class="n">Permutations</span><span class="p">(</span><span class="n">bruhat_smaller</span><span class="o">=</span><span class="n">longest</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">antisymmetrization</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot;The antisymmetrization of f is the symmetrization</span>
-<span class="sd">                divided by the discriminant.&quot;&quot;&quot;</span>
-
-                <span class="c1"># I don&#39;t want to define W and delta here but globally because then</span>
-                <span class="c1"># we need to compute it just once. That&#39;s probably a bit faster.</span>
-                <span class="k">def</span> <span class="nf">permute</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">ngens</span><span class="p">())})</span>
-
-                <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">sign</span><span class="p">()</span> <span class="o">*</span> <span class="n">permute</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">W</span><span class="p">)</span> <span class="o">//</span> <span class="n">delta</span>
-
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Schubert basis of A^*([R/T]) over A^*([R/G])&quot;&quot;&quot;</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="n">SchubertPolynomialRing</span><span class="p">(</span><span class="n">ZZ</span><span class="p">)</span>
-            <span class="n">supp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())))</span>
-
-            <span class="k">def</span> <span class="nf">B</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">[</span><span class="n">X</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Permutations</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>
-
-            <span class="n">Bprime</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">[</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">hom</span><span class="p">(</span>
-                        <span class="p">[</span><span class="n">generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">ngens</span><span class="p">())],</span> <span class="n">R</span>
-                    <span class="p">)(</span><span class="n">f</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">B</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="p">]</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">supp</span>
-            <span class="p">]</span>
-
-            <span class="c1"># TODO is this not something already implemented?</span>
-            <span class="c1"># if not, explain what it does!</span>
-            <span class="k">def</span> <span class="nf">product_lists</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
-                <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span>
-                <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">L</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">P</span> <span class="o">=</span> <span class="n">product_lists</span><span class="p">([</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
-                    <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="o">*</span> <span class="n">l</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">P</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">L</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
-
-            <span class="n">schubert</span> <span class="o">=</span> <span class="n">product_lists</span><span class="p">(</span><span class="n">Bprime</span><span class="p">)</span>
-
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Define A = A*([R/G]).&quot;&quot;&quot;</span>
-            <span class="n">degrees</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()):</span>
-                <span class="n">degrees</span> <span class="o">=</span> <span class="n">degrees</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">PolynomialRing</span><span class="p">(</span><span class="n">QQ</span><span class="p">,</span> <span class="n">chernClasses</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">TermOrder</span><span class="p">(</span><span class="s2">&quot;wdegrevlex&quot;</span><span class="p">,</span> <span class="n">degrees</span><span class="p">))</span>
-
-            <span class="n">E</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">ZZ</span><span class="p">)</span><span class="o">.</span><span class="n">e</span><span class="p">()</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;The Chern classes of U_i on [R/G] are the elementary symmetric functions</span>
-<span class="sd">            in the Chern roots ti_1,...,ti_{d_i}.&quot;&quot;&quot;</span>
-            <span class="n">elementarySymmetric</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()):</span>
-                <span class="n">elementarySymmetric</span> <span class="o">=</span> <span class="n">elementarySymmetric</span> <span class="o">+</span> <span class="p">[</span>
-                    <span class="n">E</span><span class="p">([</span><span class="n">k</span><span class="p">])</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
-                        <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                        <span class="n">alphabet</span><span class="o">=</span><span class="p">[</span><span class="n">generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])],</span>
-                    <span class="p">)</span>
-                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="p">]</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Map xi_r to the r-th elementary symmetric function</span>
-<span class="sd">            in ti_1,...,ti_{d_i}.&quot;&quot;&quot;</span>
-            <span class="n">inclusion</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">hom</span><span class="p">(</span><span class="n">elementarySymmetric</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
-
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Tautological relations in Chern classes.&quot;&quot;&quot;</span>
-            <span class="n">tautological</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">antisymmetrization</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">f</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">schubert</span>
-                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">forbiddenPolynomials</span>
-            <span class="p">]</span>
-            <span class="n">tautological</span> <span class="o">=</span> <span class="p">[</span><span class="n">inclusion</span><span class="o">.</span><span class="n">inverse_image</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">tautological</span><span class="p">]</span>
-
-            <span class="k">return</span> <span class="p">{</span>
-                <span class="s2">&quot;ParentRing&quot;</span><span class="p">:</span> <span class="n">A</span><span class="p">,</span>
-                <span class="s2">&quot;Generators&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">generator</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span>  <span class="c1"># is this going to work?</span>
-                <span class="s2">&quot;Relations&quot;</span><span class="p">:</span> <span class="n">tautological</span><span class="p">,</span>
-            <span class="p">}</span>
-
-<div class="viewcode-block" id="QuiverModuli.tautological_relations">
-<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.tautological_relations">[docs]</a>
-    <span class="k">def</span> <span class="nf">tautological_relations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inRoots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chernRoots</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the tautological relations in</span>
-<span class="sd">        Chern classes (if inRoots == False) or in Chern roots.</span>
-
-<span class="sd">        INPUT:</span>
-
-<span class="sd">        - ``inRoots`` -- Bool</span>
-<span class="sd">        - ``chernClasses`` -- list of Strings</span>
-<span class="sd">        - ``chernRoots`` -- list of Strings</span>
-
-<span class="sd">        OUTPUT: list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">taut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tautological_presentation</span><span class="p">(</span>
-            <span class="n">inRoots</span><span class="o">=</span><span class="n">inRoots</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">,</span> <span class="n">chernRoots</span><span class="o">=</span><span class="n">chernRoots</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;Relations&quot;</span><span class="p">]</span></div>
+
+        <span class="c1"># longest is the longest Weyl group element</span>
+        <span class="c1"># regarding W as a subgroup of S_{sum d_i}</span>
+        <span class="n">longest</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()):</span>
+            <span class="n">longest</span> <span class="o">=</span> <span class="n">longest</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span>
+            <span class="n">r</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># Weyl group: precomputed for antisymmetrization(f)</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">Permutations</span><span class="p">(</span><span class="n">bruhat_smaller</span><span class="o">=</span><span class="n">longest</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">antisymmetrization</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The antisymmetrization of a polynomial `f` is the symmetrization</span>
+<span class="sd">            divided by the discriminant.&quot;&quot;&quot;</span>
+
+            <span class="k">def</span> <span class="nf">permute</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">ngens</span><span class="p">())})</span>
+
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">sign</span><span class="p">()</span> <span class="o">*</span> <span class="n">permute</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">W</span><span class="p">)</span> <span class="o">//</span> <span class="n">delta</span>
+
+        <span class="c1"># Schubert basis of CH^*([R/T]) over CH^*([R/G])</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">SchubertPolynomialRing</span><span class="p">(</span><span class="n">ZZ</span><span class="p">)</span>
+
+        <span class="c1"># TODO document B and Bprime better</span>
+        <span class="k">def</span> <span class="nf">B</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">X</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Permutations</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>
+
+        <span class="n">Bprime</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">hom</span><span class="p">(</span>
+                    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">ngens</span><span class="p">())],</span>
+                    <span class="n">R</span><span class="p">,</span>
+                <span class="p">)(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">B</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Q</span><span class="o">.</span><span class="n">support</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="c1"># TODO is this not something already implemented?</span>
+        <span class="c1"># if not, explain what it does!</span>
+        <span class="k">def</span> <span class="nf">product_lists</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">L</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">P</span> <span class="o">=</span> <span class="n">product_lists</span><span class="p">([</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="o">*</span> <span class="n">l</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">P</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">L</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
+
+        <span class="n">schubert</span> <span class="o">=</span> <span class="n">product_lists</span><span class="p">(</span><span class="n">Bprime</span><span class="p">)</span>
+
+        <span class="c1"># define A = CH^*([R/G])</span>
+        <span class="n">degrees</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()):</span>
+            <span class="n">degrees</span> <span class="o">=</span> <span class="n">degrees</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">PolynomialRing</span><span class="p">(</span><span class="n">QQ</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">TermOrder</span><span class="p">(</span><span class="s2">&quot;wdegrevlex&quot;</span><span class="p">,</span> <span class="n">degrees</span><span class="p">))</span>
+
+        <span class="n">E</span> <span class="o">=</span> <span class="n">SymmetricFunctions</span><span class="p">(</span><span class="n">ZZ</span><span class="p">)</span><span class="o">.</span><span class="n">e</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The Chern classes of U_i on [R/G] are the elementary symmetric functions</span>
+<span class="sd">        in the Chern roots ti_1,...,ti_{d_i}.&quot;&quot;&quot;</span>
+        <span class="n">elementarySymmetric</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()):</span>
+            <span class="n">elementarySymmetric</span> <span class="o">=</span> <span class="n">elementarySymmetric</span> <span class="o">+</span> <span class="p">[</span>
+                <span class="n">E</span><span class="p">([</span><span class="n">k</span><span class="p">])</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
+                    <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">alphabet</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])],</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">]</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Map xi_r to the r-th elementary symmetric function</span>
+<span class="sd">        in ti_1,...,ti_{d_i}.&quot;&quot;&quot;</span>
+        <span class="n">inclusion</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">hom</span><span class="p">(</span><span class="n">elementarySymmetric</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tautological relations in Chern classes.&quot;&quot;&quot;</span>
+        <span class="n">tautological</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">antisymmetrization</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">schubert</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">forbidden_polynomials</span>
+        <span class="p">]</span>
+        <span class="n">tautological</span> <span class="o">=</span> <span class="p">[</span><span class="n">inclusion</span><span class="o">.</span><span class="n">inverse_image</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">tautological</span><span class="p">]</span>
+
+        <span class="c1"># get rid of zeroes</span>
+        <span class="n">tautological</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tautological</span> <span class="k">if</span> <span class="n">f</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="n">tautological</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="QuiverModuli.dimension">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.dimension">[docs]</a>
     <span class="k">def</span> <span class="nf">dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the dimension of the moduli space.</span>
-
-<span class="sd">        Abstract method, see the concrete implementations for details.</span>
+<span class="sd">        Returns the dimension of the moduli stack.</span>
 
 <span class="sd">        .. SEEALSO::</span>
 
-<span class="sd">            - :meth:`QuiverModuliSpace.dimension`,</span>
-<span class="sd">            - :meth:`QuiverModuliStack.dimension`.</span>
+<span class="sd">            - :meth:`QuiverModuliSpace.dimension`</span>
+<span class="sd">            - :meth:`QuiverModuliStack.dimension`</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        This is not implemented as it is ambiguous::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuli(Q, (2, 3)).dimension()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
@@ -2032,6 +2050,15 @@ document.write(`
 
 <span class="sd">            - :meth:`QuiverModuliSpace.is_smooth`</span>
 <span class="sd">            - :meth:`QuiverModuliStack.is_smooth`</span>
+
+<span class="sd">        This is not implemented as it is ambiguous::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuli(Q, (2, 3)).is_smooth()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
@@ -2044,117 +2071,21 @@ document.write(`
 
 <span class="sd">        Abstract method, see the concrete implementations for details.</span>
 
-<span class="sd">        The Chow ring of a quiver moduli space</span>
+<span class="sd">        .. SEEALSO::</span>
 
-<span class="sd">        For a given datum :math:`(Q, {\bf d}, \theta)` such that</span>
-<span class="sd">        `Q` is acyclic and :math:`{\bf d}` is :math:`\theta`-coprime,</span>
-<span class="sd">        the Chow ring of the moduli space of quiver representations</span>
-<span class="sd">        is described in MR3318266_ and arXiv.2307.01711_.</span>
-
-<span class="sd">        Let</span>
-
-<span class="sd">        .. MATH::</span>
-
-<span class="sd">            R = \bigotimes{i \in Q_0} \mathbb{Q}[x_{i, 1}, \dots, x_{i,d_i}]</span>
-
-<span class="sd">        Let :math:`e_{i, j}` be the elementary symmetric function of degree :math:`j`</span>
-<span class="sd">        in :math:`d_i` variables, and let :math:`\xi_{i, j}` be</span>
-<span class="sd">        :math:`e_{i, j}(x_{i, 1},\dots,x_{i, d_i})`.</span>
-<span class="sd">        We denote by :math:`A` the ring of invariants</span>
-
-<span class="sd">        .. MATH::</span>
-
-<span class="sd">            A := R^{S_{\bf d}} = \mathbb{Q}[\xi_{i, j}],</span>
-
-<span class="sd">        where :math:`S_{\bf d} = \prod_{i \in Q_0} S_{{\bf d}_i}` acts by permuting</span>
-<span class="sd">        the variables.</span>
-
-<span class="sd">        The ring :math:`\operatorname{CH}(M^{\theta-st}(Q,d))` is a quotient of `A`</span>
-<span class="sd">        by two types of relations:</span>
-<span class="sd">        a single linear relation, given by the choice of linearization upon which</span>
-<span class="sd">        the universal bundles are constructed, and the so-called</span>
-<span class="sd">        tautological relations, which we define below.</span>
-
-<span class="sd">        The *linear relation* given by the linearization `a` is the identity</span>
-<span class="sd">        :math:`\sum_{i \in Q_0} a_i c_1(U_i) = 0` in :math:`A`.</span>
-
-<span class="sd">        A subdimension vector :math:`{\bf e}` of `:math:{\bf d}` is said to be</span>
-<span class="sd">        &quot;forbidden&quot; if :math:`\mu_{\theta}({\bf e}) &gt; \mu_{\theta}({\bf d})`.</span>
-<span class="sd">        One actually only needs to consider forbidden dimension vectors that are minimal</span>
-<span class="sd">        with respect to a certain partial order, see :meth:`Quiver.division_order`.</span>
-
-<span class="sd">        We define the *tautological ideal* :math:`I_{\rm taut}` of `R` as the ideal</span>
-<span class="sd">        generated by the polynomials</span>
-
-<span class="sd">        .. MATH::</span>
-
-<span class="sd">            \prod_{a\in Q_1}\prod_{k=1}^{e_{s(a)}}</span>
-<span class="sd">            \prod_{\ell=d_{t(a)}+1}^{d_{t(a)}}</span>
-<span class="sd">            \left( x_{t(a),\ell}-x_{s(a),k} \right),</span>
-
-<span class="sd">        for every forbidden subdimension vector `e` of `d`.</span>
-
-<span class="sd">        The tautological relations in `A` are then given by the image of</span>
-<span class="sd">        :math:`I_{\rm taut}` under the `antisymmetrization` map</span>
-
-<span class="sd">        .. MATH::</span>
-
-<span class="sd">            \rho : R \to A: \frac{1}{\delta}</span>
-<span class="sd">            \sum_{\sigma \in S_{\bf d}} sign(\sigma) \sigma \cdot f,</span>
-
-<span class="sd">        where :math:`\delta` is the discriminant</span>
-<span class="sd">        :math:`\prod_{i\in Q_0}\prod_{1\leq k&lt;\ell\leq d_i}(x_{i,\ell}-x_{i,k})`.</span>
-
-<span class="sd">        The Chow ring :math:`\operatorname{CH}(M^{\theta\rm-st}(Q,d))` is then</span>
-<span class="sd">        the quotient of `A` by :math:`(\sum_{i\in Q_0} a_i c_1(U_i)) + \rho(I_{taut})`.</span>
-
+<span class="sd">            - :meth:`QuiverModuliSpace.chow_ring`</span>
+<span class="sd">            - :meth:`QuiverModuliStack.chow_ring`</span>
 
 <span class="sd">        EXAMPLES:</span>
 
-<span class="sd">        The Chow ring for our favourite 6-fold::</span>
+<span class="sd">        This is not implemented as it is ambiguous::</span>
 
 <span class="sd">            sage: from quiver import *</span>
-<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
-<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
-<span class="sd">            sage: chi = (-1, 1)</span>
-<span class="sd">            sage: R = X.chow_ring(chi=chi);</span>
-<span class="sd">            sage: R.ambient()</span>
-<span class="sd">            Multivariate Polynomial Ring in x0_1, x0_2, x1_1, x1_2, x1_3</span>
-<span class="sd">            over Rational Field</span>
-<span class="sd">            sage: R</span>
-<span class="sd">            Quotient of Multivariate Polynomial Ring in x0_1, x0_2, x1_1, x1_2, x1_3</span>
-<span class="sd">            over Rational Field by the ideal (0, 0, 6*x0_1^3 - 12*x0_1*x0_2 -</span>
-<span class="sd">            8*x0_1^2*x1_1 + 8*x0_2*x1_1 + 3*x0_1*x1_1^2 + 3*x0_1*x1_2 - 3*x1_1*x1_2 +</span>
-<span class="sd">            3*x1_3, 0, 0, 0, 3*x0_1^4 - 9*x0_1^2*x0_2 + 3*x0_2^2 - 3*x0_1^3*x1_1 +</span>
-<span class="sd">            6*x0_1*x0_2*x1_1 + x0_1^2*x1_1^2 - x0_2*x1_1^2 - x0_1^2*x1_2 + x0_2*x1_2 +</span>
-<span class="sd">            6*x0_1*x1_3 - 3*x1_1*x1_3, 0, 0, 0, x0_1^5 - 4*x0_1^3*x0_2 +</span>
-<span class="sd">            3*x0_1*x0_2^2 - 3*x0_1^3*x1_2 + 6*x0_1*x0_2*x1_2 + x0_1^2*x1_1*x1_2 -</span>
-<span class="sd">            x0_2*x1_1*x1_2 + 7*x0_1^2*x1_3 - 7*x0_2*x1_3 - 3*x0_1*x1_1*x1_3, 0, 0, 0,</span>
-<span class="sd">            6*x0_1^4 - 18*x0_1^2*x0_2 + 6*x0_2^2 - 8*x0_1^3*x1_1 + 16*x0_1*x0_2*x1_1 +</span>
-<span class="sd">            3*x0_1^2*x1_1^2 - 3*x0_2*x1_1^2 + 3*x0_1^2*x1_2 - 3*x0_2*x1_2 -</span>
-<span class="sd">            3*x0_1*x1_1*x1_2 + x1_2^2 + 3*x0_1*x1_3 - x1_1*x1_3, 0, 0, 3*x0_1^2*x0_2 +</span>
-<span class="sd">            3*x0_2^2 - x0_1^3*x1_1 - 6*x0_1*x0_2*x1_1 + 3*x0_1^2*x1_1^2 +</span>
-<span class="sd">            3*x0_2*x1_1^2 - 3*x0_1*x1_1^3 + x1_1^4 - 3*x0_1^2*x1_2 - 3*x0_2*x1_2 +</span>
-<span class="sd">            6*x0_1*x1_1*x1_2 - 3*x1_1^2*x1_2 + x1_2^2 - 3*x0_1*x1_3 + 2*x1_1*x1_3,</span>
-<span class="sd">            3*x0_1^5 - 12*x0_1^3*x0_2 + 9*x0_1*x0_2^2 - 3*x0_1^4*x1_1 +</span>
-<span class="sd">            9*x0_1^2*x0_2*x1_1 - 3*x0_2^2*x1_1 + x0_1^3*x1_1^2 - 2*x0_1*x0_2*x1_1^2 -</span>
-<span class="sd">            x0_1^3*x1_2 + 2*x0_1*x0_2*x1_2 + 6*x0_1^2*x1_3 - 6*x0_2*x1_3 -</span>
-<span class="sd">            3*x0_1*x1_1*x1_3 + x1_2*x1_3, 0, 0, 3*x0_1*x0_2^2 - x0_1^3*x1_2 -</span>
-<span class="sd">            6*x0_1*x0_2*x1_2 + 3*x0_1^2*x1_1*x1_2 + 3*x0_2*x1_1*x1_2 -</span>
-<span class="sd">            3*x0_1*x1_1^2*x1_2 + x1_1^3*x1_2 + 3*x0_1*x1_2^2 - 2*x1_1*x1_2^2 -</span>
-<span class="sd">            3*x0_1^2*x1_3 - 3*x0_2*x1_3 + 3*x0_1*x1_1*x1_3 - x1_1^2*x1_3 + 2*x1_2*x1_3,</span>
-<span class="sd">            x0_1^6 - 5*x0_1^4*x0_2 + 6*x0_1^2*x0_2^2 - x0_2^3 - 3*x0_1^4*x1_2 +</span>
-<span class="sd">            9*x0_1^2*x0_2*x1_2 - 3*x0_2^2*x1_2 + x0_1^3*x1_1*x1_2 -</span>
-<span class="sd">            2*x0_1*x0_2*x1_1*x1_2 + 7*x0_1^3*x1_3 - 14*x0_1*x0_2*x1_3 -</span>
-<span class="sd">            3*x0_1^2*x1_1*x1_3 + 3*x0_2*x1_1*x1_3 + x1_3^2, x0_2^3 - x0_1^3*x1_3 -</span>
-<span class="sd">            6*x0_1*x0_2*x1_3 + 3*x0_1^2*x1_1*x1_3 + 3*x0_2*x1_1*x1_3 -</span>
-<span class="sd">            3*x0_1*x1_1^2*x1_3 + x1_1^3*x1_3 + 3*x0_1*x1_2*x1_3 - 2*x1_1*x1_2*x1_3 +</span>
-<span class="sd">            x1_3^2, -x0_1 + x1_1)</span>
-
-<span class="sd">        .. SEEALSO:: :meth:`QuiverModuliSpace.chow_ring`</span>
-
-<span class="sd">        .. _MR3318266: https://mathscinet.ams.org/mathscinet-getitem?mr=3318266</span>
-<span class="sd">        .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuli(Q, (2, 3)).is_smooth()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 </div>
@@ -2723,14 +2654,80 @@ document.write(`
 
 <div class="viewcode-block" id="QuiverModuliSpace.chow_ring">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.chow_ring">[docs]</a>
-    <span class="k">def</span> <span class="nf">chow_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">chow_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the Chow ring of the moduli space.</span>
 
+<span class="sd">        For a given datum :math:`(Q, {\bf d}, \theta)` such that</span>
+<span class="sd">        :math:`Q` is acyclic and :math:`{\bf d}` is :math:`\theta`-coprime,</span>
+<span class="sd">        the Chow ring of the moduli space of quiver representations</span>
+<span class="sd">        is described in MR3318266_ and arXiv.2307.01711_.</span>
+
+<span class="sd">        .. _MR3318266: https://mathscinet.ams.org/mathscinet-getitem?mr=3318266</span>
+<span class="sd">        .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711</span>
+
+<span class="sd">        Let</span>
+
+<span class="sd">        .. MATH::</span>
+
+<span class="sd">            R = \bigotimes{i \in Q_0} \mathbb{Q}[x_{i, 1}, \dots, x_{i,d_i}]</span>
+
+<span class="sd">        Let :math:`e_{i, j}` be the elementary symmetric function of degree :math:`j`</span>
+<span class="sd">        in :math:`d_i` variables, and let :math:`\xi_{i, j}` be</span>
+<span class="sd">        :math:`e_{i, j}(x_{i, 1},\dots,x_{i, d_i})`.</span>
+<span class="sd">        We denote by :math:`A` the ring of invariants</span>
+
+<span class="sd">        .. MATH::</span>
+
+<span class="sd">            A := R^{S_{\bf d}} = \mathbb{Q}[\xi_{i, j}],</span>
+
+<span class="sd">        where :math:`S_{\bf d} = \prod_{i \in Q_0} S_{{\bf d}_i}` acts by permuting</span>
+<span class="sd">        the variables.</span>
+
+<span class="sd">        The ring :math:`\operatorname{CH}(M^{\theta-st}(Q,d))` is a quotient of `A`</span>
+<span class="sd">        by two types of relations:</span>
+<span class="sd">        a single linear relation, given by the choice of linearization upon which</span>
+<span class="sd">        the universal bundles are constructed, and the so-called</span>
+<span class="sd">        tautological relations, which we define below.</span>
+
+<span class="sd">        The *linear relation* given by the linearization `a` is the identity</span>
+<span class="sd">        :math:`\sum_{i \in Q_0} a_i c_1(U_i) = 0` in :math:`A`.</span>
+
+<span class="sd">        A subdimension vector :math:`{\bf e}` of `:math:{\bf d}` is said to be</span>
+<span class="sd">        &quot;forbidden&quot; if :math:`\mu_{\theta}({\bf e}) &gt; \mu_{\theta}({\bf d})`.</span>
+<span class="sd">        One actually only needs to consider forbidden dimension vectors that are minimal</span>
+<span class="sd">        with respect to a certain partial order, see :meth:`Quiver.division_order`.</span>
+
+<span class="sd">        We define the *tautological ideal* :math:`I_{\rm taut}` of `R` as the ideal</span>
+<span class="sd">        generated by the polynomials</span>
+
+<span class="sd">        .. MATH::</span>
+
+<span class="sd">            \prod_{a\in Q_1}\prod_{k=1}^{e_{s(a)}}</span>
+<span class="sd">            \prod_{\ell=d_{t(a)}+1}^{d_{t(a)}}</span>
+<span class="sd">            \left( x_{t(a),\ell}-x_{s(a),k} \right),</span>
+
+<span class="sd">        for every forbidden subdimension vector `e` of `d`.</span>
+
+<span class="sd">        The tautological relations in `A` are then given by the image of</span>
+<span class="sd">        :math:`I_{\rm taut}` under the `antisymmetrization` map</span>
+
+<span class="sd">        .. MATH::</span>
+
+<span class="sd">            \rho : R \to A: \frac{1}{\delta}</span>
+<span class="sd">            \sum_{\sigma \in S_{\bf d}} sign(\sigma) \sigma \cdot f,</span>
+
+<span class="sd">        where :math:`\delta` is the discriminant</span>
+<span class="sd">        :math:`\prod_{i\in Q_0}\prod_{1\leq k&lt;\ell\leq d_i}(x_{i,\ell}-x_{i,k})`.</span>
+
+<span class="sd">        The Chow ring :math:`\operatorname{CH}(M^{\theta\rm-st}(Q,d))` is then</span>
+<span class="sd">        the quotient of `A` by :math:`(\sum_{i\in Q_0} a_i c_1(U_i)) + \rho(I_{taut})`.</span>
+
 <span class="sd">        INPUT:</span>
 
-<span class="sd">        - ``chi`` -- vector of Ints</span>
-<span class="sd">        - ``chernClasses`` -- list of Strings</span>
+<span class="sd">        - ``chi`` -- choice of linearization, we need that :math:`\chi({\bf d})=1`</span>
+
+<span class="sd">        - ``classes`` -- list of generators for the polynomial ring (default: None)</span>
 
 <span class="sd">        OUTPUT: ring</span>
 
@@ -2765,7 +2762,7 @@ document.write(`
 <span class="sd">            [x1_2*x1_3],</span>
 <span class="sd">            [x1_3^2]]</span>
 
-<span class="sd">        The 5-subspaces quiver::</span>
+<span class="sd">        The 5-subspace quiver::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q, d = SubspaceQuiver(5), (1, 1, 1, 1, 1, 2)</span>
@@ -2777,47 +2774,55 @@ document.write(`
 <span class="sd">            sage: [I.normal_basis(i) for i in range(X.dimension()+1)]</span>
 <span class="sd">            [[1], [x1_1, x2_1, x3_1, x4_1, x5_1], [x5_2]]</span>
 
+<span class="sd">        The ideal Chow ring for our favourite 6-fold has 10 generators, 9 from the</span>
+<span class="sd">        tautological ideal, and 1 linear relation::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: chi = (-1, 1)</span>
+<span class="sd">            sage: R = X.chow_ring(chi=chi);</span>
+<span class="sd">            sage: R.ambient()</span>
+<span class="sd">            Multivariate Polynomial Ring in x0_1, x0_2, x1_1, x1_2, x1_3</span>
+<span class="sd">            over Rational Field</span>
+<span class="sd">            sage: len(R.defining_ideal().gens())</span>
+<span class="sd">            10</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
 
         <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-        <span class="c1"># This implementation only works if d is theta-coprime</span>
-        <span class="c1"># which implies that d is indivisible.</span>
-        <span class="k">assert</span> <span class="n">Q</span><span class="o">.</span><span class="n">is_theta_coprime</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
 
-        <span class="c1"># if a linearization is not given we compute one here.</span>
+        <span class="c1"># this implementation only works if d is theta-coprime</span>
+        <span class="c1"># which implies that d is indivisible.</span>
+        <span class="k">assert</span> <span class="n">Q</span><span class="o">.</span><span class="n">is_theta_coprime</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">),</span> <span class="s2">&quot;need coprime&quot;</span>
+
+        <span class="c1"># if a linearization is not given we compute one here</span>
         <span class="k">if</span> <span class="n">chi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">extended_gcd</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
             <span class="n">chi</span> <span class="o">=</span> <span class="n">vector</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">chi</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
 
-        <span class="c1"># chi must have integer entries</span>
-        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">QQ</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chi</span><span class="p">)</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make sure that chi has weight one, i.e.,</span>
-<span class="sd">        provides a retraction for X*(PG) --&gt; X*(G).&quot;&quot;&quot;</span>
+        <span class="n">chi</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
+
+        <span class="c1"># make sure that chi has weight one, i.e., provides a retraction for</span>
+        <span class="c1"># X*(PG) --&gt; X*(G).</span>
         <span class="k">assert</span> <span class="n">chi</span> <span class="o">*</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span>
 
-        <span class="k">if</span> <span class="n">chernClasses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">chernClasses</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="s2">&quot;x</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="p">]</span>
+        <span class="n">tautological</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tautological_ideal</span><span class="p">(</span><span class="n">use_roots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
 
-        <span class="n">taut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_QuiverModuli__tautological_presentation</span><span class="p">(</span>
-            <span class="n">inRoots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">tautological</span><span class="o">.</span><span class="n">ring</span><span class="p">()</span>
+        <span class="n">linear</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="n">chi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_QuiverModuli__generator</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
         <span class="p">)</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">generator</span><span class="p">,</span> <span class="n">rels</span> <span class="o">=</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;ParentRing&quot;</span><span class="p">],</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;Generators&quot;</span><span class="p">],</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;Relations&quot;</span><span class="p">]</span>
 
-        <span class="n">I</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="n">rels</span><span class="p">)</span> <span class="o">+</span> <span class="n">A</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">chi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">generator</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]))</span>
-
-        <span class="k">return</span> <span class="n">QuotientRing</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">QuotientRing</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">tautological</span> <span class="o">+</span> <span class="n">linear</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="QuiverModuliSpace.chern_class_line_bundle">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.chern_class_line_bundle">[docs]</a>
-    <span class="k">def</span> <span class="nf">chern_class_line_bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">chern_class_line_bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the first Chern class of the line bundle</span>
 
@@ -2831,46 +2836,91 @@ document.write(`
 
 <span class="sd">        - ``eta`` -- character of :math:`PG_d` as vector in :math:`\mathbb{Z}Q_0`</span>
 
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        On the Kronecker 6-fold we can take the canonical line bundle, which we can</span>
+<span class="sd">        see to have index 3::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: eta = Q.canonical_stability_parameter((2, 3))</span>
+<span class="sd">            sage: X.chern_class_line_bundle(eta)</span>
+<span class="sd">            -3*x1_1bar</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># setup shorthand</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chow_ring</span><span class="p">(</span><span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chow_ring</span><span class="p">(</span><span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="o">-</span><span class="nb">sum</span><span class="p">([</span><span class="n">eta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="o">-</span><span class="nb">sum</span><span class="p">(</span>
+            <span class="n">eta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="QuiverModuliSpace.chern_character_line_bundle">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.chern_character_line_bundle">[docs]</a>
-    <span class="k">def</span> <span class="nf">chern_character_line_bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">chern_character_line_bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the Chern character of L(eta).</span>
 
 <span class="sd">        The Chern character of a line bundle `L` with first Chern class `x`</span>
 <span class="sd">        is given by :math:`e^x = 1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \dots`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chern_class_line_bundle</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span><span class="o">**</span><span class="n">i</span> <span class="o">/</span> <span class="n">factorial</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span></div>
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        On the Kronecker 6-fold the canonical line bundle has the following Chern</span>
+<span class="sd">        character::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: eta = Q.canonical_stability_parameter((2, 3))</span>
+<span class="sd">            sage: X.chern_character_line_bundle(eta)</span>
+<span class="sd">            4617/80*x1_3bar^2 - 1539/40*x1_2bar*x1_3bar + 81/8*x1_1bar^2*x1_2bar</span>
+<span class="sd">            - 27/8*x1_2bar^2 - 27/4*x1_1bar*x1_3bar - 9/2*x1_1bar^3 + 9/2*x1_1bar^2</span>
+<span class="sd">            - 3*x1_1bar + 1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chern_class_line_bundle</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="n">i</span> <span class="o">/</span> <span class="n">factorial</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="QuiverModuliSpace.total_chern_class_universal">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.total_chern_class_universal">[docs]</a>
-    <span class="k">def</span> <span class="nf">total_chern_class_universal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gives the total Chern class of the universal bundle U_i(chi).&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">total_chern_class_universal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives the total Chern class of the universal bundle U_i(chi).</span>
 
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chow_ring</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The two summands for the Kronecker 6-fold::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: chi = (-1, 1)</span>
+<span class="sd">            sage: X.total_chern_class_universal(0, chi)</span>
+<span class="sd">            x0_2bar + 2*x1_1bar + 1</span>
+<span class="sd">            sage: X.total_chern_class_universal(1, chi)</span>
+<span class="sd">            x0_2bar + x1_1bar + 1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># setup shorthand</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chow_ring</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">A</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])]</span>
+            <span class="n">A</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="QuiverModuliSpace.point_class">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.point_class">[docs]</a>
-    <span class="k">def</span> <span class="nf">point_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">point_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the point class as an expression in Chern classes of the</span>
 <span class="sd">        :math:`U_i` (``chi``).</span>
@@ -2889,90 +2939,92 @@ document.write(`
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(8)</span>
-<span class="sd">            sage: d = (1, 1)</span>
-<span class="sd">            sage: theta = (1, -1)</span>
-<span class="sd">            sage: X = QuiverModuliSpace(Q,d,theta,condition=&quot;semistable&quot;)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (1, 1))</span>
 <span class="sd">            sage: chi = (1, 0)</span>
-<span class="sd">            sage: X.point_class(chi,chernClasses=[&#39;o&#39;,&#39;h&#39;])</span>
+<span class="sd">            sage: X.point_class(chi, classes=[&quot;o&quot;, &quot;h&quot;])</span>
 <span class="sd">            h^7</span>
 
 <span class="sd">        Our favorite 6-fold::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
-<span class="sd">            sage: d = (2, 3)</span>
-<span class="sd">            sage: theta = (3, -2)</span>
-<span class="sd">            sage: X = QuiverModuliSpace(Q,d,theta,condition=&quot;semistable&quot;)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
 <span class="sd">            sage: chi = (-1, 1)</span>
-<span class="sd">            sage: X.point_class(chi,chernClasses=[&#39;x1&#39;,&#39;x2&#39;,&#39;y1&#39;,&#39;y2&#39;,&#39;y3&#39;])</span>
+<span class="sd">            sage: X.point_class(chi, classes=[&quot;x1&quot;, &quot;x2&quot;, &quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;])</span>
 <span class="sd">            y3^2</span>
 
-<span class="sd">        A moduli space of the 5-subspaces quiver;</span>
+<span class="sd">        A moduli space of the 5-subspace quiver;</span>
 <span class="sd">        it agrees with the blow-up of :math:`\mathbb{P}^2` in 4 points</span>
 <span class="sd">        in general position::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = SubspaceQuiver(5)</span>
-<span class="sd">            sage: d = (1, 1, 1, 1, 1, 2)</span>
 <span class="sd">            sage: theta = (2, 2, 2, 2, 2, -5)</span>
-<span class="sd">            sage: X = QuiverModuliSpace(Q,d,theta,condition=&quot;semistable&quot;)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (1, 1, 1, 1, 1, 2))</span>
 <span class="sd">            sage: chi = (-1, -1, -1, -1, -1, 3)</span>
-<span class="sd">            sage: X.point_class(chi,chernClasses=[&#39;x1&#39;,&#39;x2&#39;,&#39;x3&#39;,&#39;x4&#39;,&#39;x5&#39;,&#39;y&#39;,&#39;z&#39;])</span>
+<span class="sd">            sage: X.point_class(chi, classes=[&#39;x1&#39;, &#39;x2&#39;, &#39;x3&#39;, &#39;x4&#39;, &#39;x5&#39;, &#39;y&#39;, &#39;z&#39;])</span>
 <span class="sd">            1/2*z</span>
 
+<span class="sd">        If we don&#39;t specify `chi` a default that will still work is used, but the</span>
+<span class="sd">        results do depend on it::</span>
+
+<span class="sd">            sage: X.point_class(classes=[&#39;x1&#39;, &#39;x2&#39;, &#39;x3&#39;, &#39;x4&#39;, &#39;x5&#39;, &#39;y&#39;, &#39;z&#39;])</span>
+<span class="sd">            -1/3*y^2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
+        <span class="c1"># setup shorthand</span>
         <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()</span>
-        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span>
-
         <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chow_ring</span><span class="p">(</span><span class="n">chi</span><span class="o">=</span><span class="n">chi</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
-        <span class="n">pi</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">cover</span><span class="p">()</span>  <span class="c1"># The quotient map</span>
-        <span class="n">sect</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">lifting_map</span><span class="p">()</span>  <span class="c1"># A choice of a section of pi</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chow_ring</span><span class="p">(</span><span class="n">chi</span><span class="o">=</span><span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">lifting_map</span><span class="p">()</span>  <span class="c1"># a choice of a section of pi</span>
 
-        <span class="k">if</span> <span class="n">chi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">extended_gcd</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
-            <span class="n">chi</span> <span class="o">=</span> <span class="n">vector</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">chi</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span>
-
-        <span class="n">my_numerator</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">total_chern_class_universal</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
-                <span class="o">**</span> <span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="n">a</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-            <span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_chern_class_universal</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+            <span class="o">**</span> <span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="n">Q</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
         <span class="p">)</span>
-        <span class="n">my_denom</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">total_chern_class_universal</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
-                <span class="o">**</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-            <span class="p">]</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_chern_class_universal</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span> <span class="o">**</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">())</span>
         <span class="p">)</span>
 
-        <span class="n">quotient</span> <span class="o">=</span> <span class="n">my_numerator</span> <span class="o">/</span> <span class="n">my_denom</span>
+        <span class="n">quotient</span> <span class="o">=</span> <span class="n">p</span> <span class="o">/</span> <span class="n">q</span>
 
-        <span class="k">return</span> <span class="n">pi</span><span class="p">(</span><span class="n">sect</span><span class="p">(</span><span class="n">quotient</span><span class="p">)</span><span class="o">.</span><span class="n">homogeneous_components</span><span class="p">()[</span><span class="n">N</span><span class="p">])</span></div>
+        <span class="n">pi</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">cover</span><span class="p">()</span>  <span class="c1"># the quotient map</span>
+
+        <span class="k">return</span> <span class="n">pi</span><span class="p">(</span><span class="n">section</span><span class="p">(</span><span class="n">quotient</span><span class="p">)</span><span class="o">.</span><span class="n">homogeneous_components</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()])</span></div>
 
 
 <div class="viewcode-block" id="QuiverModuliSpace.degree">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.degree">[docs]</a>
-    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the degree of the ample line bundle given by eta.&quot;&quot;&quot;</span>
-        <span class="c1"># TODO: Need check for ampleness first</span>
+    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the degree of the line bundle given by eta.</span>
 
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``eta`` -- class of line bundle (default: anticanonical line bundle</span>
+
+<span class="sd">        - ``classes`` -- variables to be used (default: None)</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: d = (2, 3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, d)</span>
+<span class="sd">            sage: eta = Q.canonical_stability_parameter(d)</span>
+<span class="sd">            sage: eta = eta / 3</span>
+<span class="sd">            sage: X.degree(eta)</span>
+<span class="sd">            57</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">eta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">eta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span>
 
-        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chern_class_line_bundle</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_class</span><span class="p">(</span><span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chern_class_line_bundle</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_class</span><span class="p">(</span><span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">c</span><span class="o">**</span><span class="n">N</span> <span class="o">/</span> <span class="n">p</span></div>
+        <span class="k">return</span> <span class="n">c</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span> <span class="o">/</span> <span class="n">p</span></div>
 
 
 <div class="viewcode-block" id="QuiverModuliSpace.todd_class">
@@ -2981,110 +3033,51 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The Todd class of `X` is the Todd class of the tangent bundle.</span>
 
-<span class="sd">        For quiver moduli it computes as</span>
-
-<span class="sd">        # TODO reference Chow paper</span>
+<span class="sd">        Currently not yet implemented.</span>
 
 <span class="sd">        .. MATH::</span>
 
 <span class="sd">            td(X) =</span>
 <span class="sd">            (\prod_{a:i \to j \in Q_1} \prod_{p=1}^{d_j} \prod_{q=1}^{d_i} Q(t_{j,q} -</span>
 <span class="sd">            t_{i,p}))/(prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        Not yet implemented::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: X.todd_class()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">todd_generating_series</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">todd_Q</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            We call the series :math:`Q(t) = t/(1-e^{-t})` the Todd generating series.</span>
-
-<span class="sd">            The function computes the terms of this series up to degree n.&quot;&quot;&quot;</span>
-            <span class="n">B</span> <span class="o">=</span> <span class="p">[</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-            <span class="k">return</span> <span class="nb">sum</span><span class="p">([(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">^</span> <span class="n">i</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">factorial</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span> <span class="o">^</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="sd">            The function computes the terms of this series up to degree n.</span>
+<span class="sd">            We use this instead of the more conventional notation `Q` to avoid a</span>
+<span class="sd">            clash with the notation for the quiver.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span> <span class="o">*</span> <span class="n">bernoulli</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">factorial</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Takes an element in a graded ring and discards</span>
-<span class="sd">            all homogeneous components of degree &gt; n&quot;&quot;&quot;</span>
-            <span class="n">hom</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">homogeneous_components</span><span class="p">()</span>
-            <span class="n">keyList</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">hom</span><span class="p">]</span>
-            <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">hom</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">,</span> <span class="n">keyList</span><span class="p">)])</span>
+<span class="sd">            Takes an element in a graded ring and discards all homogeneous components</span>
+<span class="sd">            of degree &gt; n</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">components</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">homogeneous_components</span><span class="p">()</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">components</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">,</span> <span class="n">keys</span><span class="p">))</span>
 
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 </div>
 
-
-    <span class="c1"># TODO: This is maybe too specific.</span>
-    <span class="c1"># def diagonal(self, chi=None):</span>
-    <span class="c1">#     &quot;&quot;&quot;Computes the class of the diagonal in the Chow ring of X x X where X is the quiver moduli space.&quot;&quot;&quot;</span>
-    <span class="c1">#     &quot;&quot;&quot;It is given by the homogeneous component of degree dim X = 1 - &lt;d,d&gt; of the expression c(F)/C(E), where E = bigoplus_{i in Q_0} U_i^vee boxtimes U_i and F = bigoplus_{a in Q_1} U_{s(a)}^vee boxtimes U_{t(a)} = bigoplus_{i,j in Q_0} (U_i^vee boxtimes U_j)^{a_ij}.&quot;&quot;&quot;</span>
-
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     EXAMPLES</span>
-
-    <span class="c1">#     P^2 as a quiver moduli space:</span>
-    <span class="c1">#     sage: from quiver import *</span>
-    <span class="c1">#     sage: Q = GeneralizedKroneckerQuiver(3)</span>
-    <span class="c1">#     sage: d = vector([1,1])</span>
-    <span class="c1">#     sage: theta = vector([1,-1])</span>
-    <span class="c1">#     sage: X = QuiverModuliSpace(Q,d,theta,condition=&quot;semistable&quot;)</span>
-    <span class="c1">#     sage: X.diagonal()</span>
-    <span class="c1">#     x1_1^2 + x1_1*y1_1 + y1_1^2</span>
-
-    <span class="c1">#     &quot;&quot;&quot;</span>
-
-    <span class="c1">#     Q, d, theta = self._Q, self._d, self._theta</span>
-    <span class="c1">#     n = Q.number_of_vertices()</span>
-    <span class="c1">#     N = self.dimension()</span>
-    <span class="c1">#     a = Q.adjacency_matrix()</span>
-
-    <span class="c1">#     di = self._QuiverModuli__tautological_presentation()</span>
-    <span class="c1">#     A = di[&quot;Generators&quot;]</span>
-    <span class="c1">#     I = di[&quot;Relations&quot;] + A.ideal(chi)</span>
-
-    <span class="c1">#     chernClasses1 = [&#39;x%s_%s&#39;%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]</span>
-    <span class="c1">#     chernClasses2 = [&#39;y%s_%s&#39;%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]</span>
-    <span class="c1">#     chernClasses = chernClasses1+chernClasses2</span>
-
-    <span class="c1">#     AxA = PolynomialRing(QQ,chernClasses)</span>
-    <span class="c1">#     inclusion1 = A.hom(chernClasses1,AxA)</span>
-    <span class="c1">#     inclusion2 = A.hom(chernClasses2,AxA)</span>
-    <span class="c1">#     B = QuotientRing(AxA,inclusion1(I) + inclusion2(I),names=chernClasses)</span>
-
-    <span class="c1">#     pi = B.cover() # The quotient map AxA --&gt; B</span>
-    <span class="c1">#     sect = B.lifting_map() # A choice of a section of pi</span>
-
-    <span class="c1">#     chernRoots1 = [&#39;t%s_%s&#39;%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]</span>
-    <span class="c1">#     chernRoots2 = [&#39;u%s_%s&#39;%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]</span>
-    <span class="c1">#     chernRoots = chernRoots1+chernRoots2</span>
-    <span class="c1">#     RxR = PolynomialRing(QQ,chernRoots)</span>
-
-    <span class="c1">#     def generatorRxR1(i,r):</span>
-    <span class="c1">#         &quot;&quot;&quot;Returns generatorRxR1(i,r) = t{i+1}_{r+1}.&quot;&quot;&quot;</span>
-    <span class="c1">#         return RxR.gen(r + sum([d[j] for j in range(i)]))</span>
-
-    <span class="c1">#     def generatorRxR2(i,r):</span>
-    <span class="c1">#         &quot;&quot;&quot;Returns generatorRxR2(i,r) = u{i+1}_{r+1}.&quot;&quot;&quot;</span>
-    <span class="c1">#         return RxR.gen(sum([d[j] for j in range(n)]) + r + sum([d[j] for j in range(i)]))</span>
-
-    <span class="c1">#     E = SymmetricFunctions(ZZ).e()</span>
-    <span class="c1">#     elementarySymmetric1 = []</span>
-    <span class="c1">#     elementarySymmetric2 = []</span>
-    <span class="c1">#     for i in range(n):</span>
-    <span class="c1">#         elementarySymmetric1 = elementarySymmetric1 + [E([k]).expand(d[i], alphabet=[generatorRxR1(i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]</span>
-    <span class="c1">#         elementarySymmetric2 = elementarySymmetric2 + [E([k]).expand(d[i], alphabet=[generatorRxR2(i,r) for r in range(d[i])]) for k in range(1,d[i]+1)]</span>
-    <span class="c1">#     elementarySymmetric = elementarySymmetric1 + elementarySymmetric2</span>
-    <span class="c1">#     &quot;&quot;&quot;Map xi_r to the r-th elementary symmetric function in ti_1,...,ti_{d_i} and yi_r to the same in ui_1,...,ui_{d_i}.&quot;&quot;&quot;</span>
-    <span class="c1">#     inclusion = AxA.hom(elementarySymmetric, RxR)</span>
-
-    <span class="c1">#     def total_chern_class_boxproduct(i,j):</span>
-    <span class="c1">#         &quot;&quot;&quot;Computes the total Chern class of U_i^vee boxtimes U_j&quot;&quot;&quot;</span>
-    <span class="c1">#         c = prod([(1-generatorRxR1(i,r)+generatorRxR2(j,s)) for r in range(d[i]) for s in range(d[j])])</span>
-    <span class="c1">#         return pi(inclusion.inverse_image(c))</span>
-
-    <span class="c1">#     numerator = prod([total_chern_class_boxproduct(i,j)**a[i,j] for i in range(n) for j in range(n)])</span>
-    <span class="c1">#     denominator = prod([total_chern_class_boxproduct(i,i) for i in range(n)])</span>
-    <span class="c1">#     quotient = numerator/denominator</span>
-
-    <span class="c1">#     return pi(sect(quotient).homogeneous_components()[N])</span>
 
 
 <div class="viewcode-block" id="QuiverModuliStack">
@@ -3181,7 +3174,21 @@ document.write(`
 <span class="sd">            dim [R^{{\rm (s)st}}/G] = dim R^{{\rm (s)st}} - dim G</span>
 
 <span class="sd">        The dimension turns out to be :math:`-\langle d,d\rangle`</span>
-<span class="sd">        if the (semi-)stable locus is non-empty&quot;&quot;&quot;</span>
+<span class="sd">        if the (semi-)stable locus is non-empty.</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The dimension of a moduli space of stable is off by one from the moduli stack</span>
+<span class="sd">        because of the generic stabilizer being 1-dimensional::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuli(Q, (2, 3))</span>
+<span class="sd">            sage: X.to_stack().dimension()</span>
+<span class="sd">            5</span>
+<span class="sd">            sage: X.to_space().dimension()</span>
+<span class="sd">            6</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># setup shorthand</span>
         <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
 
@@ -3294,22 +3301,28 @@ document.write(`
 
 <div class="viewcode-block" id="QuiverModuliStack.chow_ring">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliStack.chow_ring">[docs]</a>
-    <span class="k">def</span> <span class="nf">chow_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">chow_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the Chow ring of the quotient stack.</span>
 
 <span class="sd">        INPUT:</span>
 
-<span class="sd">        - ``chernClasses``: list of Strings</span>
+<span class="sd">        - ``classes`` -- variables to be used (default: None)</span>
 
-<span class="sd">        OUTPUT: ring</span>
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The Chow ring of the stack defining the Kronecker 6-fold has as its defining</span>
+<span class="sd">        ideal the tautological ideal::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliStack(Q, (2, 3))</span>
+<span class="sd">            sage: X.tautological_ideal() == X.chow_ring().defining_ideal()</span>
+<span class="sd">            True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">taut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_QuiverModuli__tautological_presentation</span><span class="p">(</span>
-            <span class="n">inRoots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">chernClasses</span><span class="o">=</span><span class="n">chernClasses</span>
-        <span class="p">)</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">rels</span> <span class="o">=</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;ParentRing&quot;</span><span class="p">],</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;Generators&quot;</span><span class="p">],</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;Relations&quot;</span><span class="p">]</span>
+        <span class="n">tautological</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tautological_ideal</span><span class="p">(</span><span class="n">use_roots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">QuotientRing</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="n">rels</span><span class="p">),</span> <span class="n">names</span><span class="o">=</span><span class="n">chernClasses</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">QuotientRing</span><span class="p">(</span><span class="n">tautological</span><span class="o">.</span><span class="n">ring</span><span class="p">(),</span> <span class="n">tautological</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span></div>
 </div>
 
 
