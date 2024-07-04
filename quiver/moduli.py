@@ -2476,10 +2476,24 @@ class QuiverModuliSpace(QuiverModuli):
         return sum(x**i / factorial(i) for i in range(self.dimension() + 1))
 
     def total_chern_class_universal(self, i, chi, classes=None):
-        """Gives the total Chern class of the universal bundle U_i(chi)."""
+        r"""
+        Gives the total Chern class of the universal bundle U_i(chi).
+
+        EXAMPLES:
+
+        The two summands for the Kronecker 6-fold::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: chi = (-1, 1)
+            sage: X.total_chern_class_universal(0, chi)
+            x0_2bar + 2*x1_1bar + 1
+            sage: X.total_chern_class_universal(1, chi)
+            x0_2bar + x1_1bar + 1
+        """
         # setup shorthand
         Q, d = self._Q, self._d
-
         d = Q._coerce_dimension_vector(self._d)
 
         A = self.chow_ring(chi, classes=classes)
