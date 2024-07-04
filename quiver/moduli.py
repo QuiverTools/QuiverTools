@@ -2558,7 +2558,7 @@ class QuiverModuliSpace(QuiverModuli):
         d = Q._coerce_dimension_vector(d)
 
         A = self.chow_ring(chi=chi, classes=classes)
-        sect = A.lifting_map()  # a choice of a section of pi
+        section = A.lifting_map()  # a choice of a section of pi
 
         p = prod(
             self.total_chern_class_universal(j + 1, chi, classes=classes)
@@ -2574,7 +2574,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         pi = A.cover()  # the quotient map
 
-        return pi(sect(quotient).homogeneous_components()[self.dimension()])
+        return pi(section(quotient).homogeneous_components()[self.dimension()])
 
     def degree(self, eta=None, classes=None):
         r"""
@@ -2846,15 +2846,23 @@ class QuiverModuliStack(QuiverModuli):
 
         INPUT:
 
-        - ``classes``: list of Strings
+        - ``classes`` -- variables to be used (default: None)
 
-        OUTPUT: ring
+        EXAMPLES:
+
+        The Chow ring of the stack defining the Kronecker 6-fold has as its defining
+        ideal the tautological ideal::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliStack(Q, (2, 3))
+            sage: X.tautological_ideal() == X.chow_ring().defining_ideal()
+            True
         """
 
-        taut = self.tautological_ideal(use_roots=False, classes=classes)
-        A, _, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
+        tautological = self.tautological_ideal(use_roots=False, classes=classes)
 
-        return QuotientRing(A, A.ideal(rels), names=classes)
+        return QuotientRing(tautological.ring(), tautological, names=classes)
 
 
 def extended_gcd(x):
