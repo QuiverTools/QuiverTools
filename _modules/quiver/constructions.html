@@ -1,0 +1,873 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>quiver.constructions &#8212; QuiverTools v1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=7d3b92e0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/quiver/constructions';</script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+<script defer data-domain="quiver.tools" src="https://plausible.io/js/script.js"></script>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="QuiverTools v1 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="QuiverTools v1 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for quiver.constructions</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">sage.combinat.root_system.dynkin_diagram</span> <span class="kn">import</span> <span class="n">DynkinDiagram</span>
+<span class="kn">from</span> <span class="nn">sage.combinat.root_system.weyl_characters</span> <span class="kn">import</span> <span class="n">WeylCharacterRing</span>
+<span class="kn">from</span> <span class="nn">sage.matrix.special</span> <span class="kn">import</span> <span class="n">block_diagonal_matrix</span><span class="p">,</span> <span class="n">zero_matrix</span>
+<span class="kn">from</span> <span class="nn">sage.rings.integer_ring</span> <span class="kn">import</span> <span class="n">ZZ</span>
+
+<span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="n">Quiver</span>
+
+
+<div class="viewcode-block" id="disjoint_union">
+<a class="viewcode-back" href="../../index.html#quiver.disjoint_union">[docs]</a>
+<span class="k">def</span> <span class="nf">disjoint_union</span><span class="p">(</span><span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the disjoint union of two quivers Q1 and Q2.</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    We construct the disjoint union of 2 generalized Kronecker quivers::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q1 = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">        sage: Q2 = GeneralizedKroneckerQuiver(4)</span>
+<span class="sd">        sage: Q = disjoint_union(Q1,Q2)</span>
+<span class="sd">        sage: Q</span>
+<span class="sd">        disjoint union of 3-Kronecker quiver and 4-Kronecker quiver</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">Q1</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">()</span> <span class="ow">and</span> <span class="n">Q2</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">():</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;disjoint union of &quot;</span> <span class="o">+</span> <span class="n">Q1</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span> <span class="o">+</span> <span class="n">Q2</span><span class="o">.</span><span class="n">get_custom_name</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">Quiver</span><span class="p">(</span>
+        <span class="n">block_diagonal_matrix</span><span class="p">(</span>
+            <span class="n">Q1</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(),</span> <span class="n">Q2</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(),</span> <span class="n">subdivide</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="sd">&quot;&quot;&quot;Special quivers&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="GeneralizedKroneckerQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.GeneralizedKroneckerQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">GeneralizedKroneckerQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the generalized Kronecker quiver</span>
+
+<span class="sd">    The generalized Kronecker quiver has two vertices and ``m`` arrows</span>
+<span class="sd">    from the first to the second vertex.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``m`` -- integer; number of arrows in the quiver</span>
+
+<span class="sd">    OUTPUT: the generalized Kronecker quiver as Quiver instance</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The generalized Kronecker quiver is as claimed::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">        sage: Q.number_of_vertices()</span>
+<span class="sd">        2</span>
+<span class="sd">        sage: Q.number_of_arrows()</span>
+<span class="sd">        3</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Quiver</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-Kronecker quiver&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="KroneckerQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.KroneckerQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">KroneckerQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the Kronecker quiver</span>
+
+<span class="sd">    The Kronecker quiver has two vertices and 2 arrow from the first</span>
+<span class="sd">    to the second vertex. If the optional parameter ``m`` is specified</span>
+<span class="sd">    we construct the generalized Kronecker quiver on ``m`` arrows;</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``m`` -- integer (default: `2`); number of arrows in the quiver</span>
+
+<span class="sd">    OUTPUT: the Kronecker quiver as Quiver instance</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The Kronecker quiver is as claimed::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = KroneckerQuiver()</span>
+<span class="sd">        sage: Q.number_of_vertices()</span>
+<span class="sd">        2</span>
+<span class="sd">        sage: Q.number_of_arrows()</span>
+<span class="sd">        2</span>
+
+<span class="sd">    If we specify the number of arrows, we construct a generalized Kronecker quiver::</span>
+
+<span class="sd">        sage: KroneckerQuiver(3) == GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">GeneralizedKroneckerQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ThreeVertexQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.ThreeVertexQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">ThreeVertexQuiver</span><span class="p">(</span><span class="n">m12</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">m13</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">m23</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructs a 3-vertex quiver, with and :math:`m_{i,j}` arrows from `i` to `j`.</span>
+
+<span class="sd">    Thus it is always an acyclic quiver.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``m12`` -- integer; number of arrows from 1 to 2</span>
+
+<span class="sd">    - ``m13`` -- integer; number of arrows from 1 to 3</span>
+
+<span class="sd">    - ``m23`` -- integer; number of arrows from 2 to 3</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    A 3-vertex quiver with 5 arrows::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = ThreeVertexQuiver(2, 2, 1); Q</span>
+<span class="sd">        an acyclic 3-vertex quiver of type (2, 2, 1)</span>
+<span class="sd">        sage: Q.number_of_arrows()</span>
+<span class="sd">        5</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Quiver</span><span class="p">(</span>
+        <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m12</span><span class="p">,</span> <span class="n">m13</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">m23</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;an acyclic 3-vertex quiver of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">m12</span><span class="p">,</span> <span class="n">m13</span><span class="p">,</span> <span class="n">m23</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">Q</span></div>
+
+
+
+<div class="viewcode-block" id="LoopQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.LoopQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">LoopQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the quiver with 1 vertex and ``m`` loops.</span>
+
+<span class="sd">    This is a synonym for :func:`GeneralizedJordanQuiver`.</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    This is a synonym::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: LoopQuiver(7) == GeneralizedJordanQuiver(7)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    .. SEEALSO::</span>
+
+<span class="sd">        :func:`GeneralizedJordanQuiver`</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The loop quiver with 7 loops::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = LoopQuiver(7)</span>
+<span class="sd">        sage: Q.adjacency_matrix()</span>
+<span class="sd">        [7]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">GeneralizedJordanQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-loop quiver&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Q</span></div>
+
+
+
+<div class="viewcode-block" id="JordanQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.JordanQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">JordanQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the generalized Jordan quiver with ``m`` loops</span>
+
+<span class="sd">    The default value for ``m`` is 1.</span>
+
+<span class="sd">    This is a synonym::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: JordanQuiver(7) == GeneralizedJordanQuiver(7)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    .. SEEALSO::</span>
+
+<span class="sd">        :func:`GeneralizedJordanQuiver`</span>
+
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The Jordan quiver has one loop::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = JordanQuiver()</span>
+<span class="sd">        sage: Q.adjacency_matrix()</span>
+<span class="sd">        [1]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">GeneralizedJordanQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GeneralizedJordanQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.GeneralizedJordanQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">GeneralizedJordanQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the generalized Jordan quiver with ``m`` loops</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``m`` -- integer; the number of loops in the generalized Jordan quiver</span>
+
+<span class="sd">    OUTPUT: the generalized Jordan quiver</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The generalized Jordan quiver has 1 vertex and ``m`` arrows::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = GeneralizedJordanQuiver(7)</span>
+<span class="sd">        sage: Q.number_of_vertices()</span>
+<span class="sd">        1</span>
+<span class="sd">        sage: Q.number_of_arrows()</span>
+<span class="sd">        7</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Quiver</span><span class="p">([[</span><span class="n">m</span><span class="p">]],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;generalized Jordan quiver with </span><span class="si">{}</span><span class="s2"> loops&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">Q</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;Jordan quiver&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Q</span></div>
+
+
+
+<div class="viewcode-block" id="SubspaceQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.SubspaceQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">SubspaceQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the subspace quiver with ``m`` sources</span>
+
+<span class="sd">    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`; there is</span>
+<span class="sd">    one arrow from every source to the sink.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``m`` -- integer; the number of sources in the subspace quiver</span>
+
+<span class="sd">    OUTPUT: the subspace quiver with ``m`` sources</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The subspace quiver with ``m`` sources has ``m`` arrows and ``m+1`` vertices::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = SubspaceQuiver(6)</span>
+<span class="sd">        sage: Q.number_of_vertices()</span>
+<span class="sd">        7</span>
+<span class="sd">        sage: Q.number_of_arrows()</span>
+<span class="sd">        6</span>
+
+<span class="sd">    The subspace quiver with 2 sources is also a 3-vertex quiver::</span>
+
+<span class="sd">        sage: SubspaceQuiver(2) == ThreeVertexQuiver(0, 1, 1)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">zero_matrix</span><span class="p">(</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Quiver</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-subspace quiver&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Q</span></div>
+
+
+
+<div class="viewcode-block" id="ThickenedSubspaceQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.ThickenedSubspaceQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">ThickenedSubspaceQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the thickened subspace quiver with ``m`` sources</span>
+
+<span class="sd">    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`; there are</span>
+<span class="sd">    ``k`` arrows from every source to the sink.</span>
+
+<span class="sd">    - ``m`` -- integer; the number of sources in the subspace quiver</span>
+
+<span class="sd">    - ``k`` -- integer; the number arrows from a source to the sink</span>
+
+<span class="sd">    OUTPUT: the subspace quiver with ``m`` sources and ``k`` arrows from each source</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The ``k``-thickened subspace quiver with ``m`` sources has ``km`` arrows, ``m+1``</span>
+<span class="sd">    vertices::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = ThickenedSubspaceQuiver(6, 2)</span>
+<span class="sd">        sage: Q.number_of_vertices()</span>
+<span class="sd">        7</span>
+<span class="sd">        sage: Q.number_of_arrows()</span>
+<span class="sd">        12</span>
+
+<span class="sd">    The ``k``-thickened subspace quiver with 2 sources is also a 3-vertex quiver::</span>
+
+<span class="sd">        sage: ThickenedSubspaceQuiver(2, 6) == ThreeVertexQuiver(0, 6, 6)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">GeneralizedSubspaceQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">m</span><span class="p">)</span>
+    <span class="n">Q</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+        <span class="s2">&quot;thickened subspace quiver with </span><span class="si">{}</span><span class="s2"> sources and multiplicity </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Q</span></div>
+
+
+
+<div class="viewcode-block" id="GeneralizedSubspaceQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.GeneralizedSubspaceQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">GeneralizedSubspaceQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the generalized subspace quiver with ``m`` sources and multiplicities ``K``</span>
+
+<span class="sd">    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`;</span>
+<span class="sd">    there are are :math:`K_i` arrows from every source :math:`i=1,\ldots,m` to the sink.</span>
+
+<span class="sd">    - ``m`` -- integer; the number of sources in the subspace quiver</span>
+
+<span class="sd">    - ``K`` -- list of integers; the number arrows from the `i`-th source to the sink</span>
+
+<span class="sd">    OUTPUT: the subspace quiver with ``m`` sources and ``K_i`` arrows from each source</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The generalized subspace quiver with `m` sources and multiplicities `K`</span>
+<span class="sd">    has :math:`\sum_{i=1}^mK_i` arrows and :math:`m+1` vertices::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: Q = GeneralizedSubspaceQuiver(6, (1, 2, 3, 4, 5, 6))</span>
+<span class="sd">        sage: Q.number_of_vertices()</span>
+<span class="sd">        7</span>
+<span class="sd">        sage: Q.number_of_arrows()</span>
+<span class="sd">        21</span>
+
+<span class="sd">    The generalized subspace quiver with 2 sources is also a 3-vertex quiver::</span>
+
+<span class="sd">        sage: GeneralizedSubspaceQuiver(2, (2, 3)) == ThreeVertexQuiver(0, 2, 3)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="o">==</span> <span class="n">m</span>
+
+    <span class="n">M</span> <span class="o">=</span> <span class="n">zero_matrix</span><span class="p">(</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Quiver</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;a generalized </span><span class="si">{}</span><span class="s2">-subspace quiver&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Q</span></div>
+
+
+
+<div class="viewcode-block" id="DynkinQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.DynkinQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">DynkinQuiver</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the Dynkin quiver of type `T`</span>
+
+<span class="sd">    The type `T` is to be taken as in the Sage method `DynkinDiagram`,</span>
+<span class="sd">    and the quiver is oriented lexigraphically in the vertices of the diagram.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``T``: a Dynkin type, as documented in the Sage method `DynkinDiagram`</span>
+
+<span class="sd">    OUTPUT: the Dynkin quiver with lexicographic ordering on the vertices</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The :math:`\mathrm{A}_2` quiver is the generalized Kronecker quiver with 1 arrow::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: DynkinQuiver(&quot;A2&quot;) == GeneralizedKroneckerQuiver(1)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    The Dynkin quiver :math:`\mathrm{D}_4` is a different orientation of the 3-subspace</span>
+<span class="sd">    quiver::</span>
+
+<span class="sd">        sage: DynkinQuiver(&quot;D4&quot;) == SubspaceQuiver(3)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    We can also consider disconnected Dynkin quivers::</span>
+
+<span class="sd">        sage: Q = DynkinQuiver(&quot;A3xA4&quot;)</span>
+<span class="sd">        sage: Q.is_connected()</span>
+<span class="sd">        False</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">DynkinDiagram</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()</span>
+
+    <span class="c1"># orient the quiver lexicographically</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">nrows</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">Quiver</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="s2">&quot;Dynkin quiver of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">T</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="ExtendedDynkinQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.ExtendedDynkinQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">ExtendedDynkinQuiver</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the Dynkin quiver of type `T`</span>
+
+<span class="sd">    The type `T` is a string which can be passed onto the Sage method `DynkinDiagram`,</span>
+<span class="sd">    and the quiver is oriented lexigraphically in the vertices of the diagram.</span>
+<span class="sd">    The special vertex thus comes first.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``T`` -- string: a Dynkin type, as documented in the Sage method `DynkinDiagram`</span>
+
+<span class="sd">    OUTPUT: the extended Dynkin quiver with lexicographic ordering on the vertices</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The extended :math:`\mathrm{A}_1` quiver is the Kronecker quiver::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: ExtendedDynkinQuiver(&quot;A1&quot;) == KroneckerQuiver()</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># the adjacency matrix of an extended Dynkin diagram ignores multiple arrows</span>
+    <span class="c1"># so we modify the Cartan matrix</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">WeylCharacterRing</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">extended_dynkin_diagram</span><span class="p">()</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="o">-</span><span class="n">D</span><span class="o">.</span><span class="n">cartan_matrix</span><span class="p">()</span>
+
+    <span class="c1"># orient the quiver lexicographically</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">nrows</span><span class="p">()):</span>
+        <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">Quiver</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="s2">&quot;Extended Dynkin quiver of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">T</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="CyclicQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.CyclicQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">CyclicQuiver</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the cyclic quiver on ``n`` vertices</span>
+
+<span class="sd">    This is the quiver with ``n`` vertices and ``n`` arrows from `i` to `i+1`</span>
+<span class="sd">    for :math:`i=1,\ldots,n`, with `n+1=1`.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``n``-- integer; the number of vertices (and arrows)</span>
+
+<span class="sd">    OUTPUT: cyclic quiver on `n` vertices</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    The doubled Dynkin quiver of type :math:`\mathrm{A}_2` is also the cyclic quiver on</span>
+<span class="sd">    2 vertices::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: CyclicQuiver(2) == DynkinQuiver(&quot;A2&quot;).doubled_quiver()</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">zero_matrix</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">Quiver</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="s2">&quot;Cyclic quiver on </span><span class="si">{}</span><span class="s2"> vertices&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="BipartiteQuiver">
+<a class="viewcode-back" href="../../index.html#quiver.BipartiteQuiver">[docs]</a>
+<span class="k">def</span> <span class="nf">BipartiteQuiver</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the bipartite quiver with ``m`` sources and ``n`` sinks</span>
+
+<span class="sd">    This is the quiver with `m+n` vertices, having 1 arrow from each of</span>
+<span class="sd">    the first `m` vertices to the each of the last `n` vertices.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``m`` -- non-negative integer; number of sources</span>
+
+<span class="sd">    - ``n`` -- non-negative integer; number of sinks</span>
+
+<span class="sd">    OUTPUT: bipartite quiver with ``m`` sources and ``n`` sinks</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    When `m=n=1` we get the :math:`\mathrm{A}_2` quiver::</span>
+
+<span class="sd">        sage: from quiver import *</span>
+<span class="sd">        sage: BipartiteQuiver(1, 1) == DynkinQuiver(&quot;A2&quot;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    When `m=2` and `n=1` we get a 3-vertex quiver::</span>
+
+<span class="sd">        sage: BipartiteQuiver(2, 1) == ThreeVertexQuiver(0, 1, 1)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">M</span> <span class="o">=</span> <span class="n">zero_matrix</span><span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">Quiver</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="s2">&quot;bipartite quiver on </span><span class="si">{}</span><span class="s2"> sources and </span><span class="si">{}</span><span class="s2"> sinks&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Pieter Belmans, Hans Franzen, Gianni Petrella
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
