@@ -1476,17 +1476,15 @@ class QuiverModuli(Element):
 
         return list(filter(is_minimal, forbidden))
 
-    def __tautological_presentation(
-        self, inRoots=False, chernClasses=None, chernRoots=None
-    ):
+    def __tautological_presentation(self, use_roots=False, classes=None, roots=None):
         r"""
         Returns the tautological presentation of the Chow ring of the moduli space.
 
         INPUT:
 
-        - ``inRoots`` -- (default: False) whether to return the relations in Chern roots
-        - ``chernClasses`` -- (default: None) optional list of strings to name the Chern classes
-        - ``chernRoots`` -- (default: None) optional list of strings to name the Chern roots
+        - ``use_roots`` -- (default: False) whether to return the relations in Chern roots
+        - ``classes`` -- (default: None) optional list of strings to name the Chern classes
+        - ``roots`` -- (default: None) optional list of strings to name the Chern roots
 
         OUTPUT: dict
 
@@ -1494,20 +1492,20 @@ class QuiverModuli(Element):
         # setup shorthand
         Q, d = self._Q, self._d
 
-        if chernClasses is None:
-            chernClasses = [
+        if classes is None:
+            classes = [
                 "x{}_{}".format(i, r)
                 for i in range(Q.number_of_vertices())
                 for r in range(1, d[i] + 1)
             ]
-        if chernRoots is None:
-            chernRoots = [
+        if roots is None:
+            roots = [
                 "t{}_{}".format(i, r)
                 for i in range(Q.number_of_vertices())
                 for r in range(1, d[i] + 1)
             ]
 
-        R = PolynomialRing(QQ, chernRoots)
+        R = PolynomialRing(QQ, roots)
 
         def generator(R, i, r):
             r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
@@ -1532,7 +1530,7 @@ class QuiverModuli(Element):
             for e in self._all_minimal_forbidden_subdimension_vectors()
         ]
 
-        if inRoots:
+        if use_roots:
             return {
                 "ParentRing": R,
                 "Generators": lambda i, r: generator(R, i, r),
@@ -1603,7 +1601,7 @@ class QuiverModuli(Element):
             degrees = []
             for i in range(Q.number_of_vertices()):
                 degrees = degrees + list(range(1, d[i] + 1))
-            A = PolynomialRing(QQ, chernClasses, order=TermOrder("wdegrevlex", degrees))
+            A = PolynomialRing(QQ, classes, order=TermOrder("wdegrevlex", degrees))
 
             E = SymmetricFunctions(ZZ).e()
             """The Chern classes of U_i on [R/G] are the elementary symmetric functions
@@ -1638,21 +1636,21 @@ class QuiverModuli(Element):
             }
 
     # TODO this function is irrelevant: the method above should just return the relations
-    def tautological_relations(self, inRoots=False, chernClasses=None, chernRoots=None):
+    def tautological_relations(self, use_roots=False, classes=None, roots=None):
         r"""
         Returns the tautological relations in
-        Chern classes (if inRoots == False) or in Chern roots.
+        Chern classes (if use_roots == False) or in Chern roots.
 
         INPUT:
 
-        - ``inRoots`` -- Bool
-        - ``chernClasses`` -- list of Strings
-        - ``chernRoots`` -- list of Strings
+        - ``use_roots`` -- Bool
+        - ``classes`` -- list of Strings
+        - ``roots`` -- list of Strings
 
         OUTPUT: list
         """
         taut = self.__tautological_presentation(
-            inRoots=inRoots, chernClasses=chernClasses, chernRoots=chernRoots
+            use_roots=use_roots, classes=classes, roots=roots
         )
         return taut["Relations"]
 
@@ -2350,14 +2348,14 @@ class QuiverModuliSpace(QuiverModuli):
 
         raise NotImplementedError()
 
-    def chow_ring(self, chi=None, chernClasses=None):
+    def chow_ring(self, chi=None, classes=None):
         r"""
         Returns the Chow ring of the moduli space.
 
         INPUT:
 
         - ``chi`` -- vector of Ints
-        - ``chernClasses`` -- list of Strings
+        - ``classes`` -- list of Strings
 
         OUTPUT: ring
 
@@ -2428,21 +2426,19 @@ class QuiverModuliSpace(QuiverModuli):
         assert chi * d == 1
 
         # TODO why do this? earlier we have similar code!
-        if chernClasses is None:
-            chernClasses = [
-                "x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)
-            ]
+        if classes is None:
+            classes = ["x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)]
 
         taut = self._QuiverModuli__tautological_presentation(
-            inRoots=False, chernClasses=chernClasses
+            use_roots=False, classes=classes
         )
         A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
         I = A.ideal(rels) + A.ideal(sum([chi[i] * generator(i, 0) for i in range(n)]))
 
-        return QuotientRing(A, I, names=chernClasses)
+        return QuotientRing(A, I, names=classes)
 
-    def chern_class_line_bundle(self, eta, chernClasses=None):
+    def chern_class_line_bundle(self, eta, classes=None):
         r"""
         Returns the first Chern class of the line bundle
 
@@ -2458,36 +2454,36 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
 
-        A = self.chow_ring(chi=None, chernClasses=chernClasses)
+        A = self.chow_ring(chi=None, classes=classes)
         n = self._Q.number_of_vertices()
         d = self._d
 
         return -sum([eta[i] * A.gen(sum(d[j] for j in range(i))) for i in range(n)])
 
-    def chern_character_line_bundle(self, eta, chernClasses=None):
+    def chern_character_line_bundle(self, eta, classes=None):
         r"""
         Computes the Chern character of L(eta).
 
         The Chern character of a line bundle `L` with first Chern class `x`
         is given by :math:`e^x = 1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \dots`
         """
-        x = self.chern_class_line_bundle(eta, chernClasses=chernClasses)
+        x = self.chern_class_line_bundle(eta, classes=classes)
         return sum(x**i / factorial(i) for i in range(self.dimension() + 1))
 
-    def total_chern_class_universal(self, i, chi, chernClasses=None):
+    def total_chern_class_universal(self, i, chi, classes=None):
         """Gives the total Chern class of the universal bundle U_i(chi)."""
         # setup shorthand
         Q, d = self._Q, self._d
 
         d = Q._coerce_dimension_vector(self._d)
 
-        A = self.chow_ring(chi, chernClasses=chernClasses)
+        A = self.chow_ring(chi, classes=classes)
 
         return 1 + sum(
             A.gen(r + sum(d[j] for j in range(i - 1))) for r in range(d[i - 1])
         )
 
-    def point_class(self, chi=None, chernClasses=None):
+    def point_class(self, chi=None, classes=None):
         r"""
         Returns the point class as an expression in Chern classes of the
         :math:`U_i` (``chi``).
@@ -2508,7 +2504,7 @@ class QuiverModuliSpace(QuiverModuli):
             sage: Q = GeneralizedKroneckerQuiver(8)
             sage: X = QuiverModuliSpace(Q, (1, 1))
             sage: chi = (1, 0)
-            sage: X.point_class(chi, chernClasses=["o", "h"])
+            sage: X.point_class(chi, classes=["o", "h"])
             h^7
 
         Our favorite 6-fold::
@@ -2517,7 +2513,7 @@ class QuiverModuliSpace(QuiverModuli):
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: chi = (-1, 1)
-            sage: X.point_class(chi, chernClasses=["x1", "x2", "y1", "y2", "y3"])
+            sage: X.point_class(chi, classes=["x1", "x2", "y1", "y2", "y3"])
             y3^2
 
         A moduli space of the 5-subspace quiver;
@@ -2530,7 +2526,7 @@ class QuiverModuliSpace(QuiverModuli):
             sage: theta = (2, 2, 2, 2, 2, -5)
             sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
             sage: chi = (-1, -1, -1, -1, -1, 3)
-            sage: X.point_class(chi,chernClasses=['x1','x2','x3','x4','x5','y','z'])
+            sage: X.point_class(chi,classes=['x1','x2','x3','x4','x5','y','z'])
             1/2*z
         """
         # TODO test one without chi given?
@@ -2539,7 +2535,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         d = Q._coerce_dimension_vector(d)
 
-        A = self.chow_ring(chi=chi, chernClasses=chernClasses)
+        A = self.chow_ring(chi=chi, classes=classes)
         sect = A.lifting_map()  # A choice of a section of pi
 
         # choose a convenient chi
@@ -2550,13 +2546,12 @@ class QuiverModuliSpace(QuiverModuli):
         chi = Q._coerce_vector(chi)
 
         p = prod(
-            self.total_chern_class_universal(j + 1, chi, chernClasses=chernClasses)
+            self.total_chern_class_universal(j + 1, chi, classes=classes)
             ** (d * Q.adjacency_matrix().column(j))
             for j in range(Q.number_of_vertices())
         )
         q = prod(
-            self.total_chern_class_universal(i + 1, chi, chernClasses=chernClasses)
-            ** d[i]
+            self.total_chern_class_universal(i + 1, chi, classes=classes) ** d[i]
             for i in range(Q.number_of_vertices())
         )
 
@@ -2566,7 +2561,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         return pi(sect(quotient).homogeneous_components()[self.dimension()])
 
-    def degree(self, eta=None, chernClasses=None):
+    def degree(self, eta=None, classes=None):
         r"""Computes the degree of the ample line bundle given by eta."""
         # TODO: Need check for ampleness first
 
@@ -2574,8 +2569,8 @@ class QuiverModuliSpace(QuiverModuli):
             eta = self._Q.canonical_stability_parameter(self._d)
 
         N = self.dimension()
-        c = self.chern_class_line_bundle(eta, chernClasses=chernClasses)
-        p = self.point_class(chernClasses=chernClasses)
+        c = self.chern_class_line_bundle(eta, classes=classes)
+        p = self.point_class(classes=classes)
 
         return c**N / p
 
@@ -2640,22 +2635,22 @@ class QuiverModuliSpace(QuiverModuli):
     #     A = di["Generators"]
     #     I = di["Relations"] + A.ideal(chi)
 
-    #     chernClasses1 = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-    #     chernClasses2 = ['y%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-    #     chernClasses = chernClasses1+chernClasses2
+    #     classes1 = ['x%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+    #     classes2 = ['y%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+    #     classes = classes1+classes2
 
-    #     AxA = PolynomialRing(QQ,chernClasses)
-    #     inclusion1 = A.hom(chernClasses1,AxA)
-    #     inclusion2 = A.hom(chernClasses2,AxA)
-    #     B = QuotientRing(AxA,inclusion1(I) + inclusion2(I),names=chernClasses)
+    #     AxA = PolynomialRing(QQ,classes)
+    #     inclusion1 = A.hom(classes1,AxA)
+    #     inclusion2 = A.hom(classes2,AxA)
+    #     B = QuotientRing(AxA,inclusion1(I) + inclusion2(I),names=classes)
 
     #     pi = B.cover() # The quotient map AxA --> B
     #     sect = B.lifting_map() # A choice of a section of pi
 
-    #     chernRoots1 = ['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-    #     chernRoots2 = ['u%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
-    #     chernRoots = chernRoots1+chernRoots2
-    #     RxR = PolynomialRing(QQ,chernRoots)
+    #     roots1 = ['t%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+    #     roots2 = ['u%s_%s'%(i,r) for i in range(1,n+1) for r in range(1,d[i-1]+1)]
+    #     roots = roots1+roots2
+    #     RxR = PolynomialRing(QQ,roots)
 
     #     def generatorRxR1(i,r):
     #         """Returns generatorRxR1(i,r) = t{i+1}_{r+1}."""
@@ -2889,22 +2884,22 @@ class QuiverModuliStack(QuiverModuli):
 
         return x[0]
 
-    def chow_ring(self, chernClasses=None):
+    def chow_ring(self, classes=None):
         r"""Returns the Chow ring of the quotient stack.
 
         INPUT:
 
-        - ``chernClasses``: list of Strings
+        - ``classes``: list of Strings
 
         OUTPUT: ring
         """
 
         taut = self._QuiverModuli__tautological_presentation(
-            inRoots=False, chernClasses=chernClasses
+            use_roots=False, classes=classes
         )
         A, _, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
 
-        return QuotientRing(A, A.ideal(rels), names=chernClasses)
+        return QuotientRing(A, A.ideal(rels), names=classes)
 
 
 def extended_gcd(x):
