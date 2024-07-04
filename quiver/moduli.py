@@ -1629,12 +1629,15 @@ class QuiverModuli(Element):
             ]
             tautological = [inclusion.inverse_image(g) for g in tautological]
 
+            # TODO why return the ring and the generators? from the ideal we can get both
+            # so turn the list `tautological` into an ideal of `A`
             return {
                 "ParentRing": A,
                 "Generators": lambda i, r: generator(A, i, r),  # is this going to work?
                 "Relations": tautological,
             }
 
+    # TODO this function is irrelevant: the method above should just return the relations
     def tautological_relations(self, inRoots=False, chernClasses=None, chernRoots=None):
         r"""
         Returns the tautological relations in
@@ -1648,7 +1651,6 @@ class QuiverModuli(Element):
 
         OUTPUT: list
         """
-
         taut = self.__tautological_presentation(
             inRoots=inRoots, chernClasses=chernClasses, chernRoots=chernRoots
         )
@@ -1698,6 +1700,7 @@ class QuiverModuli(Element):
         """
         raise NotImplementedError()
 
+    # TODO move docstring to QuiverModuliSpace
     def chow_ring(self):
         r"""
         Returns the Chow ring of the moduli space.
@@ -2389,7 +2392,7 @@ class QuiverModuliSpace(QuiverModuli):
             [x1_2*x1_3],
             [x1_3^2]]
 
-        The 5-subspaces quiver::
+        The 5-subspace quiver::
 
             sage: from quiver import *
             sage: Q, d = SubspaceQuiver(5), (1, 1, 1, 1, 1, 2)
@@ -2424,6 +2427,7 @@ class QuiverModuliSpace(QuiverModuli):
         provides a retraction for X*(PG) --> X*(G)."""
         assert chi * d == 1
 
+        # TODO why do this? earlier we have similar code!
         if chernClasses is None:
             chernClasses = [
                 "x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)
