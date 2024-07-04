@@ -1455,10 +1455,10 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: X = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="semistable")
+            sage: X = QuiverModuliSpace(Q, (3, 3))
             sage: X._all_minimal_forbidden_subdimension_vectors()
             [(1, 0), (2, 1), (3, 2)]
-            sage: Y = QuiverModuliSpace(Q, [3, 3], [1, -1], condition="stable")
+            sage: Y = QuiverModuliSpace(Q, (3, 3), condition="stable")
             sage: Y._all_minimal_forbidden_subdimension_vectors()
             [(1, 1), (2, 2)]
 
@@ -1477,7 +1477,29 @@ class QuiverModuli(Element):
         return list(filter(is_minimal, forbidden))
 
     def __generator(self, R, i, r):
-        r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
+        r"""
+        Returns the appropriate generator of R.
+
+        This is a repeatedly used helper function in dealing with Chow rings.
+
+        EXAMPLES:
+
+        We index some generators of the polynomial ring defining the Chow ring of the
+        Kronecker 6-fold::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: chi = (-1, 1)
+            sage: A = X.chow_ring(chi=chi, classes=["x1", "x2", "y1", "y2", "y3"])
+            sage: R = A.defining_ideal().ring()
+            sage: R
+            Multivariate Polynomial Ring in x1, x2, y1, y2, y3 over Rational Field
+            sage: X._QuiverModuli__generator(R, 0, 0)
+            x1
+            sage: X._QuiverModuli__generator(R, 1, 2)
+            y3
+        """
         # setup shorthand
         Q, d = self._Q, self._d
         d = Q._coerce_dimension_vector(d)
