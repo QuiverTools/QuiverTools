@@ -527,7 +527,7 @@ class QuiverModuli(Element):
         r"""
         Checks if ``dstar`` is a Harder--Narasimhan type.
 
-        A Harder--Narasimhan (HN) type of `d` with respect to :math:`\theta`
+        A Harder--Narasimhan (HN) type of :math`{\bf d}` with respect to :math:`\theta`
         is a sequence :math:`{\bf d}^* = ({\bf d}^1,...,{\bf d}^s)` of dimension vectors
         such that
 
@@ -596,7 +596,7 @@ class QuiverModuli(Element):
     def codimension_of_harder_narasimhan_stratum(self, dstar, secure=False):
         r"""
         Computes the codimension of the HN stratum of ``dstar``
-        inside the representation variety :math:`R(Q,d)`.
+        inside the representation variety :math:`R(Q,{\bf d})`.
 
         INPUT:
 
@@ -609,7 +609,8 @@ class QuiverModuli(Element):
         By default, the method does not check if ``dstar`` is a valid HN type.
         This can be enabled by passing ``secure=True``.
 
-        The codimension of the HN stratum of :math:`d^* = (d^1,...,d^s)` is given by
+        The codimension of the HN stratum of
+        :math:`{\bf d}^* = ({\bf d}^1,...,{\bf d}^s)` is given by
 
         .. MATH::
 
@@ -854,14 +855,6 @@ class QuiverModuli(Element):
         r"""
         Checks if ``tau`` is a Luna type.
 
-        A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence
-        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of dimension vectors
-        :math:`{\bf d}^k` and positive integers :math:`m_k` such that
-
-        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`
-        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`
-        - All :math:`{\bf d}^k` admit a :math:`\theta`-stable representation
-
         INPUT:
 
         - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by
@@ -1015,11 +1008,11 @@ class QuiverModuli(Element):
         Computes the codimension of the preimage of the Luna stratum
 
         This is the codimension of :math:`\pi^{-1}(S_{tau})`
-        inside `R(Q,d)` where
+        inside:math:`R(Q,{\bf d})` where
 
         .. MATH::
 
-            \pi\colon R(Q,d)^{\theta{\rm-sst}}\to M^{\theta{\rm-sst}}(Q,d)
+            \pi\colon R(Q,{\bf d})^{\theta{\rm-sst}}\to M^{\theta{\rm-sst}}(Q,{\bf d})
 
         is the semistable quotient map.
 
@@ -1072,8 +1065,8 @@ class QuiverModuli(Element):
 
     def codimension_properly_semistable_locus(self):
         r"""
-        Computes the codimension of :math:`R^{\theta\rm-sst}(Q,d)
-        \setminus R^{\theta\rm-st}(Q,d)` inside :math:`R(Q,d)`.
+        Computes the codimension of :math:`R^{\theta\rm-sst}(Q,{\bf d})
+        \setminus R^{\theta\rm-st}(Q,{\bf d})` inside :math:`R(Q,{\bf d})`.
 
         OUTPUT: codimension of the properly semistable locus
 
@@ -1174,7 +1167,7 @@ class QuiverModuli(Element):
 
         By definition, a dimension vector `d` is :math:`\theta`-amply stable if the
         codimension of the :math:`\theta`-semistable locus
-        inside `R(Q,d)` is at least 2.
+        inside:math:`R(Q,{\bf d}` is at least 2.
 
         OUTPUT: whether the data for the quiver moduli space is amply stable
 
@@ -1827,15 +1820,15 @@ class QuiverModuliSpace(QuiverModuli):
 
     def dimension(self):
         r"""
-        Computes the dimension of the moduli space :math:`M^{\theta-(s)st}(Q,d)`.
+        Computes the dimension of the moduli space :math:`M^{\theta-(s)st}(Q,{\bf d})`.
 
         This involves several cases:
 
         - If there are :math:`\theta`-stable representations then
-          :math:`\dim M^{\theta\rm-sst}(Q,d) =
-          M^{\theta-st}(Q,d) = 1 - \langle d,d\rangle`;
+          :math:`\dim M^{\theta\rm-sst}(Q,{\bf d}) =
+          M^{\theta-st}(Q,{\bf d}) = 1 - \langle {\bf d},{\bf d}\rangle`;
         - if there are no :math:`\theta`-stable representations then
-          :math:`\dim M^{\theta-st}(Q,d) = -\infty` by convention,
+          :math:`\dim M^{\theta-st}(Q,{\bf d}) = -\infty` by convention,
           and we define :math:`\dim M^{\theta\rm\rm-sst} =
           \mathrm{max}_{\tau} \{\dim S_{\tau}\}`,
           the maximum of the dimension of all Luna strata.
