@@ -1073,7 +1073,7 @@ class QuiverModuli(Element):
     def codimension_properly_semistable_locus(self):
         r"""
         Computes the codimension of :math:`R^{\theta\rm-sst}(Q,d)
-        \setminus R^{\theta-st}(Q,d)` inside :math:`R(Q,d)`.
+        \setminus R^{\theta\rm-st}(Q,d)` inside :math:`R(Q,d)`.
 
         OUTPUT: codimension of the properly semistable locus
 
@@ -1082,6 +1082,13 @@ class QuiverModuli(Element):
         of the non-stable Luna strata.
 
         EXAMPLES:
+
+        If the semistable locus is the stable locus the codimension is -Infinity::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: QuiverModuliSpace(Q, (2, 3)).codimension_properly_semistable_locus()
+            -Infinity
 
         This is currently not working properly because we cannot compute the dimension
         of the nullcone::
@@ -1095,8 +1102,9 @@ class QuiverModuli(Element):
 
         """
         Ls = self.all_luna_types(exclude_stable=True)
+        codimensions = [self._codimension_inverse_image_luna_stratum(tau) for tau in Ls]
 
-        return min(self._codimension_inverse_image_luna_stratum(tau) for tau in Ls)
+        return min(codimensions, default=-Infinity)
 
     """
     (Semi-)stability
