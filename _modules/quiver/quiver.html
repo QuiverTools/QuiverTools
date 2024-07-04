@@ -1583,8 +1583,8 @@ document.write(`
 <span class="sd">        The optional parameter ``vertex`` determines the name of the framing vertex,</span>
 <span class="sd">        which defaults to `-oo`.</span>
 
-<span class="sd">        The framed quiver has one additional vertex, and `f_i` many arrows from</span>
-<span class="sd">        the framing vertex to `i`, for every `i\in Q_0`.</span>
+<span class="sd">        The framed quiver has one additional vertex, and :math:`f_i` many arrows from</span>
+<span class="sd">        the framing vertex to :math:`i`, for every :math:`i\in Q_0`.</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -1658,7 +1658,7 @@ document.write(`
 <span class="sd">        The optional parameter ``vertex`` determines the name of the coframing vertex,</span>
 <span class="sd">        which defaults to `+oo`.</span>
 
-<span class="sd">        The coframed quiver has one additional vertex, and `f_i` many arrows from</span>
+<span class="sd">        The coframed quiver has one additional vertex, and :math:`f_i` many arrows from</span>
 <span class="sd">        the vertex `i` to the coframed vertex, for every :math:`i\in Q_0`.</span>
 
 <span class="sd">        INPUT:</span>
@@ -2102,8 +2102,8 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the slope of ``d`` with respect to ``theta``</span>
 
-<span class="sd">        The slope is defined as the value of `theta(d)` divided by the total dimension</span>
-<span class="sd">        of `d`. It is possible to vary the denominator, to use a function more general</span>
+<span class="sd">        The slope is defined as the value of ``theta(d)`` divided by the total dimension</span>
+<span class="sd">        of `d` ``sum(d)``. It is possible to vary the denominator, to use a function more general</span>
 <span class="sd">        than the sum.</span>
 
 <span class="sd">        INPUT:</span>
@@ -2254,7 +2254,7 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forget_labels</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the list of all subdimension vectors of d.</span>
+<span class="sd">        Returns the list of all subdimension vectors of ``d``.</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -2374,7 +2374,8 @@ document.write(`
 <span class="sd">        :math:`\mu_{\theta}(e)\neq \mu_{\theta}(e)`</span>
 <span class="sd">        for all proper non-zero subdimension vectors e of d.</span>
 
-<span class="sd">        The default value for ``theta`` is the canonical stability parameter.</span>
+<span class="sd">        The default value for ``theta`` is the canonical stability parameter,</span>
+<span class="sd">        see :meth:`canonical_stability_parameter`.</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -2412,7 +2413,7 @@ document.write(`
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.is_indivisible">[docs]</a>
     <span class="k">def</span> <span class="nf">is_indivisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks if the gcd of all entries of ``d`` is 1</span>
+<span class="sd">        Checks if the gcd of all the entries of ``d`` is 1</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -2560,8 +2561,8 @@ document.write(`
 
 <span class="sd">        This means that</span>
 
-<span class="sd">        - :math:`d_i \leq e_i` for every source `i`</span>
-<span class="sd">        - :math:`d_j \geq e_j` for every sink `j`,</span>
+<span class="sd">        - :math:`d_i \leq e_i` for every source `i`,</span>
+<span class="sd">        - :math:`d_j \geq e_j` for every sink `j`, and</span>
 <span class="sd">        - :math:`d_k = e_k` for every vertex `k` which is neither a source nor a sink.</span>
 
 <span class="sd">        This is used when dealing with Chow rings of quiver moduli, see also</span>
@@ -2892,7 +2893,7 @@ document.write(`
 <span class="sd">        .. MATH::</span>
 
 <span class="sd">            \operatorname{ext}(a,b) =</span>
-<span class="sd">            \operatorname{max}\{-\langle c,b\rangle\}.</span>
+<span class="sd">            \operatorname{max}\{-\langle c,b\rangle\},</span>
 
 <span class="sd">        where :math:`c` runs over the generic subdimension vectors of :math:`a`.</span>
 
@@ -2947,10 +2948,10 @@ document.write(`
 <span class="sd">        i.e., :math:`\operatorname{dim}(\operatorname{Ext}(M,N))` is minimal for all</span>
 <span class="sd">        `(M,N)` in `U`.</span>
 
-<span class="sd">        Therefore, `\operatorname{dim}(\operatorname{Hom}(M,N)) =</span>
+<span class="sd">        Therefore, :math:`\operatorname{dim}(\operatorname{Hom}(M,N)) =</span>
 <span class="sd">        \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`</span>
 <span class="sd">        is minimal, and</span>
-<span class="sd">        `\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.</span>
+<span class="sd">        :math:`\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -3070,13 +3071,7 @@ document.write(`
 <span class="sd">        OUTPUT: canonical stability parameter</span>
 
 <span class="sd">        The canonical stability parameter is given by</span>
-<span class="sd">        `\langle d,-\rangle - \langle -,d\rangle`.</span>
-
-<span class="sd">        INPUT:</span>
-
-<span class="sd">        - ``d`` -- dimension vector to be used</span>
-
-<span class="sd">        OUTPUT: canonical stability parameter for ``d``</span>
+<span class="sd">        :math:`\langle d,-\rangle - \langle -,d\rangle`.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -3127,7 +3122,7 @@ document.write(`
 <div class="viewcode-block" id="Quiver.has_semistable_representation">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.has_semistable_representation">[docs]</a>
     <span class="k">def</span> <span class="nf">has_semistable_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Checks if there is a ``theta``-semistable of dimension vector `d`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Checks if there is a ``theta``-semistable of dimension vector ``d``</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -3135,10 +3130,10 @@ document.write(`
 
 <span class="sd">        - ``theta`` (default: canonical stability parameter): stability parameter</span>
 
-<span class="sd">        OUTPUT: whether there is a ``theta``-semistable of dimension vector `d`</span>
+<span class="sd">        OUTPUT: whether there is a ``theta``-semistable of dimension vector ``d``</span>
 
 <span class="sd">        By MR1162487_ a dimension vector `d` admits a :math:`\theta`-semi-stable</span>
-<span class="sd">        representation if and only if :math:`\mu_{\theta}(e) &lt;= \mu_{\theta}(d)` for</span>
+<span class="sd">        representation if and only if :math:`\mu_{\theta}(e) \leq \mu_{\theta}(d)` for</span>
 <span class="sd">        all generic subdimension vectors `e` of `d`.</span>
 
 <span class="sd">        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487</span>
@@ -3184,7 +3179,7 @@ document.write(`
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.has_stable_representation">[docs]</a>
     <span class="k">def</span> <span class="nf">has_stable_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks if there is a ``theta``-stable representation of this dimension vector</span>
+<span class="sd">        Checks if there is a ``theta``-stable representation of ``d``</span>
 
 <span class="sd">        INPUT:</span>
 

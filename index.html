@@ -1264,8 +1264,8 @@ of the original quiver and its transpose.</p>
 <dd><p>Returns the framed quiver with framing vector <code class="docutils literal notranslate"><span class="pre">framing</span></code></p>
 <p>The optional parameter <code class="docutils literal notranslate"><span class="pre">vertex</span></code> determines the name of the framing vertex,
 which defaults to <cite>-oo</cite>.</p>
-<p>The framed quiver has one additional vertex, and <cite>f_i</cite> many arrows from
-the framing vertex to <cite>i</cite>, for every <cite>iin Q_0</cite>.</p>
+<p>The framed quiver has one additional vertex, and <span class="math notranslate nohighlight">\(f_i\)</span> many arrows from
+the framing vertex to <span class="math notranslate nohighlight">\(i\)</span>, for every <span class="math notranslate nohighlight">\(i\in Q_0\)</span>.</p>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">framing</span></code> – list of non-negative integers saying how many arrows from the
@@ -1312,7 +1312,7 @@ framed vertex to <code class="docutils literal notranslate"><span class="pre">i<
 <dd><p>Returns the coframed quiver with coframing vector <code class="docutils literal notranslate"><span class="pre">coframing</span></code></p>
 <p>The optional parameter <code class="docutils literal notranslate"><span class="pre">vertex</span></code> determines the name of the coframing vertex,
 which defaults to <cite>+oo</cite>.</p>
-<p>The coframed quiver has one additional vertex, and <cite>f_i</cite> many arrows from
+<p>The coframed quiver has one additional vertex, and <span class="math notranslate nohighlight">\(f_i\)</span> many arrows from
 the vertex <cite>i</cite> to the coframed vertex, for every <span class="math notranslate nohighlight">\(i\in Q_0\)</span>.</p>
 <p>INPUT:</p>
 <ul class="simple">
@@ -1580,8 +1580,8 @@ representation for the canonical stability parameter.</p>
 <dt class="sig sig-object py" id="quiver.Quiver.slope">
 <span class="sig-name descname"><span class="pre">slope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">denom=&lt;built-in</span> <span class="pre">function</span> <span class="pre">sum&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.slope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.slope" title="Link to this definition">#</a></dt>
 <dd><p>Returns the slope of <code class="docutils literal notranslate"><span class="pre">d</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">theta</span></code></p>
-<p>The slope is defined as the value of <cite>theta(d)</cite> divided by the total dimension
-of <cite>d</cite>. It is possible to vary the denominator, to use a function more general
+<p>The slope is defined as the value of <code class="docutils literal notranslate"><span class="pre">theta(d)</span></code> divided by the total dimension
+of <cite>d</cite> <code class="docutils literal notranslate"><span class="pre">sum(d)</span></code>. It is possible to vary the denominator, to use a function more general
 than the sum.</p>
 <p>INPUT:</p>
 <ul class="simple">
@@ -1654,7 +1654,7 @@ use vertex labels, the choice of quiver doesn’t matter:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.Quiver.all_subdimension_vectors">
 <span class="sig-name descname"><span class="pre">all_subdimension_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonzero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forget_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.all_subdimension_vectors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.all_subdimension_vectors" title="Link to this definition">#</a></dt>
-<dd><p>Returns the list of all subdimension vectors of d.</p>
+<dd><p>Returns the list of all subdimension vectors of <code class="docutils literal notranslate"><span class="pre">d</span></code>.</p>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">d</span></code> – dimension vector</p></li>
@@ -1746,7 +1746,8 @@ use vertex labels, the choice of quiver doesn’t matter:</p>
 <p>A dimension vector <cite>d</cite> is <span class="math notranslate nohighlight">\(\theta\)</span>-coprime if
 <span class="math notranslate nohighlight">\(\mu_{\theta}(e)\neq \mu_{\theta}(e)\)</span>
 for all proper non-zero subdimension vectors e of d.</p>
-<p>The default value for <code class="docutils literal notranslate"><span class="pre">theta</span></code> is the canonical stability parameter.</p>
+<p>The default value for <code class="docutils literal notranslate"><span class="pre">theta</span></code> is the canonical stability parameter,
+see <a class="reference internal" href="#quiver.Quiver.canonical_stability_parameter" title="quiver.Quiver.canonical_stability_parameter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">canonical_stability_parameter()</span></code></a>.</p>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">d</span></code> – dimension vector</p></li>
@@ -1770,7 +1771,7 @@ for all proper non-zero subdimension vectors e of d.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.Quiver.is_indivisible">
 <span class="sig-name descname"><span class="pre">is_indivisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.is_indivisible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.is_indivisible" title="Link to this definition">#</a></dt>
-<dd><p>Checks if the gcd of all entries of <code class="docutils literal notranslate"><span class="pre">d</span></code> is 1</p>
+<dd><p>Checks if the gcd of all the entries of <code class="docutils literal notranslate"><span class="pre">d</span></code> is 1</p>
 <p>INPUT:</p>
 <p>– <code class="docutils literal notranslate"><span class="pre">d</span></code> – dimension vector</p>
 <p>OUTPUT: whether the dimension vector is indivisible</p>
@@ -1881,8 +1882,8 @@ equal to 1:</p>
 <dd><p>Checks if <span class="math notranslate nohighlight">\(d\ll e\)</span></p>
 <p>This means that</p>
 <ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(d_i \leq e_i\)</span> for every source <cite>i</cite></p></li>
-<li><p><span class="math notranslate nohighlight">\(d_j \geq e_j\)</span> for every sink <cite>j</cite>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(d_i \leq e_i\)</span> for every source <cite>i</cite>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(d_j \geq e_j\)</span> for every sink <cite>j</cite>, and</p></li>
 <li><p><span class="math notranslate nohighlight">\(d_k = e_k\)</span> for every vertex <cite>k</cite> which is neither a source nor a sink.</p></li>
 </ul>
 <p>This is used when dealing with Chow rings of quiver moduli, see also
@@ -2119,7 +2120,7 @@ for all generic subdimension vectors <cite>f</cite> of <cite>e</cite>.</p>
 we have</p>
 <div class="math notranslate nohighlight">
 \[\operatorname{ext}(a,b) =
-\operatorname{max}\{-\langle c,b\rangle\}.\]</div>
+\operatorname{max}\{-\langle c,b\rangle\},\]</div>
 <p>where <span class="math notranslate nohighlight">\(c\)</span> runs over the generic subdimension vectors of <span class="math notranslate nohighlight">\(a\)</span>.</p>
 <p>EXAMPLES:</p>
 <p>Generic ext on the 3-Kronecker quiver:</p>
@@ -2156,10 +2157,10 @@ we have</p>
 \[\operatorname{dim}(\operatorname{Ext}(M,N)) = \operatorname{ext}(d,e),\]</div>
 <p>i.e., <span class="math notranslate nohighlight">\(\operatorname{dim}(\operatorname{Ext}(M,N))\)</span> is minimal for all
 <cite>(M,N)</cite> in <cite>U</cite>.</p>
-<p>Therefore, <cite>operatorname{dim}(operatorname{Hom}(M,N)) =
-langle a,brangle + operatorname{dim}(operatorname{Ext}(M,N))</cite>
+<p>Therefore, <span class="math notranslate nohighlight">\(\operatorname{dim}(\operatorname{Hom}(M,N)) =
+\langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))\)</span>
 is minimal, and
-<cite>operatorname{hom}(a,b) = langle a,brangle + operatorname{ext}(a,b)</cite>.</p>
+<span class="math notranslate nohighlight">\(\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)\)</span>.</p>
 <p>EXAMPLES:</p>
 <p>Generic hom on the 3-Kronecker quiver:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
@@ -2190,12 +2191,7 @@ is minimal, and
 </ul>
 <p>OUTPUT: canonical stability parameter</p>
 <p>The canonical stability parameter is given by
-<cite>langle d,-rangle - langle -,drangle</cite>.</p>
-<p>INPUT:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">d</span></code> – dimension vector to be used</p></li>
-</ul>
-<p>OUTPUT: canonical stability parameter for <code class="docutils literal notranslate"><span class="pre">d</span></code></p>
+<span class="math notranslate nohighlight">\(\langle d,-\rangle - \langle -,d\rangle\)</span>.</p>
 <p>EXAMPLES:</p>
 <p>Our usual example of the 3-Kronecker quiver:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
@@ -2237,15 +2233,15 @@ is minimal, and
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.Quiver.has_semistable_representation">
 <span class="sig-name descname"><span class="pre">has_semistable_representation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">denom=&lt;built-in</span> <span class="pre">function</span> <span class="pre">sum&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.has_semistable_representation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.has_semistable_representation" title="Link to this definition">#</a></dt>
-<dd><p>Checks if there is a <code class="docutils literal notranslate"><span class="pre">theta</span></code>-semistable of dimension vector <cite>d</cite></p>
+<dd><p>Checks if there is a <code class="docutils literal notranslate"><span class="pre">theta</span></code>-semistable of dimension vector <code class="docutils literal notranslate"><span class="pre">d</span></code></p>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension vector</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">theta</span></code> (default: canonical stability parameter): stability parameter</p></li>
 </ul>
-<p>OUTPUT: whether there is a <code class="docutils literal notranslate"><span class="pre">theta</span></code>-semistable of dimension vector <cite>d</cite></p>
+<p>OUTPUT: whether there is a <code class="docutils literal notranslate"><span class="pre">theta</span></code>-semistable of dimension vector <code class="docutils literal notranslate"><span class="pre">d</span></code></p>
 <p>By <a class="reference external" href="https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487">MR1162487</a> a dimension vector <cite>d</cite> admits a <span class="math notranslate nohighlight">\(\theta\)</span>-semi-stable
-representation if and only if <span class="math notranslate nohighlight">\(\mu_{\theta}(e) &lt;= \mu_{\theta}(d)\)</span> for
+representation if and only if <span class="math notranslate nohighlight">\(\mu_{\theta}(e) \leq \mu_{\theta}(d)\)</span> for
 all generic subdimension vectors <cite>e</cite> of <cite>d</cite>.</p>
 <p>EXAMPLES:</p>
 <p>Semistables for the <span class="math notranslate nohighlight">\(\mathrm{A}_2\)</span> quiver:</p>
@@ -2275,7 +2271,7 @@ all generic subdimension vectors <cite>e</cite> of <cite>d</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.Quiver.has_stable_representation">
 <span class="sig-name descname"><span class="pre">has_stable_representation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">denom=&lt;built-in</span> <span class="pre">function</span> <span class="pre">sum&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.has_stable_representation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.has_stable_representation" title="Link to this definition">#</a></dt>
-<dd><p>Checks if there is a <code class="docutils literal notranslate"><span class="pre">theta</span></code>-stable representation of this dimension vector</p>
+<dd><p>Checks if there is a <code class="docutils literal notranslate"><span class="pre">theta</span></code>-stable representation of <code class="docutils literal notranslate"><span class="pre">d</span></code></p>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension vector</p></li>
@@ -2685,10 +2681,10 @@ moduli space.</p>
 </pre></div>
 </div>
 <p>And a non-example:</p>
-<blockquote>
-<div><p>sage: QuiverModuliSpace(Q, (3, 3)).is_theta_coprime()
-False</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">QuiverModuliSpace</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">is_theta_coprime</span><span class="p">()</span>
+<span class="kc">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2825,7 +2821,7 @@ given slope</p></li>
 <dt class="sig sig-object py" id="quiver.QuiverModuli.is_harder_narasimhan_type">
 <span class="sig-name descname"><span class="pre">is_harder_narasimhan_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dstar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuli.is_harder_narasimhan_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuli.is_harder_narasimhan_type" title="Link to this definition">#</a></dt>
 <dd><p>Checks if <code class="docutils literal notranslate"><span class="pre">dstar</span></code> is a Harder–Narasimhan type.</p>
-<p>A Harder–Narasimhan (HN) type of <cite>d</cite> with respect to <span class="math notranslate nohighlight">\(\theta\)</span>
+<p>A Harder–Narasimhan (HN) type of :math`{bf d}` with respect to <span class="math notranslate nohighlight">\(\theta\)</span>
 is a sequence <span class="math notranslate nohighlight">\({\bf d}^* = ({\bf d}^1,...,{\bf d}^s)\)</span> of dimension vectors
 such that</p>
 <ul class="simple">
@@ -2859,7 +2855,7 @@ such that</p>
 <dt class="sig sig-object py" id="quiver.QuiverModuli.codimension_of_harder_narasimhan_stratum">
 <span class="sig-name descname"><span class="pre">codimension_of_harder_narasimhan_stratum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dstar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuli.codimension_of_harder_narasimhan_stratum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuli.codimension_of_harder_narasimhan_stratum" title="Link to this definition">#</a></dt>
 <dd><p>Computes the codimension of the HN stratum of <code class="docutils literal notranslate"><span class="pre">dstar</span></code>
-inside the representation variety <span class="math notranslate nohighlight">\(R(Q,d)\)</span>.</p>
+inside the representation variety <span class="math notranslate nohighlight">\(R(Q,{\bf d})\)</span>.</p>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">dstar</span></code> – the HN type as a list of dimension vectors</p></li>
@@ -2868,7 +2864,8 @@ inside the representation variety <span class="math notranslate nohighlight">\(R
 <p>OUTPUT: codimension as an integer</p>
 <p>By default, the method does not check if <code class="docutils literal notranslate"><span class="pre">dstar</span></code> is a valid HN type.
 This can be enabled by passing <code class="docutils literal notranslate"><span class="pre">secure=True</span></code>.</p>
-<p>The codimension of the HN stratum of <span class="math notranslate nohighlight">\(d^* = (d^1,...,d^s)\)</span> is given by</p>
+<p>The codimension of the HN stratum of
+<span class="math notranslate nohighlight">\({\bf d}^* = ({\bf d}^1,...,{\bf d}^s)\)</span> is given by</p>
 <div class="math notranslate nohighlight">
 \[- \sum_{k &lt; l} \langle {\bf d}^k,{\bf d}^l\rangle\]</div>
 <p>INPUT:</p>
@@ -2997,20 +2994,13 @@ Section 4 in <a class="reference external" href="https://mathscinet.ams.org/math
 <dt class="sig sig-object py" id="quiver.QuiverModuli.is_luna_type">
 <span class="sig-name descname"><span class="pre">is_luna_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuli.is_luna_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuli.is_luna_type" title="Link to this definition">#</a></dt>
 <dd><p>Checks if <code class="docutils literal notranslate"><span class="pre">tau</span></code> is a Luna type.</p>
-<p>A Luna type of <span class="math notranslate nohighlight">\({\bf d}\)</span> for <span class="math notranslate nohighlight">\(\theta\)</span> is an unordered sequence
-<span class="math notranslate nohighlight">\((({\bf d}^1,m_1),...,({\bf d}^s,m_s))\)</span> of dimension vectors
-<span class="math notranslate nohighlight">\({\bf d}^k\)</span> and positive integers <span class="math notranslate nohighlight">\(m_k\)</span> such that</p>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}\)</span></p></li>
-<li><p><span class="math notranslate nohighlight">\(\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})\)</span></p></li>
-<li><p>All <span class="math notranslate nohighlight">\({\bf d}^k\)</span> admit a <span class="math notranslate nohighlight">\(\theta\)</span>-stable representation</p></li>
-</ul>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">tau</span></code> – Luna type encoded by a dictionary of multiplicities indexed by
 dimension vectors</p></li>
 </ul>
 <p>OUTPUT: whether <code class="docutils literal notranslate"><span class="pre">tau</span></code> is a Luna type</p>
+<p>For a description of Luna types, see <a class="reference internal" href="#quiver.QuiverModuli.all_luna_types" title="quiver.QuiverModuli.all_luna_types"><code class="xref py py-meth docutils literal notranslate"><span class="pre">all_luna_types()</span></code></a>.</p>
 <p>EXAMPLES:</p>
 <p>The Kronecker quiver:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
@@ -3044,7 +3034,7 @@ dimension vectors</p></li>
 <p>OUTPUT: dimension of the corresponding Luna stratum</p>
 <p>The dimension of the Luna stratum of <code class="docutils literal notranslate"><span class="pre">tau</span> <span class="pre">=</span> <span class="pre">{d^1:</span> <span class="pre">p^1,...,d^s:</span> <span class="pre">p^s}</span></code> is</p>
 <div class="math notranslate nohighlight">
-\[\sum_k l(p^k)(1 - \langle {\bf d}^k,{\bf d}^k\rangle)\]</div>
+\[\sum_k l(p^k)(1 - \langle {\bf d}^k,{\bf d}^k\rangle),\]</div>
 <p>where for a partition <span class="math notranslate nohighlight">\(p = (n_1,...,n_l)\)</span>,
 the length <cite>l(p)</cite> is <cite>l</cite>, i.e., the number of summands.</p>
 <p>EXAMPLES:</p>
@@ -3099,8 +3089,8 @@ dimension vectors</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.QuiverModuli.codimension_properly_semistable_locus">
 <span class="sig-name descname"><span class="pre">codimension_properly_semistable_locus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuli.codimension_properly_semistable_locus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuli.codimension_properly_semistable_locus" title="Link to this definition">#</a></dt>
-<dd><p>Computes the codimension of <span class="math notranslate nohighlight">\(R^{\theta\rm-sst}(Q,d)
-\setminus R^{\theta\rm-st}(Q,d)\)</span> inside <span class="math notranslate nohighlight">\(R(Q,d)\)</span>.</p>
+<dd><p>Computes the codimension of <span class="math notranslate nohighlight">\(R^{\theta\rm-sst}(Q,{\bf d})
+\setminus R^{\theta\rm-st}(Q,{\bf d})\)</span> inside <span class="math notranslate nohighlight">\(R(Q,{\bf d})\)</span>.</p>
 <p>OUTPUT: codimension of the properly semistable locus</p>
 <p>The codimension of the properly semistable locus
 is the minimal codimension of the inverse image
@@ -3146,7 +3136,7 @@ there are no Luna types other than (possibly) <code class="docutils literal notr
 <span class="kc">True</span>
 </pre></div>
 </div>
-<p>A double framed example as in our vector fields paper:</p>
+<p>A double framed example as in <a class="reference external" href="https://doi.org/10.48550/arXiv.2311.17004">arXiv.2311.17004</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">GeneralizedKroneckerQuiver</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">framed_quiver</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">coframed_quiver</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
@@ -3165,9 +3155,9 @@ there are no Luna types other than (possibly) <code class="docutils literal notr
 <dt class="sig sig-object py" id="quiver.QuiverModuli.is_amply_stable">
 <span class="sig-name descname"><span class="pre">is_amply_stable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuli.is_amply_stable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuli.is_amply_stable" title="Link to this definition">#</a></dt>
 <dd><p>Checks if the dimension vector is amply stable for the stability parameter</p>
-<p>By definition, a dimension vector <cite>d</cite> is <span class="math notranslate nohighlight">\(\theta\)</span>-amply stable if the
+<p>By definition, a dimension vector :math`{bf d}` is <span class="math notranslate nohighlight">\(\theta\)</span>-amply stable if the
 codimension of the <span class="math notranslate nohighlight">\(\theta\)</span>-semistable locus
-inside <cite>R(Q,d)</cite> is at least 2.</p>
+inside:math:<cite>R(Q,{bf d})</cite> is at least 2.</p>
 <p>OUTPUT: whether the data for the quiver moduli space is amply stable</p>
 <p>EXAMPLES:</p>
 <p>3-Kronecker quiver:</p>
@@ -3226,7 +3216,7 @@ holds for all subdimension vectors <span class="math notranslate nohighlight">\(
 <li><p><code class="docutils literal notranslate"><span class="pre">harder_narasimhan_type</span></code> – list of vectors of Ints</p></li>
 </ul>
 <p>OUTPUT: weight as a fraction</p>
-<p>The weight of a Harder-Narasimhan type <span class="math notranslate nohighlight">\(d^*\)</span>
+<p>The weight of a Harder-Narasimhan type <span class="math notranslate nohighlight">\({\bf d}^*\)</span>
 is the weight of the associated 1-PS <span class="math notranslate nohighlight">\(\lambda\)</span> acting on
 <span class="math notranslate nohighlight">\(\det(N_{S/R})^{\vee}|_Z\)</span>, where <cite>S</cite> is the
 corresponding Harder–Narasimhan stratum.</p>
@@ -3459,14 +3449,14 @@ effective on the simple roots</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.QuiverModuliSpace.dimension">
 <span class="sig-name descname"><span class="pre">dimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.dimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.dimension" title="Link to this definition">#</a></dt>
-<dd><p>Computes the dimension of the moduli space <span class="math notranslate nohighlight">\(M^{\theta-(s)st}(Q,d)\)</span>.</p>
+<dd><p>Computes the dimension of the moduli space <span class="math notranslate nohighlight">\(M^{\theta-(s)st}(Q,{\bf d})\)</span>.</p>
 <p>This involves several cases:</p>
 <ul class="simple">
 <li><p>If there are <span class="math notranslate nohighlight">\(\theta\)</span>-stable representations then
-<span class="math notranslate nohighlight">\(\dim M^{\theta\rm-sst}(Q,d) =
-M^{\theta-st}(Q,d) = 1 - \langle d,d\rangle\)</span>;</p></li>
+<span class="math notranslate nohighlight">\(\dim M^{\theta\rm-sst}(Q,{\bf d}) =
+M^{\theta-st}(Q,{\bf d}) = 1 - \langle {\bf d},{\bf d}\rangle\)</span>;</p></li>
 <li><p>if there are no <span class="math notranslate nohighlight">\(\theta\)</span>-stable representations then
-<span class="math notranslate nohighlight">\(\dim M^{\theta-st}(Q,d) = -\infty\)</span> by convention,
+<span class="math notranslate nohighlight">\(\dim M^{\theta-st}(Q,{\bf d}) = -\infty\)</span> by convention,
 and we define <span class="math notranslate nohighlight">\(\dim M^{\theta\rm\rm-sst} =
 \mathrm{max}_{\tau} \{\dim S_{\tau}\}\)</span>,
 the maximum of the dimension of all Luna strata.</p></li>
@@ -3630,9 +3620,10 @@ and this is a polynomial in <span class="math notranslate nohighlight">\(q\)</sp
 <dt class="sig sig-object py" id="quiver.QuiverModuliSpace.is_smooth">
 <span class="sig-name descname"><span class="pre">is_smooth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.is_smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.is_smooth" title="Link to this definition">#</a></dt>
 <dd><p>Returns whether the moduli space is smooth.</p>
-<p>This is easy if the condition is “stable”, because this moduli space is always
-smooth. In the “semistable” case there is an algorithm, by combining the work
-of Adriaenssens–Le Bruyn and Bocklandt, which is currently not implemented.</p>
+<p>This is easy if the condition is <code class="docutils literal notranslate"><span class="pre">&quot;stable&quot;</span></code>, because this moduli space
+is always smooth. In the <code class="docutils literal notranslate"><span class="pre">&quot;semistable&quot;</span></code> case there is an algorithm,
+by combining the work of Adriaenssens–Le Bruyn and Bocklandt,
+which is currently not implemented.</p>
 <p>EXAMPLES:</p>
 <p>Some 3-Kronecker example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
@@ -3654,7 +3645,7 @@ of Adriaenssens–Le Bruyn and Bocklandt, which is currently not implemented.</p
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.QuiverModuliSpace.semisimple_moduli_space">
 <span class="sig-name descname"><span class="pre">semisimple_moduli_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.semisimple_moduli_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.semisimple_moduli_space" title="Link to this definition">#</a></dt>
-<dd><p>Return the moduli space with <cite>theta</cite> replaced by zero.</p>
+<dd><p>Return the moduli space with <code class="docutils literal notranslate"><span class="pre">theta</span></code> replaced by zero.</p>
 <p>This is the moduli space of semisimple representations for the same quiver
 and the same dimension vector.</p>
 <p>EXAMPLES:</p>
@@ -3767,14 +3758,14 @@ We denote by <span class="math notranslate nohighlight">\(A\)</span> the ring of
 \[A := R^{S_{\bf d}} = \mathbb{Q}[\xi_{i, j}],\]</div>
 <p>where <span class="math notranslate nohighlight">\(S_{\bf d} = \prod_{i \in Q_0} S_{{\bf d}_i}\)</span> acts by permuting
 the variables.</p>
-<p>The ring <span class="math notranslate nohighlight">\(\operatorname{CH}(M^{\theta-st}(Q,d))\)</span> is a quotient of <cite>A</cite>
-by two types of relations:
+<p>The ring <span class="math notranslate nohighlight">\(\operatorname{CH}(M^{\theta-st}(Q,{\bf d}))\)</span> is a quotient
+of <cite>A</cite> by two types of relations:
 a single linear relation, given by the choice of linearization upon which
 the universal bundles are constructed, and the so-called
 tautological relations, which we define below.</p>
 <p>The <em>linear relation</em> given by the linearization <cite>a</cite> is the identity
 <span class="math notranslate nohighlight">\(\sum_{i \in Q_0} a_i c_1(U_i) = 0\)</span> in <span class="math notranslate nohighlight">\(A\)</span>.</p>
-<p>A subdimension vector <span class="math notranslate nohighlight">\({\bf e}\)</span> of <cite>:math:{bf d}</cite> is said to be
+<p>A subdimension vector <span class="math notranslate nohighlight">\({\bf e}\)</span> of <span class="math notranslate nohighlight">\({\bf d}\)</span> is said to be
 “forbidden” if <span class="math notranslate nohighlight">\(\mu_{\theta}({\bf e}) &gt; \mu_{\theta}({\bf d})\)</span>.
 One actually only needs to consider forbidden dimension vectors that are minimal
 with respect to a certain partial order, see <a class="reference internal" href="#quiver.Quiver.division_order" title="quiver.Quiver.division_order"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Quiver.division_order()</span></code></a>.</p>
@@ -3792,7 +3783,7 @@ generated by the polynomials</p>
 \sum_{\sigma \in S_{\bf d}} sign(\sigma) \sigma \cdot f,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\delta\)</span> is the discriminant
 <span class="math notranslate nohighlight">\(\prod_{i\in Q_0}\prod_{1\leq k&lt;\ell\leq d_i}(x_{i,\ell}-x_{i,k})\)</span>.</p>
-<p>The Chow ring <span class="math notranslate nohighlight">\(\operatorname{CH}(M^{\theta\rm-st}(Q,d))\)</span> is then
+<p>The Chow ring <span class="math notranslate nohighlight">\(\operatorname{CH}(M^{\theta\rm-st}(Q,{\bf d}))\)</span> is then
 the quotient of <cite>A</cite> by <span class="math notranslate nohighlight">\((\sum_{i\in Q_0} a_i c_1(U_i)) + \rho(I_{taut})\)</span>.</p>
 <p>INPUT:</p>
 <ul class="simple">
@@ -3905,7 +3896,7 @@ character:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.QuiverModuliSpace.total_chern_class_universal">
 <span class="sig-name descname"><span class="pre">total_chern_class_universal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.total_chern_class_universal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.total_chern_class_universal" title="Link to this definition">#</a></dt>
-<dd><p>Gives the total Chern class of the universal bundle U_i(chi).</p>
+<dd><p>Gives the total Chern class of the universal bundle <span class="math notranslate nohighlight">\(U_i(chi)\)</span>.</p>
 <p>EXAMPLES:</p>
 <p>The two summands for the Kronecker 6-fold:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
@@ -3925,6 +3916,10 @@ character:</p>
 <span class="sig-name descname"><span class="pre">point_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.point_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.point_class" title="Link to this definition">#</a></dt>
 <dd><p>Returns the point class as an expression in Chern classes of the
 <span class="math notranslate nohighlight">\(U_i\)</span> (<code class="docutils literal notranslate"><span class="pre">chi</span></code>).</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">chi</span></code> – linearization of the universal bundles (default: None)</p></li>
+</ul>
 <p>The point class is given as the homogeneous component of degree
 <span class="math notranslate nohighlight">\(\dim X\)</span> of the expression</p>
 <div class="math notranslate nohighlight">
@@ -3961,7 +3956,7 @@ in general position:</p>
 <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">z</span>
 </pre></div>
 </div>
-<p>If we don’t specify <cite>chi</cite> a default that will still work is used, but the
+<p>If we don’t specify <code class="docutils literal notranslate"><span class="pre">chi</span></code> a default that will still work is used, but the
 results do depend on it:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">point_class</span><span class="p">(</span><span class="n">classes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;x3&#39;</span><span class="p">,</span> <span class="s1">&#39;x4&#39;</span><span class="p">,</span> <span class="s1">&#39;x5&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">])</span>
 <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="o">*</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span>
@@ -3979,16 +3974,17 @@ results do depend on it:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">classes</span></code> – variables to be used (default: None)</p></li>
 </ul>
 <p>EXAMPLES:</p>
-<blockquote>
-<div><p>sage: from quiver import *
-sage: Q = KroneckerQuiver(3)
-sage: d = (2, 3)
-sage: X = QuiverModuliSpace(Q, d)
-sage: eta = Q.canonical_stability_parameter(d)
-sage: eta = eta / 3
-sage: X.degree(eta)
-57</p>
-</div></blockquote>
+<p>Rederive a calculation from <a class="reference external" href="https://doi.org/10.48550/arXiv.2307.01711">arXiv.2307.01711</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">KroneckerQuiver</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">X</span> <span class="o">=</span> <span class="n">QuiverModuliSpace</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">eta</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">/</span> <span class="mi">3</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+<span class="mi">57</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -3999,7 +3995,7 @@ sage: X.degree(eta)
 <div class="math notranslate nohighlight">
 \[td(X) =
 (\prod_{a:i \to j \in Q_1} \prod_{p=1}^{d_j} \prod_{q=1}^{d_i} Q(t_{j,q} -
-t_{i,p}))/(prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))\]</div>
+t_{i,p}))/(\prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))\]</div>
 <p>EXAMPLES:</p>
 <p>Not yet implemented:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
@@ -4100,8 +4096,8 @@ because of the generic stabilizer being 1-dimensional:</p>
 <dt class="sig sig-object py" id="quiver.QuiverModuliStack.motive">
 <span class="sig-name descname"><span class="pre">motive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliStack.motive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliStack.motive" title="Link to this definition">#</a></dt>
 <dd><p>Gives an expression for the motive of the semistable moduli stack</p>
-<p>This really lives inside an appropriate localization of K_0(Var), but it only
-involves the Lefschetz class.</p>
+<p>This really lives inside an appropriate localization of <span class="math notranslate nohighlight">\(K_0(Var)\)</span>,
+but it only involves the Lefschetz class.</p>
 <p>EXAMPLES:</p>
 <p>Loop quivers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>

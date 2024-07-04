@@ -661,7 +661,7 @@ document.write(`
 <span class="sd">            sage: QuiverModuliSpace(Q, (2, 3)).is_theta_coprime()</span>
 <span class="sd">            True</span>
 
-<span class="sd">        And a non-example:</span>
+<span class="sd">        And a non-example::</span>
 
 <span class="sd">            sage: QuiverModuliSpace(Q, (3, 3)).is_theta_coprime()</span>
 <span class="sd">            False</span>
@@ -824,7 +824,7 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks if ``dstar`` is a Harder--Narasimhan type.</span>
 
-<span class="sd">        A Harder--Narasimhan (HN) type of `d` with respect to :math:`\theta`</span>
+<span class="sd">        A Harder--Narasimhan (HN) type of :math`{\bf d}` with respect to :math:`\theta`</span>
 <span class="sd">        is a sequence :math:`{\bf d}^* = ({\bf d}^1,...,{\bf d}^s)` of dimension vectors</span>
 <span class="sd">        such that</span>
 
@@ -896,7 +896,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">codimension_of_harder_narasimhan_stratum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dstar</span><span class="p">,</span> <span class="n">secure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the codimension of the HN stratum of ``dstar``</span>
-<span class="sd">        inside the representation variety :math:`R(Q,d)`.</span>
+<span class="sd">        inside the representation variety :math:`R(Q,{\bf d})`.</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -909,7 +909,8 @@ document.write(`
 <span class="sd">        By default, the method does not check if ``dstar`` is a valid HN type.</span>
 <span class="sd">        This can be enabled by passing ``secure=True``.</span>
 
-<span class="sd">        The codimension of the HN stratum of :math:`d^* = (d^1,...,d^s)` is given by</span>
+<span class="sd">        The codimension of the HN stratum of</span>
+<span class="sd">        :math:`{\bf d}^* = ({\bf d}^1,...,{\bf d}^s)` is given by</span>
 
 <span class="sd">        .. MATH::</span>
 
@@ -1163,20 +1164,14 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks if ``tau`` is a Luna type.</span>
 
-<span class="sd">        A Luna type of :math:`{\bf d}` for :math:`\theta` is an unordered sequence</span>
-<span class="sd">        :math:`(({\bf d}^1,m_1),...,({\bf d}^s,m_s))` of dimension vectors</span>
-<span class="sd">        :math:`{\bf d}^k` and positive integers :math:`m_k` such that</span>
-
-<span class="sd">        - :math:`m_1{\bf d}^1 + ... + m_s{\bf d}^s = {\bf d}`</span>
-<span class="sd">        - :math:`\mu_{\theta}({\bf d}^k) = \mu_{\theta}({\bf d})`</span>
-<span class="sd">        - All :math:`{\bf d}^k` admit a :math:`\theta`-stable representation</span>
-
 <span class="sd">        INPUT:</span>
 
 <span class="sd">        - ``tau`` -- Luna type encoded by a dictionary of multiplicities indexed by</span>
 <span class="sd">          dimension vectors</span>
 
 <span class="sd">        OUTPUT: whether ``tau`` is a Luna type</span>
+
+<span class="sd">        For a description of Luna types, see :meth:`all_luna_types`.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -1242,7 +1237,7 @@ document.write(`
 
 <span class="sd">        .. MATH::</span>
 
-<span class="sd">            \sum_k l(p^k)(1 - \langle {\bf d}^k,{\bf d}^k\rangle)</span>
+<span class="sd">            \sum_k l(p^k)(1 - \langle {\bf d}^k,{\bf d}^k\rangle),</span>
 
 <span class="sd">        where for a partition :math:`p = (n_1,...,n_l)`,</span>
 <span class="sd">        the length `l(p)` is `l`, i.e., the number of summands.</span>
@@ -1331,11 +1326,11 @@ document.write(`
 <span class="sd">        Computes the codimension of the preimage of the Luna stratum</span>
 
 <span class="sd">        This is the codimension of :math:`\pi^{-1}(S_{tau})`</span>
-<span class="sd">        inside `R(Q,d)` where</span>
+<span class="sd">        inside:math:`R(Q,{\bf d})` where</span>
 
 <span class="sd">        .. MATH::</span>
 
-<span class="sd">            \pi\colon R(Q,d)^{\theta{\rm-sst}}\to M^{\theta{\rm-sst}}(Q,d)</span>
+<span class="sd">            \pi\colon R(Q,{\bf d})^{\theta{\rm-sst}}\to M^{\theta{\rm-sst}}(Q,{\bf d})</span>
 
 <span class="sd">        is the semistable quotient map.</span>
 
@@ -1390,8 +1385,8 @@ document.write(`
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.codimension_properly_semistable_locus">[docs]</a>
     <span class="k">def</span> <span class="nf">codimension_properly_semistable_locus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes the codimension of :math:`R^{\theta\rm-sst}(Q,d)</span>
-<span class="sd">        \setminus R^{\theta\rm-st}(Q,d)` inside :math:`R(Q,d)`.</span>
+<span class="sd">        Computes the codimension of :math:`R^{\theta\rm-sst}(Q,{\bf d})</span>
+<span class="sd">        \setminus R^{\theta\rm-st}(Q,{\bf d})` inside :math:`R(Q,{\bf d})`.</span>
 
 <span class="sd">        OUTPUT: codimension of the properly semistable locus</span>
 
@@ -1455,7 +1450,7 @@ document.write(`
 <span class="sd">            sage: Y.semistable_equals_stable()</span>
 <span class="sd">            True</span>
 
-<span class="sd">        A double framed example as in our vector fields paper::</span>
+<span class="sd">        A double framed example as in arXiv.2311.17004_::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
@@ -1467,6 +1462,8 @@ document.write(`
 <span class="sd">            False</span>
 <span class="sd">            sage: X.semistable_equals_stable()</span>
 <span class="sd">            True</span>
+
+<span class="sd">        .. _arXiv.2311.17004: https://doi.org/10.48550/arXiv.2311.17004</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># setup shorthand</span>
         <span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span>
@@ -1496,9 +1493,9 @@ document.write(`
     <span class="k">def</span> <span class="nf">is_amply_stable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Checks if the dimension vector is amply stable for the stability parameter</span>
 
-<span class="sd">        By definition, a dimension vector `d` is :math:`\theta`-amply stable if the</span>
+<span class="sd">        By definition, a dimension vector :math`{\bf d}` is :math:`\theta`-amply stable if the</span>
 <span class="sd">        codimension of the :math:`\theta`-semistable locus</span>
-<span class="sd">        inside `R(Q,d)` is at least 2.</span>
+<span class="sd">        inside:math:`R(Q,{\bf d})` is at least 2.</span>
 
 <span class="sd">        OUTPUT: whether the data for the quiver moduli space is amply stable</span>
 
@@ -1599,7 +1596,7 @@ document.write(`
 
 <span class="sd">        OUTPUT: weight as a fraction</span>
 
-<span class="sd">        The weight of a Harder-Narasimhan type :math:`d^*`</span>
+<span class="sd">        The weight of a Harder-Narasimhan type :math:`{\bf d}^*`</span>
 <span class="sd">        is the weight of the associated 1-PS :math:`\lambda` acting on</span>
 <span class="sd">        :math:`\det(N_{S/R})^{\vee}|_Z`, where `S` is the</span>
 <span class="sd">        corresponding Harder--Narasimhan stratum.</span>
@@ -2187,15 +2184,15 @@ document.write(`
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.dimension">[docs]</a>
     <span class="k">def</span> <span class="nf">dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes the dimension of the moduli space :math:`M^{\theta-(s)st}(Q,d)`.</span>
+<span class="sd">        Computes the dimension of the moduli space :math:`M^{\theta-(s)st}(Q,{\bf d})`.</span>
 
 <span class="sd">        This involves several cases:</span>
 
 <span class="sd">        - If there are :math:`\theta`-stable representations then</span>
-<span class="sd">          :math:`\dim M^{\theta\rm-sst}(Q,d) =</span>
-<span class="sd">          M^{\theta-st}(Q,d) = 1 - \langle d,d\rangle`;</span>
+<span class="sd">          :math:`\dim M^{\theta\rm-sst}(Q,{\bf d}) =</span>
+<span class="sd">          M^{\theta-st}(Q,{\bf d}) = 1 - \langle {\bf d},{\bf d}\rangle`;</span>
 <span class="sd">        - if there are no :math:`\theta`-stable representations then</span>
-<span class="sd">          :math:`\dim M^{\theta-st}(Q,d) = -\infty` by convention,</span>
+<span class="sd">          :math:`\dim M^{\theta-st}(Q,{\bf d}) = -\infty` by convention,</span>
 <span class="sd">          and we define :math:`\dim M^{\theta\rm\rm-sst} =</span>
 <span class="sd">          \mathrm{max}_{\tau} \{\dim S_{\tau}\}`,</span>
 <span class="sd">          the maximum of the dimension of all Luna strata.</span>
@@ -2458,9 +2455,10 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns whether the moduli space is smooth.</span>
 
-<span class="sd">        This is easy if the condition is &quot;stable&quot;, because this moduli space is always</span>
-<span class="sd">        smooth. In the &quot;semistable&quot; case there is an algorithm, by combining the work</span>
-<span class="sd">        of Adriaenssens--Le Bruyn and Bocklandt, which is currently not implemented.</span>
+<span class="sd">        This is easy if the condition is ``&quot;stable&quot;``, because this moduli space</span>
+<span class="sd">        is always smooth. In the ``&quot;semistable&quot;`` case there is an algorithm,</span>
+<span class="sd">        by combining the work of Adriaenssens--Le Bruyn and Bocklandt,</span>
+<span class="sd">        which is currently not implemented.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -2501,7 +2499,7 @@ document.write(`
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.semisimple_moduli_space">[docs]</a>
     <span class="k">def</span> <span class="nf">semisimple_moduli_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the moduli space with `theta` replaced by zero.</span>
+<span class="sd">        Return the moduli space with ``theta`` replaced by zero.</span>
 
 <span class="sd">        This is the moduli space of semisimple representations for the same quiver</span>
 <span class="sd">        and the same dimension vector.</span>
@@ -2684,8 +2682,8 @@ document.write(`
 <span class="sd">        where :math:`S_{\bf d} = \prod_{i \in Q_0} S_{{\bf d}_i}` acts by permuting</span>
 <span class="sd">        the variables.</span>
 
-<span class="sd">        The ring :math:`\operatorname{CH}(M^{\theta-st}(Q,d))` is a quotient of `A`</span>
-<span class="sd">        by two types of relations:</span>
+<span class="sd">        The ring :math:`\operatorname{CH}(M^{\theta-st}(Q,{\bf d}))` is a quotient</span>
+<span class="sd">        of `A` by two types of relations:</span>
 <span class="sd">        a single linear relation, given by the choice of linearization upon which</span>
 <span class="sd">        the universal bundles are constructed, and the so-called</span>
 <span class="sd">        tautological relations, which we define below.</span>
@@ -2693,7 +2691,7 @@ document.write(`
 <span class="sd">        The *linear relation* given by the linearization `a` is the identity</span>
 <span class="sd">        :math:`\sum_{i \in Q_0} a_i c_1(U_i) = 0` in :math:`A`.</span>
 
-<span class="sd">        A subdimension vector :math:`{\bf e}` of `:math:{\bf d}` is said to be</span>
+<span class="sd">        A subdimension vector :math:`{\bf e}` of :math:`{\bf d}` is said to be</span>
 <span class="sd">        &quot;forbidden&quot; if :math:`\mu_{\theta}({\bf e}) &gt; \mu_{\theta}({\bf d})`.</span>
 <span class="sd">        One actually only needs to consider forbidden dimension vectors that are minimal</span>
 <span class="sd">        with respect to a certain partial order, see :meth:`Quiver.division_order`.</span>
@@ -2720,7 +2718,7 @@ document.write(`
 <span class="sd">        where :math:`\delta` is the discriminant</span>
 <span class="sd">        :math:`\prod_{i\in Q_0}\prod_{1\leq k&lt;\ell\leq d_i}(x_{i,\ell}-x_{i,k})`.</span>
 
-<span class="sd">        The Chow ring :math:`\operatorname{CH}(M^{\theta\rm-st}(Q,d))` is then</span>
+<span class="sd">        The Chow ring :math:`\operatorname{CH}(M^{\theta\rm-st}(Q,{\bf d}))` is then</span>
 <span class="sd">        the quotient of `A` by :math:`(\sum_{i\in Q_0} a_i c_1(U_i)) + \rho(I_{taut})`.</span>
 
 <span class="sd">        INPUT:</span>
@@ -2892,7 +2890,7 @@ document.write(`
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.total_chern_class_universal">[docs]</a>
     <span class="k">def</span> <span class="nf">total_chern_class_universal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gives the total Chern class of the universal bundle U_i(chi).</span>
+<span class="sd">        Gives the total Chern class of the universal bundle :math:`U_i(chi)`.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -2924,6 +2922,10 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the point class as an expression in Chern classes of the</span>
 <span class="sd">        :math:`U_i` (``chi``).</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``chi`` -- linearization of the universal bundles (default: None)</span>
 
 <span class="sd">        The point class is given as the homogeneous component of degree</span>
 <span class="sd">        :math:`\dim X` of the expression</span>
@@ -2965,7 +2967,7 @@ document.write(`
 <span class="sd">            sage: X.point_class(chi, classes=[&#39;x1&#39;, &#39;x2&#39;, &#39;x3&#39;, &#39;x4&#39;, &#39;x5&#39;, &#39;y&#39;, &#39;z&#39;])</span>
 <span class="sd">            1/2*z</span>
 
-<span class="sd">        If we don&#39;t specify `chi` a default that will still work is used, but the</span>
+<span class="sd">        If we don&#39;t specify ``chi`` a default that will still work is used, but the</span>
 <span class="sd">        results do depend on it::</span>
 
 <span class="sd">            sage: X.point_class(classes=[&#39;x1&#39;, &#39;x2&#39;, &#39;x3&#39;, &#39;x4&#39;, &#39;x5&#39;, &#39;y&#39;, &#39;z&#39;])</span>
@@ -3009,6 +3011,8 @@ document.write(`
 
 <span class="sd">        EXAMPLES:</span>
 
+<span class="sd">        Rederive a calculation from arXiv.2307.01711_::</span>
+
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = KroneckerQuiver(3)</span>
 <span class="sd">            sage: d = (2, 3)</span>
@@ -3017,6 +3021,9 @@ document.write(`
 <span class="sd">            sage: eta = eta / 3</span>
 <span class="sd">            sage: X.degree(eta)</span>
 <span class="sd">            57</span>
+
+<span class="sd">        .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">eta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">eta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span>
@@ -3039,7 +3046,7 @@ document.write(`
 
 <span class="sd">            td(X) =</span>
 <span class="sd">            (\prod_{a:i \to j \in Q_1} \prod_{p=1}^{d_j} \prod_{q=1}^{d_i} Q(t_{j,q} -</span>
-<span class="sd">            t_{i,p}))/(prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))</span>
+<span class="sd">            t_{i,p}))/(\prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -3222,8 +3229,8 @@ document.write(`
     <span class="k">def</span> <span class="nf">motive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gives an expression for the motive of the semistable moduli stack</span>
 
-<span class="sd">        This really lives inside an appropriate localization of K_0(Var), but it only</span>
-<span class="sd">        involves the Lefschetz class.</span>
+<span class="sd">        This really lives inside an appropriate localization of :math:`K_0(Var)`,</span>
+<span class="sd">        but it only involves the Lefschetz class.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
