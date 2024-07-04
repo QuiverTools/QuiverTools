@@ -11,6 +11,21 @@ from sage.structure.element import Element
 
 
 class Quiver(Element):
+    r"""
+    A quiver is a (finite) directed multigraph. It is an important tool in the
+    representation theory of (finite-dimensional) algebras, because it allows one to
+    construct the path algebra, whose modules are equivalently described as
+    representations of the quiver. These in turn can be classified using moduli spaces
+    of quiver representations.
+
+    For an introduction to the subject one is referred to
+
+    * Harm Derksen and Jerzy Weyman: An introduction to quiver representations
+    * Markus Reineke: Moduli of representations of quivers
+
+    or one of the many other resources that exist.
+    """
+
     def __init__(self, G, name=None):
         r"""Constructor for a quiver.
 
