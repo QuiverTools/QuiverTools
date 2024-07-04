@@ -1494,6 +1494,7 @@ class QuiverModuli(Element):
         """
         # setup shorthand
         Q, d = self._Q, self._d
+        d = Q._coerce_dimension_vector(d)
 
         if classes is None:
             classes = [
@@ -1509,7 +1510,8 @@ class QuiverModuli(Element):
                 for r in range(1, d[i] + 1)
             ]
 
-        # TODO check that there are enough classes and roots!
+        assert len(classes) == sum(d), "number of classes must be number of generators"
+        assert len(roots) == sum(d), "number of roots must be number of generators"
 
         R = PolynomialRing(QQ, roots)
 
@@ -2309,7 +2311,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         INPUT:
 
-        - ``chi`` -- choice of linearization, we need # TODO continue and implement assert
+        - ``chi`` -- choice of linearization, we need that :math:`\chi({\bf d})=1`
 
         - ``classes`` -- list of Strings
 
@@ -2404,26 +2406,21 @@ class QuiverModuliSpace(QuiverModuli):
 
         d = Q._coerce_dimension_vector(d)
         theta = Q._coerce_vector(theta)
-        # This implementation only works if d is theta-coprime
-        # which implies that d is indivisible.
-        assert Q.is_theta_coprime(d, theta)
 
-        # if a linearization is not given we compute one here.
+        # this implementation only works if d is theta-coprime
+        # which implies that d is indivisible.
+        assert Q.is_theta_coprime(d, theta), "need coprime"
+
+        # if a linearization is not given we compute one here
         if chi is None:
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
-        else:
-            chi = Q._coerce_vector(chi)
 
-        # chi must have integer entries
-        assert all(QQ(c).denominator() == 1 for c in chi)
-        """Make sure that chi has weight one, i.e.,
-        provides a retraction for X*(PG) --> X*(G)."""
+        chi = Q._coerce_vector(chi)
+
+        # make sure that chi has weight one, i.e., provides a retraction for
+        # X*(PG) --> X*(G).
         assert chi * d == 1
-
-        # TODO why do this? earlier we have similar code!
-        if classes is None:
-            classes = ["x%s_%s" % (i, r) for i in range(n) for r in range(1, d[i] + 1)]
 
         taut = self.tautological_ideal(use_roots=False, classes=classes)
         A, generator, rels = taut["ParentRing"], taut["Generators"], taut["Relations"]
