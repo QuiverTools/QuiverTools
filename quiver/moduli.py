@@ -2610,6 +2610,8 @@ class QuiverModuliSpace(QuiverModuli):
 
         EXAMPLES:
 
+        Rederive a calculation from our Chow paper::
+
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
             sage: d = (2, 3)
