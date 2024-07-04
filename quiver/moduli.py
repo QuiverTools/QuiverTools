@@ -1499,6 +1499,17 @@ class QuiverModuli(Element):
         - ``roots`` -- (default: None) optional list of strings to name the Chern roots
 
         OUTPUT: ideal of a polynomial ring
+
+        EXAMPLES:
+
+        The tautological ideal for our favourite 6-fold has 9 non-zero generators::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: len(X.tautological_ideal().gens())
+            9
+
         """
         # setup shorthand
         Q, d = self._Q, self._d
@@ -2354,7 +2365,8 @@ class QuiverModuliSpace(QuiverModuli):
             sage: [I.normal_basis(i) for i in range(X.dimension()+1)]
             [[1], [x1_1, x2_1, x3_1, x4_1, x5_1], [x5_2]]
 
-        The Chow ring for our favourite 6-fold::
+        The ideal Chow ring for our favourite 6-fold has 10 generators, 9 from the
+        tautological ideal, and 1 linear relation::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -2364,35 +2376,8 @@ class QuiverModuliSpace(QuiverModuli):
             sage: R.ambient()
             Multivariate Polynomial Ring in x0_1, x0_2, x1_1, x1_2, x1_3
             over Rational Field
-            sage: R
-            Quotient of Multivariate Polynomial Ring in x0_1, x0_2, x1_1, x1_2, x1_3
-            over Rational Field by the ideal (0, 0, 6*x0_1^3 - 12*x0_1*x0_2 -
-            8*x0_1^2*x1_1 + 8*x0_2*x1_1 + 3*x0_1*x1_1^2 + 3*x0_1*x1_2 - 3*x1_1*x1_2 +
-            3*x1_3, 0, 0, 0, 3*x0_1^4 - 9*x0_1^2*x0_2 + 3*x0_2^2 - 3*x0_1^3*x1_1 +
-            6*x0_1*x0_2*x1_1 + x0_1^2*x1_1^2 - x0_2*x1_1^2 - x0_1^2*x1_2 + x0_2*x1_2 +
-            6*x0_1*x1_3 - 3*x1_1*x1_3, 0, 0, 0, x0_1^5 - 4*x0_1^3*x0_2 +
-            3*x0_1*x0_2^2 - 3*x0_1^3*x1_2 + 6*x0_1*x0_2*x1_2 + x0_1^2*x1_1*x1_2 -
-            x0_2*x1_1*x1_2 + 7*x0_1^2*x1_3 - 7*x0_2*x1_3 - 3*x0_1*x1_1*x1_3, 0, 0, 0,
-            6*x0_1^4 - 18*x0_1^2*x0_2 + 6*x0_2^2 - 8*x0_1^3*x1_1 + 16*x0_1*x0_2*x1_1 +
-            3*x0_1^2*x1_1^2 - 3*x0_2*x1_1^2 + 3*x0_1^2*x1_2 - 3*x0_2*x1_2 -
-            3*x0_1*x1_1*x1_2 + x1_2^2 + 3*x0_1*x1_3 - x1_1*x1_3, 0, 0, 3*x0_1^2*x0_2 +
-            3*x0_2^2 - x0_1^3*x1_1 - 6*x0_1*x0_2*x1_1 + 3*x0_1^2*x1_1^2 +
-            3*x0_2*x1_1^2 - 3*x0_1*x1_1^3 + x1_1^4 - 3*x0_1^2*x1_2 - 3*x0_2*x1_2 +
-            6*x0_1*x1_1*x1_2 - 3*x1_1^2*x1_2 + x1_2^2 - 3*x0_1*x1_3 + 2*x1_1*x1_3,
-            3*x0_1^5 - 12*x0_1^3*x0_2 + 9*x0_1*x0_2^2 - 3*x0_1^4*x1_1 +
-            9*x0_1^2*x0_2*x1_1 - 3*x0_2^2*x1_1 + x0_1^3*x1_1^2 - 2*x0_1*x0_2*x1_1^2 -
-            x0_1^3*x1_2 + 2*x0_1*x0_2*x1_2 + 6*x0_1^2*x1_3 - 6*x0_2*x1_3 -
-            3*x0_1*x1_1*x1_3 + x1_2*x1_3, 0, 0, 3*x0_1*x0_2^2 - x0_1^3*x1_2 -
-            6*x0_1*x0_2*x1_2 + 3*x0_1^2*x1_1*x1_2 + 3*x0_2*x1_1*x1_2 -
-            3*x0_1*x1_1^2*x1_2 + x1_1^3*x1_2 + 3*x0_1*x1_2^2 - 2*x1_1*x1_2^2 -
-            3*x0_1^2*x1_3 - 3*x0_2*x1_3 + 3*x0_1*x1_1*x1_3 - x1_1^2*x1_3 + 2*x1_2*x1_3,
-            x0_1^6 - 5*x0_1^4*x0_2 + 6*x0_1^2*x0_2^2 - x0_2^3 - 3*x0_1^4*x1_2 +
-            9*x0_1^2*x0_2*x1_2 - 3*x0_2^2*x1_2 + x0_1^3*x1_1*x1_2 -
-            2*x0_1*x0_2*x1_1*x1_2 + 7*x0_1^3*x1_3 - 14*x0_1*x0_2*x1_3 -
-            3*x0_1^2*x1_1*x1_3 + 3*x0_2*x1_1*x1_3 + x1_3^2, x0_2^3 - x0_1^3*x1_3 -
-            6*x0_1*x0_2*x1_3 + 3*x0_1^2*x1_1*x1_3 + 3*x0_2*x1_1*x1_3 -
-            3*x0_1*x1_1^2*x1_3 + x1_1^3*x1_3 + 3*x0_1*x1_2*x1_3 - 2*x1_1*x1_2*x1_3 +
-            x1_3^2, -x0_1 + x1_1)
+            sage: len(R.defining_ideal().gens())
+            10
 
         """
         Q, d, theta = self._Q, self._d, self._theta
