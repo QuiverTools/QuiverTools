@@ -26,3 +26,4 @@ Other algorithmic aspects of quivers, mostly disjoint of QuiverTools, can be fou
 
 * https://folk.ntnu.no/oyvinso/QPA/, which focuses on calculations with actual representations
 * https://smzg.github.io/msinvar/index.html, which focuses on DT-invariants
+
