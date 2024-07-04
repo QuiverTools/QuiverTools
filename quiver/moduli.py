@@ -1433,6 +1433,7 @@ class QuiverModuli(Element):
         es = Q.all_subdimension_vectors(d, proper=True, nonzero=True)
 
         slope = Q.slope(d, theta, denom=denom)
+
         if condition == "semistable":
             return list(filter(lambda e: Q.slope(e, theta, denom=denom) > slope, es))
         elif condition == "stable":
@@ -1441,7 +1442,7 @@ class QuiverModuli(Element):
     def _all_minimal_forbidden_subdimension_vectors(self):
         r"""Returns the list of all `minimal` forbidden subdimension vectors
 
-        Minimality is with respect to the partial order `e << d` which means
+        Minimality is with respect to the partial order :math`e\ll d` which means
         :math:`e_i \leq d_i` for every source `i`, :math:`e_j \geq d_j`
         for every sink `j`, and :math:`e_k = d_k` for every vertex which is neither
         a source nor a sink. See also :meth:`Quiver.division_order`.
@@ -1491,20 +1492,17 @@ class QuiverModuli(Element):
 
         """
         # setup shorthand
-        Q, d = (
-            self._Q,
-            self._d,
-        )
+        Q, d = self._Q, self._d
 
         if chernClasses is None:
             chernClasses = [
-                "x%s_%s" % (i, r)
+                "x{}_{}".format(i, r)
                 for i in range(Q.number_of_vertices())
                 for r in range(1, d[i] + 1)
             ]
         if chernRoots is None:
             chernRoots = [
-                "t%s_%s" % (i, r)
+                "t{}_{}".format(i, r)
                 for i in range(Q.number_of_vertices())
                 for r in range(1, d[i] + 1)
             ]
@@ -1513,7 +1511,7 @@ class QuiverModuli(Element):
 
         def generator(R, i, r):
             r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
-            return R.gen(r + sum([d[j] for j in range(i)]))
+            return R.gen(r + sum(d[j] for j in range(i)))
 
         r"""Generators of the tautological ideal regarded upstairs, i.e. in A*([R/T]).
         For a forbidden subdimension vector e of d, the forbidden polynomial in Chern
@@ -1522,18 +1520,14 @@ class QuiverModuli(Element):
         \prod_{i,j} \prod_{r=1}^{e_i} \prod_{s=e_j+1}^{d_j} (tj_s - ti_r)^{a_{ij}}."""
         forbiddenPolynomials = [
             prod(
-                [
-                    prod(
-                        [
-                            (generator(R, j, s) - generator(R, i, r))
-                            ** Q.adjacency_matrix()[i, j]
-                            for r in range(e[i])
-                            for s in range(e[j], d[j])
-                        ]
-                    )
-                    for i in range(Q.number_of_vertices())
-                    for j in range(Q.number_of_vertices())
-                ]
+                prod(
+                    (generator(R, j, s) - generator(R, i, r))
+                    ** Q.adjacency_matrix()[i, j]
+                    for r in range(e[i])
+                    for s in range(e[j], d[j])
+                )
+                for i in range(Q.number_of_vertices())
+                for j in range(Q.number_of_vertices())
             )
             for e in self._all_minimal_forbidden_subdimension_vectors()
         ]
@@ -1547,16 +1541,12 @@ class QuiverModuli(Element):
         else:
             """delta is the discriminant"""
             delta = prod(
-                [
-                    prod(
-                        [
-                            generator(R, i, l) - generator(R, i, k)
-                            for k in range(d[i])
-                            for l in range(k + 1, d[i])
-                        ]
-                    )
-                    for i in range(Q.number_of_vertices())
-                ]
+                prod(
+                    generator(R, i, l) - generator(R, i, k)
+                    for k in range(d[i])
+                    for l in range(k + 1, d[i])
+                )
+                for i in range(Q.number_of_vertices())
             )
 
             """longest is the longest Weyl group element
