@@ -2609,32 +2609,47 @@ class QuiverModuliSpace(QuiverModuli):
         r"""
         The Todd class of `X` is the Todd class of the tangent bundle.
 
-        For quiver moduli it computes as
-
-        # TODO reference Chow paper
+        Currently not yet implemented.
 
         .. MATH::
 
             td(X) =
             (\prod_{a:i \to j \in Q_1} \prod_{p=1}^{d_j} \prod_{q=1}^{d_i} Q(t_{j,q} -
             t_{i,p}))/(prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))
+
+        EXAMPLES:
+
+        Not yet implemented::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.todd_class()
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
         """
 
-        def todd_generating_series(t, n):
+        def todd_Q(t, n):
             r"""
             We call the series :math:`Q(t) = t/(1-e^{-t})` the Todd generating series.
-
-            The function computes the terms of this series up to degree n."""
-            B = [bernoulli(i) for i in range(n + 1)]
-            return sum((-1) ^ i * B[i] / factorial(i) * t ^ i for i in range(n + 1))
+            The function computes the terms of this series up to degree n.
+            We use this instead of the more conventional notation `Q` to avoid a
+            clash with the notation for the quiver.
+            """
+            return sum(
+                (-1) ** i * bernoulli[i] / factorial(i) * t**i for i in range(n + 1)
+            )
 
         def truncate(f, n):
             r"""
-            Takes an element in a graded ring and discards
-            all homogeneous components of degree > n"""
-            hom = f.homogeneous_components()
-            keyList = [i for i in hom]
-            return sum(hom[i] for i in filter(lambda i: i <= n, keyList))
+            Takes an element in a graded ring and discards all homogeneous components
+            of degree > n
+            """
+            components = f.homogeneous_components()
+            keys = [i for i in components]
+
+            return sum(components[i] for i in filter(lambda i: i <= n, keys))
 
         raise NotImplementedError()
 
