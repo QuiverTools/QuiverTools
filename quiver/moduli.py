@@ -2476,12 +2476,15 @@ class QuiverModuliSpace(QuiverModuli):
 
     def total_chern_class_universal(self, i, chi, chernClasses=None):
         """Gives the total Chern class of the universal bundle U_i(chi)."""
+        # setup shorthand
+        Q, d = self._Q, self._d
 
-        d = self._Q._coerce_dimension_vector(self._d)
+        d = Q._coerce_dimension_vector(self._d)
+
         A = self.chow_ring(chi, chernClasses=chernClasses)
 
         return 1 + sum(
-            A.gen(r + sum([d[j] for j in range(i - 1)])) for r in range(d[i - 1])
+            A.gen(r + sum(d[j] for j in range(i - 1))) for r in range(d[i - 1])
         )
 
     def point_class(self, chi=None, chernClasses=None):
@@ -2503,25 +2506,21 @@ class QuiverModuliSpace(QuiverModuli):
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(8)
-            sage: d = (1, 1)
-            sage: theta = (1, -1)
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, (1, 1))
             sage: chi = (1, 0)
-            sage: X.point_class(chi,chernClasses=['o','h'])
+            sage: X.point_class(chi, chernClasses=["o", "h"])
             h^7
 
         Our favorite 6-fold::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: d = (2, 3)
-            sage: theta = (3, -2)
-            sage: X = QuiverModuliSpace(Q,d,theta,condition="semistable")
+            sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: chi = (-1, 1)
-            sage: X.point_class(chi,chernClasses=['x1','x2','y1','y2','y3'])
+            sage: X.point_class(chi, chernClasses=["x1", "x2", "y1", "y2", "y3"])
             y3^2
 
-        A moduli space of the 5-subspaces quiver;
+        A moduli space of the 5-subspace quiver;
         it agrees with the blow-up of :math:`\mathbb{P}^2` in 4 points
         in general position::
 
@@ -2533,40 +2532,39 @@ class QuiverModuliSpace(QuiverModuli):
             sage: chi = (-1, -1, -1, -1, -1, 3)
             sage: X.point_class(chi,chernClasses=['x1','x2','x3','x4','x5','y','z'])
             1/2*z
-
         """
+        # TODO test one without chi given?
         # setup shorthand
         Q, d = self._Q, self._d
 
         d = Q._coerce_dimension_vector(d)
-        n = Q.number_of_vertices()
-        a = Q.adjacency_matrix()
-        N = self.dimension()
 
         A = self.chow_ring(chi=chi, chernClasses=chernClasses)
-        pi = A.cover()  # The quotient map
         sect = A.lifting_map()  # A choice of a section of pi
 
+        # choose a convenient chi
         if chi is None:
             [g, m] = extended_gcd(d.list())
             chi = vector(m)
-        else:
-            chi = Q._coerce_vector(chi)
 
-        my_numerator = prod(
+        chi = Q._coerce_vector(chi)
+
+        p = prod(
             self.total_chern_class_universal(j + 1, chi, chernClasses=chernClasses)
-            ** (d * a.column(j))
-            for j in range(n)
+            ** (d * Q.adjacency_matrix().column(j))
+            for j in range(Q.number_of_vertices())
         )
-        my_denom = prod(
+        q = prod(
             self.total_chern_class_universal(i + 1, chi, chernClasses=chernClasses)
             ** d[i]
-            for i in range(n)
+            for i in range(Q.number_of_vertices())
         )
 
-        quotient = my_numerator / my_denom
+        quotient = p / q
 
-        return pi(sect(quotient).homogeneous_components()[N])
+        pi = A.cover()  # the quotient map
+
+        return pi(sect(quotient).homogeneous_components()[self.dimension()])
 
     def degree(self, eta=None, chernClasses=None):
         r"""Computes the degree of the ample line bundle given by eta."""
