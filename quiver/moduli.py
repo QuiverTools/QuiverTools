@@ -1646,6 +1646,9 @@ class QuiverModuli(Element):
         ]
         tautological = [inclusion.inverse_image(g) for g in tautological]
 
+        # get rid of zeroes
+        tautological = [f for f in tautological if f]
+
         return A.ideal(tautological)
 
     def dimension(self) -> int:
