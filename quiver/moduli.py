@@ -1476,7 +1476,7 @@ class QuiverModuli(Element):
 
         return list(filter(is_minimal, forbidden))
 
-    def __tautological_generator(self, R, i, r):
+    def __generator(self, R, i, r):
         r"""Returns generator(R, i, r) = t{i+1}_{r+1}."""
         # setup shorthand
         Q, d = self._Q, self._d
@@ -1531,10 +1531,7 @@ class QuiverModuli(Element):
         forbidden_polynomials = [
             prod(
                 prod(
-                    (
-                        self.__tautological_generator(R, j, s)
-                        - self.__tautological_generator(R, i, r)
-                    )
+                    (self.__generator(R, j, s) - self.__generator(R, i, r))
                     ** Q.adjacency_matrix()[i, j]
                     for r in range(e[i])
                     for s in range(e[j], d[j])
@@ -1552,8 +1549,7 @@ class QuiverModuli(Element):
         # delta is the discriminant: precomputed for antisymmetrization(f)
         delta = prod(
             prod(
-                self.__tautological_generator(R, i, l)
-                - self.__tautological_generator(R, i, k)
+                self.__generator(R, i, l) - self.__generator(R, i, k)
                 for k in range(d[i])
                 for l in range(k + 1, d[i])
             )
@@ -1590,10 +1586,7 @@ class QuiverModuli(Element):
         Bprime = [
             [
                 f.parent().hom(
-                    [
-                        self.__tautological_generator(R, i, r)
-                        for r in range(f.parent().ngens())
-                    ],
+                    [self.__generator(R, i, r) for r in range(f.parent().ngens())],
                     R,
                 )(f)
                 for f in B(i)
@@ -1628,9 +1621,7 @@ class QuiverModuli(Element):
             elementarySymmetric = elementarySymmetric + [
                 E([k]).expand(
                     d[i],
-                    alphabet=[
-                        self.__tautological_generator(R, i, r) for r in range(d[i])
-                    ],
+                    alphabet=[self.__generator(R, i, r) for r in range(d[i])],
                 )
                 for k in range(1, d[i] + 1)
             ]
@@ -2316,7 +2307,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         - ``chi`` -- choice of linearization, we need that :math:`\chi({\bf d})=1`
 
-        - ``classes`` -- list of Strings
+        - ``classes`` -- list of generators for the polynomial ring (default: None)
 
         OUTPUT: ring
 
@@ -2426,18 +2417,13 @@ class QuiverModuliSpace(QuiverModuli):
         assert chi * d == 1
 
         tautological = self.tautological_ideal(use_roots=False, classes=classes)
-        A = tautological.ring()
 
-        I = tautological + A.ideal(
-            sum(
-                [
-                    chi[i] * self._QuiverModuli__tautological_generator(A, i, 0)
-                    for i in range(n)
-                ]
-            )
+        A = tautological.ring()
+        linear = A.ideal(
+            sum(chi[i] * self._QuiverModuli__generator(A, i, 0) for i in range(n))
         )
 
-        return QuotientRing(A, I, names=classes)
+        return QuotientRing(A, tautological + linear, names=classes)
 
     def chern_class_line_bundle(self, eta, classes=None):
         r"""
