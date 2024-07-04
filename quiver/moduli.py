@@ -370,7 +370,7 @@ class QuiverModuli(Element):
             sage: QuiverModuliSpace(Q, (2, 3)).is_theta_coprime()
             True
 
-        And a non-example:
+        And a non-example::
 
             sage: QuiverModuliSpace(Q, (3, 3)).is_theta_coprime()
             False
@@ -862,6 +862,8 @@ class QuiverModuli(Element):
 
         OUTPUT: whether ``tau`` is a Luna type
 
+        For a description of Luna types, see :meth:`all_luna_types`.
+
         EXAMPLES:
 
         The Kronecker quiver::
@@ -923,7 +925,7 @@ class QuiverModuli(Element):
 
         .. MATH::
 
-            \sum_k l(p^k)(1 - \langle {\bf d}^k,{\bf d}^k\rangle)
+            \sum_k l(p^k)(1 - \langle {\bf d}^k,{\bf d}^k\rangle),
 
         where for a partition :math:`p = (n_1,...,n_l)`,
         the length `l(p)` is `l`, i.e., the number of summands.
@@ -1127,7 +1129,7 @@ class QuiverModuli(Element):
             sage: Y.semistable_equals_stable()
             True
 
-        A double framed example as in our vector fields paper::
+        A double framed example as in arXiv.2311.17004_::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
@@ -1139,6 +1141,8 @@ class QuiverModuli(Element):
             False
             sage: X.semistable_equals_stable()
             True
+
+        .. _arXiv.2311.17004: https://doi.org/10.48550/arXiv.2311.17004
         """
         # setup shorthand
         Q, d, theta, denom = self._Q, self._d, self._theta, self._denom
@@ -2492,7 +2496,7 @@ class QuiverModuliSpace(QuiverModuli):
 
     def total_chern_class_universal(self, i, chi, classes=None):
         r"""
-        Gives the total Chern class of the universal bundle U_i(chi).
+        Gives the total Chern class of the universal bundle :math:`U_i(chi)`.
 
         EXAMPLES:
 
