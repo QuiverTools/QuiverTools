@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>QuiverTools &#8212; QuiverTools v1 documentation</title>
+    <title>QuiverTools &#8212; QuiverTools 1.0 documentation</title>
   
   
   
@@ -36,7 +36,7 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=7d3b92e0"></script>
+    <script src="_static/documentation_options.js?v=a681ed88"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -141,8 +141,8 @@
       
     
     
-    <img src="_static/logo.png" class="logo__image only-light" alt="QuiverTools v1 documentation - Home"/>
-    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="QuiverTools v1 documentation - Home"/>`);</script>
+    <img src="_static/logo.png" class="logo__image only-light" alt="QuiverTools 1.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="QuiverTools 1.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -3100,11 +3100,29 @@ dimension vectors</p></li>
 <dt class="sig sig-object py" id="quiver.QuiverModuli.codimension_properly_semistable_locus">
 <span class="sig-name descname"><span class="pre">codimension_properly_semistable_locus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuli.codimension_properly_semistable_locus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuli.codimension_properly_semistable_locus" title="Link to this definition">#</a></dt>
 <dd><p>Computes the codimension of <span class="math notranslate nohighlight">\(R^{\theta\rm-sst}(Q,d)
-\setminus R^{\theta-st}(Q,d)\)</span> inside <span class="math notranslate nohighlight">\(R(Q,d)\)</span>.</p>
+\setminus R^{\theta\rm-st}(Q,d)\)</span> inside <span class="math notranslate nohighlight">\(R(Q,d)\)</span>.</p>
 <p>OUTPUT: codimension of the properly semistable locus</p>
 <p>The codimension of the properly semistable locus
 is the minimal codimension of the inverse image
 of the non-stable Luna strata.</p>
+<p>EXAMPLES:</p>
+<p>If the semistable locus is the stable locus the codimension is -Infinity:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">KroneckerQuiver</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">QuiverModuliSpace</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">codimension_properly_semistable_locus</span><span class="p">()</span>
+<span class="o">-</span><span class="n">Infinity</span>
+</pre></div>
+</div>
+<p>This is currently not working properly because we cannot compute the dimension
+of the nullcone:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">KroneckerQuiver</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">QuiverModuliSpace</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">codimension_properly_semistable_locus</span><span class="p">()</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="o">...</span>
+<span class="ne">NotImplementedError</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

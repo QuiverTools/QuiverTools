@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>quiver.moduli &#8212; QuiverTools v1 documentation</title>
+    <title>quiver.moduli &#8212; QuiverTools 1.0 documentation</title>
   
   
   
@@ -35,7 +35,7 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../_static/documentation_options.js?v=7d3b92e0"></script>
+    <script src="../../_static/documentation_options.js?v=a681ed88"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -138,8 +138,8 @@
       
     
     
-    <img src="../../_static/logo.png" class="logo__image only-light" alt="QuiverTools v1 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="QuiverTools v1 documentation - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="QuiverTools 1.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="QuiverTools 1.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -1357,7 +1357,19 @@ document.write(`
 
 <span class="sd">        where for a partition :math:`p = (n_1,...,n_l)`, we define</span>
 <span class="sd">        :math:`||p||^2 = \sum_v n_v^2`</span>
-<span class="sd">        and :math:`N(Q_{tau}, d_{tau})` is the nullcone of the local quiver setting.</span>
+<span class="sd">        and :math:`N(Q_{\tau}, d_{\tau})` is the nullcone of the local quiver setting.</span>
+
+<span class="sd">        This is currently not working properly because we cannot compute the dimension</span>
+<span class="sd">        of the nullcone::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (3, 3))</span>
+<span class="sd">            sage: Ls = X.all_luna_types()</span>
+<span class="sd">            sage: X._codimension_inverse_image_luna_stratum(Ls[0])</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># setup shorthand</span>
         <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
@@ -1367,10 +1379,8 @@ document.write(`
             <span class="o">-</span><span class="n">Q</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
             <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span>
                 <span class="p">[</span>
-                    <span class="n">Q</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">dk</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">dk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="n">nkv</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">nkv</span> <span class="ow">in</span> <span class="n">dk</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-                    <span class="k">for</span> <span class="n">dk</span> <span class="ow">in</span> <span class="n">tau</span>
+                    <span class="n">Q</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">dk</span><span class="p">,</span> <span class="n">dk</span><span class="p">)</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="n">nkv</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">nkv</span> <span class="ow">in</span> <span class="n">m</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">dk</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">in</span> <span class="n">tau</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="p">]</span>
             <span class="p">)</span>
             <span class="o">-</span> <span class="n">Qtau</span><span class="o">.</span><span class="n">dimension_nullcone</span><span class="p">(</span><span class="n">dtau</span><span class="p">)</span>
@@ -1381,16 +1391,38 @@ document.write(`
     <span class="k">def</span> <span class="nf">codimension_properly_semistable_locus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the codimension of :math:`R^{\theta\rm-sst}(Q,d)</span>
-<span class="sd">        \setminus R^{\theta-st}(Q,d)` inside :math:`R(Q,d)`.</span>
+<span class="sd">        \setminus R^{\theta\rm-st}(Q,d)` inside :math:`R(Q,d)`.</span>
 
 <span class="sd">        OUTPUT: codimension of the properly semistable locus</span>
 
 <span class="sd">        The codimension of the properly semistable locus</span>
 <span class="sd">        is the minimal codimension of the inverse image</span>
-<span class="sd">        of the non-stable Luna strata.&quot;&quot;&quot;</span>
-        <span class="n">Ls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_luna_types</span><span class="p">(</span><span class="n">exclude_stable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="sd">        of the non-stable Luna strata.</span>
 
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_codimension_inverse_image_luna_stratum</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span> <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">Ls</span><span class="p">)</span></div>
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        If the semistable locus is the stable locus the codimension is -Infinity::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuliSpace(Q, (2, 3)).codimension_properly_semistable_locus()</span>
+<span class="sd">            -Infinity</span>
+
+<span class="sd">        This is currently not working properly because we cannot compute the dimension</span>
+<span class="sd">        of the nullcone::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver(3)</span>
+<span class="sd">            sage: QuiverModuliSpace(Q, (3, 3)).codimension_properly_semistable_locus()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Ls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_luna_types</span><span class="p">(</span><span class="n">exclude_stable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">codimensions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_codimension_inverse_image_luna_stratum</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span> <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">Ls</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">codimensions</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="n">Infinity</span><span class="p">)</span></div>
 
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
