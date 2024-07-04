@@ -1226,8 +1226,8 @@ class Quiver(Element):
         The optional parameter ``vertex`` determines the name of the framing vertex,
         which defaults to `-oo`.
 
-        The framed quiver has one additional vertex, and `f_i` many arrows from
-        the framing vertex to `i`, for every `i\in Q_0`.
+        The framed quiver has one additional vertex, and :math:`f_i` many arrows from
+        the framing vertex to :math:`i`, for every :math:`i\in Q_0`.
 
         INPUT:
 
@@ -1298,7 +1298,7 @@ class Quiver(Element):
         The optional parameter ``vertex`` determines the name of the coframing vertex,
         which defaults to `+oo`.
 
-        The coframed quiver has one additional vertex, and `f_i` many arrows from
+        The coframed quiver has one additional vertex, and :math:`f_i` many arrows from
         the vertex `i` to the coframed vertex, for every :math:`i\in Q_0`.
 
         INPUT:
@@ -1715,8 +1715,8 @@ class Quiver(Element):
         r"""
         Returns the slope of ``d`` with respect to ``theta``
 
-        The slope is defined as the value of `theta(d)` divided by the total dimension
-        of `d`. It is possible to vary the denominator, to use a function more general
+        The slope is defined as the value of ``theta(d)`` divided by the total dimension
+        of `d` ``sum(d)``. It is possible to vary the denominator, to use a function more general
         than the sum.
 
         INPUT:
@@ -1861,7 +1861,7 @@ class Quiver(Element):
         self, d, proper=False, nonzero=False, forget_labels=False
     ):
         r"""
-        Returns the list of all subdimension vectors of d.
+        Returns the list of all subdimension vectors of ``d``.
 
         INPUT:
 
@@ -1978,7 +1978,8 @@ class Quiver(Element):
         :math:`\mu_{\theta}(e)\neq \mu_{\theta}(e)`
         for all proper non-zero subdimension vectors e of d.
 
-        The default value for ``theta`` is the canonical stability parameter.
+        The default value for ``theta`` is the canonical stability parameter,
+        see :meth:`canonical_stability_parameter`.
 
         INPUT:
 
@@ -2013,7 +2014,7 @@ class Quiver(Element):
 
     def is_indivisible(self, d) -> bool:
         """
-        Checks if the gcd of all entries of ``d`` is 1
+        Checks if the gcd of all the entries of ``d`` is 1
 
         INPUT:
 
@@ -2152,8 +2153,8 @@ class Quiver(Element):
 
         This means that
 
-        - :math:`d_i \leq e_i` for every source `i`
-        - :math:`d_j \geq e_j` for every sink `j`,
+        - :math:`d_i \leq e_i` for every source `i`,
+        - :math:`d_j \geq e_j` for every sink `j`, and
         - :math:`d_k = e_k` for every vertex `k` which is neither a source nor a sink.
 
         This is used when dealing with Chow rings of quiver moduli, see also
@@ -2475,7 +2476,7 @@ class Quiver(Element):
         .. MATH::
 
             \operatorname{ext}(a,b) =
-            \operatorname{max}\{-\langle c,b\rangle\}.
+            \operatorname{max}\{-\langle c,b\rangle\},
 
         where :math:`c` runs over the generic subdimension vectors of :math:`a`.
 
@@ -2527,10 +2528,10 @@ class Quiver(Element):
         i.e., :math:`\operatorname{dim}(\operatorname{Ext}(M,N))` is minimal for all
         `(M,N)` in `U`.
 
-        Therefore, `\operatorname{dim}(\operatorname{Hom}(M,N)) =
+        Therefore, :math:`\operatorname{dim}(\operatorname{Hom}(M,N)) =
         \langle a,b\rangle + \operatorname{dim}(\operatorname{Ext}(M,N))`
         is minimal, and
-        `\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.
+        :math:`\operatorname{hom}(a,b) = \langle a,b\rangle + \operatorname{ext}(a,b)`.
 
         EXAMPLES:
 
@@ -2647,13 +2648,7 @@ class Quiver(Element):
         OUTPUT: canonical stability parameter
 
         The canonical stability parameter is given by
-        `\langle d,-\rangle - \langle -,d\rangle`.
-
-        INPUT:
-
-        - ``d`` -- dimension vector to be used
-
-        OUTPUT: canonical stability parameter for ``d``
+        :math:`\langle d,-\rangle - \langle -,d\rangle`.
 
         EXAMPLES:
 
@@ -2701,7 +2696,7 @@ class Quiver(Element):
         return theta
 
     def has_semistable_representation(self, d, theta=None, denom=sum):
-        r"""Checks if there is a ``theta``-semistable of dimension vector `d`
+        r"""Checks if there is a ``theta``-semistable of dimension vector ``d``
 
         INPUT:
 
@@ -2709,10 +2704,10 @@ class Quiver(Element):
 
         - ``theta`` (default: canonical stability parameter): stability parameter
 
-        OUTPUT: whether there is a ``theta``-semistable of dimension vector `d`
+        OUTPUT: whether there is a ``theta``-semistable of dimension vector ``d``
 
         By MR1162487_ a dimension vector `d` admits a :math:`\theta`-semi-stable
-        representation if and only if :math:`\mu_{\theta}(e) <= \mu_{\theta}(d)` for
+        representation if and only if :math:`\mu_{\theta}(e) \leq \mu_{\theta}(d)` for
         all generic subdimension vectors `e` of `d`.
 
         .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
@@ -2755,7 +2750,7 @@ class Quiver(Element):
 
     def has_stable_representation(self, d, theta=None, denom=sum):
         r"""
-        Checks if there is a ``theta``-stable representation of this dimension vector
+        Checks if there is a ``theta``-stable representation of ``d``
 
         INPUT:
 
