@@ -315,8 +315,8 @@ def GeneralizedSubspaceQuiver(m, K):
     r"""
     Return the generalized subspace quiver with ``m`` sources and multiplicities ``K``
 
-    The sources are labelled :math:`1,\ldots,m` and the sink is `m+1`;
-    there are are `K_i` arrows from every source :math:`i=1,\ldots,m` to the sink.
+    The sources are labelled :math:`1,\ldots,m` and the sink is :math:`m+1`;
+    there are are :math:`K_i` arrows from every source :math:`i=1,\ldots,m` to the sink.
 
     - ``m`` -- integer; the number of sources in the subspace quiver
 
@@ -327,7 +327,7 @@ def GeneralizedSubspaceQuiver(m, K):
     EXAMPLES:
 
     The generalized subspace quiver with `m` sources and multiplicities `K`
-    has :math:`\sum_{i=1}^mK_i` arrows and `m+1` vertices::
+    has :math:`\sum_{i=1}^mK_i` arrows and :math:`m+1` vertices::
 
         sage: from quiver import *
         sage: Q = GeneralizedSubspaceQuiver(6, (1, 2, 3, 4, 5, 6))
@@ -374,7 +374,7 @@ def DynkinQuiver(T):
         sage: DynkinQuiver("A2") == GeneralizedKroneckerQuiver(1)
         True
 
-    The Dynkin quiver `\mathrm{D}_4` is a different orientation of the 3-subspace
+    The Dynkin quiver :math:`\mathrm{D}_4` is a different orientation of the 3-subspace
     quiver::
 
         sage: DynkinQuiver("D4") == SubspaceQuiver(3)
