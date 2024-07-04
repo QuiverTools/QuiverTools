@@ -734,7 +734,7 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        The generalized Kronecker quiver is finite only for :math:`m=1`:
+        The generalized Kronecker quiver is finite only for :math:`m=1`::
 
             sage: from quiver import *
             sage: GeneralizedKroneckerQuiver(1).is_finite_type()
@@ -757,7 +757,7 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        The generalized Kronecker quiver is tame only for :math:`m=2`:
+        The generalized Kronecker quiver is tame only for :math:`m=2`::
 
             sage: from quiver import *
             sage: GeneralizedKroneckerQuiver(1).is_tame_type()
@@ -780,7 +780,7 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        The generalized Kronecker quiver is wild for all :math:`m\geq 3`:
+        The generalized Kronecker quiver is wild for all :math:`m\geq 3`::
 
             sage: from quiver import *
             sage: GeneralizedKroneckerQuiver(1).is_wild_type()
