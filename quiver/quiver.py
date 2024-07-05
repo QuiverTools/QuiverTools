@@ -1742,8 +1742,8 @@ class Quiver(Element):
         Returns the slope of ``d`` with respect to ``theta``
 
         The slope is defined as the value of ``theta(d)`` divided by the total dimension
-        of `d` ``sum(d)``. It is possible to vary the denominator, to use a function more general
-        than the sum.
+        of `d` ``sum(d)``. It is possible to vary the denominator, to use a function
+        more general than the sum.
 
         INPUT:
 
