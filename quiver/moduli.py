@@ -2823,7 +2823,6 @@ class QuiverModuliSpace(QuiverModuli):
 
         """
 
-
         integrand = (
             (self.todd_class(chi=chi, classes=classes) * L)
             .lift()
