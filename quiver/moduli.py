@@ -2806,13 +2806,23 @@ class QuiverModuliSpace(QuiverModuli):
             sage: from quiver import *
             sage: Q = KroneckerQuiver()
             sage: X = QuiverModuliSpace(Q, (1, 1))
-            sage: [X.integral(i * vector((1, -1))) for i in range(-5,5)]
+            sage: L = X.chern_character_line_bundle((1, -1))
+            sage: [X.integral(L ** i) for i in range(-5, 5)]
             [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
+
+        Hilbert series for the 3-Kronecker quiver as in arXiv.2307.01711_::
+
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: L = Q.canonical_stability_parameter((2, 3)) / 3
+            sage: O = X.chern_character_line_bundle(L)
+            sage: [X.integral(O ** i) for i in range(5)]
+            [1, 20, 148, 664, 2206]
+
+        .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711
+
         """
 
-        # input can be a vector or directly a Chern class
-        if self._Q._is_vector(L):
-            L = self.chern_character_line_bundle(L, classes=classes)
 
         integrand = (
             (self.todd_class(chi=chi, classes=classes) * L)
