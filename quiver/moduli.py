@@ -1169,8 +1169,8 @@ class QuiverModuli(Element):
     def is_amply_stable(self) -> bool:
         r"""Checks if the dimension vector is amply stable for the stability parameter
 
-        By definition, a dimension vector :math`{\bf d}` is :math:`\theta`-amply stable if the
-        codimension of the :math:`\theta`-semistable locus
+        By definition, a dimension vector :math`{\bf d}` is :math:`\theta`-amply stable
+        if the codimension of the :math:`\theta`-semistable locus
         inside:math:`R(Q,{\bf d})` is at least 2.
 
         OUTPUT: whether the data for the quiver moduli space is amply stable
