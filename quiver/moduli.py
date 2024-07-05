@@ -1557,8 +1557,9 @@ class QuiverModuli(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
-            sage: X.__tautological_ideal_helper()["ambient_ring"]
-            Multivariate Polynomial Ring in x1, x2, y1, y2, y3 over Rational Field
+            sage: X._QuiverModuli__tautological_ideal_helper()["ambient_ring"]
+            Multivariate Polynomial Ring in t0_1, t0_2, t1_1, t1_2, t1_3
+            over Rational Field
 
         .. SEEALSO:: :meth:`tautological_ideal`
         """
@@ -2717,9 +2718,9 @@ class QuiverModuliSpace(QuiverModuli):
             sage: Q = KroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: X.todd_class()
-            4135/1008*x1_3bar^2 - 683/160*x1_2bar*x1_3bar + 213/160*x1_1bar^2*x1_2bar -
-            71/160*x1_2bar^2 + 33/160*x1_1bar*x1_3bar - 7/8*x1_1bar^3 - 3/2*x1_3bar +
-            3/2*x0_2bar + x1_1bar^2 - 3/2*x1_1bar + 1
+            x1_3bar^2 - 77/60*x1_2bar*x1_3bar + 823/1440*x1_1bar^2*x1_2bar -
+            823/4320*x1_2bar^2 - 257/4320*x1_1bar*x1_3bar - 17/32*x1_1bar^3 -
+            15/32*x1_3bar + 5/12*x0_2bar + x1_1bar^2 - 3/2*x1_1bar + 1
 
         .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711
         """
