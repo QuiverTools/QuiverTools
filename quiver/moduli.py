@@ -2787,6 +2787,46 @@ class QuiverModuliSpace(QuiverModuli):
         # return an element in the Chow ring
         return A(num) / A(den)
 
+    def integral(self, L, chi=None, classes=None):
+        r"""
+        Integrates the Todd class against an element of the Chow ring.
+
+        INPUT:
+
+        - ``L`` -- element of the Chow ring
+        - ``chi`` -- linearization of the universal bundles (default: None)
+        - ``classes`` -- variables to be used (default: None)
+
+        OUTPUT: the integral of :math:`td(X) \cdot L` over the moduli space
+
+        EXAMPLES:
+
+        The integral of :math:`\mathcal{O}(i)` on the projective line for some `i`::
+
+            sage: from quiver import *
+            sage: Q = KroneckerQuiver()
+            sage: X = QuiverModuliSpace(Q, (1, 1))
+            sage: [X.integral(i * vector((1, -1))) for i in range(-5,5)]
+            [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
+        """
+
+        # input can be a vector or directly a Chern class
+        if self._Q._is_vector(L):
+            L = self.chern_character_line_bundle(L, classes=classes)
+
+        integrand = (
+            (self.todd_class(chi=chi, classes=classes) * L)
+            .lift()
+            .homogeneous_components()
+        )
+
+        if self.dimension() in integrand.keys():
+            return integrand[self.dimension()] / self.point_class(
+                chi=chi, classes=classes
+            )
+
+        return 0
+
 
 class QuiverModuliStack(QuiverModuli):
     def __init__(self, Q, d, theta=None, denom=sum, condition="semistable"):
