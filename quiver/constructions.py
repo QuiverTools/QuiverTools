@@ -3,7 +3,7 @@ from sage.combinat.root_system.weyl_characters import WeylCharacterRing
 from sage.matrix.special import block_diagonal_matrix, zero_matrix
 from sage.rings.integer_ring import ZZ
 
-from quiver import Quiver
+from . import Quiver
 
 
 def disjoint_union(Q1, Q2):
