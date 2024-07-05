@@ -2634,11 +2634,19 @@ class QuiverModuliSpace(QuiverModuli):
 
         return c ** self.dimension() / p
 
-    def todd_class(self):
+    def todd_class(self, chi=None, classes=None):
         r"""
         The Todd class of `X` is the Todd class of the tangent bundle.
 
-        Currently not yet implemented.
+        INPUT:
+
+        - ``chi`` -- linearization of the universal bundles (default: None)
+        - ``classes`` -- variables to be used (default: None)
+
+        OUTPUT: the Todd class as an element of the Chow ring
+
+
+        The Todd class is computed in arXiv.2307.01711_. It is given by the formula
 
         .. MATH::
 
@@ -2648,15 +2656,17 @@ class QuiverModuliSpace(QuiverModuli):
 
         EXAMPLES:
 
-        Not yet implemented::
+        An example from arXiv.2307.01711_::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: X.todd_class()
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
+            4135/1008*x1_3bar^2 - 683/160*x1_2bar*x1_3bar + 213/160*x1_1bar^2*x1_2bar -
+            71/160*x1_2bar^2 + 33/160*x1_1bar*x1_3bar - 7/8*x1_1bar^3 - 3/2*x1_3bar +
+            3/2*x0_2bar + x1_1bar^2 - 3/2*x1_1bar + 1
+
+        .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711
         """
 
         def todd_Q(t, n):
@@ -2667,7 +2677,7 @@ class QuiverModuliSpace(QuiverModuli):
             clash with the notation for the quiver.
             """
             return sum(
-                (-1) ** i * bernoulli[i] / factorial(i) * t**i for i in range(n + 1)
+                (-1) ** i * bernoulli(i) / factorial(i) * t**i for i in range(n + 1)
             )
 
         def truncate(f, n):
@@ -2680,7 +2690,34 @@ class QuiverModuliSpace(QuiverModuli):
 
             return sum(components[i] for i in filter(lambda i: i <= n, keys))
 
-        raise NotImplementedError()
+        # setup shorthand
+        Q, d = self._Q, self._d
+        A = self.chow_ring(chi=chi, classes=classes)
+        n = self.dimension()
+
+        def short_t(i, p):
+            r"""
+            Shorthand for the generators of the ambient ring
+            from which the Chow ring is constructed
+            """
+            return A.cover_ring().gens()[sum(d[j] for j in range(i - 1)) + p]
+
+        num = prod(
+            todd_Q(short_t(j, q) - short_t(i, p), n)
+            for i, j in Q.arrows()
+            for q in range(d[i])
+            for p in range(d[j])
+        )
+
+        den = prod(
+            todd_Q(short_t(i, q) - short_t(i, p), n)
+            for i in range(Q.number_of_vertices())
+            for q in range(d[i])
+            for p in range(d[i])
+        )
+
+        # return an element in the Chow ring
+        return A(truncate(num, n)) / A(truncate(den, n))
 
 
 class QuiverModuliStack(QuiverModuli):
