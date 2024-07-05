@@ -278,7 +278,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">sage.rings.rational_field</span> <span class="kn">import</span> <span class="n">QQ</span>
 <span class="kn">from</span> <span class="nn">sage.structure.element</span> <span class="kn">import</span> <span class="n">Element</span>
 
-<span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="n">Quiver</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Quiver</span>
 
 <span class="sd">&quot;&quot;&quot;Defines how permutations are multiplied.&quot;&quot;&quot;</span>
 <span class="n">Permutations</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">mult</span><span class="o">=</span><span class="s2">&quot;r2l&quot;</span><span class="p">)</span>
@@ -1493,8 +1493,8 @@ document.write(`
     <span class="k">def</span> <span class="nf">is_amply_stable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Checks if the dimension vector is amply stable for the stability parameter</span>
 
-<span class="sd">        By definition, a dimension vector :math`{\bf d}` is :math:`\theta`-amply stable if the</span>
-<span class="sd">        codimension of the :math:`\theta`-semistable locus</span>
+<span class="sd">        By definition, a dimension vector :math`{\bf d}` is :math:`\theta`-amply stable</span>
+<span class="sd">        if the codimension of the :math:`\theta`-semistable locus</span>
 <span class="sd">        inside:math:`R(Q,{\bf d})` is at least 2.</span>
 
 <span class="sd">        OUTPUT: whether the data for the quiver moduli space is amply stable</span>
@@ -1869,6 +1869,39 @@ document.write(`
 <span class="sd">            9</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tautological_ideal_helper</span><span class="p">(</span>
+            <span class="n">use_roots</span><span class="o">=</span><span class="n">use_roots</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">,</span> <span class="n">roots</span><span class="o">=</span><span class="n">roots</span>
+        <span class="p">)[</span><span class="s2">&quot;ideal&quot;</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__tautological_ideal_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_roots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">roots</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Helper function for the tautological ideal.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``use_roots`` -- (default: False) whether to return the relations in Chern</span>
+<span class="sd">          roots</span>
+<span class="sd">        - ``classes`` -- (default: None) optional list of strings to name the Chern</span>
+<span class="sd">          classes</span>
+<span class="sd">        - ``roots`` -- (default: None) optional list of strings to name the Chern roots</span>
+
+<span class="sd">        OUTPUT: dictionary with keys &quot;ideal&quot;, &quot;inclusion&quot; and &quot;ambient_ring&quot;</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The tautological ideal for our favourite 6-fold has 9 non-zero generators::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: X._QuiverModuli__tautological_ideal_helper()[&quot;ambient_ring&quot;]</span>
+<span class="sd">            Multivariate Polynomial Ring in t0_1, t0_2, t1_1, t1_2, t1_3</span>
+<span class="sd">            over Rational Field</span>
+
+<span class="sd">        .. SEEALSO:: :meth:`tautological_ideal`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># setup shorthand</span>
         <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -1913,7 +1946,7 @@ document.write(`
 
         <span class="c1"># the user wants to have the ideal in `R`</span>
         <span class="k">if</span> <span class="n">use_roots</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">R</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="n">forbidden_polynomials</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;ideal&quot;</span><span class="p">:</span> <span class="n">R</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="n">forbidden_polynomials</span><span class="p">),</span> <span class="s2">&quot;ambient_ring&quot;</span><span class="p">:</span> <span class="n">R</span><span class="p">}</span>
 
         <span class="c1"># delta is the discriminant: precomputed for antisymmetrization(f)</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="n">prod</span><span class="p">(</span>
@@ -1945,10 +1978,9 @@ document.write(`
 
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">sign</span><span class="p">()</span> <span class="o">*</span> <span class="n">permute</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">W</span><span class="p">)</span> <span class="o">//</span> <span class="n">delta</span>
 
-        <span class="c1"># Schubert basis of CH^*([R/T]) over CH^*([R/G])</span>
+        <span class="c1"># we construct the Schubert basis of CH^*([R/T]) over CH^*([R/G])</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">SchubertPolynomialRing</span><span class="p">(</span><span class="n">ZZ</span><span class="p">)</span>
 
-        <span class="c1"># TODO document B and Bprime better</span>
         <span class="k">def</span> <span class="nf">B</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">X</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Permutations</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>
 
@@ -1963,8 +1995,9 @@ document.write(`
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">Q</span><span class="o">.</span><span class="n">support</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="p">]</span>
 
-        <span class="c1"># TODO is this not something already implemented?</span>
-        <span class="c1"># if not, explain what it does!</span>
+        <span class="c1"># take a list of lists of elements of a ring and multiply them recursively</span>
+        <span class="c1"># multiplying each element of the first list with the products of the remaining</span>
+        <span class="c1"># there might be a more Pythonic way of doing this, but it&#39;ll do for now</span>
         <span class="k">def</span> <span class="nf">product_lists</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
             <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span>
@@ -2007,8 +2040,11 @@ document.write(`
         <span class="c1"># get rid of zeroes</span>
         <span class="n">tautological</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tautological</span> <span class="k">if</span> <span class="n">f</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="n">tautological</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;ideal&quot;</span><span class="p">:</span> <span class="n">A</span><span class="o">.</span><span class="n">ideal</span><span class="p">(</span><span class="n">tautological</span><span class="p">),</span>
+            <span class="s2">&quot;ambient_ring&quot;</span><span class="p">:</span> <span class="n">R</span><span class="p">,</span>
+            <span class="s2">&quot;inclusion&quot;</span><span class="p">:</span> <span class="n">inclusion</span><span class="p">,</span>
+        <span class="p">}</span>
 
 <div class="viewcode-block" id="QuiverModuli.dimension">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.dimension">[docs]</a>
@@ -2797,6 +2833,25 @@ document.write(`
         <span class="c1"># which implies that d is indivisible.</span>
         <span class="k">assert</span> <span class="n">Q</span><span class="o">.</span><span class="n">is_theta_coprime</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">),</span> <span class="s2">&quot;need coprime&quot;</span>
 
+        <span class="k">def</span> <span class="nf">extended_gcd</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Computes the gcd and the Bezout coefficients of a list of integers.</span>
+
+<span class="sd">            This exists for two integers but seemingly not for more than two.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">xgcd</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">xgcd</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+                <span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">extended_gcd</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
+
         <span class="c1"># if a linearization is not given we compute one here</span>
         <span class="k">if</span> <span class="n">chi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">extended_gcd</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
@@ -3036,11 +3091,19 @@ document.write(`
 
 <div class="viewcode-block" id="QuiverModuliSpace.todd_class">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.todd_class">[docs]</a>
-    <span class="k">def</span> <span class="nf">todd_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">todd_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The Todd class of `X` is the Todd class of the tangent bundle.</span>
 
-<span class="sd">        Currently not yet implemented.</span>
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``chi`` -- linearization of the universal bundles (default: None)</span>
+<span class="sd">        - ``classes`` -- variables to be used (default: None)</span>
+
+<span class="sd">        OUTPUT: the Todd class as an element of the Chow ring</span>
+
+
+<span class="sd">        The Todd class is computed in arXiv.2307.01711_. It is given by the formula</span>
 
 <span class="sd">        .. MATH::</span>
 
@@ -3050,15 +3113,17 @@ document.write(`
 
 <span class="sd">        EXAMPLES:</span>
 
-<span class="sd">        Not yet implemented::</span>
+<span class="sd">        An example from arXiv.2307.01711_::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = KroneckerQuiver(3)</span>
 <span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
 <span class="sd">            sage: X.todd_class()</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">            ...</span>
-<span class="sd">            NotImplementedError</span>
+<span class="sd">            x1_3bar^2 - 77/60*x1_2bar*x1_3bar + 823/1440*x1_1bar^2*x1_2bar -</span>
+<span class="sd">            823/4320*x1_2bar^2 - 257/4320*x1_1bar*x1_3bar - 17/32*x1_1bar^3 -</span>
+<span class="sd">            15/32*x1_3bar + 5/12*x0_2bar + x1_1bar^2 - 3/2*x1_1bar + 1</span>
+
+<span class="sd">        .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">todd_Q</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
@@ -3069,7 +3134,7 @@ document.write(`
 <span class="sd">            clash with the notation for the quiver.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
-                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span> <span class="o">*</span> <span class="n">bernoulli</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">factorial</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span> <span class="o">*</span> <span class="p">(</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span><span class="o">**</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">factorial</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
@@ -3082,7 +3147,98 @@ document.write(`
 
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">,</span> <span class="n">keys</span><span class="p">))</span>
 
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+        <span class="c1"># setup shorthand</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chow_ring</span><span class="p">(</span><span class="n">chi</span><span class="o">=</span><span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+        <span class="n">taut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_QuiverModuli__tautological_ideal_helper</span><span class="p">(</span>
+            <span class="n">use_roots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">,</span> <span class="n">roots</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">R</span><span class="p">,</span> <span class="n">inclusion</span> <span class="o">=</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;ambient_ring&quot;</span><span class="p">],</span> <span class="n">taut</span><span class="p">[</span><span class="s2">&quot;inclusion&quot;</span><span class="p">]</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">short_t</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Shorthand for the generators of the ambient ring</span>
+<span class="sd">            from which the Chow ring is constructed</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_QuiverModuli__generator</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+        <span class="n">num</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">den</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># truncating after each step</span>
+        <span class="c1"># massively cuts runtime</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">Q</span><span class="o">.</span><span class="n">arrows</span><span class="p">():</span>
+            <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">a</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                    <span class="n">num</span> <span class="o">*=</span> <span class="n">todd_Q</span><span class="p">(</span><span class="n">short_t</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="o">-</span> <span class="n">short_t</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+                    <span class="n">num</span> <span class="o">=</span> <span class="n">truncate</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">number_of_vertices</span><span class="p">()):</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                    <span class="n">den</span> <span class="o">*=</span> <span class="n">todd_Q</span><span class="p">(</span><span class="n">short_t</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="o">-</span> <span class="n">short_t</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+                    <span class="n">den</span> <span class="o">=</span> <span class="n">truncate</span><span class="p">(</span><span class="n">den</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="n">num</span> <span class="o">=</span> <span class="n">inclusion</span><span class="o">.</span><span class="n">inverse_image</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="n">den</span> <span class="o">=</span> <span class="n">inclusion</span><span class="o">.</span><span class="n">inverse_image</span><span class="p">(</span><span class="n">den</span><span class="p">)</span>
+
+        <span class="c1"># return an element in the Chow ring</span>
+        <span class="k">return</span> <span class="n">A</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">/</span> <span class="n">A</span><span class="p">(</span><span class="n">den</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuliSpace.integral">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuliSpace.integral">[docs]</a>
+    <span class="k">def</span> <span class="nf">integral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Integrates the Todd class against an element of the Chow ring.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``L`` -- element of the Chow ring</span>
+<span class="sd">        - ``chi`` -- linearization of the universal bundles (default: None)</span>
+<span class="sd">        - ``classes`` -- variables to be used (default: None)</span>
+
+<span class="sd">        OUTPUT: the integral of :math:`td(X) \cdot L` over the moduli space</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        The integral of :math:`\mathcal{O}(i)` on the projective line for some `i`::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = KroneckerQuiver()</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (1, 1))</span>
+<span class="sd">            sage: L = X.chern_character_line_bundle((1, -1))</span>
+<span class="sd">            sage: [X.integral(L ** i) for i in range(-5, 5)]</span>
+<span class="sd">            [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5]</span>
+
+<span class="sd">        Hilbert series for the 3-Kronecker quiver as in arXiv.2307.01711_::</span>
+
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: L = Q.canonical_stability_parameter((2, 3)) / 3</span>
+<span class="sd">            sage: O = X.chern_character_line_bundle(L)</span>
+<span class="sd">            sage: [X.integral(O ** i) for i in range(5)]</span>
+<span class="sd">            [1, 20, 148, 664, 2206]</span>
+
+<span class="sd">        .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">integrand</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">todd_class</span><span class="p">(</span><span class="n">chi</span><span class="o">=</span><span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">lift</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">homogeneous_components</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span> <span class="ow">in</span> <span class="n">integrand</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">integrand</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_class</span><span class="p">(</span>
+                <span class="n">chi</span><span class="o">=</span><span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="mi">0</span></div>
 </div>
 
 
@@ -3332,34 +3488,6 @@ document.write(`
         <span class="k">return</span> <span class="n">QuotientRing</span><span class="p">(</span><span class="n">tautological</span><span class="o">.</span><span class="n">ring</span><span class="p">(),</span> <span class="n">tautological</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span></div>
 </div>
 
-
-
-<span class="k">def</span> <span class="nf">extended_gcd</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the gcd and the Bezout coefficients of a list of integers.</span>
-
-<span class="sd">    This exists for two integers but there seems to be no implementation for more.</span>
-
-<span class="sd">    EXAMPLES:</span>
-
-<span class="sd">    An example with 3 integers::</span>
-
-<span class="sd">        sage: from quiver import *</span>
-<span class="sd">        sage: extended_gcd([4, 6, 8])</span>
-<span class="sd">        [2, [-1, 1, 0]]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">xgcd</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]]</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">xgcd</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
-        <span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">extended_gcd</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
 </pre></div>
 
                 </article>

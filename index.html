@@ -321,6 +321,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.vertices()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.number_of_vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_vertices()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.number_of_arrows"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_arrows()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.arrows"><code class="docutils literal notranslate"><span class="pre">Quiver.arrows()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_acyclic"><code class="docutils literal notranslate"><span class="pre">Quiver.is_acyclic()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_connected"><code class="docutils literal notranslate"><span class="pre">Quiver.is_connected()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_finite_type"><code class="docutils literal notranslate"><span class="pre">Quiver.is_finite_type()</span></code></a></li>
@@ -425,6 +426,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.point_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.point_class()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.degree"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.degree()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.todd_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.todd_class()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.integral"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.integral()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack</span></code></a><ul class="nav section-nav flex-column">
@@ -807,6 +809,30 @@ to <cite>n-1</cite>, where <cite>n</cite> is the number of rows or columns in th
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">ThreeVertexQuiver</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">number_of_arrows</span><span class="p">()</span>
 <span class="mi">7</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quiver.Quiver.arrows">
+<span class="sig-name descname"><span class="pre">arrows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.arrows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.arrows" title="Link to this definition">#</a></dt>
+<dd><p>Return the arrows of the quiver</p>
+<p>OUTPUT: list of the arrows in the underlying graph as tuples (source, target)</p>
+<p>EXAMPLES:</p>
+<p>The arrows of the 3-Kronecker quiver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">GeneralizedKroneckerQuiver</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">arrows</span><span class="p">()</span>
+<span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>Arrows respect the labeling of the vertices if one is given:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">Quiver</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&quot;foo---bar,bar-foo&quot;</span><span class="p">,</span> <span class="n">forget_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">arrows</span><span class="p">()</span>
+<span class="p">[(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">)]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1581,8 +1607,8 @@ representation for the canonical stability parameter.</p>
 <span class="sig-name descname"><span class="pre">slope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">denom=&lt;built-in</span> <span class="pre">function</span> <span class="pre">sum&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/quiver.html#Quiver.slope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.Quiver.slope" title="Link to this definition">#</a></dt>
 <dd><p>Returns the slope of <code class="docutils literal notranslate"><span class="pre">d</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">theta</span></code></p>
 <p>The slope is defined as the value of <code class="docutils literal notranslate"><span class="pre">theta(d)</span></code> divided by the total dimension
-of <cite>d</cite> <code class="docutils literal notranslate"><span class="pre">sum(d)</span></code>. It is possible to vary the denominator, to use a function more general
-than the sum.</p>
+of <cite>d</cite> <code class="docutils literal notranslate"><span class="pre">sum(d)</span></code>. It is possible to vary the denominator, to use a function
+more general than the sum.</p>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">d</span></code> – dimension vector</p></li>
@@ -3155,8 +3181,8 @@ there are no Luna types other than (possibly) <code class="docutils literal notr
 <dt class="sig sig-object py" id="quiver.QuiverModuli.is_amply_stable">
 <span class="sig-name descname"><span class="pre">is_amply_stable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuli.is_amply_stable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuli.is_amply_stable" title="Link to this definition">#</a></dt>
 <dd><p>Checks if the dimension vector is amply stable for the stability parameter</p>
-<p>By definition, a dimension vector :math`{bf d}` is <span class="math notranslate nohighlight">\(\theta\)</span>-amply stable if the
-codimension of the <span class="math notranslate nohighlight">\(\theta\)</span>-semistable locus
+<p>By definition, a dimension vector :math`{bf d}` is <span class="math notranslate nohighlight">\(\theta\)</span>-amply stable
+if the codimension of the <span class="math notranslate nohighlight">\(\theta\)</span>-semistable locus
 inside:math:<cite>R(Q,{bf d})</cite> is at least 2.</p>
 <p>OUTPUT: whether the data for the quiver moduli space is amply stable</p>
 <p>EXAMPLES:</p>
@@ -3989,22 +4015,60 @@ results do depend on it:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="quiver.QuiverModuliSpace.todd_class">
-<span class="sig-name descname"><span class="pre">todd_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.todd_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.todd_class" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">todd_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.todd_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.todd_class" title="Link to this definition">#</a></dt>
 <dd><p>The Todd class of <cite>X</cite> is the Todd class of the tangent bundle.</p>
-<p>Currently not yet implemented.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">chi</span></code> – linearization of the universal bundles (default: None)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">classes</span></code> – variables to be used (default: None)</p></li>
+</ul>
+<p>OUTPUT: the Todd class as an element of the Chow ring</p>
+<p>The Todd class is computed in <a class="reference external" href="https://doi.org/10.48550/arXiv.2307.01711">arXiv.2307.01711</a>. It is given by the formula</p>
 <div class="math notranslate nohighlight">
 \[td(X) =
 (\prod_{a:i \to j \in Q_1} \prod_{p=1}^{d_j} \prod_{q=1}^{d_i} Q(t_{j,q} -
 t_{i,p}))/(\prod_{i \in Q_0} \prod_{p,q=1}^{d_i} Q(t_{i,q} - t_{i,p}))\]</div>
 <p>EXAMPLES:</p>
-<p>Not yet implemented:</p>
+<p>An example from <a class="reference external" href="https://doi.org/10.48550/arXiv.2307.01711">arXiv.2307.01711</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">KroneckerQuiver</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">X</span> <span class="o">=</span> <span class="n">QuiverModuliSpace</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">todd_class</span><span class="p">()</span>
-<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-<span class="o">...</span>
-<span class="ne">NotImplementedError</span>
+<span class="n">x1_3bar</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">77</span><span class="o">/</span><span class="mi">60</span><span class="o">*</span><span class="n">x1_2bar</span><span class="o">*</span><span class="n">x1_3bar</span> <span class="o">+</span> <span class="mi">823</span><span class="o">/</span><span class="mi">1440</span><span class="o">*</span><span class="n">x1_1bar</span><span class="o">^</span><span class="mi">2</span><span class="o">*</span><span class="n">x1_2bar</span> <span class="o">-</span>
+<span class="mi">823</span><span class="o">/</span><span class="mi">4320</span><span class="o">*</span><span class="n">x1_2bar</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">257</span><span class="o">/</span><span class="mi">4320</span><span class="o">*</span><span class="n">x1_1bar</span><span class="o">*</span><span class="n">x1_3bar</span> <span class="o">-</span> <span class="mi">17</span><span class="o">/</span><span class="mi">32</span><span class="o">*</span><span class="n">x1_1bar</span><span class="o">^</span><span class="mi">3</span> <span class="o">-</span>
+<span class="mi">15</span><span class="o">/</span><span class="mi">32</span><span class="o">*</span><span class="n">x1_3bar</span> <span class="o">+</span> <span class="mi">5</span><span class="o">/</span><span class="mi">12</span><span class="o">*</span><span class="n">x0_2bar</span> <span class="o">+</span> <span class="n">x1_1bar</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">x1_1bar</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quiver.QuiverModuliSpace.integral">
+<span class="sig-name descname"><span class="pre">integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/quiver/moduli.html#QuiverModuliSpace.integral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quiver.QuiverModuliSpace.integral" title="Link to this definition">#</a></dt>
+<dd><p>Integrates the Todd class against an element of the Chow ring.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span></code> – element of the Chow ring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">chi</span></code> – linearization of the universal bundles (default: None)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">classes</span></code> – variables to be used (default: None)</p></li>
+</ul>
+<p>OUTPUT: the integral of <span class="math notranslate nohighlight">\(td(X) \cdot L\)</span> over the moduli space</p>
+<p>EXAMPLES:</p>
+<p>The integral of <span class="math notranslate nohighlight">\(\mathcal{O}(i)\)</span> on the projective line for some <cite>i</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">quiver</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">KroneckerQuiver</span><span class="p">()</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">X</span> <span class="o">=</span> <span class="n">QuiverModuliSpace</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">L</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">chern_character_line_bundle</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">sage</span><span class="p">:</span> <span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">integral</span><span class="p">(</span><span class="n">L</span> <span class="o">**</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]</span>
+<span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Hilbert series for the 3-Kronecker quiver as in <a class="reference external" href="https://doi.org/10.48550/arXiv.2307.01711">arXiv.2307.01711</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">GeneralizedKroneckerQuiver</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">X</span> <span class="o">=</span> <span class="n">QuiverModuliSpace</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">L</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">/</span> <span class="mi">3</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">O</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">chern_character_line_bundle</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">integral</span><span class="p">(</span><span class="n">O</span> <span class="o">**</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">664</span><span class="p">,</span> <span class="mi">2206</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4538,6 +4602,7 @@ the first <cite>m</cite> vertices to the each of the last <cite>n</cite> vertice
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.vertices()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.number_of_vertices"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_vertices()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.number_of_arrows"><code class="docutils literal notranslate"><span class="pre">Quiver.number_of_arrows()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.arrows"><code class="docutils literal notranslate"><span class="pre">Quiver.arrows()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_acyclic"><code class="docutils literal notranslate"><span class="pre">Quiver.is_acyclic()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_connected"><code class="docutils literal notranslate"><span class="pre">Quiver.is_connected()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.Quiver.is_finite_type"><code class="docutils literal notranslate"><span class="pre">Quiver.is_finite_type()</span></code></a></li>
@@ -4642,6 +4707,7 @@ the first <cite>m</cite> vertices to the each of the last <cite>n</cite> vertice
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.point_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.point_class()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.degree"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.degree()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.todd_class"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.todd_class()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliSpace.integral"><code class="docutils literal notranslate"><span class="pre">QuiverModuliSpace.integral()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quiver.QuiverModuliStack"><code class="docutils literal notranslate"><span class="pre">QuiverModuliStack</span></code></a><ul class="nav section-nav flex-column">
