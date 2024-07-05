@@ -1606,7 +1606,8 @@ class QuiverModuli(Element):
 
         # the user wants to have the ideal in `R`
         if use_roots:
-            return R.ideal(forbidden_polynomials)
+            return {"ideal": R.ideal(forbidden_polynomials),
+                    "ambient_ring": R}
 
         # delta is the discriminant: precomputed for antisymmetrization(f)
         delta = prod(
@@ -1702,8 +1703,8 @@ class QuiverModuli(Element):
 
         return {
             "ideal": A.ideal(tautological),
-            "inclusion": inclusion,
             "ambient_ring": R,
+            "inclusion": inclusion,
         }
 
     def dimension(self) -> int:
