@@ -1547,7 +1547,6 @@ class QuiverModuli(Element):
           classes
         - ``roots`` -- (default: None) optional list of strings to name the Chern roots
 
-
         OUTPUT: dictionary with keys "ideal", "inclusion" and "ambient_ring"
 
         EXAMPLES:
@@ -1639,10 +1638,9 @@ class QuiverModuli(Element):
 
             return sum(w.sign() * permute(f, w) for w in W) // delta
 
-        # Schubert basis of CH^*([R/T]) over CH^*([R/G])
+        # we construct the Schubert basis of CH^*([R/T]) over CH^*([R/G])
         X = SchubertPolynomialRing(ZZ)
 
-        # TODO document B and Bprime better
         def B(i):
             return [X(p).expand() for p in Permutations(d[i])]
 
@@ -1657,8 +1655,9 @@ class QuiverModuli(Element):
             for i in Q.support(d)
         ]
 
-        # TODO is this not something already implemented?
-        # if not, explain what it does!
+        # take a list of lists of elements of a ring and multiply them recursively
+        # multiplying each element of the first list with the products of the remaining
+        # there might be a more Pythonic way of doing this, but it'll do for now
         def product_lists(L):
             n = len(L)
             assert n > 0
