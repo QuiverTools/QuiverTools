@@ -1,6 +1,8 @@
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://sage.quiver.tools)
+[![docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://sage.quiver.tools)
 [![tests](https://github.com/quiver-tools/quiver.tools/actions/workflows/tests.yml/badge.svg)](https://github.com/quiver-tools/quiver.tools/actions)
 [![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+[![mybinder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/QuiverTools/mybinder-sage/master)
 
 # QuiverTools
 
@@ -20,6 +22,9 @@ You can install it by running
 ``sage --pip install git+https://github.com/QuiverTools/QuiverTools.git``
 
 and then you can just do `from quiver import *` to get started.
+
+Alternatively, you can (if you are patient enough to let it get started) run it from your browser in a notebook: 
+[![mybinder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/QuiverTools/mybinder-sage/master)
 
 # Other toolsets
 
