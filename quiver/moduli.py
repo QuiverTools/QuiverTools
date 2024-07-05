@@ -1530,6 +1530,38 @@ class QuiverModuli(Element):
             9
 
         """
+
+        return self.__tautological_ideal_helper(
+            use_roots=use_roots, classes=classes, roots=roots
+        )["ideal"]
+
+    def __tautological_ideal_helper(self, use_roots=False, classes=None, roots=None):
+        r"""
+        Helper function for the tautological ideal.
+
+        INPUT:
+
+        - ``use_roots`` -- (default: False) whether to return the relations in Chern
+          roots
+        - ``classes`` -- (default: None) optional list of strings to name the Chern
+          classes
+        - ``roots`` -- (default: None) optional list of strings to name the Chern roots
+
+
+        OUTPUT: dictionary with keys "ideal", "inclusion" and "ambient_ring"
+
+        EXAMPLES:
+
+        The tautological ideal for our favourite 6-fold has 9 non-zero generators::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.__tautological_ideal_helper()["ambient_ring"]
+            Multivariate Polynomial Ring in x1, x2, y1, y2, y3 over Rational Field
+
+        .. SEEALSO:: :meth:`tautological_ideal`
+        """
         # setup shorthand
         Q, d = self._Q, self._d
         d = Q._coerce_dimension_vector(d)
@@ -1668,7 +1700,11 @@ class QuiverModuli(Element):
         # get rid of zeroes
         tautological = [f for f in tautological if f]
 
-        return A.ideal(tautological)
+        return {
+            "ideal": A.ideal(tautological),
+            "inclusion": inclusion,
+            "ambient_ring": R,
+        }
 
     def dimension(self) -> int:
         r"""
@@ -2677,7 +2713,7 @@ class QuiverModuliSpace(QuiverModuli):
             clash with the notation for the quiver.
             """
             return sum(
-                (-1) ** i * bernoulli(i) / factorial(i) * t**i for i in range(n + 1)
+                (-1) ** i * (bernoulli(i) * t**i) / factorial(i) for i in range(n + 1)
             )
 
         def truncate(f, n):
@@ -2693,6 +2729,7 @@ class QuiverModuliSpace(QuiverModuli):
         # setup shorthand
         Q, d = self._Q, self._d
         A = self.chow_ring(chi=chi, classes=classes)
+        R = A.cover_ring()
         n = self.dimension()
 
         def short_t(i, p):
@@ -2700,17 +2737,17 @@ class QuiverModuliSpace(QuiverModuli):
             Shorthand for the generators of the ambient ring
             from which the Chow ring is constructed
             """
-            return A.cover_ring().gens()[sum(d[j] for j in range(i - 1)) + p]
+            return self._QuiverModuli__generator(R, i, p)
 
         num = prod(
-            todd_Q(short_t(j, q) - short_t(i, p), n)
+            truncate(todd_Q(short_t(j, s) - short_t(i, r), n), n)
             for i, j in Q.arrows()
-            for q in range(d[i])
-            for p in range(d[j])
+            for r in range(d[i])
+            for s in range(d[j])
         )
 
         den = prod(
-            todd_Q(short_t(i, q) - short_t(i, p), n)
+            truncate(todd_Q(short_t(i, q) - short_t(i, p), n), n)
             for i in range(Q.number_of_vertices())
             for q in range(d[i])
             for p in range(d[i])
