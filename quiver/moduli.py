@@ -1606,8 +1606,7 @@ class QuiverModuli(Element):
 
         # the user wants to have the ideal in `R`
         if use_roots:
-            return {"ideal": R.ideal(forbidden_polynomials),
-                    "ambient_ring": R}
+            return {"ideal": R.ideal(forbidden_polynomials), "ambient_ring": R}
 
         # delta is the discriminant: precomputed for antisymmetrization(f)
         delta = prod(
@@ -2730,7 +2729,11 @@ class QuiverModuliSpace(QuiverModuli):
         # setup shorthand
         Q, d = self._Q, self._d
         A = self.chow_ring(chi=chi, classes=classes)
-        R = A.cover_ring()
+        taut = self._QuiverModuli__tautological_ideal_helper(
+            use_roots=False, classes=classes, roots=None
+        )
+        R, inclusion = taut["ambient_ring"], taut["inclusion"]
+
         n = self.dimension()
 
         def short_t(i, p):
@@ -2740,22 +2743,29 @@ class QuiverModuliSpace(QuiverModuli):
             """
             return self._QuiverModuli__generator(R, i, p)
 
-        num = prod(
-            truncate(todd_Q(short_t(j, s) - short_t(i, r), n), n)
-            for i, j in Q.arrows()
-            for r in range(d[i])
-            for s in range(d[j])
-        )
+        num = 1
+        den = 1
 
-        den = prod(
-            truncate(todd_Q(short_t(i, q) - short_t(i, p), n), n)
-            for i in range(Q.number_of_vertices())
-            for q in range(d[i])
-            for p in range(d[i])
-        )
+        # truncating after each step
+        # massively cuts runtime
+        for a in Q.arrows():
+            i, j = a
+            for p in range(d[i]):
+                for q in range(d[j]):
+                    num *= todd_Q(short_t(j, q) - short_t(i, p), n)
+                    num = truncate(num, n)
+
+        for i in range(Q.number_of_vertices()):
+            for p in range(d[i]):
+                for q in range(d[i]):
+                    den *= todd_Q(short_t(i, q) - short_t(i, p), n)
+                    den = truncate(den, n)
+
+        num = inclusion.inverse_image(num)
+        den = inclusion.inverse_image(den)
 
         # return an element in the Chow ring
-        return A(truncate(num, n)) / A(truncate(den, n))
+        return A(num) / A(den)
 
 
 class QuiverModuliStack(QuiverModuli):
