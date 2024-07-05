@@ -685,6 +685,32 @@ class Quiver(Element):
         """
         return self.graph().size()
 
+    def arrows(self):
+        r"""
+        Return the arrows of the quiver
+        
+        OUTPUT: list of the arrows in the underlying graph as tuples (source, target)
+
+        EXAMPLES:
+
+        The arrows of the 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: Q.arrows()
+            [(0, 1), (0, 1), (0, 1)]
+
+        Arrows respect the labeling of the vertices if one is given::
+
+            sage: Q = Quiver.from_string("foo---bar,bar-foo", forget_labels=False)
+            sage: Q.arrows()
+            [('foo', 'bar'),
+             ('foo', 'bar'),
+             ('foo', 'bar'),
+             ('bar', 'foo')]
+        """
+        return self.graph().edges(labels=False)
+
     def is_acyclic(self) -> bool:
         r"""Returns whether the quiver is acyclic.
 
