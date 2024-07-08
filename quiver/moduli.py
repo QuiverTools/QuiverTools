@@ -1708,7 +1708,9 @@ class QuiverModuli(Element):
 
     def dimension(self) -> int:
         r"""
-        Returns the dimension of the moduli stack.
+        Returns the dimension of the moduli space.
+
+        Abstract method, see the concrete implementations for details.
 
         .. SEEALSO::
 
@@ -1717,7 +1719,8 @@ class QuiverModuli(Element):
 
         EXAMPLES:
 
-        This is not implemented as it is ambiguous::
+        This is not implemented as it is ambiguous: it depends on whether we consider
+        it as a variety or as a stack::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
@@ -1739,7 +1742,8 @@ class QuiverModuli(Element):
             - :meth:`QuiverModuliSpace.is_smooth`
             - :meth:`QuiverModuliStack.is_smooth`
 
-        This is not implemented as it is ambiguous::
+        This is not implemented as it is ambiguous: it depends on whether we consider
+        it as a variety or as a stack::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
@@ -1763,7 +1767,8 @@ class QuiverModuli(Element):
 
         EXAMPLES:
 
-        This is not implemented as it is ambiguous::
+        This is not implemented as it is ambiguous: it depends on whether we consider
+        it as a variety or as a stack::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
@@ -2819,7 +2824,6 @@ class QuiverModuliSpace(QuiverModuli):
             [1, 20, 148, 664, 2206]
 
         .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711
-
         """
 
         integrand = (
