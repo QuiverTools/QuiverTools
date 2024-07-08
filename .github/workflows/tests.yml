@@ -19,7 +19,4 @@ jobs:
       - name: Install QuiverTools
         run: sage --pip install .
       - name: Run the tests
-        run: |
-          sage -t quiver/quiver.py
-          sage -t quiver/constructions.py
-          sage -t quiver/moduli.py
+        run: sage -t quiver
