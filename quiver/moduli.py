@@ -2666,7 +2666,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         INPUT:
 
-        - ``eta`` -- class of line bundle (default: anticanonical line bundle
+        - ``eta`` -- class of line bundle (default: anticanonical line bundle)
 
         - ``classes`` -- variables to be used (default: None)
 
