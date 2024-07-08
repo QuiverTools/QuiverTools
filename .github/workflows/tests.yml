@@ -1,7 +1,7 @@
 name: tests
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
     paths:
       - "quiver/**.py"
   pull_request:
