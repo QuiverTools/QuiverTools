@@ -2832,12 +2832,10 @@ class QuiverModuliSpace(QuiverModuli):
             .homogeneous_components()
         )
 
-        if self.dimension() in integrand.keys():
-            return integrand[self.dimension()] / self.point_class(
-                chi=chi, classes=classes
-            )
+        if self.dimension() not in integrand.keys():
+            return 0
 
-        return 0
+        return integrand[self.dimension()] / self.point_class(chi=chi, classes=classes)
 
 
 class QuiverModuliStack(QuiverModuli):
