@@ -2600,7 +2600,7 @@ class Quiver(Element):
 
         - ``denom`` -- the denominator function (default: sum)
 
-        OUTPUT: list of Harder--Narasimhan types
+        OUTPUT: tuple of Harder--Narasimhan types
 
         EXAMPLES:
 
@@ -2611,14 +2611,14 @@ class Quiver(Element):
             sage: d = (2, 3)
             sage: theta = (3, -2)
             sage: Q._all_harder_narasimhan_types(d, theta)
-            [((1, 0), (1, 1), (0, 2)),
+            (((1, 0), (1, 1), (0, 2)),
              ((1, 0), (1, 2), (0, 1)),
              ((1, 0), (1, 3)),
              ((1, 1), (1, 2)),
              ((2, 0), (0, 3)),
              ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
-             ((2, 3),)]
+             ((2, 3),))
 
         .. NOTE ::
 
@@ -2657,7 +2657,9 @@ class Quiver(Element):
         if self.has_semistable_representation(d, theta, denom=denom):
             all_types.append((d,))
 
-        return all_types
+        # because it is a cached method we need to return a tuple, not a list
+        # as the result of a cached method must be immutable
+        return tuple(all_types)
 
     """
     (Semi-)stability
@@ -2861,45 +2863,45 @@ class Quiver(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: Q.canonical_decomposition((2, 3))
-            [(2, 3)]
+            ((2, 3),)
             sage: for d in Q.all_subdimension_vectors((5, 5)):
             ....:     print(Q.canonical_decomposition(d))
-            [(0, 0)]
-            [(0, 1)]
-            [(0, 1), (0, 1)]
-            [(0, 1), (0, 1), (0, 1)]
-            [(0, 1), (0, 1), (0, 1), (0, 1)]
-            [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-            [(1, 0)]
-            [(1, 1)]
-            [(1, 2)]
-            [(1, 3)]
-            [(0, 1), (1, 3)]
-            [(0, 1), (0, 1), (1, 3)]
-            [(1, 0), (1, 0)]
-            [(2, 1)]
-            [(2, 2)]
-            [(2, 3)]
-            [(2, 4)]
-            [(2, 5)]
-            [(1, 0), (1, 0), (1, 0)]
-            [(3, 1)]
-            [(3, 2)]
-            [(3, 3)]
-            [(3, 4)]
-            [(3, 5)]
-            [(1, 0), (1, 0), (1, 0), (1, 0)]
-            [(1, 0), (3, 1)]
-            [(4, 2)]
-            [(4, 3)]
-            [(4, 4)]
-            [(4, 5)]
-            [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
-            [(1, 0), (1, 0), (3, 1)]
-            [(5, 2)]
-            [(5, 3)]
-            [(5, 4)]
-            [(5, 5)]
+            ((0, 0),)
+            ((0, 1),)
+            ((0, 1), (0, 1))
+            ((0, 1), (0, 1), (0, 1))
+            ((0, 1), (0, 1), (0, 1), (0, 1))
+            ((0, 1), (0, 1), (0, 1), (0, 1), (0, 1))
+            ((1, 0),)
+            ((1, 1),)
+            ((1, 2),)
+            ((1, 3),)
+            ((0, 1), (1, 3))
+            ((0, 1), (0, 1), (1, 3))
+            ((1, 0), (1, 0))
+            ((2, 1),)
+            ((2, 2),)
+            ((2, 3),)
+            ((2, 4),)
+            ((2, 5),)
+            ((1, 0), (1, 0), (1, 0))
+            ((3, 1),)
+            ((3, 2),)
+            ((3, 3),)
+            ((3, 4),)
+            ((3, 5),)
+            ((1, 0), (1, 0), (1, 0), (1, 0))
+            ((1, 0), (3, 1))
+            ((4, 2),)
+            ((4, 3),)
+            ((4, 4),)
+            ((4, 5),)
+            ((1, 0), (1, 0), (1, 0), (1, 0), (1, 0))
+            ((1, 0), (1, 0), (3, 1))
+            ((5, 2),)
+            ((5, 3),)
+            ((5, 4),)
+            ((5, 5),)
         """
         return self.__canonical_decomposition(d)
 
@@ -2914,7 +2916,7 @@ class Quiver(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(2)
             sage: Q._Quiver__canonical_decomposition((5, 5))
-            [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+            ((1, 1), (1, 1), (1, 1), (1, 1), (1, 1))
         """
         d = self._coerce_dimension_vector(d)
 
@@ -2924,7 +2926,10 @@ class Quiver(Element):
                 return self.canonical_decomposition(e) + self.canonical_decomposition(
                     d - e
                 )
-        return [d]
+
+        # because it is a cached method we need to return a tuple, not a list
+        # as the result of a cached method must be immutable
+        return (d,)
 
     def dimension_nullcone(self, d):
         r"""

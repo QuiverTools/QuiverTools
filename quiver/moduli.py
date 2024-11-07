@@ -66,14 +66,14 @@ class QuiverModuli(Element):
         concerns something involving the representation variety::
 
             sage: X.all_harder_narasimhan_types()
-            [((1, 0), (1, 1), (0, 2)),
+            (((1, 0), (1, 1), (0, 2)),
              ((1, 0), (1, 2), (0, 1)),
              ((1, 0), (1, 3)),
              ((1, 1), (1, 2)),
              ((2, 0), (0, 3)),
              ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
-             ((2, 3),)]
+             ((2, 3),))
 
         But things like dimension depend on whether we consider it as a variety or as
         a stack, and thus these are not implemented::
@@ -411,27 +411,27 @@ class QuiverModuli(Element):
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: X.all_harder_narasimhan_types()
-            [((1, 0), (1, 1), (0, 2)),
+            (((1, 0), (1, 1), (0, 2)),
              ((1, 0), (1, 2), (0, 1)),
              ((1, 0), (1, 3)),
              ((1, 1), (1, 2)),
              ((2, 0), (0, 3)),
              ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
-             ((2, 3),)]
+             ((2, 3),))
             sage: X.all_harder_narasimhan_types(proper=True)
-            [((1, 0), (1, 1), (0, 2)),
+            (((1, 0), (1, 1), (0, 2)),
              ((1, 0), (1, 2), (0, 1)),
              ((1, 0), (1, 3)),
              ((1, 1), (1, 2)),
              ((2, 0), (0, 3)),
              ((2, 1), (0, 2)),
-             ((2, 2), (0, 1))]
+             ((2, 2), (0, 1)))
             sage: d = (2, 3)
             sage: theta = -Q.canonical_stability_parameter(d)
             sage: Y = QuiverModuliSpace(Q, d, theta)
             sage: Y.all_harder_narasimhan_types()
-            [((0, 3), (2, 0))]
+            (((0, 3), (2, 0)),)
 
         A 3-vertex quiver::
 
@@ -439,7 +439,7 @@ class QuiverModuli(Element):
             sage: Q = ThreeVertexQuiver(2, 3, 4)
             sage: Z = QuiverModuliSpace(Q, (2, 3, 2))
             sage: Z.all_harder_narasimhan_types()
-            [((0, 1, 0), (1, 2, 1), (1, 0, 1)),
+            (((0, 1, 0), (1, 2, 1), (1, 0, 1)),
              ((0, 1, 0), (2, 0, 1), (0, 2, 1)),
              ((0, 1, 0), (2, 1, 1), (0, 1, 1)),
              ((0, 1, 0), (2, 2, 1), (0, 0, 1)),
@@ -510,7 +510,7 @@ class QuiverModuli(Element):
              ((2, 2, 1), (0, 1, 1)),
              ((2, 3, 0), (0, 0, 2)),
              ((2, 3, 1), (0, 0, 1)),
-             ((2, 3, 2),)]
+             ((2, 3, 2),))
         """
         d = self._Q._coerce_dimension_vector(self._d)
         theta = self._Q._coerce_vector(self._theta)
@@ -518,8 +518,9 @@ class QuiverModuli(Element):
         all_types = self._Q._all_harder_narasimhan_types(
             d, theta, denom=self._denom, sorted=sorted
         )
-        if proper and (d,) in all_types:
-            all_types.remove((d,))
+
+        if proper:
+            all_types = tuple(ds for ds in all_types if ds != (d,))
 
         return all_types
 
