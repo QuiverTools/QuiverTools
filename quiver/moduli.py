@@ -546,24 +546,24 @@ class QuiverModuli(Element):
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: dstars = X.all_harder_narasimhan_types()
             sage: [X.harder_narasimhan_polygon(dstar) for dstar in dstars]
-            [((1, 9), (3, 12), (5, 0)),
-             ((1, 9), (4, 6), (5, 0)),
-             ((1, 9), (5, 0)),
-             ((2, 3), (5, 0)),
-             ((2, 18), (5, 0)),
-             ((3, 12), (5, 0)),
-             ((4, 6), (5, 0)),
-             ((5, 0),)]
+            [((0, 0), (1, 9), (3, 12), (5, 0)),
+             ((0, 0), (1, 9), (4, 6), (5, 0)),
+             ((0, 0), (1, 9), (5, 0)),
+             ((0, 0), (2, 3), (5, 0)),
+             ((0, 0), (2, 18), (5, 0)),
+             ((0, 0), (3, 12), (5, 0)),
+             ((0, 0), (4, 6), (5, 0)),
+             ((0, 0), (5, 0))]
 
         """
         assert self.is_harder_narasimhan_type(dstar)
 
         theta = self._Q._coerce_vector(self._theta)
         thetas = tuple(di * theta for di in dstar)
-        partial_thetas = tuple(sum(thetas[: i + 1]) for i in range(len(dstar)))
+        partial_thetas = tuple(sum(thetas[:i]) for i in range(len(dstar) + 1))
 
         dimensions = tuple(sum(di) for di in dstar)
-        partial_dimensions = tuple(sum(dimensions[: i + 1]) for i in range(len(dstar)))
+        partial_dimensions = tuple(sum(dimensions[:i]) for i in range(len(dstar) + 1))
 
         return tuple(zip(partial_dimensions, partial_thetas))
 
