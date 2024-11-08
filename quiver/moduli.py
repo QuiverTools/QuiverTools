@@ -524,6 +524,49 @@ class QuiverModuli(Element):
 
         return all_types
 
+    def harder_narasimhan_polygon(self, dstar) -> tuple:
+        r"""
+        Compute the polygon attached to the Harder--Narasimhan type ``dstar``
+
+        See Definition 3.6 in Reineke's paper.
+        This is called the Harder--Narasimhan polygon in Shatz's 1977 paper.
+
+        INPUT:
+
+        - ``dstar`` -- a Harder--Narasimhan type for the moduli space
+
+        OUTPUT: list of tuples of dimension vectors encoding HN-types
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: dstars = X.all_harder_narasimhan_types()
+            sage: [X.harder_narasimhan_polygon(dstar) for dstar in dstars]
+            [((1, 9), (3, 12), (5, 0)),
+             ((1, 9), (4, 6), (5, 0)),
+             ((1, 9), (5, 0)),
+             ((2, 3), (5, 0)),
+             ((2, 18), (5, 0)),
+             ((3, 12), (5, 0)),
+             ((4, 6), (5, 0)),
+             ((5, 0),)]
+
+        """
+        assert self.is_harder_narasimhan_type(dstar)
+
+        theta = self._Q._coerce_vector(self._theta)
+        thetas = tuple(di * theta for di in dstar)
+        partial_thetas = tuple(sum(thetas[: i + 1]) for i in range(len(dstar)))
+
+        dimensions = tuple(sum(di) for di in dstar)
+        partial_dimensions = tuple(sum(dimensions[: i + 1]) for i in range(len(dstar)))
+
+        return tuple(zip(partial_dimensions, partial_thetas))
+
     def is_harder_narasimhan_type(self, dstar) -> bool:
         r"""
         Checks if ``dstar`` is a Harder--Narasimhan type.
