@@ -1392,6 +1392,50 @@ class QuiverModuli(Element):
         return all(weights[i] > tensor_weights[i] for i in range(len(HNs)))
 
     """
+    Methods related to moduli equivalence
+    """
+
+    def large_vertices(self):
+        r"""Returns the large vertices in the quiver
+
+        This is in the sense of Definition 2.1 of DOI:10.4171/JCA/97: a vertex u is
+        said to be _large_ if
+
+        TODO
+
+        """
+        raise NotImplementedError()
+
+    def vertex_removal(self, i):
+        Q, d = self._Q, self._d
+
+        assert Q.is_large_vertex(i, d)
+
+        # creating the quiver
+
+        # creating the dimension vector
+
+        # creating the stability parameter: Lemma 3.1 of DOI:10.4171/JCA/97
+
+        raise NotImplementedError()
+
+    def small_sources_and_sinks(self):
+        raise NotImplementedError()
+
+    def reflection(self, i):
+        Q, d = self._Q, self._d
+
+        assert Q.is_small_source(i, d) or Q.is_small_sink(i, d)
+
+        # creating the quiver
+
+        # creating the dimension vector
+
+        # creating the stability parameter: Lemma 3.3 of DOI:10.4171/JCA/97
+
+        raise NotImplementedError()
+
+    """
     Tautological relations
     """
 

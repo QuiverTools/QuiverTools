@@ -1007,6 +1007,31 @@ class Quiver(Element):
         return list(filter(lambda i: self.is_sink(i), self.vertices()))
 
     """
+    Graph-theoretical properties related to moduli reduction
+    """
+
+    def is_large_vertex(self, i, d) -> bool:
+        r"""Return whether the vertex ``i`` is large for the dimension vector ``d``
+
+        Large is in the sense of Definition 2.1 of DOI:10.4171/JCA/97: the vertex ``i``
+        is said to be _large_ if
+
+        TODO
+        """
+        # TODO
+        raise NotImplementedError()
+
+    def is_small_source(self, i, d):
+        assert i in self.vertices()
+
+        raise NotImplementedError()
+
+    def is_small_sink(self, i, d):
+        assert i in self.vertices()
+
+        raise NotImplementedError()
+
+    """
     Basic representation-theoretical properties of the quiver
     """
 
