@@ -1,5 +1,5 @@
 install:
-	sage -pip install --upgrade -v .
+	sage -pip install --upgrade -v -e .
 	rm -r build
 	rm -r quiver.egg-info
 
