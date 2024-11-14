@@ -1082,10 +1082,24 @@ class Quiver(Element):
         Large is in the sense of Definition 2.1 of DOI:10.4171/JCA/97: the vertex ``i``
         is said to be _large_ if
 
-        TODO
+        EXAMPLES:
+
+        The 3-Kronecker quiver has no large vertices for this dimension vector::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: d = (2, 3)
+            sage: Q.is_large_vertex(0, d)
+            False
+            sage: Q.is_large_vertex(1, d)
+            False
+
         """
-        # TODO
-        raise NotImplementedError()
+        assert i in self.vertices()
+
+        return d[i] >= max(
+            self.in_degree_weighted(i, d), self.out_degree_weighted(i, d)
+        )
 
     def is_small_source(self, i, d):
         assert i in self.vertices()
