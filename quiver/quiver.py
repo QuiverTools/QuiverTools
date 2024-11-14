@@ -861,6 +861,39 @@ class Quiver(Element):
         """
         return self.graph().in_degree(i)
 
+    def in_degree_weighted(self, i, d):
+        r"""Returns the weighted in-degree of a vertex
+
+        The weighted in-degree of ``i`` is the sum over all incoming arrows of the
+        of the value of the dimension vector ``d`` at the source of the arrow.
+
+        INPUT:
+
+        - ``i`` -- a vertex of the underlying graph
+
+        - ``d`` -- a weight vector for the in-degree
+
+        OUTPUT: The weighted in-degree of the vertex ``i``
+
+        EXAMPLES::
+
+        In the 3-Kronecker quiver with the dimension vector `(2,3)`::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: d = (2, 3)
+            sage: Q.in_degree_weighted(0, d)
+            0
+            sage: Q.in_degree_weighted(1, d)
+            6
+
+        """
+        assert i in self.vertices()
+
+        d = self._coerce_vector(d)
+
+        return d * self.adjacency_matrix() * self.simple_root(i)
+
     def out_degree(self, i):
         r"""Returns the out-degree of a vertex.
 
@@ -897,6 +930,39 @@ class Quiver(Element):
 
         """
         return self.graph().out_degree(i)
+
+    def out_degree_weighted(self, i, d):
+        r"""Returns the weighted out-degree of a vertex
+
+        The weighted out-degree of ``i`` is the sum over all outgoing arrows of the
+        value of the dimension vector ``d`` at the target of the arrow.
+
+        INPUT:
+
+        - ``i`` -- a vertex of the underlying graph
+
+        - ``d`` -- a weight vector for the in-degree
+
+        OUTPUT: The weighted in-degree of the vertex ``i``
+
+        EXAMPLES::
+
+        In the 3-Kronecker quiver with the dimension vector `(2,3)`::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: d = (2, 3)
+            sage: Q.out_degree_weighted(0, d)
+            9
+            sage: Q.out_degree_weighted(1, d)
+            0
+
+        """
+        assert i in self.vertices()
+
+        d = self._coerce_vector(d)
+
+        return self.simple_root(i) * self.adjacency_matrix() * d
 
     def is_source(self, i) -> bool:
         """Checks if ``i`` is a source of the quiver
