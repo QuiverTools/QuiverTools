@@ -686,8 +686,7 @@ class Quiver(Element):
         return self.graph().size()
 
     def arrows(self):
-        r"""
-        Return the arrows of the quiver
+        r"""Return the arrows of the quiver
 
         OUTPUT: list of the arrows in the underlying graph as tuples (source, target)
 

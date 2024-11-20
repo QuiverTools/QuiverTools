@@ -1404,20 +1404,46 @@ class QuiverModuli(Element):
         TODO
 
         """
-        raise NotImplementedError()
+        return [i for i in self._Q.vertices() if self._Q.is_large_vertex(i)]
 
     def vertex_removal(self, i):
-        Q, d = self._Q, self._d
+        r"""Return an isomorphic moduli space on the vertex removal of the quiver"""
+        Q, d, theta = self._Q, self._d, self._theta
 
         assert Q.is_large_vertex(i, d)
 
         # creating the quiver
+        G = Q.graph().subgraph(vertices=[j for j in Q.vertices() if j != i])
+
+        paths = list(self.graph().all_paths_iterator(use_multiedges=True), max_length=2)
+        paths = [path for path in paths if len(path) == 2]
+        paths = [path for path in paths if path[1] == i]
+
+        for path in paths:
+            G.add_edges((path[0], path[2]) for path in paths)
+
+        tau_Q = Quiver(G)
 
         # creating the dimension vector
+        tau_d = [d[i] for i in tau_Q.vertices()]
 
         # creating the stability parameter: Lemma 3.1 of DOI:10.4171/JCA/97
+        if theta(i) > 0:
+            tau_theta = [
+                theta(j) + Q.adjacency_matrix()[j, i] * theta(i)
+                for j in Q.vertices()
+                if j != i
+            ]
+        elif theta(i) < 0:
+            tau_theta = [
+                theta(j) + Q.adjacency_matrix()[i, j] * theta(i)
+                for j in Q.vertices()
+                if j != i
+            ]
+        else:
+            tau_theta = [theta(j) for j in Q.vertices() if j != i]
 
-        raise NotImplementedError()
+        raise QuiverModuliSpace(tau_Q, tau_d, tau_theta)
 
     def small_sources_and_sinks(self):
         raise NotImplementedError()
