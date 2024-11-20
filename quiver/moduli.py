@@ -1404,7 +1404,7 @@ class QuiverModuli(Element):
         TODO
 
         """
-        return [i for i in self._Q.vertices() if self._Q.is_large_vertex(i)]
+        return [i for i in self._Q.vertices() if self._Q.is_large_vertex(i, d)]
 
     def vertex_removal(self, i):
         r"""Return an isomorphic moduli space on the vertex removal of the quiver"""
@@ -1445,8 +1445,11 @@ class QuiverModuli(Element):
 
         raise QuiverModuliSpace(tau_Q, tau_d, tau_theta)
 
-    def small_sources_and_sinks(self):
-        raise NotImplementedError()
+    def small_sources(self):
+        return [i for i in self._Q.vertices() if self._Q.is_small_source(i, self._d)]
+
+    def small_sinks(self):
+        return [i for i in self._Q.vertices() if self._Q.is_small_sink(i, self._d)]
 
     def reflection(self, i):
         Q, d = self._Q, self._d
