@@ -1102,14 +1102,68 @@ class Quiver(Element):
         )
 
     def is_small_source(self, i, d):
+        r"""Return whether the vertex ``i`` is a small source for ``d``
+
+        A small source is defined in Definition 2.2 of DOI:10.4171/JCA/97:
+        the vertex ``i`` is said to be _small source_ if it is a source,
+        and the value of ``d`` at ``i`` is strictly smaller than the
+        sum of the values of ``d`` at the targets of outgoing edges.
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver and our favourite dimension vector::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: d = (2, 3)
+            sage: Q.is_small_source(0, d)
+            True
+            sage: Q.is_small_source(1, d)
+            False
+
+        If we vary the dimension vector the source of the Kronecker quiver
+        is no longer small::
+
+            sage: d = (7, 1)
+            sage: Q.is_small_source(0, d)
+            False
+
+        """
         assert i in self.vertices()
 
-        raise NotImplementedError()
+        return self.is_source(i) and self.out_degree_weighted(i, d) > d[i]
 
     def is_small_sink(self, i, d):
+        r"""Return whether the vertex ``i`` is a small sink for ``d``
+
+        A small sink is defined in Definition 2.2 of DOI:10.4171/JCA/97:
+        the vertex ``i`` is said to be _small sink_ if it is a sink,
+        and the value of ``d`` at ``i`` is strictly smaller than the
+        sum of the values of ``d`` at the targets of outgoing edges.
+
+        EXAMPLES:
+
+        The 3-Kronecker quiver and our favourite dimension vector::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: d = (2, 3)
+            sage: Q.is_small_sink(0, d)
+            False
+            sage: Q.is_small_sink(1, d)
+            True
+
+        If we vary the dimension vector the sink of the Kronecker quiver
+        is no longer small::
+
+            sage: d = (1, 7)
+            sage: Q.is_small_sink(1, d)
+            False
+
+        """
         assert i in self.vertices()
 
-        raise NotImplementedError()
+        return self.is_sink(i) and self.in_degree_weighted(i, d) > d[i]
 
     """
     Basic representation-theoretical properties of the quiver
