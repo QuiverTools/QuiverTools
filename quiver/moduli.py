@@ -1417,7 +1417,7 @@ class QuiverModuli(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, [2, 3])
-            sage: M.all_weights_endomorphisms_universal_bundle()
+            sage: X.all_weights_endomorphisms_universal_bundle()
             {((1, 0), (1, 1), (0, 2)): [0, 15, 30, -15, 0, 15, -30, -15, 0],
              ((1, 0), (1, 2), (0, 1)): [0, 10, 15, -10, 0, 5, -15, -5, 0],
              ((1, 0), (1, 3)): [0, 45, -45, 0],
@@ -1451,7 +1451,7 @@ class QuiverModuli(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
-            sage: M.weights_endomorphisms_universal_bundle(0,1)
+            sage: X.weights_endomorphisms_universal_bundle(0,1)
             {((1, 0), (1, 1), (0, 2)): [-15, 0, -30, -15, -30, -15],
              ((1, 0), (1, 2), (0, 1)): [-10, 0, -10, 0, -15, -5],
              ((1, 0), (1, 3)): [-45, 0, -45, 0, -45, 0],
@@ -1459,7 +1459,7 @@ class QuiverModuli(Element):
              ((2, 0), (0, 3)): [-15, -15, -15, -15, -15, -15],
              ((2, 1), (0, 2)): [0, 0, -10, -10, -10, -10],
              ((2, 2), (0, 1)): [0, 0, 0, 0, -15, -15]}
-            sage: M.weights_endomorphisms_universal_bundle(0,0)
+            sage: X.weights_endomorphisms_universal_bundle(0,0)
             {((1, 0), (1, 1), (0, 2)): [0, 15, -15, 0],
              ((1, 0), (1, 2), (0, 1)): [0, 10, -10, 0],
              ((1, 0), (1, 3)): [0, 45, -45, 0],
@@ -1504,7 +1504,7 @@ class QuiverModuli(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3); d = (2, 3)
             sage: X = QuiverModuliSpace(Q, d)
-            sage: M.weights_universal_bundle(0)
+            sage: X.weights_universal_bundle(0)
             {((1, 0), (1, 1), (0, 2)): [60, 45],
              ((1, 0), (1, 2), (0, 1)): [25, 15],
              ((1, 0), (1, 3)): [90, 45],
@@ -1512,7 +1512,7 @@ class QuiverModuli(Element):
              ((2, 0), (0, 3)): [45, 45],
              ((2, 1), (0, 2)): [20, 20],
              ((2, 2), (0, 1)): [15, 15]}
-            sage: M.weights_universal_bundle(1)
+            sage: X.weights_universal_bundle(1)
             {((1, 0), (1, 1), (0, 2)): [45, 30, 30],
              ((1, 0), (1, 2), (0, 1)): [15, 15, 10],
              ((1, 0), (1, 3)): [45, 45, 45],
