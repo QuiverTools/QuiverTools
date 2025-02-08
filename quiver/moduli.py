@@ -1410,6 +1410,36 @@ class QuiverModuli(Element):
         return all(weights[i] > kweights[i] for i in range(len(HNs)))
 
 
+    def all_weights_endomorphisms_universal_bundle(self):
+        r"""
+        Returns the Teleman weights on the endomorphisms of the universal bundle.
+
+        EXAMPLE:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3])
+            sage: M.all_weights_endomorphisms_universal_bundle()
+            {((1, 0), (1, 1), (0, 2)): [0, 15, 30, -15, 0, 15, -30, -15, 0],
+             ((1, 0), (1, 2), (0, 1)): [0, 10, 15, -10, 0, 5, -15, -5, 0],
+             ((1, 0), (1, 3)): [0, 45, -45, 0],
+             ((1, 1), (1, 2)): [0, 5, -5, 0],
+             ((2, 0), (0, 3)): [0, 15, -15, 0],
+             ((2, 1), (0, 2)): [0, 10, -10, 0],
+             ((2, 2), (0, 1)): [0, 15, -15, 0]}
+        """
+        # setup shorthand
+
+        HN = self.all_harder_narasimhan_types(proper=True)
+        ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
+
+        return {hntype : [
+            ks[hntype][s] - ks[hntype][t]
+            for s in range(len(hntype))
+            for t in range(len(hntype))
+        ] for hntype in HN}
     """
     Tautological relations
     """
