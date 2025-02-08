@@ -1315,7 +1315,7 @@ class QuiverModuli(Element):
              ((2, 2), (0, 1)): 30}
         """
         # setup shorthand
-        Q, theta, denom = self._Q, self._theta, self._denom
+        Q = self._Q
         HN = harder_narasimhan_type
 
         weights = self.harder_narasimhan_type_weights(HN)
@@ -1393,9 +1393,6 @@ class QuiverModuli(Element):
             sage: X.if_rigidity_inequality_holds()
             False
         """
-        # setup shorthand
-        Q, theta, denom = self._Q, self._theta, self._denom
-
         weights = self.teleman_bounds()
 
         # we compute the maximum weight of the tensors of the universal bundles
@@ -1580,7 +1577,7 @@ class QuiverModuli(Element):
         """
 
         # setup shorthand
-        Q, d, theta, denom = self._Q, self._d, self._theta, self._denom
+        Q, d = self._Q, self._d
 
         assert gcd(d) == 1, "universal bundles do not exist"
 
