@@ -1440,6 +1440,50 @@ class QuiverModuli(Element):
             for s in range(len(hntype))
             for t in range(len(hntype))
         ] for hntype in HN}
+
+
+    def weights_endomorphisms_universal_bundle(self, i, j):
+        r"""
+        Returns the Teleman weights on :math:`U_{i}^{\vee} \otimes U_{j}`.
+
+        EXAMPLE:
+
+            The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: M.weights_endomorphisms_universal_bundle(0,1)
+            {((1, 0), (1, 1), (0, 2)): [-15, 0, -30, -15, -30, -15],
+             ((1, 0), (1, 2), (0, 1)): [-10, 0, -10, 0, -15, -5],
+             ((1, 0), (1, 3)): [-45, 0, -45, 0, -45, 0],
+             ((1, 1), (1, 2)): [0, 5, -5, 0, -5, 0],
+             ((2, 0), (0, 3)): [-15, -15, -15, -15, -15, -15],
+             ((2, 1), (0, 2)): [0, 0, -10, -10, -10, -10],
+             ((2, 2), (0, 1)): [0, 0, 0, 0, -15, -15]}
+            sage: M.weights_endomorphisms_universal_bundle(0,0)
+            {((1, 0), (1, 1), (0, 2)): [0, 15, -15, 0],
+             ((1, 0), (1, 2), (0, 1)): [0, 10, -10, 0],
+             ((1, 0), (1, 3)): [0, 45, -45, 0],
+             ((1, 1), (1, 2)): [0, 5, -5, 0],
+             ((2, 0), (0, 3)): [0, 0, 0, 0],
+             ((2, 1), (0, 2)): [0, 0, 0, 0],
+             ((2, 2), (0, 1)): [0, 0, 0, 0]}
+        """
+        # setup shorthand
+        d = self._d
+        # check if i and j are vertices
+        assert d[i] and d[j]
+
+        HN = self.all_harder_narasimhan_types(proper=True)
+        ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
+
+        return {hntype : [
+            ks[hntype][s] - ks[hntype][t]
+            for s in range(len(hntype)) for l in range(hntype[s][j])
+            for t in range(len(hntype)) for g in range(hntype[t][i])
+        ] for hntype in HN}
+
     """
     Tautological relations
     """
