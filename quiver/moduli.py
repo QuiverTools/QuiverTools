@@ -1484,6 +1484,64 @@ class QuiverModuli(Element):
             for t in range(len(hntype)) for g in range(hntype[t][i])
         ] for hntype in HN}
 
+
+    def weights_universal_bundle(self, i, a=None):
+        r"""
+        Returns the weights of the 1-PS lambda on the universal bundle :math:`U_i`
+        with the correct multiplicities.
+
+        INPUT:
+
+        - ``i`` -- index of the universal bundle
+        - ``a`` -- (default: extended_gcd(d)[1]) a linearization defining :math:`U_i`.
+
+        EXAMPLE:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3); d = (2, 3)
+            sage: X = QuiverModuliSpace(Q, d)
+            sage: M.weights_universal_bundle(0)
+            {((1, 0), (1, 1), (0, 2)): [60, 45],
+             ((1, 0), (1, 2), (0, 1)): [25, 15],
+             ((1, 0), (1, 3)): [90, 45],
+             ((1, 1), (1, 2)): [5, 0],
+             ((2, 0), (0, 3)): [45, 45],
+             ((2, 1), (0, 2)): [20, 20],
+             ((2, 2), (0, 1)): [15, 15]}
+            sage: M.weights_universal_bundle(1)
+            {((1, 0), (1, 1), (0, 2)): [45, 30, 30],
+             ((1, 0), (1, 2), (0, 1)): [15, 15, 10],
+             ((1, 0), (1, 3)): [45, 45, 45],
+             ((1, 1), (1, 2)): [5, 0, 0],
+             ((2, 0), (0, 3)): [30, 30, 30],
+             ((2, 1), (0, 2)): [20, 10, 10],
+             ((2, 2), (0, 1)): [15, 15, 0]}
+        """
+        # setup shorthand
+        d = self._d
+
+        # check if i is a vertex
+        assert d[i]
+
+        if a is None:
+            a = extended_gcd(d)[1]
+
+        HN = self.all_harder_narasimhan_types(proper=True)
+        ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
+
+        constant_term = {hntype: sum(ks[hntype][i] *
+            sum(a[k] * hntype[i][k] for k in range(len(hntype[i]))) # this is a dot product
+                        for i in range(len(hntype)))
+                        for hntype in HN}
+
+        return {hntype: [ks[hntype][s] - constant_term[hntype]
+                            for s in range(len(hntype))
+                            for l in range(hntype[s][i])
+                        ]
+        for hntype in HN}
+
     """
     Tautological relations
     """
