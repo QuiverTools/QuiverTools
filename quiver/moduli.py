@@ -1306,13 +1306,13 @@ class QuiverModuli(Element):
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: HN = X.all_harder_narasimhan_types(proper=True)
             sage: {dstar: X.teleman_bound(dstar) for dstar in HN}
-            {((1, 0), (1, 1), (0, 2)): 135,
+            {((1, 0), (1, 1), (0, 2)): 270,
              ((1, 0), (1, 2), (0, 1)): 100,
-             ((1, 0), (1, 3)): 90,
-             ((1, 1), (1, 2)): 15/2,
+             ((1, 0), (1, 3)): 360,
+             ((1, 1), (1, 2)): 15,
              ((2, 0), (0, 3)): 270,
              ((2, 1), (0, 2)): 100,
-             ((2, 2), (0, 1)): 30}
+             ((2, 2), (0, 1)): 60}
         """
         # setup shorthand
         Q = self._Q
@@ -1348,15 +1348,15 @@ class QuiverModuli(Element):
             sage: from quiver import *
             sage: X = QuiverModuliSpace(KroneckerQuiver(3), (2, 3))
             sage: X.teleman_bounds()
-            [135, 100, 90, 15/2, 270, 100, 30]
+            [270, 100, 360, 15, 270, 100, 60]
             sage: X.teleman_bounds(as_dict=True)
-            {((1, 0), (1, 1), (0, 2)): 135,
+            {((1, 0), (1, 1), (0, 2)): 270,
              ((1, 0), (1, 2), (0, 1)): 100,
-             ((1, 0), (1, 3)): 90,
-             ((1, 1), (1, 2)): 15/2,
+             ((1, 0), (1, 3)): 360,
+             ((1, 1), (1, 2)): 15,
              ((2, 0), (0, 3)): 270,
              ((2, 1), (0, 2)): 100,
-             ((2, 2), (0, 1)): 30}
+             ((2, 2), (0, 1)): 60}
         """
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
