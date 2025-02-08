@@ -1,6 +1,7 @@
 from itertools import combinations_with_replacement, product
 
 from sage.arith.misc import bernoulli, factorial, gcd, xgcd
+from sage.arith.functions import lcm
 from sage.combinat.partition import Partitions
 from sage.combinat.permutation import Permutations
 from sage.combinat.schubert_polynomial import SchubertPolynomialRing
@@ -1257,7 +1258,29 @@ class QuiverModuli(Element):
     Methods related to Teleman quantization
     """
 
-    def harder_narasimhan_weight(self, harder_narasimhan_type):
+    def harder_narasimhan_type_weights(self, harder_narasimhan_type):
+        r"""
+        Returns the weights of the 1-PS lambda on the Harder-Narasimhan type.
+
+        EXAMPLE:
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: HN = X.all_harder_narasimhan_types(proper=True)
+            sage: X.harder_narasimhan_type_weights(HN[0])
+            [18, 3, -12]
+        """
+        # setup shorthand
+        Q, theta, denom = self._Q, self._theta, self._denom
+        HN = harder_narasimhan_type
+
+        weights = [Q.slope(HN[s], theta, denom=denom) for s in range(len(HN))]
+        c = lcm([weight.denominator() for weight in weights])
+
+        return [x * c for x in weights]
+
+    def teleman_bound(self, harder_narasimhan_type):
         r"""
         Returns the Teleman weight of a Harder-Narasimhan type
 
@@ -1295,11 +1318,12 @@ class QuiverModuli(Element):
         Q, theta, denom = self._Q, self._theta, self._denom
         HN = harder_narasimhan_type
 
+        weights = self.harder_narasimhan_type_weights(HN)
+
         return -sum(
             [
                 (
-                    Q.slope(HN[s], theta, denom=denom)
-                    - Q.slope(HN[t], theta, denom=denom)
+                    weights[s] - weights[t]
                 )
                 * Q.euler_form(HN[s], HN[t])
                 for s in range(len(HN) - 1)
@@ -1340,7 +1364,7 @@ class QuiverModuli(Element):
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
 
-        weights = map(lambda dstar: self.harder_narasimhan_weight(dstar), HNs)
+        weights = [self.teleman_bound(dstar) for dstar in HNs]
 
         if as_dict:
             return dict(zip(HNs, weights))
@@ -1380,6 +1404,8 @@ class QuiverModuli(Element):
         # we compute the maximum weight of the tensors of the universal bundles
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
+        kweights = [self.harder_narasimhan_type_weights(hn) for hn in HNs]
+        kweights = [kw[0] - kw[-1] for kw in kweights]
 
         tensor_weights = list(
             map(
