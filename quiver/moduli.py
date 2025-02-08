@@ -1542,6 +1542,51 @@ class QuiverModuli(Element):
                         ]
         for hntype in HN}
 
+
+    def weights_canonical(self):
+        r"""
+        Returns the Teleman weight of the canonical bundle :math:`\omega` as
+        computed in MR4352662_.
+
+        This is only known if universal bundles exist, i.e., if :math:`\gcd(d) = 1`.
+
+        EXAMPLE:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3); d = (2, 3)
+            sage: X = QuiverModuliSpace(Q, d)
+            sage: X.weights_canonical()
+            {((1, 0), (1, 1), (0, 2)): [315],
+             ((1, 0), (1, 2), (0, 1)): [120],
+             ((1, 0), (1, 3)): [405],
+             ((1, 1), (1, 2)): [15],
+             ((2, 0), (0, 3)): [270],
+             ((2, 1), (0, 2)): [120],
+             ((2, 2), (0, 1)): [90]}
+
+        .. _MR4352662: https://mathscinet.ams.org/mathscinet-getitem?mr=4352662
+        """
+
+        # setup shorthand
+        Q, d, theta, denom = self._Q, self._d, self._theta, self._denom
+
+        assert gcd(d) == 1, "universal bundles do not exist"
+
+        HN = self.all_harder_narasimhan_types(proper=True)
+        ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
+
+        dd = {hntype: sum(ks[hntype][i] * hntype[i] for i in range(len(hntype)))
+            for hntype in HN}
+
+        can = Q.canonical_stability_parameter(d)
+        return {hntype :
+            [sum(can[i] * dd[hntype][i] for i in range(len(can)))] # this is a dot product
+            for hntype in HN
+        }
+
+
     """
     Tautological relations
     """
