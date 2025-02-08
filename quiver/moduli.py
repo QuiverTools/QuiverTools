@@ -1407,15 +1407,8 @@ class QuiverModuli(Element):
         kweights = [self.harder_narasimhan_type_weights(hn) for hn in HNs]
         kweights = [kw[0] - kw[-1] for kw in kweights]
 
-        tensor_weights = list(
-            map(
-                lambda dstar: Q.slope(dstar[0], theta, denom=denom)
-                - Q.slope(dstar[-1], theta, denom=denom),
-                HNs,
-            )
-        )
+        return all(weights[i] > kweights[i] for i in range(len(HNs)))
 
-        return all(weights[i] > tensor_weights[i] for i in range(len(HNs)))
 
     """
     Tautological relations
