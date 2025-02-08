@@ -1295,7 +1295,7 @@ class QuiverModuli(Element):
         :math:`\det(N_{S/R})^{\vee}|_Z`, where `S` is the
         corresponding Harder--Narasimhan stratum.
 
-        .. SEEALSO:: :meth:`all_weight_bounds`, :meth:`if_rigidity_inequality_holds`
+        .. SEEALSO:: :meth:`teleman_bounds`, :meth:`if_rigidity_inequality_holds`
 
         EXAMPLES:
 
@@ -1305,7 +1305,7 @@ class QuiverModuli(Element):
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: HN = X.all_harder_narasimhan_types(proper=True)
-            sage: {dstar: X.harder_narasimhan_weight(dstar) for dstar in HN}
+            sage: {dstar: X.teleman_bound(dstar) for dstar in HN}
             {((1, 0), (1, 1), (0, 2)): 135,
              ((1, 0), (1, 2), (0, 1)): 100,
              ((1, 0), (1, 3)): 90,
@@ -1331,7 +1331,7 @@ class QuiverModuli(Element):
             ]
         )
 
-    def all_weight_bounds(self, as_dict=False):
+    def teleman_bounds(self, as_dict=False):
         r"""
         Returns the list of all weights appearing in Teleman quantization.
 
@@ -1350,9 +1350,9 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: X = QuiverModuliSpace(KroneckerQuiver(3), (2, 3))
-            sage: X.all_weight_bounds()
+            sage: X.teleman_bounds()
             [135, 100, 90, 15/2, 270, 100, 30]
-            sage: X.all_weight_bounds(as_dict=True)
+            sage: X.teleman_bounds(as_dict=True)
             {((1, 0), (1, 1), (0, 2)): 135,
              ((1, 0), (1, 2), (0, 1)): 100,
              ((1, 0), (1, 3)): 90,
@@ -1399,7 +1399,7 @@ class QuiverModuli(Element):
         # setup shorthand
         Q, theta, denom = self._Q, self._theta, self._denom
 
-        weights = self.all_weight_bounds()
+        weights = self.teleman_bounds()
 
         # we compute the maximum weight of the tensors of the universal bundles
         # this is only relevant on the unstable locus
