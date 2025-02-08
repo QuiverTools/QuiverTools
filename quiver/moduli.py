@@ -1,7 +1,7 @@
 from itertools import combinations_with_replacement, product
 
-from sage.arith.misc import bernoulli, factorial, gcd, xgcd
 from sage.arith.functions import lcm
+from sage.arith.misc import bernoulli, factorial, gcd, xgcd
 from sage.combinat.partition import Partitions
 from sage.combinat.permutation import Permutations
 from sage.combinat.schubert_polynomial import SchubertPolynomialRing
@@ -1322,10 +1322,7 @@ class QuiverModuli(Element):
 
         return -sum(
             [
-                (
-                    weights[s] - weights[t]
-                )
-                * Q.euler_form(HN[s], HN[t])
+                (weights[s] - weights[t]) * Q.euler_form(HN[s], HN[t])
                 for s in range(len(HN) - 1)
                 for t in range(s + 1, len(HN))
             ]
@@ -1409,7 +1406,6 @@ class QuiverModuli(Element):
 
         return all(weights[i] > kweights[i] for i in range(len(HNs)))
 
-
     def all_weights_endomorphisms_universal_bundle(self):
         r"""
         Returns the Teleman weights on the endomorphisms of the universal bundle.
@@ -1435,12 +1431,14 @@ class QuiverModuli(Element):
         HN = self.all_harder_narasimhan_types(proper=True)
         ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
 
-        return {hntype : [
-            ks[hntype][s] - ks[hntype][t]
-            for s in range(len(hntype))
-            for t in range(len(hntype))
-        ] for hntype in HN}
-
+        return {
+            hntype: [
+                ks[hntype][s] - ks[hntype][t]
+                for s in range(len(hntype))
+                for t in range(len(hntype))
+            ]
+            for hntype in HN
+        }
 
     def weights_endomorphisms_universal_bundle(self, i, j):
         r"""
@@ -1478,12 +1476,16 @@ class QuiverModuli(Element):
         HN = self.all_harder_narasimhan_types(proper=True)
         ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
 
-        return {hntype : [
-            ks[hntype][s] - ks[hntype][t]
-            for s in range(len(hntype)) for l in range(hntype[s][j])
-            for t in range(len(hntype)) for g in range(hntype[t][i])
-        ] for hntype in HN}
-
+        return {
+            hntype: [
+                ks[hntype][s] - ks[hntype][t]
+                for s in range(len(hntype))
+                for l in range(hntype[s][j])
+                for t in range(len(hntype))
+                for g in range(hntype[t][i])
+            ]
+            for hntype in HN
+        }
 
     def weights_universal_bundle(self, i, a=None):
         r"""
@@ -1531,17 +1533,25 @@ class QuiverModuli(Element):
         HN = self.all_harder_narasimhan_types(proper=True)
         ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
 
-        constant_term = {hntype: sum(ks[hntype][i] *
-            sum(a[k] * hntype[i][k] for k in range(len(hntype[i]))) # this is a dot product
-                        for i in range(len(hntype)))
-                        for hntype in HN}
+        constant_term = {
+            hntype: sum(
+                ks[hntype][i]
+                * sum(
+                    a[k] * hntype[i][k] for k in range(len(hntype[i]))
+                )  # this is a dot product
+                for i in range(len(hntype))
+            )
+            for hntype in HN
+        }
 
-        return {hntype: [ks[hntype][s] - constant_term[hntype]
-                            for s in range(len(hntype))
-                            for l in range(hntype[s][i])
-                        ]
-        for hntype in HN}
-
+        return {
+            hntype: [
+                ks[hntype][s] - constant_term[hntype]
+                for s in range(len(hntype))
+                for l in range(hntype[s][i])
+            ]
+            for hntype in HN
+        }
 
     def weights_canonical(self):
         r"""
@@ -1577,15 +1587,18 @@ class QuiverModuli(Element):
         HN = self.all_harder_narasimhan_types(proper=True)
         ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
 
-        dd = {hntype: sum(ks[hntype][i] * hntype[i] for i in range(len(hntype)))
-            for hntype in HN}
-
-        can = Q.canonical_stability_parameter(d)
-        return {hntype :
-            [sum(can[i] * dd[hntype][i] for i in range(len(can)))] # this is a dot product
+        dd = {
+            hntype: sum(ks[hntype][i] * hntype[i] for i in range(len(hntype)))
             for hntype in HN
         }
 
+        can = Q.canonical_stability_parameter(d)
+        return {
+            hntype: [
+                sum(can[i] * dd[hntype][i] for i in range(len(can)))
+            ]  # this is a dot product
+            for hntype in HN
+        }
 
     """
     Tautological relations
