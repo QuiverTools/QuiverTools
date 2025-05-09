@@ -997,7 +997,7 @@ class QuiverModuli(Element):
         # we use the order of vertices provided by ``tau.keys()`` for Qloc and dloc
         A = matrix(
             [
-                [Q.generic_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
+                [Q.general_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
                 for dp in tau.keys()
                 for m in tau[dp]
             ]
