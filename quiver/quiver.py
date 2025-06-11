@@ -2650,7 +2650,9 @@ class Quiver(Element):
             for estar in filter(
                 lambda fstar: self.slope(e, theta, denom=denom)
                 > self.slope(fstar[0], theta, denom=denom),
-                self._all_harder_narasimhan_types(d - e, theta, denom=denom, sorted=sorted)
+                self._all_harder_narasimhan_types(
+                    d - e, theta, denom=denom, sorted=sorted
+                ),
             ):
                 all_types.append((e,) + estar)
 

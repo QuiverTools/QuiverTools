@@ -512,7 +512,7 @@ class QuiverModuli(Element):
              ((2, 0, 0), (0, 2, 0), (0, 1, 2)),
              ((2, 0, 0), (0, 2, 0), (0, 1, 1), (0, 0, 1)),
              ((2, 0, 0), (0, 3, 0), (0, 0, 2)))
-             """
+        """
         d = self._Q._coerce_dimension_vector(self._d)
         theta = self._Q._coerce_vector(self._theta)
 
