@@ -2589,7 +2589,7 @@ class Quiver(Element):
     """
 
     @cached_method
-    def _all_harder_narasimhan_types(self, d, theta, denom=sum, sorted=False):
+    def _all_harder_narasimhan_types(self, d, theta, denom=sum, sorted=True):
         r"""Returns the list of all Harder--Narasimhan types of d.
 
         INPUT:
@@ -2611,14 +2611,14 @@ class Quiver(Element):
             sage: d = (2, 3)
             sage: theta = (3, -2)
             sage: Q._all_harder_narasimhan_types(d, theta)
-            (((1, 0), (1, 1), (0, 2)),
-             ((1, 0), (1, 2), (0, 1)),
-             ((1, 0), (1, 3)),
+            (((2, 3),),
              ((1, 1), (1, 2)),
-             ((2, 0), (0, 3)),
-             ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
-             ((2, 3),))
+             ((2, 1), (0, 2)),
+             ((1, 0), (1, 3)),
+             ((1, 0), (1, 2), (0, 1)),
+             ((1, 0), (1, 1), (0, 2)),
+             ((2, 0), (0, 3)))
 
         .. NOTE ::
 
