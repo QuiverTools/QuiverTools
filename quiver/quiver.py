@@ -2655,7 +2655,7 @@ class Quiver(Element):
                 all_types.append((e,) + estar)
 
         if self.has_semistable_representation(d, theta, denom=denom):
-            all_types.append((d,))
+            all_types.insert(0, (d,))
 
         # because it is a cached method we need to return a tuple, not a list
         # as the result of a cached method must be immutable
