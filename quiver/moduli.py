@@ -2486,8 +2486,8 @@ class QuiverModuliSpace(QuiverModuli):
         r"""
         Computes the index of the moduli space
 
-        The index is the largest integer dividing the canonical divisor in Pic.
-        For now this is only implemented for the canonical stability condition.
+        The index is the largest integer dividing the canonical divisor
+        in the Picard group.
 
         EXAMPLES:
 
