@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -36,7 +36,7 @@
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=a681ed88"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
@@ -283,6 +283,7 @@ document.write(`
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  | <a href="#Z"><strong>Z</strong></a>
  
 </div>
@@ -321,7 +322,7 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#quiver.Quiver.adjacency_matrix">adjacency_matrix() (quiver.Quiver method)</a>
 </li>
-      <li><a href="index.html#quiver.Quiver.all_generic_subdimension_vectors">all_generic_subdimension_vectors() (quiver.Quiver method)</a>
+      <li><a href="index.html#quiver.Quiver.all_general_subdimension_vectors">all_general_subdimension_vectors() (quiver.Quiver method)</a>
 </li>
       <li><a href="index.html#quiver.QuiverModuli.all_harder_narasimhan_types">all_harder_narasimhan_types() (quiver.QuiverModuli method)</a>
 </li>
@@ -331,7 +332,7 @@ document.write(`
 </li>
       <li><a href="index.html#quiver.Quiver.all_subdimension_vectors">all_subdimension_vectors() (quiver.Quiver method)</a>
 </li>
-      <li><a href="index.html#quiver.QuiverModuli.all_weight_bounds">all_weight_bounds() (quiver.QuiverModuli method)</a>
+      <li><a href="index.html#quiver.QuiverModuli.all_weights_endomorphisms_universal_bundle">all_weights_endomorphisms_universal_bundle() (quiver.QuiverModuli method)</a>
 </li>
       <li><a href="index.html#quiver.Quiver.arrows">arrows() (quiver.Quiver method)</a>
 </li>
@@ -457,17 +458,17 @@ document.write(`
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#quiver.Quiver.general_ext">general_ext() (quiver.Quiver method)</a>
+</li>
+      <li><a href="index.html#quiver.Quiver.general_hom">general_hom() (quiver.Quiver method)</a>
+</li>
       <li><a href="index.html#quiver.GeneralizedJordanQuiver">GeneralizedJordanQuiver() (in module quiver)</a>
-</li>
-      <li><a href="index.html#quiver.GeneralizedKroneckerQuiver">GeneralizedKroneckerQuiver() (in module quiver)</a>
-</li>
-      <li><a href="index.html#quiver.GeneralizedSubspaceQuiver">GeneralizedSubspaceQuiver() (in module quiver)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="index.html#quiver.Quiver.generic_ext">generic_ext() (quiver.Quiver method)</a>
+      <li><a href="index.html#quiver.GeneralizedKroneckerQuiver">GeneralizedKroneckerQuiver() (in module quiver)</a>
 </li>
-      <li><a href="index.html#quiver.Quiver.generic_hom">generic_hom() (quiver.Quiver method)</a>
+      <li><a href="index.html#quiver.GeneralizedSubspaceQuiver">GeneralizedSubspaceQuiver() (in module quiver)</a>
 </li>
       <li><a href="index.html#quiver.Quiver.graph">graph() (quiver.Quiver method)</a>
 </li>
@@ -477,7 +478,7 @@ document.write(`
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="index.html#quiver.QuiverModuli.harder_narasimhan_weight">harder_narasimhan_weight() (quiver.QuiverModuli method)</a>
+      <li><a href="index.html#quiver.QuiverModuli.harder_narasimhan_type_weights">harder_narasimhan_type_weights() (quiver.QuiverModuli method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -509,7 +510,7 @@ document.write(`
 </li>
       <li><a href="index.html#quiver.Quiver.is_finite_type">is_finite_type() (quiver.Quiver method)</a>
 </li>
-      <li><a href="index.html#quiver.Quiver.is_generic_subdimension_vector">is_generic_subdimension_vector() (quiver.Quiver method)</a>
+      <li><a href="index.html#quiver.Quiver.is_general_subdimension_vector">is_general_subdimension_vector() (quiver.Quiver method)</a>
 </li>
       <li><a href="index.html#quiver.QuiverModuli.is_harder_narasimhan_type">is_harder_narasimhan_type() (quiver.QuiverModuli method)</a>
 </li>
@@ -703,14 +704,18 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#quiver.QuiverModuli.tautological_ideal">tautological_ideal() (quiver.QuiverModuli method)</a>
 </li>
+      <li><a href="index.html#quiver.QuiverModuli.teleman_bound">teleman_bound() (quiver.QuiverModuli method)</a>
+</li>
+      <li><a href="index.html#quiver.QuiverModuli.teleman_bounds">teleman_bounds() (quiver.QuiverModuli method)</a>
+</li>
       <li><a href="index.html#quiver.ThickenedSubspaceQuiver">ThickenedSubspaceQuiver() (in module quiver)</a>
 </li>
       <li><a href="index.html#quiver.Quiver.thin_dimension_vector">thin_dimension_vector() (quiver.Quiver method)</a>
 </li>
-      <li><a href="index.html#quiver.ThreeVertexQuiver">ThreeVertexQuiver() (in module quiver)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#quiver.ThreeVertexQuiver">ThreeVertexQuiver() (in module quiver)</a>
+</li>
       <li><a href="index.html#quiver.Quiver.tits_form">tits_form() (quiver.Quiver method)</a>
 </li>
       <li><a href="index.html#quiver.QuiverModuli.to_space">to_space() (quiver.QuiverModuli method)</a>
@@ -728,6 +733,20 @@ document.write(`
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#quiver.Quiver.vertices">vertices() (quiver.Quiver method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#quiver.QuiverModuli.weights_canonical">weights_canonical() (quiver.QuiverModuli method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#quiver.QuiverModuli.weights_endomorphisms_universal_bundle">weights_endomorphisms_universal_bundle() (quiver.QuiverModuli method)</a>
+</li>
+      <li><a href="index.html#quiver.QuiverModuli.weights_universal_bundle">weights_universal_bundle() (quiver.QuiverModuli method)</a>
 </li>
   </ul></td>
 </tr></table>

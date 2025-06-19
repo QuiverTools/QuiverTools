@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -36,7 +36,7 @@
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../_static/documentation_options.js?v=a681ed88"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/quiver/quiver';</script>
@@ -2646,13 +2646,13 @@ document.write(`
 
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generic subdimension vectors and generic Hom and Ext</span>
+<span class="sd">    General subdimension vectors and general Hom and Ext</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Quiver.is_generic_subdimension_vector">
-<a class="viewcode-back" href="../../index.html#quiver.Quiver.is_generic_subdimension_vector">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_generic_subdimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Checks if e is a generic subdimension vector of d.</span>
+<div class="viewcode-block" id="Quiver.is_general_subdimension_vector">
+<a class="viewcode-back" href="../../index.html#quiver.Quiver.is_general_subdimension_vector">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_general_subdimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Checks if e is a general subdimension vector of d.</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -2660,14 +2660,14 @@ document.write(`
 
 <span class="sd">        - ``d``: dimension vector for the ambient representation</span>
 
-<span class="sd">        OUTPUT: whether e is a generic subdimension vector of d</span>
+<span class="sd">        OUTPUT: whether e is a general subdimension vector of d</span>
 
-<span class="sd">        A dimension vector `e` is a generic subdimension vector of `d`</span>
-<span class="sd">        if a generic representation of dimension vector `d` possesses</span>
+<span class="sd">        A dimension vector `e` is a general subdimension vector of `d`</span>
+<span class="sd">        if a general representation of dimension vector `d` possesses</span>
 <span class="sd">        a subrepresentation of dimension vector `e`.</span>
-<span class="sd">        By MR1162487_ `e` is a generic subdimension vector of `d` if and only if `e` is</span>
+<span class="sd">        By MR1162487_ `e` is a general subdimension vector of `d` if and only if `e` is</span>
 <span class="sd">        a subdimension vector of `d` and :math:`\langle f,d-e\rangle` is non-negative</span>
-<span class="sd">        for all generic subdimension vectors `f` of `e`.</span>
+<span class="sd">        for all general subdimension vectors `f` of `e`.</span>
 
 <span class="sd">        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487</span>
 
@@ -2680,27 +2680,27 @@ document.write(`
 <span class="sd">            sage: ds = [vector([i]) for i in range(3)]</span>
 <span class="sd">            sage: for (e, d) in cartesian_product([ds, ds]):</span>
 <span class="sd">            ....:     if not Q.is_subdimension_vector(e, d): continue</span>
-<span class="sd">            ....:     print(&quot;{} is generic subdimension vector of {}: {}&quot;.format(</span>
-<span class="sd">            ....:         e, d, Q.is_generic_subdimension_vector(e,d))</span>
+<span class="sd">            ....:     print(&quot;{} is general subdimension vector of {}: {}&quot;.format(</span>
+<span class="sd">            ....:         e, d, Q.is_general_subdimension_vector(e,d))</span>
 <span class="sd">            ....:     )</span>
-<span class="sd">            (0) is generic subdimension vector of (0): True</span>
-<span class="sd">            (0) is generic subdimension vector of (1): True</span>
-<span class="sd">            (0) is generic subdimension vector of (2): True</span>
-<span class="sd">            (1) is generic subdimension vector of (1): True</span>
-<span class="sd">            (1) is generic subdimension vector of (2): True</span>
-<span class="sd">            (2) is generic subdimension vector of (2): True</span>
+<span class="sd">            (0) is general subdimension vector of (0): True</span>
+<span class="sd">            (0) is general subdimension vector of (1): True</span>
+<span class="sd">            (0) is general subdimension vector of (2): True</span>
+<span class="sd">            (1) is general subdimension vector of (1): True</span>
+<span class="sd">            (1) is general subdimension vector of (2): True</span>
+<span class="sd">            (2) is general subdimension vector of (2): True</span>
 <span class="sd">            sage: Q = LoopQuiver(2)</span>
 <span class="sd">            sage: for (e, d) in cartesian_product([ds]*2):</span>
 <span class="sd">            ....:     if not Q.is_subdimension_vector(e, d): continue</span>
-<span class="sd">            ....:     print(&quot;{} is generic subdimension vector of {}: {}&quot;.format(</span>
-<span class="sd">            ....:         e, d, Q.is_generic_subdimension_vector(e,d))</span>
+<span class="sd">            ....:     print(&quot;{} is general subdimension vector of {}: {}&quot;.format(</span>
+<span class="sd">            ....:         e, d, Q.is_general_subdimension_vector(e,d))</span>
 <span class="sd">            ....:     )</span>
-<span class="sd">            (0) is generic subdimension vector of (0): True</span>
-<span class="sd">            (0) is generic subdimension vector of (1): True</span>
-<span class="sd">            (0) is generic subdimension vector of (2): True</span>
-<span class="sd">            (1) is generic subdimension vector of (1): True</span>
-<span class="sd">            (1) is generic subdimension vector of (2): False</span>
-<span class="sd">            (2) is generic subdimension vector of (2): True</span>
+<span class="sd">            (0) is general subdimension vector of (0): True</span>
+<span class="sd">            (0) is general subdimension vector of (1): True</span>
+<span class="sd">            (0) is general subdimension vector of (2): True</span>
+<span class="sd">            (1) is general subdimension vector of (1): True</span>
+<span class="sd">            (1) is general subdimension vector of (2): False</span>
+<span class="sd">            (2) is general subdimension vector of (2): True</span>
 
 <span class="sd">        Some examples on generalized Kronecker quivers::</span>
 
@@ -2708,121 +2708,121 @@ document.write(`
 <span class="sd">            sage: ds = Tuples(range(3), 2)</span>
 <span class="sd">            sage: for (e, d) in cartesian_product([ds]*2):</span>
 <span class="sd">            ....:     if not Q.is_subdimension_vector(e, d): continue</span>
-<span class="sd">            ....:     print(&quot;{} is generic subdimension vector of {}: {}&quot;.format(</span>
-<span class="sd">            ....:         e, d, Q.is_generic_subdimension_vector(e,d))</span>
+<span class="sd">            ....:     print(&quot;{} is general subdimension vector of {}: {}&quot;.format(</span>
+<span class="sd">            ....:         e, d, Q.is_general_subdimension_vector(e,d))</span>
 <span class="sd">            ....:     )</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (0, 0): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (1, 0): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (2, 0): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (0, 1): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (1, 1): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (0, 2): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (1, 0): True</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (2, 0): True</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (1, 1): False</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (1, 2): False</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (2, 2): False</span>
-<span class="sd">            (2, 0) is generic subdimension vector of (2, 0): True</span>
-<span class="sd">            (2, 0) is generic subdimension vector of (2, 1): False</span>
-<span class="sd">            (2, 0) is generic subdimension vector of (2, 2): False</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (0, 1): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (1, 1): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (0, 2): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (1, 1): True</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (2, 1) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (2, 1) is generic subdimension vector of (2, 2): False</span>
-<span class="sd">            (0, 2) is generic subdimension vector of (0, 2): True</span>
-<span class="sd">            (0, 2) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (0, 2) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (1, 2) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (1, 2) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (2, 2) is generic subdimension vector of (2, 2): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (0, 0): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (1, 0): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (2, 0): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (0, 1): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (1, 1): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (0, 2): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (1, 0) is general subdimension vector of (1, 0): True</span>
+<span class="sd">            (1, 0) is general subdimension vector of (2, 0): True</span>
+<span class="sd">            (1, 0) is general subdimension vector of (1, 1): False</span>
+<span class="sd">            (1, 0) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (1, 0) is general subdimension vector of (1, 2): False</span>
+<span class="sd">            (1, 0) is general subdimension vector of (2, 2): False</span>
+<span class="sd">            (2, 0) is general subdimension vector of (2, 0): True</span>
+<span class="sd">            (2, 0) is general subdimension vector of (2, 1): False</span>
+<span class="sd">            (2, 0) is general subdimension vector of (2, 2): False</span>
+<span class="sd">            (0, 1) is general subdimension vector of (0, 1): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (1, 1): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (0, 2): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (1, 1) is general subdimension vector of (1, 1): True</span>
+<span class="sd">            (1, 1) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (1, 1) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (1, 1) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (2, 1) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (2, 1) is general subdimension vector of (2, 2): False</span>
+<span class="sd">            (0, 2) is general subdimension vector of (0, 2): True</span>
+<span class="sd">            (0, 2) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (0, 2) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (1, 2) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (1, 2) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (2, 2) is general subdimension vector of (2, 2): True</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(2)</span>
 <span class="sd">            sage: for (e, d) in cartesian_product([ds]*2):</span>
 <span class="sd">            ....:     if not Q.is_subdimension_vector(e, d): continue</span>
-<span class="sd">            ....:     print(&quot;{} is generic subdimension vector of {}: {}&quot;.format(</span>
-<span class="sd">            ....:         e, d, Q.is_generic_subdimension_vector(e,d))</span>
+<span class="sd">            ....:     print(&quot;{} is general subdimension vector of {}: {}&quot;.format(</span>
+<span class="sd">            ....:         e, d, Q.is_general_subdimension_vector(e,d))</span>
 <span class="sd">            ....:     )</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (0, 0): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (1, 0): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (2, 0): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (0, 1): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (1, 1): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (0, 2): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (1, 0): True</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (2, 0): True</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (1, 1): False</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (2, 1): False</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (1, 2): False</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (2, 2): False</span>
-<span class="sd">            (2, 0) is generic subdimension vector of (2, 0): True</span>
-<span class="sd">            (2, 0) is generic subdimension vector of (2, 1): False</span>
-<span class="sd">            (2, 0) is generic subdimension vector of (2, 2): False</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (0, 1): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (1, 1): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (0, 2): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (1, 1): True</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (1, 2): False</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (2, 1) is generic subdimension vector of (2, 1): True</span>
-<span class="sd">            (2, 1) is generic subdimension vector of (2, 2): False</span>
-<span class="sd">            (0, 2) is generic subdimension vector of (0, 2): True</span>
-<span class="sd">            (0, 2) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (0, 2) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (1, 2) is generic subdimension vector of (1, 2): True</span>
-<span class="sd">            (1, 2) is generic subdimension vector of (2, 2): True</span>
-<span class="sd">            (2, 2) is generic subdimension vector of (2, 2): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (0, 0): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (1, 0): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (2, 0): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (0, 1): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (1, 1): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (0, 2): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (1, 0) is general subdimension vector of (1, 0): True</span>
+<span class="sd">            (1, 0) is general subdimension vector of (2, 0): True</span>
+<span class="sd">            (1, 0) is general subdimension vector of (1, 1): False</span>
+<span class="sd">            (1, 0) is general subdimension vector of (2, 1): False</span>
+<span class="sd">            (1, 0) is general subdimension vector of (1, 2): False</span>
+<span class="sd">            (1, 0) is general subdimension vector of (2, 2): False</span>
+<span class="sd">            (2, 0) is general subdimension vector of (2, 0): True</span>
+<span class="sd">            (2, 0) is general subdimension vector of (2, 1): False</span>
+<span class="sd">            (2, 0) is general subdimension vector of (2, 2): False</span>
+<span class="sd">            (0, 1) is general subdimension vector of (0, 1): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (1, 1): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (0, 2): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (1, 1) is general subdimension vector of (1, 1): True</span>
+<span class="sd">            (1, 1) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (1, 1) is general subdimension vector of (1, 2): False</span>
+<span class="sd">            (1, 1) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (2, 1) is general subdimension vector of (2, 1): True</span>
+<span class="sd">            (2, 1) is general subdimension vector of (2, 2): False</span>
+<span class="sd">            (0, 2) is general subdimension vector of (0, 2): True</span>
+<span class="sd">            (0, 2) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (0, 2) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (1, 2) is general subdimension vector of (1, 2): True</span>
+<span class="sd">            (1, 2) is general subdimension vector of (2, 2): True</span>
+<span class="sd">            (2, 2) is general subdimension vector of (2, 2): True</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_generic_subdimension_vector</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_general_subdimension_vector</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span></div>
 
 
     <span class="nd">@cached_method</span><span class="p">(</span>
         <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">__is_generic_subdimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__is_general_subdimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The cacheable implementation of :meth:`Quiver.is_generic_subdimension_vector`.</span>
+<span class="sd">        The cacheable implementation of :meth:`Quiver.is_general_subdimension_vector`.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
-<span class="sd">        Generic subdimension vectors for the 3-Kronecker quiver::</span>
+<span class="sd">        General subdimension vectors for the 3-Kronecker quiver::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)</span>
 <span class="sd">            sage: for e in Q.all_subdimension_vectors(d):</span>
-<span class="sd">            ....:     print(&quot;{} is generic subdimension vector of {}: {}&quot;.format(</span>
-<span class="sd">            ....:         e, d, Q._Quiver__is_generic_subdimension_vector(e, d))</span>
+<span class="sd">            ....:     print(&quot;{} is general subdimension vector of {}: {}&quot;.format(</span>
+<span class="sd">            ....:         e, d, Q._Quiver__is_general_subdimension_vector(e, d))</span>
 <span class="sd">            ....:     )</span>
-<span class="sd">            (0, 0) is generic subdimension vector of (2, 3): True</span>
-<span class="sd">            (0, 1) is generic subdimension vector of (2, 3): True</span>
-<span class="sd">            (0, 2) is generic subdimension vector of (2, 3): True</span>
-<span class="sd">            (0, 3) is generic subdimension vector of (2, 3): True</span>
-<span class="sd">            (1, 0) is generic subdimension vector of (2, 3): False</span>
-<span class="sd">            (1, 1) is generic subdimension vector of (2, 3): False</span>
-<span class="sd">            (1, 2) is generic subdimension vector of (2, 3): True</span>
-<span class="sd">            (1, 3) is generic subdimension vector of (2, 3): True</span>
-<span class="sd">            (2, 0) is generic subdimension vector of (2, 3): False</span>
-<span class="sd">            (2, 1) is generic subdimension vector of (2, 3): False</span>
-<span class="sd">            (2, 2) is generic subdimension vector of (2, 3): False</span>
-<span class="sd">            (2, 3) is generic subdimension vector of (2, 3): True</span>
+<span class="sd">            (0, 0) is general subdimension vector of (2, 3): True</span>
+<span class="sd">            (0, 1) is general subdimension vector of (2, 3): True</span>
+<span class="sd">            (0, 2) is general subdimension vector of (2, 3): True</span>
+<span class="sd">            (0, 3) is general subdimension vector of (2, 3): True</span>
+<span class="sd">            (1, 0) is general subdimension vector of (2, 3): False</span>
+<span class="sd">            (1, 1) is general subdimension vector of (2, 3): False</span>
+<span class="sd">            (1, 2) is general subdimension vector of (2, 3): True</span>
+<span class="sd">            (1, 3) is general subdimension vector of (2, 3): True</span>
+<span class="sd">            (2, 0) is general subdimension vector of (2, 3): False</span>
+<span class="sd">            (2, 1) is general subdimension vector of (2, 3): False</span>
+<span class="sd">            (2, 2) is general subdimension vector of (2, 3): False</span>
+<span class="sd">            (2, 3) is general subdimension vector of (2, 3): True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -2838,12 +2838,12 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">all_subdimension_vectors</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_generic_subdimension_vector</span><span class="p">(</span><span class="n">eprime</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">eprime</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_general_subdimension_vector</span><span class="p">(</span><span class="n">eprime</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">eprime</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Quiver.all_generic_subdimension_vectors">
-<a class="viewcode-back" href="../../index.html#quiver.Quiver.all_generic_subdimension_vectors">[docs]</a>
-    <span class="k">def</span> <span class="nf">all_generic_subdimension_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the list of all generic subdimension vectors of ``d``.</span>
+<div class="viewcode-block" id="Quiver.all_general_subdimension_vectors">
+<a class="viewcode-back" href="../../index.html#quiver.Quiver.all_general_subdimension_vectors">[docs]</a>
+    <span class="k">def</span> <span class="nf">all_general_subdimension_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the list of all general subdimension vectors of ``d``.</span>
 
 <span class="sd">        INPUT:</span>
 
@@ -2858,7 +2858,7 @@ document.write(`
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(1)</span>
 <span class="sd">            sage: d = (3, 3)</span>
-<span class="sd">            sage: Q.all_generic_subdimension_vectors(d)</span>
+<span class="sd">            sage: Q.all_general_subdimension_vectors(d)</span>
 <span class="sd">            [(0, 0),</span>
 <span class="sd">             (0, 1),</span>
 <span class="sd">             (0, 2),</span>
@@ -2870,7 +2870,7 @@ document.write(`
 <span class="sd">             (2, 3),</span>
 <span class="sd">             (3, 3)]</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(2)</span>
-<span class="sd">            sage: Q.all_generic_subdimension_vectors(d)</span>
+<span class="sd">            sage: Q.all_general_subdimension_vectors(d)</span>
 <span class="sd">            [(0, 0),</span>
 <span class="sd">             (0, 1),</span>
 <span class="sd">             (0, 2),</span>
@@ -2882,11 +2882,11 @@ document.write(`
 <span class="sd">             (2, 3),</span>
 <span class="sd">             (3, 3)]</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
-<span class="sd">            sage: Q.all_generic_subdimension_vectors(d)</span>
+<span class="sd">            sage: Q.all_general_subdimension_vectors(d)</span>
 <span class="sd">            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]</span>
-<span class="sd">            sage: Q.all_generic_subdimension_vectors(d, nonzero=True)</span>
+<span class="sd">            sage: Q.all_general_subdimension_vectors(d, nonzero=True)</span>
 <span class="sd">            [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]</span>
-<span class="sd">            sage: Q.all_generic_subdimension_vectors(d, proper=True)</span>
+<span class="sd">            sage: Q.all_general_subdimension_vectors(d, proper=True)</span>
 <span class="sd">            [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2894,7 +2894,7 @@ document.write(`
 
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
             <span class="nb">filter</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_generic_subdimension_vector</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">),</span>
+                <span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_general_subdimension_vector</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">d</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">all_subdimension_vectors</span><span class="p">(</span>
                     <span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="n">proper</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="n">nonzero</span><span class="p">,</span> <span class="n">forget_labels</span><span class="o">=</span><span class="kc">True</span>
                 <span class="p">),</span>
@@ -2902,9 +2902,9 @@ document.write(`
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Quiver.generic_ext">
-<a class="viewcode-back" href="../../index.html#quiver.Quiver.generic_ext">[docs]</a>
-    <span class="k">def</span> <span class="nf">generic_ext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+<div class="viewcode-block" id="Quiver.general_ext">
+<a class="viewcode-back" href="../../index.html#quiver.Quiver.general_ext">[docs]</a>
+    <span class="k">def</span> <span class="nf">general_ext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes :math:`\operatorname{ext}(d, e)`.</span>
 
@@ -2914,7 +2914,7 @@ document.write(`
 
 <span class="sd">        - ``e``: dimension vector</span>
 
-<span class="sd">        OUTPUT: dimension of the generic ext</span>
+<span class="sd">        OUTPUT: dimension of the general ext</span>
 
 <span class="sd">        According to Theorem 5.4 in Schofield&#39;s &#39;General representations of quivers&#39;,</span>
 <span class="sd">        we have</span>
@@ -2924,17 +2924,17 @@ document.write(`
 <span class="sd">            \operatorname{ext}(a,b) =</span>
 <span class="sd">            \operatorname{max}\{-\langle c,b\rangle\},</span>
 
-<span class="sd">        where :math:`c` runs over the generic subdimension vectors of :math:`a`.</span>
+<span class="sd">        where :math:`c` runs over the general subdimension vectors of :math:`a`.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
-<span class="sd">        Generic ext on the 3-Kronecker quiver::</span>
+<span class="sd">        General ext on the 3-Kronecker quiver::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
 <span class="sd">            sage: ds = [Q.simple_root(0), Q.simple_root(1), Q.thin_dimension_vector()]</span>
 <span class="sd">            sage: for (d, e) in cartesian_product([ds]*2):</span>
-<span class="sd">            ....:     print(&quot;ext({}, {}) = {}&quot;.format(d, e, Q.generic_ext(d, e)))</span>
+<span class="sd">            ....:     print(&quot;ext({}, {}) = {}&quot;.format(d, e, Q.general_ext(d, e)))</span>
 <span class="sd">            ext((1, 0), (1, 0)) = 0</span>
 <span class="sd">            ext((1, 0), (0, 1)) = 3</span>
 <span class="sd">            ext((1, 0), (1, 1)) = 2</span>
@@ -2950,13 +2950,13 @@ document.write(`
         <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span>
-            <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_generic_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_general_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Quiver.generic_hom">
-<a class="viewcode-back" href="../../index.html#quiver.Quiver.generic_hom">[docs]</a>
-    <span class="k">def</span> <span class="nf">generic_hom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+<div class="viewcode-block" id="Quiver.general_hom">
+<a class="viewcode-back" href="../../index.html#quiver.Quiver.general_hom">[docs]</a>
+    <span class="k">def</span> <span class="nf">general_hom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes :math:`\operatorname{hom}(d, e)`.</span>
 
@@ -2966,7 +2966,7 @@ document.write(`
 
 <span class="sd">        - ``e``: dimension vector</span>
 
-<span class="sd">        OUTPUT: dimension of the generic hom</span>
+<span class="sd">        OUTPUT: dimension of the general hom</span>
 
 <span class="sd">        There is a non-empty open subset `U` of :math:`R(Q,d) \times R(Q,e)` such that</span>
 
@@ -2984,13 +2984,13 @@ document.write(`
 
 <span class="sd">        EXAMPLES:</span>
 
-<span class="sd">        Generic hom on the 3-Kronecker quiver::</span>
+<span class="sd">        General hom on the 3-Kronecker quiver::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
 <span class="sd">            sage: ds = [Q.simple_root(0), Q.simple_root(1), Q.thin_dimension_vector()]</span>
 <span class="sd">            sage: for (d, e) in cartesian_product([ds]*2):</span>
-<span class="sd">            ....:     print(&quot;hom({}, {}) = {}&quot;.format(d, e, Q.generic_hom(d, e)))</span>
+<span class="sd">            ....:     print(&quot;hom({}, {}) = {}&quot;.format(d, e, Q.general_hom(d, e)))</span>
 <span class="sd">            hom((1, 0), (1, 0)) = 1</span>
 <span class="sd">            hom((1, 0), (0, 1)) = 0</span>
 <span class="sd">            hom((1, 0), (1, 1)) = 0</span>
@@ -3005,7 +3005,7 @@ document.write(`
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">generic_ext</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">general_ext</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span></div>
 
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3013,7 +3013,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@cached_method</span>
-    <span class="k">def</span> <span class="nf">_all_harder_narasimhan_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_all_harder_narasimhan_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the list of all Harder--Narasimhan types of d.</span>
 
 <span class="sd">        INPUT:</span>
@@ -3024,7 +3024,7 @@ document.write(`
 
 <span class="sd">        - ``denom`` -- the denominator function (default: sum)</span>
 
-<span class="sd">        OUTPUT: list of Harder--Narasimhan types</span>
+<span class="sd">        OUTPUT: tuple of Harder--Narasimhan types</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -3035,14 +3035,14 @@ document.write(`
 <span class="sd">            sage: d = (2, 3)</span>
 <span class="sd">            sage: theta = (3, -2)</span>
 <span class="sd">            sage: Q._all_harder_narasimhan_types(d, theta)</span>
-<span class="sd">            [((1, 0), (1, 1), (0, 2)),</span>
-<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
-<span class="sd">             ((1, 0), (1, 3)),</span>
+<span class="sd">            (((2, 3),),</span>
 <span class="sd">             ((1, 1), (1, 2)),</span>
-<span class="sd">             ((2, 0), (0, 3)),</span>
-<span class="sd">             ((2, 1), (0, 2)),</span>
 <span class="sd">             ((2, 2), (0, 1)),</span>
-<span class="sd">             ((2, 3),)]</span>
+<span class="sd">             ((2, 1), (0, 2)),</span>
+<span class="sd">             ((1, 0), (1, 3)),</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
+<span class="sd">             ((1, 0), (1, 1), (0, 2)),</span>
+<span class="sd">             ((2, 0), (0, 3)))</span>
 
 <span class="sd">        .. NOTE ::</span>
 
@@ -3074,14 +3074,18 @@ document.write(`
             <span class="k">for</span> <span class="n">estar</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">fstar</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
                 <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">fstar</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_all_harder_narasimhan_types</span><span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_all_harder_narasimhan_types</span><span class="p">(</span>
+                    <span class="n">d</span> <span class="o">-</span> <span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span>
+                <span class="p">),</span>
             <span class="p">):</span>
                 <span class="n">all_types</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="p">,)</span> <span class="o">+</span> <span class="n">estar</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_semistable_representation</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">):</span>
-            <span class="n">all_types</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">d</span><span class="p">,))</span>
+            <span class="n">all_types</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">d</span><span class="p">,))</span>
 
-        <span class="k">return</span> <span class="n">all_types</span>
+        <span class="c1"># because it is a cached method we need to return a tuple, not a list</span>
+        <span class="c1"># as the result of a cached method must be immutable</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">all_types</span><span class="p">)</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (Semi-)stability</span>
@@ -3163,7 +3167,7 @@ document.write(`
 
 <span class="sd">        By MR1162487_ a dimension vector `d` admits a :math:`\theta`-semi-stable</span>
 <span class="sd">        representation if and only if :math:`\mu_{\theta}(e) \leq \mu_{\theta}(d)` for</span>
-<span class="sd">        all generic subdimension vectors `e` of `d`.</span>
+<span class="sd">        all general subdimension vectors `e` of `d`.</span>
 
 <span class="sd">        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487</span>
 
@@ -3200,7 +3204,7 @@ document.write(`
 
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_generic_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_general_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="p">)</span></div>
 
 
@@ -3219,7 +3223,7 @@ document.write(`
 <span class="sd">        OUTPUT: whether there is a ``theta``-stable of dimension vector ``d``</span>
 
 <span class="sd">        By MR1162487_ `d` admits a theta-stable representation if and only if</span>
-<span class="sd">        :math:`\mu_{\theta}(e) &lt; \mu_{\theta}(d)` for all proper generic subdimension</span>
+<span class="sd">        :math:`\mu_{\theta}(e) &lt; \mu_{\theta}(d)` for all proper general subdimension</span>
 <span class="sd">        vectors :math:`e` of :math:`d`.</span>
 
 <span class="sd">        .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487</span>
@@ -3261,7 +3265,7 @@ document.write(`
 
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_generic_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_general_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="p">)</span></div>
 
 
@@ -3296,45 +3300,45 @@ document.write(`
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
 <span class="sd">            sage: Q.canonical_decomposition((2, 3))</span>
-<span class="sd">            [(2, 3)]</span>
+<span class="sd">            ((2, 3),)</span>
 <span class="sd">            sage: for d in Q.all_subdimension_vectors((5, 5)):</span>
 <span class="sd">            ....:     print(Q.canonical_decomposition(d))</span>
-<span class="sd">            [(0, 0)]</span>
-<span class="sd">            [(0, 1)]</span>
-<span class="sd">            [(0, 1), (0, 1)]</span>
-<span class="sd">            [(0, 1), (0, 1), (0, 1)]</span>
-<span class="sd">            [(0, 1), (0, 1), (0, 1), (0, 1)]</span>
-<span class="sd">            [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]</span>
-<span class="sd">            [(1, 0)]</span>
-<span class="sd">            [(1, 1)]</span>
-<span class="sd">            [(1, 2)]</span>
-<span class="sd">            [(1, 3)]</span>
-<span class="sd">            [(0, 1), (1, 3)]</span>
-<span class="sd">            [(0, 1), (0, 1), (1, 3)]</span>
-<span class="sd">            [(1, 0), (1, 0)]</span>
-<span class="sd">            [(2, 1)]</span>
-<span class="sd">            [(2, 2)]</span>
-<span class="sd">            [(2, 3)]</span>
-<span class="sd">            [(2, 4)]</span>
-<span class="sd">            [(2, 5)]</span>
-<span class="sd">            [(1, 0), (1, 0), (1, 0)]</span>
-<span class="sd">            [(3, 1)]</span>
-<span class="sd">            [(3, 2)]</span>
-<span class="sd">            [(3, 3)]</span>
-<span class="sd">            [(3, 4)]</span>
-<span class="sd">            [(3, 5)]</span>
-<span class="sd">            [(1, 0), (1, 0), (1, 0), (1, 0)]</span>
-<span class="sd">            [(1, 0), (3, 1)]</span>
-<span class="sd">            [(4, 2)]</span>
-<span class="sd">            [(4, 3)]</span>
-<span class="sd">            [(4, 4)]</span>
-<span class="sd">            [(4, 5)]</span>
-<span class="sd">            [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]</span>
-<span class="sd">            [(1, 0), (1, 0), (3, 1)]</span>
-<span class="sd">            [(5, 2)]</span>
-<span class="sd">            [(5, 3)]</span>
-<span class="sd">            [(5, 4)]</span>
-<span class="sd">            [(5, 5)]</span>
+<span class="sd">            ((0, 0),)</span>
+<span class="sd">            ((0, 1),)</span>
+<span class="sd">            ((0, 1), (0, 1))</span>
+<span class="sd">            ((0, 1), (0, 1), (0, 1))</span>
+<span class="sd">            ((0, 1), (0, 1), (0, 1), (0, 1))</span>
+<span class="sd">            ((0, 1), (0, 1), (0, 1), (0, 1), (0, 1))</span>
+<span class="sd">            ((1, 0),)</span>
+<span class="sd">            ((1, 1),)</span>
+<span class="sd">            ((1, 2),)</span>
+<span class="sd">            ((1, 3),)</span>
+<span class="sd">            ((0, 1), (1, 3))</span>
+<span class="sd">            ((0, 1), (0, 1), (1, 3))</span>
+<span class="sd">            ((1, 0), (1, 0))</span>
+<span class="sd">            ((2, 1),)</span>
+<span class="sd">            ((2, 2),)</span>
+<span class="sd">            ((2, 3),)</span>
+<span class="sd">            ((2, 4),)</span>
+<span class="sd">            ((2, 5),)</span>
+<span class="sd">            ((1, 0), (1, 0), (1, 0))</span>
+<span class="sd">            ((3, 1),)</span>
+<span class="sd">            ((3, 2),)</span>
+<span class="sd">            ((3, 3),)</span>
+<span class="sd">            ((3, 4),)</span>
+<span class="sd">            ((3, 5),)</span>
+<span class="sd">            ((1, 0), (1, 0), (1, 0), (1, 0))</span>
+<span class="sd">            ((1, 0), (3, 1))</span>
+<span class="sd">            ((4, 2),)</span>
+<span class="sd">            ((4, 3),)</span>
+<span class="sd">            ((4, 4),)</span>
+<span class="sd">            ((4, 5),)</span>
+<span class="sd">            ((1, 0), (1, 0), (1, 0), (1, 0), (1, 0))</span>
+<span class="sd">            ((1, 0), (1, 0), (3, 1))</span>
+<span class="sd">            ((5, 2),)</span>
+<span class="sd">            ((5, 3),)</span>
+<span class="sd">            ((5, 4),)</span>
+<span class="sd">            ((5, 5),)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__canonical_decomposition</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
 
@@ -3350,17 +3354,20 @@ document.write(`
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(2)</span>
 <span class="sd">            sage: Q._Quiver__canonical_decomposition((5, 5))</span>
-<span class="sd">            [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]</span>
+<span class="sd">            ((1, 1), (1, 1), (1, 1), (1, 1), (1, 1))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-        <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_generic_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_general_subdimension_vectors</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nonzero</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">d</span> <span class="o">-</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">canonical_decomposition</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">canonical_decomposition</span><span class="p">(</span>
                     <span class="n">d</span> <span class="o">-</span> <span class="n">e</span>
                 <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="p">]</span>
+
+        <span class="c1"># because it is a cached method we need to return a tuple, not a list</span>
+        <span class="c1"># as the result of a cached method must be immutable</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">d</span><span class="p">,)</span>
 
 <div class="viewcode-block" id="Quiver.dimension_nullcone">
 <a class="viewcode-back" href="../../index.html#quiver.Quiver.dimension_nullcone">[docs]</a>

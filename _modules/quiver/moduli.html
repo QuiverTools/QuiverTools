@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -36,7 +36,7 @@
   <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../_static/documentation_options.js?v=a681ed88"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/quiver/moduli';</script>
@@ -260,6 +260,7 @@ document.write(`
   <h1>Source code for quiver.moduli</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations_with_replacement</span><span class="p">,</span> <span class="n">product</span>
 
+<span class="kn">from</span> <span class="nn">sage.arith.functions</span> <span class="kn">import</span> <span class="n">lcm</span>
 <span class="kn">from</span> <span class="nn">sage.arith.misc</span> <span class="kn">import</span> <span class="n">bernoulli</span><span class="p">,</span> <span class="n">factorial</span><span class="p">,</span> <span class="n">gcd</span><span class="p">,</span> <span class="n">xgcd</span>
 <span class="kn">from</span> <span class="nn">sage.combinat.partition</span> <span class="kn">import</span> <span class="n">Partitions</span>
 <span class="kn">from</span> <span class="nn">sage.combinat.permutation</span> <span class="kn">import</span> <span class="n">Permutations</span>
@@ -330,14 +331,14 @@ document.write(`
 <span class="sd">        concerns something involving the representation variety::</span>
 
 <span class="sd">            sage: X.all_harder_narasimhan_types()</span>
-<span class="sd">            [((1, 0), (1, 1), (0, 2)),</span>
-<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
-<span class="sd">             ((1, 0), (1, 3)),</span>
+<span class="sd">            (((2, 3),),</span>
 <span class="sd">             ((1, 1), (1, 2)),</span>
-<span class="sd">             ((2, 0), (0, 3)),</span>
-<span class="sd">             ((2, 1), (0, 2)),</span>
 <span class="sd">             ((2, 2), (0, 1)),</span>
-<span class="sd">             ((2, 3),)]</span>
+<span class="sd">             ((2, 1), (0, 2)),</span>
+<span class="sd">             ((1, 0), (1, 3)),</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
+<span class="sd">             ((1, 0), (1, 1), (0, 2)),</span>
+<span class="sd">             ((2, 0), (0, 3)))</span>
 
 <span class="sd">        But things like dimension depend on whether we consider it as a variety or as</span>
 <span class="sd">        a stack, and thus these are not implemented::</span>
@@ -675,7 +676,7 @@ document.write(`
 
 <div class="viewcode-block" id="QuiverModuli.all_harder_narasimhan_types">
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.all_harder_narasimhan_types">[docs]</a>
-    <span class="k">def</span> <span class="nf">all_harder_narasimhan_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">all_harder_narasimhan_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the list of all Harder--Narasimhan types.</span>
 
@@ -692,7 +693,7 @@ document.write(`
 <span class="sd">        - ``proper`` -- (default: False) whether to exclude the HN-type corresponding</span>
 <span class="sd">          to the stable locus</span>
 
-<span class="sd">        - ``sorted`` -- (default: False) whether to sort the HN-types according to the</span>
+<span class="sd">        - ``sorted`` -- (default: True) whether to sort the HN-types according to the</span>
 <span class="sd">          given slope</span>
 
 <span class="sd">        OUTPUT: list of tuples of dimension vectors encoding HN-types</span>
@@ -705,27 +706,27 @@ document.write(`
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
 <span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
 <span class="sd">            sage: X.all_harder_narasimhan_types()</span>
-<span class="sd">            [((1, 0), (1, 1), (0, 2)),</span>
-<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
-<span class="sd">             ((1, 0), (1, 3)),</span>
+<span class="sd">            (((2, 3),),</span>
 <span class="sd">             ((1, 1), (1, 2)),</span>
-<span class="sd">             ((2, 0), (0, 3)),</span>
-<span class="sd">             ((2, 1), (0, 2)),</span>
 <span class="sd">             ((2, 2), (0, 1)),</span>
-<span class="sd">             ((2, 3),)]</span>
-<span class="sd">            sage: X.all_harder_narasimhan_types(proper=True)</span>
-<span class="sd">            [((1, 0), (1, 1), (0, 2)),</span>
-<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
-<span class="sd">             ((1, 0), (1, 3)),</span>
-<span class="sd">             ((1, 1), (1, 2)),</span>
-<span class="sd">             ((2, 0), (0, 3)),</span>
 <span class="sd">             ((2, 1), (0, 2)),</span>
-<span class="sd">             ((2, 2), (0, 1))]</span>
+<span class="sd">             ((1, 0), (1, 3)),</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
+<span class="sd">             ((1, 0), (1, 1), (0, 2)),</span>
+<span class="sd">             ((2, 0), (0, 3)))</span>
+<span class="sd">            sage: X.all_harder_narasimhan_types(proper=True)</span>
+<span class="sd">            (((1, 1), (1, 2)),</span>
+<span class="sd">             ((2, 2), (0, 1)),</span>
+<span class="sd">             ((2, 1), (0, 2)),</span>
+<span class="sd">             ((1, 0), (1, 3)),</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)),</span>
+<span class="sd">             ((1, 0), (1, 1), (0, 2)),</span>
+<span class="sd">             ((2, 0), (0, 3)))</span>
 <span class="sd">            sage: d = (2, 3)</span>
 <span class="sd">            sage: theta = -Q.canonical_stability_parameter(d)</span>
 <span class="sd">            sage: Y = QuiverModuliSpace(Q, d, theta)</span>
 <span class="sd">            sage: Y.all_harder_narasimhan_types()</span>
-<span class="sd">            [((0, 3), (2, 0))]</span>
+<span class="sd">            (((0, 3), (2, 0)),)</span>
 
 <span class="sd">        A 3-vertex quiver::</span>
 
@@ -733,78 +734,78 @@ document.write(`
 <span class="sd">            sage: Q = ThreeVertexQuiver(2, 3, 4)</span>
 <span class="sd">            sage: Z = QuiverModuliSpace(Q, (2, 3, 2))</span>
 <span class="sd">            sage: Z.all_harder_narasimhan_types()</span>
-<span class="sd">            [((0, 1, 0), (1, 2, 1), (1, 0, 1)),</span>
+<span class="sd">            (((2, 3, 2),),</span>
+<span class="sd">             ((1, 2, 1), (1, 1, 1)),</span>
+<span class="sd">             ((1, 3, 1), (1, 0, 1)),</span>
+<span class="sd">             ((2, 0, 1), (0, 3, 1)),</span>
+<span class="sd">             ((2, 1, 1), (0, 2, 1)),</span>
+<span class="sd">             ((2, 2, 1), (0, 1, 1)),</span>
+<span class="sd">             ((2, 3, 1), (0, 0, 1)),</span>
+<span class="sd">             ((0, 1, 0), (2, 2, 2)),</span>
+<span class="sd">             ((0, 1, 0), (1, 2, 1), (1, 0, 1)),</span>
 <span class="sd">             ((0, 1, 0), (2, 0, 1), (0, 2, 1)),</span>
 <span class="sd">             ((0, 1, 0), (2, 1, 1), (0, 1, 1)),</span>
 <span class="sd">             ((0, 1, 0), (2, 2, 1), (0, 0, 1)),</span>
-<span class="sd">             ((0, 1, 0), (2, 2, 2)),</span>
+<span class="sd">             ((0, 2, 0), (2, 1, 2)),</span>
 <span class="sd">             ((0, 2, 0), (1, 1, 1), (1, 0, 1)),</span>
 <span class="sd">             ((0, 2, 0), (2, 0, 1), (0, 1, 1)),</span>
 <span class="sd">             ((0, 2, 0), (2, 1, 1), (0, 0, 1)),</span>
-<span class="sd">             ((0, 2, 0), (2, 1, 2)),</span>
-<span class="sd">             ((0, 3, 0), (2, 0, 1), (0, 0, 1)),</span>
 <span class="sd">             ((0, 3, 0), (2, 0, 2)),</span>
+<span class="sd">             ((0, 3, 0), (2, 0, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 2, 0), (1, 1, 2)),</span>
+<span class="sd">             ((1, 2, 0), (1, 0, 1), (0, 1, 1)),</span>
+<span class="sd">             ((1, 2, 0), (1, 1, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 2, 0), (0, 1, 0), (1, 0, 2)),</span>
+<span class="sd">             ((1, 2, 0), (0, 1, 0), (1, 0, 1), (0, 0, 1)),</span>
+<span class="sd">             ((2, 3, 0), (0, 0, 2)),</span>
+<span class="sd">             ((1, 1, 0), (1, 2, 2)),</span>
+<span class="sd">             ((1, 1, 0), (1, 0, 1), (0, 2, 1)),</span>
+<span class="sd">             ((1, 1, 0), (1, 1, 1), (0, 1, 1)),</span>
+<span class="sd">             ((1, 1, 0), (1, 2, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 1, 0), (0, 1, 0), (1, 1, 2)),</span>
+<span class="sd">             ((1, 1, 0), (0, 1, 0), (1, 0, 1), (0, 1, 1)),</span>
+<span class="sd">             ((1, 1, 0), (0, 1, 0), (1, 1, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 1, 0), (0, 2, 0), (1, 0, 2)),</span>
+<span class="sd">             ((1, 1, 0), (0, 2, 0), (1, 0, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 1, 0), (1, 2, 0), (0, 0, 2)),</span>
+<span class="sd">             ((2, 2, 0), (0, 1, 2)),</span>
+<span class="sd">             ((2, 2, 0), (0, 1, 1), (0, 0, 1)),</span>
+<span class="sd">             ((2, 2, 0), (0, 1, 0), (0, 0, 2)),</span>
+<span class="sd">             ((2, 1, 0), (0, 2, 2)),</span>
+<span class="sd">             ((2, 1, 0), (0, 2, 1), (0, 0, 1)),</span>
+<span class="sd">             ((2, 1, 0), (0, 1, 0), (0, 1, 2)),</span>
+<span class="sd">             ((2, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),</span>
+<span class="sd">             ((2, 1, 0), (0, 2, 0), (0, 0, 2)),</span>
+<span class="sd">             ((1, 0, 0), (1, 3, 2)),</span>
+<span class="sd">             ((1, 0, 0), (0, 3, 1), (1, 0, 1)),</span>
+<span class="sd">             ((1, 0, 0), (1, 1, 1), (0, 2, 1)),</span>
+<span class="sd">             ((1, 0, 0), (1, 2, 1), (0, 1, 1)),</span>
+<span class="sd">             ((1, 0, 0), (1, 3, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 0, 0), (0, 1, 0), (1, 2, 2)),</span>
 <span class="sd">             ((1, 0, 0), (0, 1, 0), (1, 0, 1), (0, 2, 1)),</span>
 <span class="sd">             ((1, 0, 0), (0, 1, 0), (1, 1, 1), (0, 1, 1)),</span>
 <span class="sd">             ((1, 0, 0), (0, 1, 0), (1, 2, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 0, 0), (0, 1, 0), (1, 2, 2)),</span>
+<span class="sd">             ((1, 0, 0), (0, 2, 0), (1, 1, 2)),</span>
 <span class="sd">             ((1, 0, 0), (0, 2, 0), (1, 0, 1), (0, 1, 1)),</span>
 <span class="sd">             ((1, 0, 0), (0, 2, 0), (1, 1, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 0, 0), (0, 2, 0), (1, 1, 2)),</span>
-<span class="sd">             ((1, 0, 0), (0, 3, 0), (1, 0, 1), (0, 0, 1)),</span>
 <span class="sd">             ((1, 0, 0), (0, 3, 0), (1, 0, 2)),</span>
-<span class="sd">             ((1, 0, 0), (0, 3, 1), (1, 0, 1)),</span>
-<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 2)),</span>
-<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 2, 0), (0, 0, 2)),</span>
-<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 2, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 2, 2)),</span>
-<span class="sd">             ((1, 0, 0), (1, 1, 1), (0, 2, 1)),</span>
-<span class="sd">             ((1, 0, 0), (1, 2, 0), (0, 1, 0), (0, 0, 2)),</span>
-<span class="sd">             ((1, 0, 0), (1, 2, 0), (0, 1, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 0, 0), (0, 3, 0), (1, 0, 1), (0, 0, 1)),</span>
 <span class="sd">             ((1, 0, 0), (1, 2, 0), (0, 1, 2)),</span>
-<span class="sd">             ((1, 0, 0), (1, 2, 1), (0, 1, 1)),</span>
-<span class="sd">             ((1, 0, 0), (1, 3, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 0, 0), (1, 3, 2)),</span>
-<span class="sd">             ((1, 1, 0), (0, 1, 0), (1, 0, 1), (0, 1, 1)),</span>
-<span class="sd">             ((1, 1, 0), (0, 1, 0), (1, 1, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 1, 0), (0, 1, 0), (1, 1, 2)),</span>
-<span class="sd">             ((1, 1, 0), (0, 2, 0), (1, 0, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 1, 0), (0, 2, 0), (1, 0, 2)),</span>
-<span class="sd">             ((1, 1, 0), (1, 0, 1), (0, 2, 1)),</span>
-<span class="sd">             ((1, 1, 0), (1, 1, 1), (0, 1, 1)),</span>
-<span class="sd">             ((1, 1, 0), (1, 2, 0), (0, 0, 2)),</span>
-<span class="sd">             ((1, 1, 0), (1, 2, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 1, 0), (1, 2, 2)),</span>
-<span class="sd">             ((1, 2, 0), (0, 1, 0), (1, 0, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 2, 0), (0, 1, 0), (1, 0, 2)),</span>
-<span class="sd">             ((1, 2, 0), (1, 0, 1), (0, 1, 1)),</span>
-<span class="sd">             ((1, 2, 0), (1, 1, 1), (0, 0, 1)),</span>
-<span class="sd">             ((1, 2, 0), (1, 1, 2)),</span>
-<span class="sd">             ((1, 2, 1), (1, 1, 1)),</span>
-<span class="sd">             ((1, 3, 1), (1, 0, 1)),</span>
-<span class="sd">             ((2, 0, 0), (0, 1, 0), (0, 2, 1), (0, 0, 1)),</span>
-<span class="sd">             ((2, 0, 0), (0, 1, 0), (0, 2, 2)),</span>
-<span class="sd">             ((2, 0, 0), (0, 2, 0), (0, 1, 1), (0, 0, 1)),</span>
-<span class="sd">             ((2, 0, 0), (0, 2, 0), (0, 1, 2)),</span>
-<span class="sd">             ((2, 0, 0), (0, 2, 1), (0, 1, 1)),</span>
-<span class="sd">             ((2, 0, 0), (0, 3, 0), (0, 0, 2)),</span>
-<span class="sd">             ((2, 0, 0), (0, 3, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 0, 0), (1, 2, 0), (0, 1, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 0, 0), (1, 2, 0), (0, 1, 0), (0, 0, 2)),</span>
+<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 2, 2)),</span>
+<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 2, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 2)),</span>
+<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),</span>
+<span class="sd">             ((1, 0, 0), (1, 1, 0), (0, 2, 0), (0, 0, 2)),</span>
 <span class="sd">             ((2, 0, 0), (0, 3, 2)),</span>
-<span class="sd">             ((2, 0, 1), (0, 3, 1)),</span>
-<span class="sd">             ((2, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),</span>
-<span class="sd">             ((2, 1, 0), (0, 1, 0), (0, 1, 2)),</span>
-<span class="sd">             ((2, 1, 0), (0, 2, 0), (0, 0, 2)),</span>
-<span class="sd">             ((2, 1, 0), (0, 2, 1), (0, 0, 1)),</span>
-<span class="sd">             ((2, 1, 0), (0, 2, 2)),</span>
-<span class="sd">             ((2, 1, 1), (0, 2, 1)),</span>
-<span class="sd">             ((2, 2, 0), (0, 1, 0), (0, 0, 2)),</span>
-<span class="sd">             ((2, 2, 0), (0, 1, 1), (0, 0, 1)),</span>
-<span class="sd">             ((2, 2, 0), (0, 1, 2)),</span>
-<span class="sd">             ((2, 2, 1), (0, 1, 1)),</span>
-<span class="sd">             ((2, 3, 0), (0, 0, 2)),</span>
-<span class="sd">             ((2, 3, 1), (0, 0, 1)),</span>
-<span class="sd">             ((2, 3, 2),)]</span>
+<span class="sd">             ((2, 0, 0), (0, 2, 1), (0, 1, 1)),</span>
+<span class="sd">             ((2, 0, 0), (0, 3, 1), (0, 0, 1)),</span>
+<span class="sd">             ((2, 0, 0), (0, 1, 0), (0, 2, 2)),</span>
+<span class="sd">             ((2, 0, 0), (0, 1, 0), (0, 2, 1), (0, 0, 1)),</span>
+<span class="sd">             ((2, 0, 0), (0, 2, 0), (0, 1, 2)),</span>
+<span class="sd">             ((2, 0, 0), (0, 2, 0), (0, 1, 1), (0, 0, 1)),</span>
+<span class="sd">             ((2, 0, 0), (0, 3, 0), (0, 0, 2)))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">_coerce_dimension_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">_coerce_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">)</span>
@@ -812,8 +813,9 @@ document.write(`
         <span class="n">all_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="o">.</span><span class="n">_all_harder_narasimhan_types</span><span class="p">(</span>
             <span class="n">d</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_denom</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="n">proper</span> <span class="ow">and</span> <span class="p">(</span><span class="n">d</span><span class="p">,)</span> <span class="ow">in</span> <span class="n">all_types</span><span class="p">:</span>
-            <span class="n">all_types</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">d</span><span class="p">,))</span>
+
+        <span class="k">if</span> <span class="n">proper</span><span class="p">:</span>
+            <span class="n">all_types</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ds</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">all_types</span> <span class="k">if</span> <span class="n">ds</span> <span class="o">!=</span> <span class="p">(</span><span class="n">d</span><span class="p">,))</span>
 
         <span class="k">return</span> <span class="n">all_types</span></div>
 
@@ -933,7 +935,7 @@ document.write(`
 <span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
 <span class="sd">            sage: HNs = X.all_harder_narasimhan_types()</span>
 <span class="sd">            sage: [X.codimension_of_harder_narasimhan_stratum(dstar) for dstar in HNs]</span>
-<span class="sd">            [12, 9, 8, 3, 18, 10, 4, 0]</span>
+<span class="sd">            [0, 3, 4, 10, 8, 9, 12, 18]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span>
@@ -1310,7 +1312,7 @@ document.write(`
         <span class="c1"># we use the order of vertices provided by ``tau.keys()`` for Qloc and dloc</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="p">[</span><span class="n">Q</span><span class="o">.</span><span class="n">generic_ext</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">eq</span><span class="p">)</span> <span class="k">for</span> <span class="n">eq</span> <span class="ow">in</span> <span class="n">tau</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tau</span><span class="p">[</span><span class="n">eq</span><span class="p">]]</span>
+                <span class="p">[</span><span class="n">Q</span><span class="o">.</span><span class="n">general_ext</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">eq</span><span class="p">)</span> <span class="k">for</span> <span class="n">eq</span> <span class="ow">in</span> <span class="n">tau</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tau</span><span class="p">[</span><span class="n">eq</span><span class="p">]]</span>
                 <span class="k">for</span> <span class="n">dp</span> <span class="ow">in</span> <span class="n">tau</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">tau</span><span class="p">[</span><span class="n">dp</span><span class="p">]</span>
             <span class="p">]</span>
@@ -1584,9 +1586,34 @@ document.write(`
 <span class="sd">    Methods related to Teleman quantization</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="QuiverModuli.harder_narasimhan_weight">
-<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.harder_narasimhan_weight">[docs]</a>
-    <span class="k">def</span> <span class="nf">harder_narasimhan_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harder_narasimhan_type</span><span class="p">):</span>
+<div class="viewcode-block" id="QuiverModuli.harder_narasimhan_type_weights">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.harder_narasimhan_type_weights">[docs]</a>
+    <span class="k">def</span> <span class="nf">harder_narasimhan_type_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harder_narasimhan_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the weights of the 1-PS lambda on the Harder-Narasimhan type.</span>
+
+<span class="sd">        EXAMPLE:</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: HN = X.all_harder_narasimhan_types(proper=True)</span>
+<span class="sd">            sage: X.harder_narasimhan_type_weights(HN[0])</span>
+<span class="sd">            [3, -2]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># setup shorthand</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span>
+        <span class="n">HN</span> <span class="o">=</span> <span class="n">harder_narasimhan_type</span>
+
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">HN</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HN</span><span class="p">))]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">lcm</span><span class="p">([</span><span class="n">weight</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">c</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">weights</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.teleman_bound">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.teleman_bound">[docs]</a>
+    <span class="k">def</span> <span class="nf">teleman_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">harder_narasimhan_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the Teleman weight of a Harder-Narasimhan type</span>
 
@@ -1601,7 +1628,7 @@ document.write(`
 <span class="sd">        :math:`\det(N_{S/R})^{\vee}|_Z`, where `S` is the</span>
 <span class="sd">        corresponding Harder--Narasimhan stratum.</span>
 
-<span class="sd">        .. SEEALSO:: :meth:`all_weight_bounds`, :meth:`if_rigidity_inequality_holds`</span>
+<span class="sd">        .. SEEALSO:: :meth:`teleman_bounds`, :meth:`if_rigidity_inequality_holds`</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -1611,35 +1638,33 @@ document.write(`
 <span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
 <span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
 <span class="sd">            sage: HN = X.all_harder_narasimhan_types(proper=True)</span>
-<span class="sd">            sage: {dstar: X.harder_narasimhan_weight(dstar) for dstar in HN}</span>
-<span class="sd">            {((1, 0), (1, 1), (0, 2)): 135,</span>
+<span class="sd">            sage: {dstar: X.teleman_bound(dstar) for dstar in HN}</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): 270,</span>
 <span class="sd">             ((1, 0), (1, 2), (0, 1)): 100,</span>
-<span class="sd">             ((1, 0), (1, 3)): 90,</span>
-<span class="sd">             ((1, 1), (1, 2)): 15/2,</span>
+<span class="sd">             ((1, 0), (1, 3)): 360,</span>
+<span class="sd">             ((1, 1), (1, 2)): 15,</span>
 <span class="sd">             ((2, 0), (0, 3)): 270,</span>
 <span class="sd">             ((2, 1), (0, 2)): 100,</span>
-<span class="sd">             ((2, 2), (0, 1)): 30}</span>
+<span class="sd">             ((2, 2), (0, 1)): 60}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># setup shorthand</span>
-        <span class="n">Q</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span>
         <span class="n">HN</span> <span class="o">=</span> <span class="n">harder_narasimhan_type</span>
+
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">harder_narasimhan_type_weights</span><span class="p">(</span><span class="n">HN</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="o">-</span><span class="nb">sum</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="p">(</span>
-                    <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">HN</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
-                    <span class="o">-</span> <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">HN</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="o">*</span> <span class="n">Q</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">HN</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">HN</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+                <span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">weights</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">*</span> <span class="n">Q</span><span class="o">.</span><span class="n">euler_form</span><span class="p">(</span><span class="n">HN</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">HN</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HN</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">HN</span><span class="p">))</span>
             <span class="p">]</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="QuiverModuli.all_weight_bounds">
-<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.all_weight_bounds">[docs]</a>
-    <span class="k">def</span> <span class="nf">all_weight_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="QuiverModuli.teleman_bounds">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.teleman_bounds">[docs]</a>
+    <span class="k">def</span> <span class="nf">teleman_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the list of all weights appearing in Teleman quantization.</span>
 
@@ -1658,21 +1683,21 @@ document.write(`
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: X = QuiverModuliSpace(KroneckerQuiver(3), (2, 3))</span>
-<span class="sd">            sage: X.all_weight_bounds()</span>
-<span class="sd">            [135, 100, 90, 15/2, 270, 100, 30]</span>
-<span class="sd">            sage: X.all_weight_bounds(as_dict=True)</span>
-<span class="sd">            {((1, 0), (1, 1), (0, 2)): 135,</span>
+<span class="sd">            sage: X.teleman_bounds()</span>
+<span class="sd">            [15, 60, 100, 360, 100, 270, 270]</span>
+<span class="sd">            sage: X.teleman_bounds(as_dict=True)</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): 270,</span>
 <span class="sd">             ((1, 0), (1, 2), (0, 1)): 100,</span>
-<span class="sd">             ((1, 0), (1, 3)): 90,</span>
-<span class="sd">             ((1, 1), (1, 2)): 15/2,</span>
+<span class="sd">             ((1, 0), (1, 3)): 360,</span>
+<span class="sd">             ((1, 1), (1, 2)): 15,</span>
 <span class="sd">             ((2, 0), (0, 3)): 270,</span>
 <span class="sd">             ((2, 1), (0, 2)): 100,</span>
-<span class="sd">             ((2, 2), (0, 1)): 30}</span>
+<span class="sd">             ((2, 2), (0, 1)): 60}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># this is only relevant on the unstable locus</span>
         <span class="n">HNs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_harder_narasimhan_types</span><span class="p">(</span><span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">weights</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dstar</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">harder_narasimhan_weight</span><span class="p">(</span><span class="n">dstar</span><span class="p">),</span> <span class="n">HNs</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">teleman_bound</span><span class="p">(</span><span class="n">dstar</span><span class="p">)</span> <span class="k">for</span> <span class="n">dstar</span> <span class="ow">in</span> <span class="n">HNs</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">as_dict</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">HNs</span><span class="p">,</span> <span class="n">weights</span><span class="p">))</span>
@@ -1707,24 +1732,221 @@ document.write(`
 <span class="sd">            sage: X.if_rigidity_inequality_holds()</span>
 <span class="sd">            False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># setup shorthand</span>
-        <span class="n">Q</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denom</span>
-
-        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_weight_bounds</span><span class="p">()</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">teleman_bounds</span><span class="p">()</span>
 
         <span class="c1"># we compute the maximum weight of the tensors of the universal bundles</span>
         <span class="c1"># this is only relevant on the unstable locus</span>
         <span class="n">HNs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_harder_narasimhan_types</span><span class="p">(</span><span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">kweights</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">harder_narasimhan_type_weights</span><span class="p">(</span><span class="n">hn</span><span class="p">)</span> <span class="k">for</span> <span class="n">hn</span> <span class="ow">in</span> <span class="n">HNs</span><span class="p">]</span>
+        <span class="n">kweights</span> <span class="o">=</span> <span class="p">[</span><span class="n">kw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">kw</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">kweights</span><span class="p">]</span>
 
-        <span class="n">tensor_weights</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">map</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">dstar</span><span class="p">:</span> <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">dstar</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">)</span>
-                <span class="o">-</span> <span class="n">Q</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">dstar</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">theta</span><span class="p">,</span> <span class="n">denom</span><span class="o">=</span><span class="n">denom</span><span class="p">),</span>
-                <span class="n">HNs</span><span class="p">,</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">kweights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HNs</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.all_weights_endomorphisms_universal_bundle">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.all_weights_endomorphisms_universal_bundle">[docs]</a>
+    <span class="k">def</span> <span class="nf">all_weights_endomorphisms_universal_bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the Teleman weights on the endomorphisms of the universal bundle.</span>
+
+<span class="sd">        EXAMPLE:</span>
+
+<span class="sd">        The 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, [2, 3])</span>
+<span class="sd">            sage: X.all_weights_endomorphisms_universal_bundle()</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): [0, 15, 30, -15, 0, 15, -30, -15, 0],</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)): [0, 10, 15, -10, 0, 5, -15, -5, 0],</span>
+<span class="sd">             ((1, 0), (1, 3)): [0, 45, -45, 0],</span>
+<span class="sd">             ((1, 1), (1, 2)): [0, 5, -5, 0],</span>
+<span class="sd">             ((2, 0), (0, 3)): [0, 15, -15, 0],</span>
+<span class="sd">             ((2, 1), (0, 2)): [0, 10, -10, 0],</span>
+<span class="sd">             ((2, 2), (0, 1)): [0, 15, -15, 0]}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># setup shorthand</span>
+
+        <span class="n">HN</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_harder_narasimhan_types</span><span class="p">(</span><span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ks</span> <span class="o">=</span> <span class="p">{</span><span class="n">hn</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">harder_narasimhan_type_weights</span><span class="p">(</span><span class="n">hn</span><span class="p">)</span> <span class="k">for</span> <span class="n">hn</span> <span class="ow">in</span> <span class="n">HN</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">hntype</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">ks</span><span class="p">[</span><span class="n">hntype</span><span class="p">][</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">ks</span><span class="p">[</span><span class="n">hntype</span><span class="p">][</span><span class="n">t</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hntype</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hntype</span><span class="p">))</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">hntype</span> <span class="ow">in</span> <span class="n">HN</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.weights_endomorphisms_universal_bundle">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.weights_endomorphisms_universal_bundle">[docs]</a>
+    <span class="k">def</span> <span class="nf">weights_endomorphisms_universal_bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the Teleman weights on :math:`U_{i}^{\vee} \otimes U_{j}`.</span>
+
+<span class="sd">        EXAMPLE:</span>
+
+<span class="sd">            The 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, (2, 3))</span>
+<span class="sd">            sage: X.weights_endomorphisms_universal_bundle(0,1)</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): [-15, 0, -30, -15, -30, -15],</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)): [-10, 0, -10, 0, -15, -5],</span>
+<span class="sd">             ((1, 0), (1, 3)): [-45, 0, -45, 0, -45, 0],</span>
+<span class="sd">             ((1, 1), (1, 2)): [0, 5, -5, 0, -5, 0],</span>
+<span class="sd">             ((2, 0), (0, 3)): [-15, -15, -15, -15, -15, -15],</span>
+<span class="sd">             ((2, 1), (0, 2)): [0, 0, -10, -10, -10, -10],</span>
+<span class="sd">             ((2, 2), (0, 1)): [0, 0, 0, 0, -15, -15]}</span>
+<span class="sd">            sage: X.weights_endomorphisms_universal_bundle(0,0)</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): [0, 15, -15, 0],</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)): [0, 10, -10, 0],</span>
+<span class="sd">             ((1, 0), (1, 3)): [0, 45, -45, 0],</span>
+<span class="sd">             ((1, 1), (1, 2)): [0, 5, -5, 0],</span>
+<span class="sd">             ((2, 0), (0, 3)): [0, 0, 0, 0],</span>
+<span class="sd">             ((2, 1), (0, 2)): [0, 0, 0, 0],</span>
+<span class="sd">             ((2, 2), (0, 1)): [0, 0, 0, 0]}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># setup shorthand</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+        <span class="c1"># check if i and j are vertices</span>
+        <span class="k">assert</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">and</span> <span class="n">d</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="n">HN</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_harder_narasimhan_types</span><span class="p">(</span><span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ks</span> <span class="o">=</span> <span class="p">{</span><span class="n">hn</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">harder_narasimhan_type_weights</span><span class="p">(</span><span class="n">hn</span><span class="p">)</span> <span class="k">for</span> <span class="n">hn</span> <span class="ow">in</span> <span class="n">HN</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">hntype</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">ks</span><span class="p">[</span><span class="n">hntype</span><span class="p">][</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">ks</span><span class="p">[</span><span class="n">hntype</span><span class="p">][</span><span class="n">t</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hntype</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hntype</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hntype</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hntype</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">hntype</span> <span class="ow">in</span> <span class="n">HN</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.weights_universal_bundle">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.weights_universal_bundle">[docs]</a>
+    <span class="k">def</span> <span class="nf">weights_universal_bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the weights of the 1-PS lambda on the universal bundle :math:`U_i`</span>
+<span class="sd">        with the correct multiplicities.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``i`` -- index of the universal bundle</span>
+<span class="sd">        - ``a`` -- (default: extended_gcd(d)[1]) a linearization defining :math:`U_i`.</span>
+
+<span class="sd">        EXAMPLE:</span>
+
+<span class="sd">        The 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3); d = (2, 3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, d)</span>
+<span class="sd">            sage: X.weights_universal_bundle(0)</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): [60, 45],</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)): [25, 15],</span>
+<span class="sd">             ((1, 0), (1, 3)): [90, 45],</span>
+<span class="sd">             ((1, 1), (1, 2)): [5, 0],</span>
+<span class="sd">             ((2, 0), (0, 3)): [45, 45],</span>
+<span class="sd">             ((2, 1), (0, 2)): [20, 20],</span>
+<span class="sd">             ((2, 2), (0, 1)): [15, 15]}</span>
+<span class="sd">            sage: X.weights_universal_bundle(1)</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): [45, 30, 30],</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)): [15, 15, 10],</span>
+<span class="sd">             ((1, 0), (1, 3)): [45, 45, 45],</span>
+<span class="sd">             ((1, 1), (1, 2)): [5, 0, 0],</span>
+<span class="sd">             ((2, 0), (0, 3)): [30, 30, 30],</span>
+<span class="sd">             ((2, 1), (0, 2)): [20, 10, 10],</span>
+<span class="sd">             ((2, 2), (0, 1)): [15, 15, 0]}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># setup shorthand</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+
+        <span class="c1"># check if i is a vertex</span>
+        <span class="k">assert</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">extended_gcd</span><span class="p">(</span><span class="n">d</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">HN</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_harder_narasimhan_types</span><span class="p">(</span><span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ks</span> <span class="o">=</span> <span class="p">{</span><span class="n">hn</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">harder_narasimhan_type_weights</span><span class="p">(</span><span class="n">hn</span><span class="p">)</span> <span class="k">for</span> <span class="n">hn</span> <span class="ow">in</span> <span class="n">HN</span><span class="p">}</span>
+
+        <span class="n">constant_term</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">hntype</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="n">ks</span><span class="p">[</span><span class="n">hntype</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span>
+                    <span class="n">a</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">hntype</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hntype</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="p">)</span>  <span class="c1"># this is a dot product</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hntype</span><span class="p">))</span>
             <span class="p">)</span>
-        <span class="p">)</span>
+            <span class="k">for</span> <span class="n">hntype</span> <span class="ow">in</span> <span class="n">HN</span>
+        <span class="p">}</span>
 
-        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tensor_weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HNs</span><span class="p">)))</span></div>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">hntype</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">ks</span><span class="p">[</span><span class="n">hntype</span><span class="p">][</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">constant_term</span><span class="p">[</span><span class="n">hntype</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hntype</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hntype</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">hntype</span> <span class="ow">in</span> <span class="n">HN</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="QuiverModuli.weights_canonical">
+<a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.weights_canonical">[docs]</a>
+    <span class="k">def</span> <span class="nf">weights_canonical</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the Teleman weight of the canonical bundle :math:`\omega` as</span>
+<span class="sd">        computed in MR4352662_.</span>
+
+<span class="sd">        This is only known if universal bundles exist, i.e., if :math:`\gcd(d) = 1`.</span>
+
+<span class="sd">        EXAMPLE:</span>
+
+<span class="sd">        The 3-Kronecker quiver::</span>
+
+<span class="sd">            sage: from quiver import *</span>
+<span class="sd">            sage: Q = GeneralizedKroneckerQuiver(3); d = (2, 3)</span>
+<span class="sd">            sage: X = QuiverModuliSpace(Q, d)</span>
+<span class="sd">            sage: X.weights_canonical()</span>
+<span class="sd">            {((1, 0), (1, 1), (0, 2)): [315],</span>
+<span class="sd">             ((1, 0), (1, 2), (0, 1)): [120],</span>
+<span class="sd">             ((1, 0), (1, 3)): [405],</span>
+<span class="sd">             ((1, 1), (1, 2)): [15],</span>
+<span class="sd">             ((2, 0), (0, 3)): [270],</span>
+<span class="sd">             ((2, 1), (0, 2)): [120],</span>
+<span class="sd">             ((2, 2), (0, 1)): [90]}</span>
+
+<span class="sd">        .. _MR4352662: https://mathscinet.ams.org/mathscinet-getitem?mr=4352662</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># setup shorthand</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+
+        <span class="k">assert</span> <span class="n">gcd</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;universal bundles do not exist&quot;</span>
+
+        <span class="n">HN</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_harder_narasimhan_types</span><span class="p">(</span><span class="n">proper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ks</span> <span class="o">=</span> <span class="p">{</span><span class="n">hn</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">harder_narasimhan_type_weights</span><span class="p">(</span><span class="n">hn</span><span class="p">)</span> <span class="k">for</span> <span class="n">hn</span> <span class="ow">in</span> <span class="n">HN</span><span class="p">}</span>
+
+        <span class="n">dd</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">hntype</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ks</span><span class="p">[</span><span class="n">hntype</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">hntype</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hntype</span><span class="p">)))</span>
+            <span class="k">for</span> <span class="n">hntype</span> <span class="ow">in</span> <span class="n">HN</span>
+        <span class="p">}</span>
+
+        <span class="n">can</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">canonical_stability_parameter</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">hntype</span><span class="p">:</span> <span class="p">[</span>
+                <span class="nb">sum</span><span class="p">(</span><span class="n">can</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">dd</span><span class="p">[</span><span class="n">hntype</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">can</span><span class="p">)))</span>
+            <span class="p">]</span>  <span class="c1"># this is a dot product</span>
+            <span class="k">for</span> <span class="n">hntype</span> <span class="ow">in</span> <span class="n">HN</span>
+        <span class="p">}</span></div>
 
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2050,7 +2272,9 @@ document.write(`
 <a class="viewcode-back" href="../../index.html#quiver.QuiverModuli.dimension">[docs]</a>
     <span class="k">def</span> <span class="nf">dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the dimension of the moduli stack.</span>
+<span class="sd">        Returns the dimension of the moduli space.</span>
+
+<span class="sd">        Abstract method, see the concrete implementations for details.</span>
 
 <span class="sd">        .. SEEALSO::</span>
 
@@ -2059,7 +2283,8 @@ document.write(`
 
 <span class="sd">        EXAMPLES:</span>
 
-<span class="sd">        This is not implemented as it is ambiguous::</span>
+<span class="sd">        This is not implemented as it is ambiguous: it depends on whether we consider</span>
+<span class="sd">        it as a variety or as a stack::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = KroneckerQuiver(3)</span>
@@ -2084,7 +2309,8 @@ document.write(`
 <span class="sd">            - :meth:`QuiverModuliSpace.is_smooth`</span>
 <span class="sd">            - :meth:`QuiverModuliStack.is_smooth`</span>
 
-<span class="sd">        This is not implemented as it is ambiguous::</span>
+<span class="sd">        This is not implemented as it is ambiguous: it depends on whether we consider</span>
+<span class="sd">        it as a variety or as a stack::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = KroneckerQuiver(3)</span>
@@ -2111,7 +2337,8 @@ document.write(`
 
 <span class="sd">        EXAMPLES:</span>
 
-<span class="sd">        This is not implemented as it is ambiguous::</span>
+<span class="sd">        This is not implemented as it is ambiguous: it depends on whether we consider</span>
+<span class="sd">        it as a variety or as a stack::</span>
 
 <span class="sd">            sage: from quiver import *</span>
 <span class="sd">            sage: Q = KroneckerQuiver(3)</span>
@@ -2655,8 +2882,8 @@ document.write(`
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the index of the moduli space</span>
 
-<span class="sd">        The index is the largest integer dividing the canonical divisor in Pic.</span>
-<span class="sd">        For now this is only implemented for the canonical stability condition.</span>
+<span class="sd">        The index is the largest integer dividing the canonical divisor</span>
+<span class="sd">        in the Picard group.</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -3060,7 +3287,7 @@ document.write(`
 
 <span class="sd">        INPUT:</span>
 
-<span class="sd">        - ``eta`` -- class of line bundle (default: anticanonical line bundle</span>
+<span class="sd">        - ``eta`` -- class of line bundle (default: anticanonical line bundle)</span>
 
 <span class="sd">        - ``classes`` -- variables to be used (default: None)</span>
 
@@ -3224,7 +3451,6 @@ document.write(`
 <span class="sd">            [1, 20, 148, 664, 2206]</span>
 
 <span class="sd">        .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">integrand</span> <span class="o">=</span> <span class="p">(</span>
@@ -3233,12 +3459,10 @@ document.write(`
             <span class="o">.</span><span class="n">homogeneous_components</span><span class="p">()</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span> <span class="ow">in</span> <span class="n">integrand</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">integrand</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_class</span><span class="p">(</span>
-                <span class="n">chi</span><span class="o">=</span><span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">integrand</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="mi">0</span>
 
-        <span class="k">return</span> <span class="mi">0</span></div>
+        <span class="k">return</span> <span class="n">integrand</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_class</span><span class="p">(</span><span class="n">chi</span><span class="o">=</span><span class="n">chi</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span></div>
 </div>
 
 
@@ -3488,6 +3712,27 @@ document.write(`
         <span class="k">return</span> <span class="n">QuotientRing</span><span class="p">(</span><span class="n">tautological</span><span class="o">.</span><span class="n">ring</span><span class="p">(),</span> <span class="n">tautological</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span></div>
 </div>
 
+
+
+<span class="k">def</span> <span class="nf">extended_gcd</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the gcd and the Bezout coefficients of a list of integers.</span>
+
+<span class="sd">    This exists for two integers but seemingly not for more than two.</span>
+<span class="sd">    For internal use only.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">xgcd</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">g</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">xgcd</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+        <span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">extended_gcd</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span>
 </pre></div>
 
                 </article>
