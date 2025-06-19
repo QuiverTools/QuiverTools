@@ -1,5 +1,5 @@
 """
-   isort:skip_file
+isort:skip_file
 """
 
 from .quiver import Quiver

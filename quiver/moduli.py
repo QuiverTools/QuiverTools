@@ -1,5 +1,6 @@
 from itertools import combinations_with_replacement, product
 
+from sage.arith.functions import lcm
 from sage.arith.misc import bernoulli, factorial, gcd, xgcd
 from sage.combinat.partition import Partitions
 from sage.combinat.permutation import Permutations
@@ -66,14 +67,14 @@ class QuiverModuli(Element):
         concerns something involving the representation variety::
 
             sage: X.all_harder_narasimhan_types()
-            [((1, 0), (1, 1), (0, 2)),
-             ((1, 0), (1, 2), (0, 1)),
-             ((1, 0), (1, 3)),
+            (((2, 3),),
              ((1, 1), (1, 2)),
-             ((2, 0), (0, 3)),
-             ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
-             ((2, 3),)]
+             ((2, 1), (0, 2)),
+             ((1, 0), (1, 3)),
+             ((1, 0), (1, 2), (0, 1)),
+             ((1, 0), (1, 1), (0, 2)),
+             ((2, 0), (0, 3)))
 
         But things like dimension depend on whether we consider it as a variety or as
         a stack, and thus these are not implemented::
@@ -381,7 +382,7 @@ class QuiverModuli(Element):
     Harder--Narasimhan stratification
     """
 
-    def all_harder_narasimhan_types(self, proper=False, sorted=False):
+    def all_harder_narasimhan_types(self, proper=False, sorted=True):
         r"""
         Returns the list of all Harder--Narasimhan types.
 
@@ -398,7 +399,7 @@ class QuiverModuli(Element):
         - ``proper`` -- (default: False) whether to exclude the HN-type corresponding
           to the stable locus
 
-        - ``sorted`` -- (default: False) whether to sort the HN-types according to the
+        - ``sorted`` -- (default: True) whether to sort the HN-types according to the
           given slope
 
         OUTPUT: list of tuples of dimension vectors encoding HN-types
@@ -411,27 +412,27 @@ class QuiverModuli(Element):
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: X.all_harder_narasimhan_types()
-            [((1, 0), (1, 1), (0, 2)),
-             ((1, 0), (1, 2), (0, 1)),
-             ((1, 0), (1, 3)),
+            (((2, 3),),
              ((1, 1), (1, 2)),
-             ((2, 0), (0, 3)),
-             ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
-             ((2, 3),)]
-            sage: X.all_harder_narasimhan_types(proper=True)
-            [((1, 0), (1, 1), (0, 2)),
-             ((1, 0), (1, 2), (0, 1)),
-             ((1, 0), (1, 3)),
-             ((1, 1), (1, 2)),
-             ((2, 0), (0, 3)),
              ((2, 1), (0, 2)),
-             ((2, 2), (0, 1))]
+             ((1, 0), (1, 3)),
+             ((1, 0), (1, 2), (0, 1)),
+             ((1, 0), (1, 1), (0, 2)),
+             ((2, 0), (0, 3)))
+            sage: X.all_harder_narasimhan_types(proper=True)
+            (((1, 1), (1, 2)),
+             ((2, 2), (0, 1)),
+             ((2, 1), (0, 2)),
+             ((1, 0), (1, 3)),
+             ((1, 0), (1, 2), (0, 1)),
+             ((1, 0), (1, 1), (0, 2)),
+             ((2, 0), (0, 3)))
             sage: d = (2, 3)
             sage: theta = -Q.canonical_stability_parameter(d)
             sage: Y = QuiverModuliSpace(Q, d, theta)
             sage: Y.all_harder_narasimhan_types()
-            [((0, 3), (2, 0))]
+            (((0, 3), (2, 0)),)
 
         A 3-vertex quiver::
 
@@ -439,78 +440,78 @@ class QuiverModuli(Element):
             sage: Q = ThreeVertexQuiver(2, 3, 4)
             sage: Z = QuiverModuliSpace(Q, (2, 3, 2))
             sage: Z.all_harder_narasimhan_types()
-            [((0, 1, 0), (1, 2, 1), (1, 0, 1)),
+            (((2, 3, 2),),
+             ((1, 2, 1), (1, 1, 1)),
+             ((1, 3, 1), (1, 0, 1)),
+             ((2, 0, 1), (0, 3, 1)),
+             ((2, 1, 1), (0, 2, 1)),
+             ((2, 2, 1), (0, 1, 1)),
+             ((2, 3, 1), (0, 0, 1)),
+             ((0, 1, 0), (2, 2, 2)),
+             ((0, 1, 0), (1, 2, 1), (1, 0, 1)),
              ((0, 1, 0), (2, 0, 1), (0, 2, 1)),
              ((0, 1, 0), (2, 1, 1), (0, 1, 1)),
              ((0, 1, 0), (2, 2, 1), (0, 0, 1)),
-             ((0, 1, 0), (2, 2, 2)),
+             ((0, 2, 0), (2, 1, 2)),
              ((0, 2, 0), (1, 1, 1), (1, 0, 1)),
              ((0, 2, 0), (2, 0, 1), (0, 1, 1)),
              ((0, 2, 0), (2, 1, 1), (0, 0, 1)),
-             ((0, 2, 0), (2, 1, 2)),
-             ((0, 3, 0), (2, 0, 1), (0, 0, 1)),
              ((0, 3, 0), (2, 0, 2)),
+             ((0, 3, 0), (2, 0, 1), (0, 0, 1)),
+             ((1, 2, 0), (1, 1, 2)),
+             ((1, 2, 0), (1, 0, 1), (0, 1, 1)),
+             ((1, 2, 0), (1, 1, 1), (0, 0, 1)),
+             ((1, 2, 0), (0, 1, 0), (1, 0, 2)),
+             ((1, 2, 0), (0, 1, 0), (1, 0, 1), (0, 0, 1)),
+             ((2, 3, 0), (0, 0, 2)),
+             ((1, 1, 0), (1, 2, 2)),
+             ((1, 1, 0), (1, 0, 1), (0, 2, 1)),
+             ((1, 1, 0), (1, 1, 1), (0, 1, 1)),
+             ((1, 1, 0), (1, 2, 1), (0, 0, 1)),
+             ((1, 1, 0), (0, 1, 0), (1, 1, 2)),
+             ((1, 1, 0), (0, 1, 0), (1, 0, 1), (0, 1, 1)),
+             ((1, 1, 0), (0, 1, 0), (1, 1, 1), (0, 0, 1)),
+             ((1, 1, 0), (0, 2, 0), (1, 0, 2)),
+             ((1, 1, 0), (0, 2, 0), (1, 0, 1), (0, 0, 1)),
+             ((1, 1, 0), (1, 2, 0), (0, 0, 2)),
+             ((2, 2, 0), (0, 1, 2)),
+             ((2, 2, 0), (0, 1, 1), (0, 0, 1)),
+             ((2, 2, 0), (0, 1, 0), (0, 0, 2)),
+             ((2, 1, 0), (0, 2, 2)),
+             ((2, 1, 0), (0, 2, 1), (0, 0, 1)),
+             ((2, 1, 0), (0, 1, 0), (0, 1, 2)),
+             ((2, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),
+             ((2, 1, 0), (0, 2, 0), (0, 0, 2)),
+             ((1, 0, 0), (1, 3, 2)),
+             ((1, 0, 0), (0, 3, 1), (1, 0, 1)),
+             ((1, 0, 0), (1, 1, 1), (0, 2, 1)),
+             ((1, 0, 0), (1, 2, 1), (0, 1, 1)),
+             ((1, 0, 0), (1, 3, 1), (0, 0, 1)),
+             ((1, 0, 0), (0, 1, 0), (1, 2, 2)),
              ((1, 0, 0), (0, 1, 0), (1, 0, 1), (0, 2, 1)),
              ((1, 0, 0), (0, 1, 0), (1, 1, 1), (0, 1, 1)),
              ((1, 0, 0), (0, 1, 0), (1, 2, 1), (0, 0, 1)),
-             ((1, 0, 0), (0, 1, 0), (1, 2, 2)),
+             ((1, 0, 0), (0, 2, 0), (1, 1, 2)),
              ((1, 0, 0), (0, 2, 0), (1, 0, 1), (0, 1, 1)),
              ((1, 0, 0), (0, 2, 0), (1, 1, 1), (0, 0, 1)),
-             ((1, 0, 0), (0, 2, 0), (1, 1, 2)),
-             ((1, 0, 0), (0, 3, 0), (1, 0, 1), (0, 0, 1)),
              ((1, 0, 0), (0, 3, 0), (1, 0, 2)),
-             ((1, 0, 0), (0, 3, 1), (1, 0, 1)),
-             ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),
-             ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 2)),
-             ((1, 0, 0), (1, 1, 0), (0, 2, 0), (0, 0, 2)),
-             ((1, 0, 0), (1, 1, 0), (0, 2, 1), (0, 0, 1)),
-             ((1, 0, 0), (1, 1, 0), (0, 2, 2)),
-             ((1, 0, 0), (1, 1, 1), (0, 2, 1)),
-             ((1, 0, 0), (1, 2, 0), (0, 1, 0), (0, 0, 2)),
-             ((1, 0, 0), (1, 2, 0), (0, 1, 1), (0, 0, 1)),
+             ((1, 0, 0), (0, 3, 0), (1, 0, 1), (0, 0, 1)),
              ((1, 0, 0), (1, 2, 0), (0, 1, 2)),
-             ((1, 0, 0), (1, 2, 1), (0, 1, 1)),
-             ((1, 0, 0), (1, 3, 1), (0, 0, 1)),
-             ((1, 0, 0), (1, 3, 2)),
-             ((1, 1, 0), (0, 1, 0), (1, 0, 1), (0, 1, 1)),
-             ((1, 1, 0), (0, 1, 0), (1, 1, 1), (0, 0, 1)),
-             ((1, 1, 0), (0, 1, 0), (1, 1, 2)),
-             ((1, 1, 0), (0, 2, 0), (1, 0, 1), (0, 0, 1)),
-             ((1, 1, 0), (0, 2, 0), (1, 0, 2)),
-             ((1, 1, 0), (1, 0, 1), (0, 2, 1)),
-             ((1, 1, 0), (1, 1, 1), (0, 1, 1)),
-             ((1, 1, 0), (1, 2, 0), (0, 0, 2)),
-             ((1, 1, 0), (1, 2, 1), (0, 0, 1)),
-             ((1, 1, 0), (1, 2, 2)),
-             ((1, 2, 0), (0, 1, 0), (1, 0, 1), (0, 0, 1)),
-             ((1, 2, 0), (0, 1, 0), (1, 0, 2)),
-             ((1, 2, 0), (1, 0, 1), (0, 1, 1)),
-             ((1, 2, 0), (1, 1, 1), (0, 0, 1)),
-             ((1, 2, 0), (1, 1, 2)),
-             ((1, 2, 1), (1, 1, 1)),
-             ((1, 3, 1), (1, 0, 1)),
-             ((2, 0, 0), (0, 1, 0), (0, 2, 1), (0, 0, 1)),
-             ((2, 0, 0), (0, 1, 0), (0, 2, 2)),
-             ((2, 0, 0), (0, 2, 0), (0, 1, 1), (0, 0, 1)),
-             ((2, 0, 0), (0, 2, 0), (0, 1, 2)),
-             ((2, 0, 0), (0, 2, 1), (0, 1, 1)),
-             ((2, 0, 0), (0, 3, 0), (0, 0, 2)),
-             ((2, 0, 0), (0, 3, 1), (0, 0, 1)),
+             ((1, 0, 0), (1, 2, 0), (0, 1, 1), (0, 0, 1)),
+             ((1, 0, 0), (1, 2, 0), (0, 1, 0), (0, 0, 2)),
+             ((1, 0, 0), (1, 1, 0), (0, 2, 2)),
+             ((1, 0, 0), (1, 1, 0), (0, 2, 1), (0, 0, 1)),
+             ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 2)),
+             ((1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),
+             ((1, 0, 0), (1, 1, 0), (0, 2, 0), (0, 0, 2)),
              ((2, 0, 0), (0, 3, 2)),
-             ((2, 0, 1), (0, 3, 1)),
-             ((2, 1, 0), (0, 1, 0), (0, 1, 1), (0, 0, 1)),
-             ((2, 1, 0), (0, 1, 0), (0, 1, 2)),
-             ((2, 1, 0), (0, 2, 0), (0, 0, 2)),
-             ((2, 1, 0), (0, 2, 1), (0, 0, 1)),
-             ((2, 1, 0), (0, 2, 2)),
-             ((2, 1, 1), (0, 2, 1)),
-             ((2, 2, 0), (0, 1, 0), (0, 0, 2)),
-             ((2, 2, 0), (0, 1, 1), (0, 0, 1)),
-             ((2, 2, 0), (0, 1, 2)),
-             ((2, 2, 1), (0, 1, 1)),
-             ((2, 3, 0), (0, 0, 2)),
-             ((2, 3, 1), (0, 0, 1)),
-             ((2, 3, 2),)]
+             ((2, 0, 0), (0, 2, 1), (0, 1, 1)),
+             ((2, 0, 0), (0, 3, 1), (0, 0, 1)),
+             ((2, 0, 0), (0, 1, 0), (0, 2, 2)),
+             ((2, 0, 0), (0, 1, 0), (0, 2, 1), (0, 0, 1)),
+             ((2, 0, 0), (0, 2, 0), (0, 1, 2)),
+             ((2, 0, 0), (0, 2, 0), (0, 1, 1), (0, 0, 1)),
+             ((2, 0, 0), (0, 3, 0), (0, 0, 2)))
         """
         d = self._Q._coerce_dimension_vector(self._d)
         theta = self._Q._coerce_vector(self._theta)
@@ -518,8 +519,9 @@ class QuiverModuli(Element):
         all_types = self._Q._all_harder_narasimhan_types(
             d, theta, denom=self._denom, sorted=sorted
         )
-        if proper and (d,) in all_types:
-            all_types.remove((d,))
+
+        if proper:
+            all_types = tuple(ds for ds in all_types if ds != (d,))
 
         return all_types
 
@@ -633,7 +635,7 @@ class QuiverModuli(Element):
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: HNs = X.all_harder_narasimhan_types()
             sage: [X.codimension_of_harder_narasimhan_stratum(dstar) for dstar in HNs]
-            [12, 9, 8, 3, 18, 10, 4, 0]
+            [0, 3, 4, 10, 8, 9, 12, 18]
 
         """
         Q = self._Q
@@ -995,7 +997,7 @@ class QuiverModuli(Element):
         # we use the order of vertices provided by ``tau.keys()`` for Qloc and dloc
         A = matrix(
             [
-                [Q.generic_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
+                [Q.general_ext(dp, eq) for eq in tau.keys() for n in tau[eq]]
                 for dp in tau.keys()
                 for m in tau[dp]
             ]
@@ -1256,7 +1258,29 @@ class QuiverModuli(Element):
     Methods related to Teleman quantization
     """
 
-    def harder_narasimhan_weight(self, harder_narasimhan_type):
+    def harder_narasimhan_type_weights(self, harder_narasimhan_type):
+        r"""
+        Returns the weights of the 1-PS lambda on the Harder-Narasimhan type.
+
+        EXAMPLE:
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: HN = X.all_harder_narasimhan_types(proper=True)
+            sage: X.harder_narasimhan_type_weights(HN[0])
+            [3, -2]
+        """
+        # setup shorthand
+        Q, theta, denom = self._Q, self._theta, self._denom
+        HN = harder_narasimhan_type
+
+        weights = [Q.slope(HN[s], theta, denom=denom) for s in range(len(HN))]
+        c = lcm([weight.denominator() for weight in weights])
+
+        return [x * c for x in weights]
+
+    def teleman_bound(self, harder_narasimhan_type):
         r"""
         Returns the Teleman weight of a Harder-Narasimhan type
 
@@ -1271,7 +1295,7 @@ class QuiverModuli(Element):
         :math:`\det(N_{S/R})^{\vee}|_Z`, where `S` is the
         corresponding Harder--Narasimhan stratum.
 
-        .. SEEALSO:: :meth:`all_weight_bounds`, :meth:`if_rigidity_inequality_holds`
+        .. SEEALSO:: :meth:`teleman_bounds`, :meth:`if_rigidity_inequality_holds`
 
         EXAMPLES:
 
@@ -1281,32 +1305,30 @@ class QuiverModuli(Element):
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: X = QuiverModuliSpace(Q, (2, 3))
             sage: HN = X.all_harder_narasimhan_types(proper=True)
-            sage: {dstar: X.harder_narasimhan_weight(dstar) for dstar in HN}
-            {((1, 0), (1, 1), (0, 2)): 135,
+            sage: {dstar: X.teleman_bound(dstar) for dstar in HN}
+            {((1, 0), (1, 1), (0, 2)): 270,
              ((1, 0), (1, 2), (0, 1)): 100,
-             ((1, 0), (1, 3)): 90,
-             ((1, 1), (1, 2)): 15/2,
+             ((1, 0), (1, 3)): 360,
+             ((1, 1), (1, 2)): 15,
              ((2, 0), (0, 3)): 270,
              ((2, 1), (0, 2)): 100,
-             ((2, 2), (0, 1)): 30}
+             ((2, 2), (0, 1)): 60}
         """
         # setup shorthand
-        Q, theta, denom = self._Q, self._theta, self._denom
+        Q = self._Q
         HN = harder_narasimhan_type
+
+        weights = self.harder_narasimhan_type_weights(HN)
 
         return -sum(
             [
-                (
-                    Q.slope(HN[s], theta, denom=denom)
-                    - Q.slope(HN[t], theta, denom=denom)
-                )
-                * Q.euler_form(HN[s], HN[t])
+                (weights[s] - weights[t]) * Q.euler_form(HN[s], HN[t])
                 for s in range(len(HN) - 1)
                 for t in range(s + 1, len(HN))
             ]
         )
 
-    def all_weight_bounds(self, as_dict=False):
+    def teleman_bounds(self, as_dict=False):
         r"""
         Returns the list of all weights appearing in Teleman quantization.
 
@@ -1325,21 +1347,21 @@ class QuiverModuli(Element):
 
             sage: from quiver import *
             sage: X = QuiverModuliSpace(KroneckerQuiver(3), (2, 3))
-            sage: X.all_weight_bounds()
-            [135, 100, 90, 15/2, 270, 100, 30]
-            sage: X.all_weight_bounds(as_dict=True)
-            {((1, 0), (1, 1), (0, 2)): 135,
+            sage: X.teleman_bounds()
+            [15, 60, 100, 360, 100, 270, 270]
+            sage: X.teleman_bounds(as_dict=True)
+            {((1, 0), (1, 1), (0, 2)): 270,
              ((1, 0), (1, 2), (0, 1)): 100,
-             ((1, 0), (1, 3)): 90,
-             ((1, 1), (1, 2)): 15/2,
+             ((1, 0), (1, 3)): 360,
+             ((1, 1), (1, 2)): 15,
              ((2, 0), (0, 3)): 270,
              ((2, 1), (0, 2)): 100,
-             ((2, 2), (0, 1)): 30}
+             ((2, 2), (0, 1)): 60}
         """
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
 
-        weights = map(lambda dstar: self.harder_narasimhan_weight(dstar), HNs)
+        weights = [self.teleman_bound(dstar) for dstar in HNs]
 
         if as_dict:
             return dict(zip(HNs, weights))
@@ -1371,24 +1393,209 @@ class QuiverModuli(Element):
             sage: X.if_rigidity_inequality_holds()
             False
         """
-        # setup shorthand
-        Q, theta, denom = self._Q, self._theta, self._denom
-
-        weights = self.all_weight_bounds()
+        weights = self.teleman_bounds()
 
         # we compute the maximum weight of the tensors of the universal bundles
         # this is only relevant on the unstable locus
         HNs = self.all_harder_narasimhan_types(proper=True)
+        kweights = [self.harder_narasimhan_type_weights(hn) for hn in HNs]
+        kweights = [kw[0] - kw[-1] for kw in kweights]
 
-        tensor_weights = list(
-            map(
-                lambda dstar: Q.slope(dstar[0], theta, denom=denom)
-                - Q.slope(dstar[-1], theta, denom=denom),
-                HNs,
+        return all(weights[i] > kweights[i] for i in range(len(HNs)))
+
+    def all_weights_endomorphisms_universal_bundle(self):
+        r"""
+        Returns the Teleman weights on the endomorphisms of the universal bundle.
+
+        EXAMPLE:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, [2, 3])
+            sage: X.all_weights_endomorphisms_universal_bundle()
+            {((1, 0), (1, 1), (0, 2)): [0, 15, 30, -15, 0, 15, -30, -15, 0],
+             ((1, 0), (1, 2), (0, 1)): [0, 10, 15, -10, 0, 5, -15, -5, 0],
+             ((1, 0), (1, 3)): [0, 45, -45, 0],
+             ((1, 1), (1, 2)): [0, 5, -5, 0],
+             ((2, 0), (0, 3)): [0, 15, -15, 0],
+             ((2, 1), (0, 2)): [0, 10, -10, 0],
+             ((2, 2), (0, 1)): [0, 15, -15, 0]}
+        """
+        # setup shorthand
+
+        HN = self.all_harder_narasimhan_types(proper=True)
+        ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
+
+        return {
+            hntype: [
+                ks[hntype][s] - ks[hntype][t]
+                for s in range(len(hntype))
+                for t in range(len(hntype))
+            ]
+            for hntype in HN
+        }
+
+    def weights_endomorphisms_universal_bundle(self, i, j):
+        r"""
+        Returns the Teleman weights on :math:`U_{i}^{\vee} \otimes U_{j}`.
+
+        EXAMPLE:
+
+            The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3)
+            sage: X = QuiverModuliSpace(Q, (2, 3))
+            sage: X.weights_endomorphisms_universal_bundle(0,1)
+            {((1, 0), (1, 1), (0, 2)): [-15, 0, -30, -15, -30, -15],
+             ((1, 0), (1, 2), (0, 1)): [-10, 0, -10, 0, -15, -5],
+             ((1, 0), (1, 3)): [-45, 0, -45, 0, -45, 0],
+             ((1, 1), (1, 2)): [0, 5, -5, 0, -5, 0],
+             ((2, 0), (0, 3)): [-15, -15, -15, -15, -15, -15],
+             ((2, 1), (0, 2)): [0, 0, -10, -10, -10, -10],
+             ((2, 2), (0, 1)): [0, 0, 0, 0, -15, -15]}
+            sage: X.weights_endomorphisms_universal_bundle(0,0)
+            {((1, 0), (1, 1), (0, 2)): [0, 15, -15, 0],
+             ((1, 0), (1, 2), (0, 1)): [0, 10, -10, 0],
+             ((1, 0), (1, 3)): [0, 45, -45, 0],
+             ((1, 1), (1, 2)): [0, 5, -5, 0],
+             ((2, 0), (0, 3)): [0, 0, 0, 0],
+             ((2, 1), (0, 2)): [0, 0, 0, 0],
+             ((2, 2), (0, 1)): [0, 0, 0, 0]}
+        """
+        # setup shorthand
+        d = self._d
+        # check if i and j are vertices
+        assert d[i] and d[j]
+
+        HN = self.all_harder_narasimhan_types(proper=True)
+        ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
+
+        return {
+            hntype: [
+                ks[hntype][s] - ks[hntype][t]
+                for s in range(len(hntype))
+                for l in range(hntype[s][j])
+                for t in range(len(hntype))
+                for g in range(hntype[t][i])
+            ]
+            for hntype in HN
+        }
+
+    def weights_universal_bundle(self, i, a=None):
+        r"""
+        Returns the weights of the 1-PS lambda on the universal bundle :math:`U_i`
+        with the correct multiplicities.
+
+        INPUT:
+
+        - ``i`` -- index of the universal bundle
+        - ``a`` -- (default: extended_gcd(d)[1]) a linearization defining :math:`U_i`.
+
+        EXAMPLE:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3); d = (2, 3)
+            sage: X = QuiverModuliSpace(Q, d)
+            sage: X.weights_universal_bundle(0)
+            {((1, 0), (1, 1), (0, 2)): [60, 45],
+             ((1, 0), (1, 2), (0, 1)): [25, 15],
+             ((1, 0), (1, 3)): [90, 45],
+             ((1, 1), (1, 2)): [5, 0],
+             ((2, 0), (0, 3)): [45, 45],
+             ((2, 1), (0, 2)): [20, 20],
+             ((2, 2), (0, 1)): [15, 15]}
+            sage: X.weights_universal_bundle(1)
+            {((1, 0), (1, 1), (0, 2)): [45, 30, 30],
+             ((1, 0), (1, 2), (0, 1)): [15, 15, 10],
+             ((1, 0), (1, 3)): [45, 45, 45],
+             ((1, 1), (1, 2)): [5, 0, 0],
+             ((2, 0), (0, 3)): [30, 30, 30],
+             ((2, 1), (0, 2)): [20, 10, 10],
+             ((2, 2), (0, 1)): [15, 15, 0]}
+        """
+        # setup shorthand
+        d = self._d
+
+        # check if i is a vertex
+        assert d[i]
+
+        if a is None:
+            a = extended_gcd(d)[1]
+
+        HN = self.all_harder_narasimhan_types(proper=True)
+        ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
+
+        constant_term = {
+            hntype: sum(
+                ks[hntype][i]
+                * sum(
+                    a[k] * hntype[i][k] for k in range(len(hntype[i]))
+                )  # this is a dot product
+                for i in range(len(hntype))
             )
-        )
+            for hntype in HN
+        }
 
-        return all(weights[i] > tensor_weights[i] for i in range(len(HNs)))
+        return {
+            hntype: [
+                ks[hntype][s] - constant_term[hntype]
+                for s in range(len(hntype))
+                for l in range(hntype[s][i])
+            ]
+            for hntype in HN
+        }
+
+    def weights_canonical(self):
+        r"""
+        Returns the Teleman weight of the canonical bundle :math:`\omega` as
+        computed in MR4352662_.
+
+        This is only known if universal bundles exist, i.e., if :math:`\gcd(d) = 1`.
+
+        EXAMPLE:
+
+        The 3-Kronecker quiver::
+
+            sage: from quiver import *
+            sage: Q = GeneralizedKroneckerQuiver(3); d = (2, 3)
+            sage: X = QuiverModuliSpace(Q, d)
+            sage: X.weights_canonical()
+            {((1, 0), (1, 1), (0, 2)): [315],
+             ((1, 0), (1, 2), (0, 1)): [120],
+             ((1, 0), (1, 3)): [405],
+             ((1, 1), (1, 2)): [15],
+             ((2, 0), (0, 3)): [270],
+             ((2, 1), (0, 2)): [120],
+             ((2, 2), (0, 1)): [90]}
+
+        .. _MR4352662: https://mathscinet.ams.org/mathscinet-getitem?mr=4352662
+        """
+
+        # setup shorthand
+        Q, d = self._Q, self._d
+
+        assert gcd(d) == 1, "universal bundles do not exist"
+
+        HN = self.all_harder_narasimhan_types(proper=True)
+        ks = {hn: self.harder_narasimhan_type_weights(hn) for hn in HN}
+
+        dd = {
+            hntype: sum(ks[hntype][i] * hntype[i] for i in range(len(hntype)))
+            for hntype in HN
+        }
+
+        can = Q.canonical_stability_parameter(d)
+        return {
+            hntype: [
+                sum(can[i] * dd[hntype][i] for i in range(len(can)))
+            ]  # this is a dot product
+            for hntype in HN
+        }
 
     """
     Tautological relations
@@ -1708,7 +1915,9 @@ class QuiverModuli(Element):
 
     def dimension(self) -> int:
         r"""
-        Returns the dimension of the moduli stack.
+        Returns the dimension of the moduli space.
+
+        Abstract method, see the concrete implementations for details.
 
         .. SEEALSO::
 
@@ -1717,7 +1926,8 @@ class QuiverModuli(Element):
 
         EXAMPLES:
 
-        This is not implemented as it is ambiguous::
+        This is not implemented as it is ambiguous: it depends on whether we consider
+        it as a variety or as a stack::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
@@ -1739,7 +1949,8 @@ class QuiverModuli(Element):
             - :meth:`QuiverModuliSpace.is_smooth`
             - :meth:`QuiverModuliStack.is_smooth`
 
-        This is not implemented as it is ambiguous::
+        This is not implemented as it is ambiguous: it depends on whether we consider
+        it as a variety or as a stack::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
@@ -1763,7 +1974,8 @@ class QuiverModuli(Element):
 
         EXAMPLES:
 
-        This is not implemented as it is ambiguous::
+        This is not implemented as it is ambiguous: it depends on whether we consider
+        it as a variety or as a stack::
 
             sage: from quiver import *
             sage: Q = KroneckerQuiver(3)
@@ -2274,8 +2486,8 @@ class QuiverModuliSpace(QuiverModuli):
         r"""
         Computes the index of the moduli space
 
-        The index is the largest integer dividing the canonical divisor in Pic.
-        For now this is only implemented for the canonical stability condition.
+        The index is the largest integer dividing the canonical divisor
+        in the Picard group.
 
         EXAMPLES:
 
@@ -2661,7 +2873,7 @@ class QuiverModuliSpace(QuiverModuli):
 
         INPUT:
 
-        - ``eta`` -- class of line bundle (default: anticanonical line bundle
+        - ``eta`` -- class of line bundle (default: anticanonical line bundle)
 
         - ``classes`` -- variables to be used (default: None)
 
@@ -2819,7 +3031,6 @@ class QuiverModuliSpace(QuiverModuli):
             [1, 20, 148, 664, 2206]
 
         .. _arXiv.2307.01711: https://doi.org/10.48550/arXiv.2307.01711
-
         """
 
         integrand = (
@@ -2828,12 +3039,10 @@ class QuiverModuliSpace(QuiverModuli):
             .homogeneous_components()
         )
 
-        if self.dimension() in integrand.keys():
-            return integrand[self.dimension()] / self.point_class(
-                chi=chi, classes=classes
-            )
+        if self.dimension() not in integrand.keys():
+            return 0
 
-        return 0
+        return integrand[self.dimension()] / self.point_class(chi=chi, classes=classes)
 
 
 class QuiverModuliStack(QuiverModuli):
@@ -3060,3 +3269,24 @@ class QuiverModuliStack(QuiverModuli):
         tautological = self.tautological_ideal(use_roots=False, classes=classes)
 
         return QuotientRing(tautological.ring(), tautological, names=classes)
+
+
+def extended_gcd(x):
+    r"""
+    Computes the gcd and the Bezout coefficients of a list of integers.
+
+    This exists for two integers but seemingly not for more than two.
+    For internal use only.
+    """
+    n = len(x)
+    if n == 1:
+        return [x, [1]]
+    if n == 2:
+        (g, a, b) = xgcd(x[0], x[1])
+        return [g, [a, b]]
+    if n > 2:
+        (g, a, b) = xgcd(x[0], x[1])
+        y = [g] + [x[i] for i in range(2, n)]
+        [d, c] = extended_gcd(y)
+        m = [c[0] * a, c[0] * b] + [c[i] for i in range(1, n - 1)]
+        return [d, m]

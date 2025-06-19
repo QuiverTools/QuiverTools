@@ -2234,11 +2234,11 @@ class Quiver(Element):
         )
 
     """
-    Generic subdimension vectors and generic Hom and Ext
+    General subdimension vectors and general Hom and Ext
     """
 
-    def is_generic_subdimension_vector(self, e, d) -> bool:
-        r"""Checks if e is a generic subdimension vector of d.
+    def is_general_subdimension_vector(self, e, d) -> bool:
+        r"""Checks if e is a general subdimension vector of d.
 
         INPUT:
 
@@ -2246,14 +2246,14 @@ class Quiver(Element):
 
         - ``d``: dimension vector for the ambient representation
 
-        OUTPUT: whether e is a generic subdimension vector of d
+        OUTPUT: whether e is a general subdimension vector of d
 
-        A dimension vector `e` is a generic subdimension vector of `d`
-        if a generic representation of dimension vector `d` possesses
+        A dimension vector `e` is a general subdimension vector of `d`
+        if a general representation of dimension vector `d` possesses
         a subrepresentation of dimension vector `e`.
-        By MR1162487_ `e` is a generic subdimension vector of `d` if and only if `e` is
+        By MR1162487_ `e` is a general subdimension vector of `d` if and only if `e` is
         a subdimension vector of `d` and :math:`\langle f,d-e\rangle` is non-negative
-        for all generic subdimension vectors `f` of `e`.
+        for all general subdimension vectors `f` of `e`.
 
         .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
@@ -2266,27 +2266,27 @@ class Quiver(Element):
             sage: ds = [vector([i]) for i in range(3)]
             sage: for (e, d) in cartesian_product([ds, ds]):
             ....:     if not Q.is_subdimension_vector(e, d): continue
-            ....:     print("{} is generic subdimension vector of {}: {}".format(
-            ....:         e, d, Q.is_generic_subdimension_vector(e,d))
+            ....:     print("{} is general subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_general_subdimension_vector(e,d))
             ....:     )
-            (0) is generic subdimension vector of (0): True
-            (0) is generic subdimension vector of (1): True
-            (0) is generic subdimension vector of (2): True
-            (1) is generic subdimension vector of (1): True
-            (1) is generic subdimension vector of (2): True
-            (2) is generic subdimension vector of (2): True
+            (0) is general subdimension vector of (0): True
+            (0) is general subdimension vector of (1): True
+            (0) is general subdimension vector of (2): True
+            (1) is general subdimension vector of (1): True
+            (1) is general subdimension vector of (2): True
+            (2) is general subdimension vector of (2): True
             sage: Q = LoopQuiver(2)
             sage: for (e, d) in cartesian_product([ds]*2):
             ....:     if not Q.is_subdimension_vector(e, d): continue
-            ....:     print("{} is generic subdimension vector of {}: {}".format(
-            ....:         e, d, Q.is_generic_subdimension_vector(e,d))
+            ....:     print("{} is general subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_general_subdimension_vector(e,d))
             ....:     )
-            (0) is generic subdimension vector of (0): True
-            (0) is generic subdimension vector of (1): True
-            (0) is generic subdimension vector of (2): True
-            (1) is generic subdimension vector of (1): True
-            (1) is generic subdimension vector of (2): False
-            (2) is generic subdimension vector of (2): True
+            (0) is general subdimension vector of (0): True
+            (0) is general subdimension vector of (1): True
+            (0) is general subdimension vector of (2): True
+            (1) is general subdimension vector of (1): True
+            (1) is general subdimension vector of (2): False
+            (2) is general subdimension vector of (2): True
 
         Some examples on generalized Kronecker quivers::
 
@@ -2294,120 +2294,120 @@ class Quiver(Element):
             sage: ds = Tuples(range(3), 2)
             sage: for (e, d) in cartesian_product([ds]*2):
             ....:     if not Q.is_subdimension_vector(e, d): continue
-            ....:     print("{} is generic subdimension vector of {}: {}".format(
-            ....:         e, d, Q.is_generic_subdimension_vector(e,d))
+            ....:     print("{} is general subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_general_subdimension_vector(e,d))
             ....:     )
-            (0, 0) is generic subdimension vector of (0, 0): True
-            (0, 0) is generic subdimension vector of (1, 0): True
-            (0, 0) is generic subdimension vector of (2, 0): True
-            (0, 0) is generic subdimension vector of (0, 1): True
-            (0, 0) is generic subdimension vector of (1, 1): True
-            (0, 0) is generic subdimension vector of (2, 1): True
-            (0, 0) is generic subdimension vector of (0, 2): True
-            (0, 0) is generic subdimension vector of (1, 2): True
-            (0, 0) is generic subdimension vector of (2, 2): True
-            (1, 0) is generic subdimension vector of (1, 0): True
-            (1, 0) is generic subdimension vector of (2, 0): True
-            (1, 0) is generic subdimension vector of (1, 1): False
-            (1, 0) is generic subdimension vector of (2, 1): True
-            (1, 0) is generic subdimension vector of (1, 2): False
-            (1, 0) is generic subdimension vector of (2, 2): False
-            (2, 0) is generic subdimension vector of (2, 0): True
-            (2, 0) is generic subdimension vector of (2, 1): False
-            (2, 0) is generic subdimension vector of (2, 2): False
-            (0, 1) is generic subdimension vector of (0, 1): True
-            (0, 1) is generic subdimension vector of (1, 1): True
-            (0, 1) is generic subdimension vector of (2, 1): True
-            (0, 1) is generic subdimension vector of (0, 2): True
-            (0, 1) is generic subdimension vector of (1, 2): True
-            (0, 1) is generic subdimension vector of (2, 2): True
-            (1, 1) is generic subdimension vector of (1, 1): True
-            (1, 1) is generic subdimension vector of (2, 1): True
-            (1, 1) is generic subdimension vector of (1, 2): True
-            (1, 1) is generic subdimension vector of (2, 2): True
-            (2, 1) is generic subdimension vector of (2, 1): True
-            (2, 1) is generic subdimension vector of (2, 2): False
-            (0, 2) is generic subdimension vector of (0, 2): True
-            (0, 2) is generic subdimension vector of (1, 2): True
-            (0, 2) is generic subdimension vector of (2, 2): True
-            (1, 2) is generic subdimension vector of (1, 2): True
-            (1, 2) is generic subdimension vector of (2, 2): True
-            (2, 2) is generic subdimension vector of (2, 2): True
+            (0, 0) is general subdimension vector of (0, 0): True
+            (0, 0) is general subdimension vector of (1, 0): True
+            (0, 0) is general subdimension vector of (2, 0): True
+            (0, 0) is general subdimension vector of (0, 1): True
+            (0, 0) is general subdimension vector of (1, 1): True
+            (0, 0) is general subdimension vector of (2, 1): True
+            (0, 0) is general subdimension vector of (0, 2): True
+            (0, 0) is general subdimension vector of (1, 2): True
+            (0, 0) is general subdimension vector of (2, 2): True
+            (1, 0) is general subdimension vector of (1, 0): True
+            (1, 0) is general subdimension vector of (2, 0): True
+            (1, 0) is general subdimension vector of (1, 1): False
+            (1, 0) is general subdimension vector of (2, 1): True
+            (1, 0) is general subdimension vector of (1, 2): False
+            (1, 0) is general subdimension vector of (2, 2): False
+            (2, 0) is general subdimension vector of (2, 0): True
+            (2, 0) is general subdimension vector of (2, 1): False
+            (2, 0) is general subdimension vector of (2, 2): False
+            (0, 1) is general subdimension vector of (0, 1): True
+            (0, 1) is general subdimension vector of (1, 1): True
+            (0, 1) is general subdimension vector of (2, 1): True
+            (0, 1) is general subdimension vector of (0, 2): True
+            (0, 1) is general subdimension vector of (1, 2): True
+            (0, 1) is general subdimension vector of (2, 2): True
+            (1, 1) is general subdimension vector of (1, 1): True
+            (1, 1) is general subdimension vector of (2, 1): True
+            (1, 1) is general subdimension vector of (1, 2): True
+            (1, 1) is general subdimension vector of (2, 2): True
+            (2, 1) is general subdimension vector of (2, 1): True
+            (2, 1) is general subdimension vector of (2, 2): False
+            (0, 2) is general subdimension vector of (0, 2): True
+            (0, 2) is general subdimension vector of (1, 2): True
+            (0, 2) is general subdimension vector of (2, 2): True
+            (1, 2) is general subdimension vector of (1, 2): True
+            (1, 2) is general subdimension vector of (2, 2): True
+            (2, 2) is general subdimension vector of (2, 2): True
             sage: Q = GeneralizedKroneckerQuiver(2)
             sage: for (e, d) in cartesian_product([ds]*2):
             ....:     if not Q.is_subdimension_vector(e, d): continue
-            ....:     print("{} is generic subdimension vector of {}: {}".format(
-            ....:         e, d, Q.is_generic_subdimension_vector(e,d))
+            ....:     print("{} is general subdimension vector of {}: {}".format(
+            ....:         e, d, Q.is_general_subdimension_vector(e,d))
             ....:     )
-            (0, 0) is generic subdimension vector of (0, 0): True
-            (0, 0) is generic subdimension vector of (1, 0): True
-            (0, 0) is generic subdimension vector of (2, 0): True
-            (0, 0) is generic subdimension vector of (0, 1): True
-            (0, 0) is generic subdimension vector of (1, 1): True
-            (0, 0) is generic subdimension vector of (2, 1): True
-            (0, 0) is generic subdimension vector of (0, 2): True
-            (0, 0) is generic subdimension vector of (1, 2): True
-            (0, 0) is generic subdimension vector of (2, 2): True
-            (1, 0) is generic subdimension vector of (1, 0): True
-            (1, 0) is generic subdimension vector of (2, 0): True
-            (1, 0) is generic subdimension vector of (1, 1): False
-            (1, 0) is generic subdimension vector of (2, 1): False
-            (1, 0) is generic subdimension vector of (1, 2): False
-            (1, 0) is generic subdimension vector of (2, 2): False
-            (2, 0) is generic subdimension vector of (2, 0): True
-            (2, 0) is generic subdimension vector of (2, 1): False
-            (2, 0) is generic subdimension vector of (2, 2): False
-            (0, 1) is generic subdimension vector of (0, 1): True
-            (0, 1) is generic subdimension vector of (1, 1): True
-            (0, 1) is generic subdimension vector of (2, 1): True
-            (0, 1) is generic subdimension vector of (0, 2): True
-            (0, 1) is generic subdimension vector of (1, 2): True
-            (0, 1) is generic subdimension vector of (2, 2): True
-            (1, 1) is generic subdimension vector of (1, 1): True
-            (1, 1) is generic subdimension vector of (2, 1): True
-            (1, 1) is generic subdimension vector of (1, 2): False
-            (1, 1) is generic subdimension vector of (2, 2): True
-            (2, 1) is generic subdimension vector of (2, 1): True
-            (2, 1) is generic subdimension vector of (2, 2): False
-            (0, 2) is generic subdimension vector of (0, 2): True
-            (0, 2) is generic subdimension vector of (1, 2): True
-            (0, 2) is generic subdimension vector of (2, 2): True
-            (1, 2) is generic subdimension vector of (1, 2): True
-            (1, 2) is generic subdimension vector of (2, 2): True
-            (2, 2) is generic subdimension vector of (2, 2): True
+            (0, 0) is general subdimension vector of (0, 0): True
+            (0, 0) is general subdimension vector of (1, 0): True
+            (0, 0) is general subdimension vector of (2, 0): True
+            (0, 0) is general subdimension vector of (0, 1): True
+            (0, 0) is general subdimension vector of (1, 1): True
+            (0, 0) is general subdimension vector of (2, 1): True
+            (0, 0) is general subdimension vector of (0, 2): True
+            (0, 0) is general subdimension vector of (1, 2): True
+            (0, 0) is general subdimension vector of (2, 2): True
+            (1, 0) is general subdimension vector of (1, 0): True
+            (1, 0) is general subdimension vector of (2, 0): True
+            (1, 0) is general subdimension vector of (1, 1): False
+            (1, 0) is general subdimension vector of (2, 1): False
+            (1, 0) is general subdimension vector of (1, 2): False
+            (1, 0) is general subdimension vector of (2, 2): False
+            (2, 0) is general subdimension vector of (2, 0): True
+            (2, 0) is general subdimension vector of (2, 1): False
+            (2, 0) is general subdimension vector of (2, 2): False
+            (0, 1) is general subdimension vector of (0, 1): True
+            (0, 1) is general subdimension vector of (1, 1): True
+            (0, 1) is general subdimension vector of (2, 1): True
+            (0, 1) is general subdimension vector of (0, 2): True
+            (0, 1) is general subdimension vector of (1, 2): True
+            (0, 1) is general subdimension vector of (2, 2): True
+            (1, 1) is general subdimension vector of (1, 1): True
+            (1, 1) is general subdimension vector of (2, 1): True
+            (1, 1) is general subdimension vector of (1, 2): False
+            (1, 1) is general subdimension vector of (2, 2): True
+            (2, 1) is general subdimension vector of (2, 1): True
+            (2, 1) is general subdimension vector of (2, 2): False
+            (0, 2) is general subdimension vector of (0, 2): True
+            (0, 2) is general subdimension vector of (1, 2): True
+            (0, 2) is general subdimension vector of (2, 2): True
+            (1, 2) is general subdimension vector of (1, 2): True
+            (1, 2) is general subdimension vector of (2, 2): True
+            (2, 2) is general subdimension vector of (2, 2): True
 
         """
-        return self.__is_generic_subdimension_vector(e, d)
+        return self.__is_general_subdimension_vector(e, d)
 
     @cached_method(
         key=lambda self, e, d: (self._coerce_vector(e), self._coerce_vector(d))
     )
-    def __is_generic_subdimension_vector(self, e, d) -> bool:
+    def __is_general_subdimension_vector(self, e, d) -> bool:
         r"""
-        The cacheable implementation of :meth:`Quiver.is_generic_subdimension_vector`.
+        The cacheable implementation of :meth:`Quiver.is_general_subdimension_vector`.
 
         EXAMPLES:
 
-        Generic subdimension vectors for the 3-Kronecker quiver::
+        General subdimension vectors for the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q, d, theta = GeneralizedKroneckerQuiver(3), (2, 3), (3, -2)
             sage: for e in Q.all_subdimension_vectors(d):
-            ....:     print("{} is generic subdimension vector of {}: {}".format(
-            ....:         e, d, Q._Quiver__is_generic_subdimension_vector(e, d))
+            ....:     print("{} is general subdimension vector of {}: {}".format(
+            ....:         e, d, Q._Quiver__is_general_subdimension_vector(e, d))
             ....:     )
-            (0, 0) is generic subdimension vector of (2, 3): True
-            (0, 1) is generic subdimension vector of (2, 3): True
-            (0, 2) is generic subdimension vector of (2, 3): True
-            (0, 3) is generic subdimension vector of (2, 3): True
-            (1, 0) is generic subdimension vector of (2, 3): False
-            (1, 1) is generic subdimension vector of (2, 3): False
-            (1, 2) is generic subdimension vector of (2, 3): True
-            (1, 3) is generic subdimension vector of (2, 3): True
-            (2, 0) is generic subdimension vector of (2, 3): False
-            (2, 1) is generic subdimension vector of (2, 3): False
-            (2, 2) is generic subdimension vector of (2, 3): False
-            (2, 3) is generic subdimension vector of (2, 3): True
+            (0, 0) is general subdimension vector of (2, 3): True
+            (0, 1) is general subdimension vector of (2, 3): True
+            (0, 2) is general subdimension vector of (2, 3): True
+            (0, 3) is general subdimension vector of (2, 3): True
+            (1, 0) is general subdimension vector of (2, 3): False
+            (1, 1) is general subdimension vector of (2, 3): False
+            (1, 2) is general subdimension vector of (2, 3): True
+            (1, 3) is general subdimension vector of (2, 3): True
+            (2, 0) is general subdimension vector of (2, 3): False
+            (2, 1) is general subdimension vector of (2, 3): False
+            (2, 2) is general subdimension vector of (2, 3): False
+            (2, 3) is general subdimension vector of (2, 3): True
         """
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
@@ -2423,10 +2423,10 @@ class Quiver(Element):
             self.all_subdimension_vectors(e),
         )
 
-        return not any(self.is_generic_subdimension_vector(eprime, e) for eprime in ds)
+        return not any(self.is_general_subdimension_vector(eprime, e) for eprime in ds)
 
-    def all_generic_subdimension_vectors(self, d, proper=False, nonzero=False):
-        r"""Returns the list of all generic subdimension vectors of ``d``.
+    def all_general_subdimension_vectors(self, d, proper=False, nonzero=False):
+        r"""Returns the list of all general subdimension vectors of ``d``.
 
         INPUT:
 
@@ -2441,7 +2441,7 @@ class Quiver(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(1)
             sage: d = (3, 3)
-            sage: Q.all_generic_subdimension_vectors(d)
+            sage: Q.all_general_subdimension_vectors(d)
             [(0, 0),
              (0, 1),
              (0, 2),
@@ -2453,7 +2453,7 @@ class Quiver(Element):
              (2, 3),
              (3, 3)]
             sage: Q = GeneralizedKroneckerQuiver(2)
-            sage: Q.all_generic_subdimension_vectors(d)
+            sage: Q.all_general_subdimension_vectors(d)
             [(0, 0),
              (0, 1),
              (0, 2),
@@ -2465,11 +2465,11 @@ class Quiver(Element):
              (2, 3),
              (3, 3)]
             sage: Q = GeneralizedKroneckerQuiver(3)
-            sage: Q.all_generic_subdimension_vectors(d)
+            sage: Q.all_general_subdimension_vectors(d)
             [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
-            sage: Q.all_generic_subdimension_vectors(d, nonzero=True)
+            sage: Q.all_general_subdimension_vectors(d, nonzero=True)
             [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (3, 3)]
-            sage: Q.all_generic_subdimension_vectors(d, proper=True)
+            sage: Q.all_general_subdimension_vectors(d, proper=True)
             [(0, 0), (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]
 
         """
@@ -2477,14 +2477,14 @@ class Quiver(Element):
 
         return list(
             filter(
-                lambda e: self.is_generic_subdimension_vector(e, d),
+                lambda e: self.is_general_subdimension_vector(e, d),
                 self.all_subdimension_vectors(
                     d, proper=proper, nonzero=nonzero, forget_labels=True
                 ),
             )
         )
 
-    def generic_ext(self, d, e):
+    def general_ext(self, d, e):
         r"""
         Computes :math:`\operatorname{ext}(d, e)`.
 
@@ -2494,7 +2494,7 @@ class Quiver(Element):
 
         - ``e``: dimension vector
 
-        OUTPUT: dimension of the generic ext
+        OUTPUT: dimension of the general ext
 
         According to Theorem 5.4 in Schofield's 'General representations of quivers',
         we have
@@ -2504,17 +2504,17 @@ class Quiver(Element):
             \operatorname{ext}(a,b) =
             \operatorname{max}\{-\langle c,b\rangle\},
 
-        where :math:`c` runs over the generic subdimension vectors of :math:`a`.
+        where :math:`c` runs over the general subdimension vectors of :math:`a`.
 
         EXAMPLES:
 
-        Generic ext on the 3-Kronecker quiver::
+        General ext on the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: ds = [Q.simple_root(0), Q.simple_root(1), Q.thin_dimension_vector()]
             sage: for (d, e) in cartesian_product([ds]*2):
-            ....:     print("ext({}, {}) = {}".format(d, e, Q.generic_ext(d, e)))
+            ....:     print("ext({}, {}) = {}".format(d, e, Q.general_ext(d, e)))
             ext((1, 0), (1, 0)) = 0
             ext((1, 0), (0, 1)) = 3
             ext((1, 0), (1, 1)) = 2
@@ -2530,10 +2530,10 @@ class Quiver(Element):
         e = self._coerce_dimension_vector(e)
 
         return max(
-            -self.euler_form(f, e) for f in self.all_generic_subdimension_vectors(d)
+            -self.euler_form(f, e) for f in self.all_general_subdimension_vectors(d)
         )
 
-    def generic_hom(self, d, e):
+    def general_hom(self, d, e):
         r"""
         Computes :math:`\operatorname{hom}(d, e)`.
 
@@ -2543,7 +2543,7 @@ class Quiver(Element):
 
         - ``e``: dimension vector
 
-        OUTPUT: dimension of the generic hom
+        OUTPUT: dimension of the general hom
 
         There is a non-empty open subset `U` of :math:`R(Q,d) \times R(Q,e)` such that
 
@@ -2561,13 +2561,13 @@ class Quiver(Element):
 
         EXAMPLES:
 
-        Generic hom on the 3-Kronecker quiver::
+        General hom on the 3-Kronecker quiver::
 
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: ds = [Q.simple_root(0), Q.simple_root(1), Q.thin_dimension_vector()]
             sage: for (d, e) in cartesian_product([ds]*2):
-            ....:     print("hom({}, {}) = {}".format(d, e, Q.generic_hom(d, e)))
+            ....:     print("hom({}, {}) = {}".format(d, e, Q.general_hom(d, e)))
             hom((1, 0), (1, 0)) = 1
             hom((1, 0), (0, 1)) = 0
             hom((1, 0), (1, 1)) = 0
@@ -2582,14 +2582,14 @@ class Quiver(Element):
         d = self._coerce_dimension_vector(d)
         e = self._coerce_dimension_vector(e)
 
-        return self.euler_form(d, e) + self.generic_ext(d, e)
+        return self.euler_form(d, e) + self.general_ext(d, e)
 
     """
     Harder--Narasimhan types
     """
 
     @cached_method
-    def _all_harder_narasimhan_types(self, d, theta, denom=sum, sorted=False):
+    def _all_harder_narasimhan_types(self, d, theta, denom=sum, sorted=True):
         r"""Returns the list of all Harder--Narasimhan types of d.
 
         INPUT:
@@ -2600,7 +2600,7 @@ class Quiver(Element):
 
         - ``denom`` -- the denominator function (default: sum)
 
-        OUTPUT: list of Harder--Narasimhan types
+        OUTPUT: tuple of Harder--Narasimhan types
 
         EXAMPLES:
 
@@ -2611,14 +2611,14 @@ class Quiver(Element):
             sage: d = (2, 3)
             sage: theta = (3, -2)
             sage: Q._all_harder_narasimhan_types(d, theta)
-            [((1, 0), (1, 1), (0, 2)),
-             ((1, 0), (1, 2), (0, 1)),
-             ((1, 0), (1, 3)),
+            (((2, 3),),
              ((1, 1), (1, 2)),
-             ((2, 0), (0, 3)),
-             ((2, 1), (0, 2)),
              ((2, 2), (0, 1)),
-             ((2, 3),)]
+             ((2, 1), (0, 2)),
+             ((1, 0), (1, 3)),
+             ((1, 0), (1, 2), (0, 1)),
+             ((1, 0), (1, 1), (0, 2)),
+             ((2, 0), (0, 3)))
 
         .. NOTE ::
 
@@ -2650,14 +2650,18 @@ class Quiver(Element):
             for estar in filter(
                 lambda fstar: self.slope(e, theta, denom=denom)
                 > self.slope(fstar[0], theta, denom=denom),
-                self._all_harder_narasimhan_types(d - e, theta, denom=denom),
+                self._all_harder_narasimhan_types(
+                    d - e, theta, denom=denom, sorted=sorted
+                ),
             ):
                 all_types.append((e,) + estar)
 
         if self.has_semistable_representation(d, theta, denom=denom):
-            all_types.append((d,))
+            all_types.insert(0, (d,))
 
-        return all_types
+        # because it is a cached method we need to return a tuple, not a list
+        # as the result of a cached method must be immutable
+        return tuple(all_types)
 
     """
     (Semi-)stability
@@ -2734,7 +2738,7 @@ class Quiver(Element):
 
         By MR1162487_ a dimension vector `d` admits a :math:`\theta`-semi-stable
         representation if and only if :math:`\mu_{\theta}(e) \leq \mu_{\theta}(d)` for
-        all generic subdimension vectors `e` of `d`.
+        all general subdimension vectors `e` of `d`.
 
         .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
 
@@ -2771,7 +2775,7 @@ class Quiver(Element):
 
         return all(
             self.slope(e, theta, denom=denom) <= self.slope(d, theta, denom=denom)
-            for e in self.all_generic_subdimension_vectors(d, nonzero=True)
+            for e in self.all_general_subdimension_vectors(d, nonzero=True)
         )
 
     def has_stable_representation(self, d, theta=None, denom=sum):
@@ -2787,7 +2791,7 @@ class Quiver(Element):
         OUTPUT: whether there is a ``theta``-stable of dimension vector ``d``
 
         By MR1162487_ `d` admits a theta-stable representation if and only if
-        :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all proper generic subdimension
+        :math:`\mu_{\theta}(e) < \mu_{\theta}(d)` for all proper general subdimension
         vectors :math:`e` of :math:`d`.
 
         .. _MR1162487: https://mathscinet.ams.org/mathscinet/relay-station?mr=1162487
@@ -2829,7 +2833,7 @@ class Quiver(Element):
 
         return all(
             self.slope(e, theta, denom=denom) < self.slope(d, theta, denom=denom)
-            for e in self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
+            for e in self.all_general_subdimension_vectors(d, proper=True, nonzero=True)
         )
 
     """
@@ -2861,45 +2865,45 @@ class Quiver(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(3)
             sage: Q.canonical_decomposition((2, 3))
-            [(2, 3)]
+            ((2, 3),)
             sage: for d in Q.all_subdimension_vectors((5, 5)):
             ....:     print(Q.canonical_decomposition(d))
-            [(0, 0)]
-            [(0, 1)]
-            [(0, 1), (0, 1)]
-            [(0, 1), (0, 1), (0, 1)]
-            [(0, 1), (0, 1), (0, 1), (0, 1)]
-            [(0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-            [(1, 0)]
-            [(1, 1)]
-            [(1, 2)]
-            [(1, 3)]
-            [(0, 1), (1, 3)]
-            [(0, 1), (0, 1), (1, 3)]
-            [(1, 0), (1, 0)]
-            [(2, 1)]
-            [(2, 2)]
-            [(2, 3)]
-            [(2, 4)]
-            [(2, 5)]
-            [(1, 0), (1, 0), (1, 0)]
-            [(3, 1)]
-            [(3, 2)]
-            [(3, 3)]
-            [(3, 4)]
-            [(3, 5)]
-            [(1, 0), (1, 0), (1, 0), (1, 0)]
-            [(1, 0), (3, 1)]
-            [(4, 2)]
-            [(4, 3)]
-            [(4, 4)]
-            [(4, 5)]
-            [(1, 0), (1, 0), (1, 0), (1, 0), (1, 0)]
-            [(1, 0), (1, 0), (3, 1)]
-            [(5, 2)]
-            [(5, 3)]
-            [(5, 4)]
-            [(5, 5)]
+            ((0, 0),)
+            ((0, 1),)
+            ((0, 1), (0, 1))
+            ((0, 1), (0, 1), (0, 1))
+            ((0, 1), (0, 1), (0, 1), (0, 1))
+            ((0, 1), (0, 1), (0, 1), (0, 1), (0, 1))
+            ((1, 0),)
+            ((1, 1),)
+            ((1, 2),)
+            ((1, 3),)
+            ((0, 1), (1, 3))
+            ((0, 1), (0, 1), (1, 3))
+            ((1, 0), (1, 0))
+            ((2, 1),)
+            ((2, 2),)
+            ((2, 3),)
+            ((2, 4),)
+            ((2, 5),)
+            ((1, 0), (1, 0), (1, 0))
+            ((3, 1),)
+            ((3, 2),)
+            ((3, 3),)
+            ((3, 4),)
+            ((3, 5),)
+            ((1, 0), (1, 0), (1, 0), (1, 0))
+            ((1, 0), (3, 1))
+            ((4, 2),)
+            ((4, 3),)
+            ((4, 4),)
+            ((4, 5),)
+            ((1, 0), (1, 0), (1, 0), (1, 0), (1, 0))
+            ((1, 0), (1, 0), (3, 1))
+            ((5, 2),)
+            ((5, 3),)
+            ((5, 4),)
+            ((5, 5),)
         """
         return self.__canonical_decomposition(d)
 
@@ -2914,17 +2918,20 @@ class Quiver(Element):
             sage: from quiver import *
             sage: Q = GeneralizedKroneckerQuiver(2)
             sage: Q._Quiver__canonical_decomposition((5, 5))
-            [(1, 1), (1, 1), (1, 1), (1, 1), (1, 1)]
+            ((1, 1), (1, 1), (1, 1), (1, 1), (1, 1))
         """
         d = self._coerce_dimension_vector(d)
 
-        ds = self.all_generic_subdimension_vectors(d, proper=True, nonzero=True)
+        ds = self.all_general_subdimension_vectors(d, proper=True, nonzero=True)
         for e in ds:
             if d - e in ds:
                 return self.canonical_decomposition(e) + self.canonical_decomposition(
                     d - e
                 )
-        return [d]
+
+        # because it is a cached method we need to return a tuple, not a list
+        # as the result of a cached method must be immutable
+        return (d,)
 
     def dimension_nullcone(self, d):
         r"""
