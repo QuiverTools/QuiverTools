@@ -1277,8 +1277,9 @@ class QuiverModuli(Element):
 
         weights = [Q.slope(HN[s], theta, denom=denom) for s in range(len(HN))]
         c = lcm([weight.denominator() for weight in weights])
-
-        return [x * c for x in weights]
+        weights = [x * c for x in weights]
+        div = gcd(weights)
+        return [x / div for x in weights]
 
     def teleman_bound(self, harder_narasimhan_type):
         r"""
